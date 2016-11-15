@@ -1,0 +1,22 @@
+{
+    "name"        : "Finn",
+    "version"     : "*",
+    "author"      : "Andy Weidenbaum",
+    "description" : "Literate programming made easy",
+    "depends"     : ["Config::TOML"],
+    "license"     : "http://unlicense.org/UNLICENSE",
+    "source-type" : "git",
+    "source-url"  : "git://github.com/atweiden/finn.git",
+    "support"     : {
+        "bugtracker" : "https://github.com/atweiden/finn/issues",
+        "source"     : "https://github.com/atweiden/finn"
+    },
+    "provides" : {
+        "Finn"                  : "lib/Finn.pm",
+        "Finn::Parser"          : "lib/Finn/Parser.pm",
+        "Finn::Parser::Actions" : "lib/Finn/Parser/Actions.pm",
+        "Finn::Parser::AST"     : "lib/Finn/Parser/AST.pm",
+        "Finn::Parser::Grammar" : "lib/Finn/Parser/Grammar.pm",
+        "X::Finn"               : "lib/X/Finn.pm"
+    }
+}
