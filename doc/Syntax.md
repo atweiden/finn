@@ -101,7 +101,7 @@ looks like this:
 - C is for Centralia.
 ---
 
---- Cities in Washington
+--- Cities in Washington +=
 - D is for Davenport.
 ---
 ```
@@ -129,7 +129,7 @@ even if they are defined after the current Sectional Code Block.
 
 Finally, note that Sectional Code Blocks can be appended to by creating
 additional Sectional Code Blocks under the same Sectional Code Block
-Header Name.
+Header Name but with the additive modifier attached to the end (`+=`).
 
 
 Writing Sectional Code Blocks To A File By Path
