@@ -32,19 +32,19 @@ The above Sectional Code Blocks would be privately scoped, i.e. they
 can't be modified or referenced from any other Finn source file. They
 are limited in scope to the Finn source file that they appear in.
 
-To create an exported Sectional Code Block that can be referenced by
-copy from other Finn source files, prepend an asterisk (`*`) to the
-Sectional Code Block Header Name, like this:
+To create an exported Sectional Code Block that can be referenced by copy
+from other Finn source files, append an asterisk (`*`) to the Sectional
+Code Block Header Name, like this:
 
 ```finn
---- *Exported Name
+--- Exported*
 exported content
 ---
 ```
 
 Or, equivalently:
 
-    ``` *Exported Name
+    ``` Exported*
     exported content
     ```
 
@@ -62,7 +62,7 @@ invalid sectional code block content
 ```
 
 ```finn
----*DON'T DO THIS
+---DON'T DO THIS*
 invalid exported sectional code block content
 ---
 ```
@@ -212,11 +212,11 @@ Referencing Exported Sectional Code Blocks
 
 ```sh
 cat finn/share/recipes.finn
---- *Egg Recipe
+--- Egg Recipe*
 Put eggs in skillet. Cook.
 ---
 
---- *Bacon Recipe
+--- Bacon Recipe*
 Lay bacon on baking pan. Bake.
 ---
 
@@ -243,6 +243,37 @@ Finn source file:
 § Secret Sauce [1]
 
 [1]: /finn/share/recipes.finn
+```
+
+
+Appending Content To Exported Sectional Code Blocks
+---------------------------------------------------
+
+When adding content to an exported Sectional Code Block with the additive
+operator (`+=`), the export symbol (`*`) is optional.
+
+```finn
+--- Florence*
+About Florence, Italy
+
+---
+
+--- Florence +=
+More about Florence.
+---
+
+--- Florence* +=
+
+Even more about Florence.
+---
+```
+
+```markdown
+About Florence, Italy
+
+More about Florence.
+
+Even more about Florence.
 ```
 
 
