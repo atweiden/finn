@@ -25,8 +25,8 @@ Or this:
     ```
 
 In the above Sectional Code Blocks, `Name` is the Sectional Code Block
-Header Name. `content` is the Sectional Code Block Content. The Sectional
-Code Block Delimiters would be the triple dashes or triple backticks.
+Name. `content` is the Sectional Code Block Content. The Sectional Code
+Block Delimiters would be the triple dashes or triple backticks.
 
 The above Sectional Code Blocks would be privately scoped, i.e. they
 can't be modified or referenced from any other Finn source file. They
@@ -34,7 +34,7 @@ are limited in scope to the Finn source file that they appear in.
 
 To create an exported Sectional Code Block that can be referenced by copy
 from other Finn source files, append an asterisk (`*`) to the Sectional
-Code Block Header Name, like this:
+Code Block Name, like this:
 
 ```finn
 --- Exported*
@@ -49,9 +49,8 @@ Or, equivalently:
     ```
 
 To differentiate Finn Sectional Code Blocks from [vim-journal]'s normal
-unnamed code blocks, exactly one horizontal whitespace must exist
-between the Sectional Code Block Delimiter and the Sectional Code Block
-Header Name.
+unnamed code blocks, exactly one horizontal whitespace must exist between
+the Sectional Code Block Delimiter and the Sectional Code Block Name.
 
 This is an invalid Sectional Code Block:
 
@@ -120,24 +119,24 @@ Note that the Section Sign (`§`) must appear at the start of a line,
 although it may be offset by whitespace.
 
 Note that the Section Sign (`§`) must be followed by exactly one
-horizontal whitespace, followed by a Sectional Code Block Header Name,
-the contents of which are to be included at that particular point in
-the Sectional Code Block referencing it.
+horizontal whitespace, followed by a Sectional Code Block Name, the
+contents of which are to be included at that particular point in the
+Sectional Code Block referencing it.
 
 Note that Sectional Code Blocks can embed other Sectional Code Blocks
 even if they are defined after the current Sectional Code Block.
 
 Finally, note that Sectional Code Blocks can be appended to by creating
 additional Sectional Code Blocks under the same Sectional Code Block
-Header Name but with the additive modifier attached to the end (`+=`).
+Name but with the additive modifier attached to the end (`+=`).
 
 
 Writing Sectional Code Blocks To A File By Path
 -----------------------------------------------
 
-Prepending a forward slash to a Sectional Code Block Header Name tells
-the Finn compiler to expect the Header Name to be the file path at which
-to write the contents of the associated Sectional Code Block.
+Prepending a forward slash to a Sectional Code Block Name tells the Finn
+compiler to expect the Sectional Code Block Name to be the file path at
+which to write the contents of the associated Sectional Code Block.
 
 Let's look at the following code snippet:
 
