@@ -20,6 +20,14 @@ content
 
 Or this:
 
+```finn
+-- Name
+content
+-------
+```
+
+Or this:
+
     ``` Name
     content
     ```
