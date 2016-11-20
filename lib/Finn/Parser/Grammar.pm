@@ -25,8 +25,9 @@ Parses block text first, then re-parses block text for inline text.
 
 =head3 Inline Text
 
-I<Inline text> types cannot be mixed and matched. If something is bold
-it cannot be italic. If something is a date, it can't be underlined.
+In general, I<inline text> types cannot be mixed and matched. If
+something is bold it cannot be italic. If something is a date, it can't
+be underlined.
 
 =over
 =item bold
@@ -41,6 +42,7 @@ it cannot be italic. If something is a date, it can't be underlined.
 =item url
 =item file
 =item reference
+=item sectional-embed-directive
 =back
 
 =head3 Block Text
@@ -51,11 +53,13 @@ I<Block text> may contain I<inline text> types.
 =item comment-text
 =item header-text
 =item paragraph-text
-=item reference-block-text
 =item list-ordered-item-text
 =item list-unordered-item-text
 =item list-todo-item-text
 =item log-message-text
+=item reference-block-text
+=item code-block-text
+=item sectional-code-block-text
 =back
 =end pod
 
@@ -98,6 +102,13 @@ token comment
 }
 
 # end comment }}}
+# gap {{{
+
+proto token gap {*}
+token gap:comment { <.comment> $$ }
+token gap:vertical-space { \v }
+
+# end gap }}}
 # header {{{
 
 token header-text
@@ -135,7 +146,7 @@ token paragraph
 # end paragraph }}}
 # list-ordered-item {{{
 
-# --- numbers {{{
+# --- list-ordered-item-number {{{
 
 token list-ordered-item-number-value
 {
@@ -153,7 +164,7 @@ token list-ordered-item-number
     <list-ordered-item-number-terminator>
 }
 
-# --- end numbers }}}
+# --- end list-ordered-item-number }}}
 
 token list-ordered-item-text-offset(UInt:D $offset)
 {
@@ -262,44 +273,69 @@ token list-unordered-item
 
 # --- checkbox {{{
 
+proto token checkbox-checked-char {*}
+token checkbox-checked-char:sym<x> { <sym> }
+token checkbox-checked-char:sym<o> { <sym> }
+token checkbox-checked-char:sym<v> { <sym> }
+
 token checkbox-checked
 {
-
+    '[' <checkbox-checked-char> ']'
 }
+
+proto token checkbox-etc-char {*}
+token checkbox-etc-char:sym<+> { <sym> }
+token checkbox-etc-char:sym<=> { <sym> }
+token checkbox-etc-char:sym<-> { <sym> }
 
 token checkbox-etc
 {
-
+    '[' <checkbox-etc-char> ']'
 }
+
+proto token checkbox-exception-char {*}
+token checkbox-exception-char:sym<*> { <sym> }
+token checkbox-exception-char:sym<!> { <sym> }
 
 token checkbox-exception
 {
-
+    '[' <checkbox-exception-char> ']'
 }
 
-token checkbox
-{
-
-}
+proto token checkbox {*}
+token checkbox:checked { <checkbox-checked> }
+token checkbox:etc { <checkbox-etc> }
+token checkbox:exception { <checkbox-exception> }
 
 # --- end checkbox }}}
 
+token list-todo-item-text
+{
+    \N+
+}
+
 token list-todo-item
 {
-
+    <checkbox> \h <list-todo-item-text>
 }
 
 # end list-todo-item }}}
 # reference-block {{{
 
-token reference-block-text
+token reference-block-line-text
 {
+    \N+
+}
 
+token reference-block-line
+{
+    ^^ <reference-inline> ':' \h <reference-block-line-text> $$
 }
 
 token reference-block
 {
-
+    <horizontal-rule-hard> \n+
+    <reference-block-line> [ \n+ <reference-block-line> ]*
 }
 
 # end reference-block }}}
@@ -366,15 +402,32 @@ token code-block:dashes
 # end code-block }}}
 # sectional {{{
 
-token sectional-code-block-name-annot-export { '*' }
+token sectional-code-block-name-text-char
+{
+    <+[\w] +[,.¡!¿?\'\"“”‘’()\{\}@\#$%^&`\\]>
+}
+
+proto token sectional-code-block-name-text {*}
+
+token sectional-code-block-name-text:path
+{
+    <file>
+}
+
+token sectional-code-block-name-text:normal
+{
+    <sectional-code-block-name-text-char>+
+    [ \h+ <sectional-code-block-name-text> ]*
+}
+
+token sectional-code-block-name-annot-export
+{
+    '*'
+}
 
 proto token sectional-code-block-name-operative {*}
 token sectional-code-block-name-operative:additive { '+=' }
 token sectional-code-block-name-operative:redefine { ':=' }
-
-proto token sectional-code-block-name-text {*}
-token sectional-code-block-name-text:path { <file> }
-token sectional-code-block-name-text:normal { \N+ }
 
 token sectional-code-block-name
 {
@@ -419,7 +472,7 @@ token sectional-code-block:dashes
 
 token section-sign
 {
-
+    '§'
 }
 
 token sectional-embed-directive
@@ -431,14 +484,24 @@ token sectional-embed-directive
 
 # horizontal-rule {{{
 
+token horizontal-rule-soft-symbol
+{
+    '~'
+}
+
+token horizontal-rule-hard-symbol
+{
+    '*'
+}
+
 token horizontal-rule-soft
 {
-    ^^ '~' ** 6 '~'* $$
+    ^^ <horizontal-rule-soft-symbol> ** 2 <horizontal-rule-soft-symbol>* $$
 }
 
 token horizontal-rule-hard
 {
-    ^^ '*' ** 6 '*'* $$
+    ^^ <horizontal-rule-hard-symbol> ** 2 <horizontal-rule-hard-symbol>* $$
 }
 
 # end horizontal-rule }}}
@@ -688,17 +751,95 @@ token url
 # end url }}}
 # file {{{
 
+proto token file-path-char {*}
+
+token file-path-char:common
+{
+    # anything but linebreaks, whitespace, single-quotes, double-quotes,
+    # fwdslashes, backslashes and control characters (U+0000 to U+001F)
+    <+[\N] -[\h] -[\" \' / \\] -[\x00..\x1F]>
+}
+
+token file-path-char:escape-sequence
+{
+    # backslash followed by a valid escape code, or error
+    \\
+    [
+        <escape>
+
+        ||
+
+        .
+        {
+            die;
+        }
+    ]
+}
+
+# For convenience, some popular characters have a compact escape sequence.
+#
+# \          - whitespace      (U+0020)
+# \b         - backspace       (U+0008)
+# \t         - tab             (U+0009)
+# \n         - linefeed        (U+000A)
+# \f         - form feed       (U+000C)
+# \r         - carriage return (U+000D)
+# \'         - single-quote    (U+0027)
+# \"         - double-quote    (U+0022)
+# \/         - fwdslash        (U+002f)
+# \\         - backslash       (U+005C)
+# \uXXXX     - unicode         (U+XXXX)
+# \UXXXXXXXX - unicode         (U+XXXXXXXX)
+proto token escape {*}
+token escape:sym<whitespace> { \h }
+token escape:sym<b> { <sym> }
+token escape:sym<t> { <sym> }
+token escape:sym<n> { <sym> }
+token escape:sym<f> { <sym> }
+token escape:sym<r> { <sym> }
+token escape:sym<single-quote> { \' }
+token escape:sym<double-quote> { \" }
+token escape:sym<fwdslash> { '/' }
+token escape:sym<backslash> { \\ }
+token escape:sym<u> { <sym> <hex> ** 4 }
+token escape:sym<U> { <sym> <hex> ** 8 }
+
+token hex
+{
+    <[0..9A..F]>
+}
+
+token file-path-absolute
+{
+    '/' <file-path-char>+ <file-path-absolute>*
+}
+
 token file
 {
-
+    'file://'?
+    [
+        | '~'? <file-path-absolute>
+        | '~'
+        | '/'
+    ]
 }
 
 # end file }}}
 # reference-inline {{{
 
+token reference-inline-number
+{
+    0
+
+    |
+
+    # Leading zeros are not allowed.
+    <[1..9]> [ \d+ ]?
+}
+
 token reference-inline
 {
-
+    '[' <reference-inline-number> ']'
 }
 
 # end reference-inline }}}
