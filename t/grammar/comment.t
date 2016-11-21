@@ -1,0 +1,44 @@
+use v6;
+use lib 'lib';
+use Finn::Parser::Grammar;
+use Test;
+
+plan 3;
+
+subtest
+{
+    my Str:D $comment = '/* this is a comment */';
+
+    ok Finn::Parser::Grammar.parse($comment, :rule<comment>), 'Parses comment';
+}
+
+subtest
+{
+    my Str:D $comment = q:to/EOF/.trim;
+    /*
+     *
+     * this is a block comment - line 1
+     * this is a block comment - line 2
+     * this is a block comment - line 3
+     *
+     */
+    EOF
+
+    ok Finn::Parser::Grammar.parse($comment, :rule<comment>), 'Parses comment';
+}
+
+subtest
+{
+    my Str:D $comment = q:to/EOF/.trim;
+    /*
+     <!--                             -->
+       this is a block comment - line 1
+       this is a block comment - line 2
+       this is a block comment - line 3
+     <!--                             --> */
+    EOF
+
+    ok Finn::Parser::Grammar.parse($comment, :rule<comment>), 'Parses comment';
+}
+
+# vim: set filetype=perl6 foldmethod=marker foldlevel=0:

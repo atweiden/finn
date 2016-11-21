@@ -38,11 +38,11 @@ be underlined.
 =item time
 =item callout
 =item log-level
-=item code-span
+=item code-inline
 =item url
 =item file
 =item reference
-=item sectional-embed-directive
+=item sectional-inline
 =back
 
 =head3 Block Text
@@ -59,7 +59,7 @@ I<Block text> may contain I<inline text> types.
 =item log-message-text
 =item reference-block-text
 =item code-block-text
-=item sectional-code-block-text
+=item sectional-block-text
 =back
 =end pod
 
@@ -69,14 +69,14 @@ I<Block text> may contain I<inline text> types.
 =head Block Text
 =end pod
 
-# blank {{{
+# blank-line {{{
 
-token blank
+token blank-line
 {
     ^^ \h* $$
 }
 
-# end blank }}}
+# end blank-line }}}
 # comment {{{
 
 token comment-delimiter-opening
@@ -102,13 +102,6 @@ token comment
 }
 
 # end comment }}}
-# gap {{{
-
-proto token gap {*}
-token gap:comment { <.comment> $$ }
-token gap:vertical-space { \v }
-
-# end gap }}}
 # header {{{
 
 token header-text
@@ -136,14 +129,6 @@ token header3
 }
 
 # end header }}}
-# paragraph {{{
-
-token paragraph
-{
-
-}
-
-# end paragraph }}}
 # list-ordered-item {{{
 
 # --- list-ordered-item-number {{{
@@ -302,10 +287,16 @@ token checkbox-exception
     '[' <checkbox-exception-char> ']'
 }
 
+token checkbox-unchecked
+{
+    '[ ]'
+}
+
 proto token checkbox {*}
 token checkbox:checked { <checkbox-checked> }
 token checkbox:etc { <checkbox-etc> }
 token checkbox:exception { <checkbox-exception> }
+token checkbox:unchecked { <checkbox-unchecked> }
 
 # --- end checkbox }}}
 
@@ -366,6 +357,7 @@ token code-block-line-backticks
     # if less than 3 non-newline chars exist, triple backticks are
     # impossible
     #
+    | \N ** 0
     | \N ** 1..2
     | \N ** 3 <!after <code-block-delimiter-backticks>> \N*
 }
@@ -379,6 +371,7 @@ token code-block-line-dashes
     #
     # if less than 2 non-newline chars exist, dashes are impossible
     #
+    | \N ** 0
     | \N ** 1
     | \N ** 2 <!after <code-block-delimiter-dashes>> \N*
 }
@@ -400,87 +393,96 @@ token code-block:dashes
 }
 
 # end code-block }}}
-# sectional {{{
+# sectional-block {{{
 
-token sectional-code-block-name-text-char
+token sectional-block-name-text-char
 {
     <+[\w] +[,.¡!¿?\'\"“”‘’()\{\}@\#$%^&`\\]>
 }
 
-proto token sectional-code-block-name-text {*}
 
-token sectional-code-block-name-text:path
+token sectional-block-name-text-word
+{
+    <sectional-block-name-text-char>+
+}
+
+proto token sectional-block-name-text {*}
+
+token sectional-block-name-text:path
 {
     <file>
 }
 
-token sectional-code-block-name-text:normal
+token sectional-block-name-text:normal
 {
-    <sectional-code-block-name-text-char>+
-    [ \h+ <sectional-code-block-name-text> ]*
+    <+sectional-block-name-text-word -file>
+    [ \h+ <+sectional-block-name-text-word -file> ]*
 }
 
-token sectional-code-block-name-annot-export
+token sectional-block-name-annot-export
 {
     '*'
 }
 
-proto token sectional-code-block-name-operative {*}
-token sectional-code-block-name-operative:additive { '+=' }
-token sectional-code-block-name-operative:redefine { ':=' }
+proto token sectional-block-name-operative {*}
+token sectional-block-name-operative:additive { '+=' }
+token sectional-block-name-operative:redefine { ':=' }
 
-token sectional-code-block-name
+token sectional-block-name
 {
-    <sectional-code-block-name-text>
-    <sectional-code-block-name-annot-export>?
-    [ \h <sectional-code-block-name-operative> ]?
+    <sectional-block-name-text>
+    <sectional-block-name-annot-export>?
+    [ \h <sectional-block-name-operative> ]?
 }
 
-proto token sectional-code-block {*}
+proto token sectional-block {*}
 
-token sectional-code-block:backticks
+token sectional-block:backticks
 {
     ^^
-    <sectional-code-block-delimiter-backticks=code-block-delimiter-backticks>
+    <sectional-block-delimiter-backticks=code-block-delimiter-backticks>
     \h
-    <sectional-code-block-name>
+    <sectional-block-name>
     $$
     \n
 
-    [ ^^ <sectional-code-block-line-backticks=code-block-line-backticks> $$ \n ]*
+    [ ^^ <sectional-block-line-backticks=code-block-line-backticks> $$ \n ]*
 
     ^^
-    <sectional-code-block-delimiter-backticks=code-block-delimiter-backticks>
+    <sectional-block-delimiter-backticks=code-block-delimiter-backticks>
     $$
 }
 
-token sectional-code-block:dashes
+token sectional-block:dashes
 {
     ^^
-    <sectional-code-block-delimiter-dashes=code-block-delimiter-dashes>
+    <sectional-block-delimiter-dashes=code-block-delimiter-dashes>
     \h
-    <sectional-code-block-name>
+    <sectional-block-name>
     $$
     \n
 
-    [ ^^ <sectional-code-block-line-dashes=code-block-line-dashes> $$ \n ]*
+    [ ^^ <sectional-block-line-dashes=code-block-line-dashes> $$ \n ]*
 
     ^^
-    <sectional-code-block-delimiter-dashes=code-block-delimiter-dashes>
+    <sectional-block-delimiter-dashes=code-block-delimiter-dashes>
     $$
 }
 
-token section-sign
+# end sectional-block }}}
+# paragraph {{{
+
+token paragraph-line
 {
-    '§'
+    \N+
 }
 
-token sectional-embed-directive
+token paragraph
 {
-
+    ^^ <paragraph-line> $$ [ \n ^^ <paragraph-line> $$ ]*
 }
 
-# end sectional }}}
+# end paragraph }}}
 
 # horizontal-rule {{{
 
@@ -519,13 +521,16 @@ token bold-delimiter
 
 token bold-text
 {
-    <+[\N] -bold-delimiter>*
+    # a non-whitespace character must come adjacent to bold delimiters
+    <+[\S] -bold-delimiter> <+[\N] -bold-delimiter>*
 }
 
 token bold
 {
     <bold-delimiter>
     <bold-text>
+    # a non-whitespace character must come adjacent to bold delimiters
+    <!after \s>
     <bold-delimiter>
 }
 
@@ -539,13 +544,16 @@ token italic-delimiter
 
 token italic-text
 {
-    <+[\N] -italic-delimiter>*
+    # a non-whitespace character must come adjacent to italic delimiters
+    <+[\S] -italic-delimiter> <+[\N] -italic-delimiter>*
 }
 
 token italic
 {
     <italic-delimiter>
     <italic-text>
+    # a non-whitespace character must come adjacent to italic delimiters
+    <!after \s>
     <italic-delimiter>
 }
 
@@ -559,6 +567,9 @@ token underline-delimiter
 
 token underline-text
 {
+    # a non-whitespace character must come adjacent to underline delimiters
+    <+[\S] -underline-delimiter>
+
     # underline can span multiple lines
     <-underline-delimiter>*
 }
@@ -567,6 +578,8 @@ token underline
 {
     <underline-delimiter>
     <underline-text>
+    # a non-whitespace character must come adjacent to underline delimiters
+    <!after \s>
     <underline-delimiter>
 }
 
@@ -580,13 +593,16 @@ token strikethrough-delimiter
 
 token strikethrough-text
 {
-    <+[\N] -strikethrough-delimiter>*
+    # a non-whitespace character must come adjacent to strikethrough delimiters
+    <+[\S] -strikethrough-delimiter> <+[\N] -strikethrough-delimiter>*
 }
 
 token strikethrough
 {
     <strikethrough-delimiter>
     <strikethrough-text>
+    # a non-whitespace character must come adjacent to underline delimiters
+    <!after \s>
     <strikethrough-delimiter>
 }
 
@@ -743,9 +759,14 @@ token log-level-error:sym<FATAL> { <sym> }
 # end log-level }}}
 # url {{{
 
+token url-scheme
+{
+    http[s]?
+}
+
 token url
 {
-
+    <url-scheme> '://' \S+
 }
 
 # end url }}}
@@ -757,7 +778,7 @@ token file-path-char:common
 {
     # anything but linebreaks, whitespace, single-quotes, double-quotes,
     # fwdslashes, backslashes and control characters (U+0000 to U+001F)
-    <+[\N] -[\h] -[\" \' / \\] -[\x00..\x1F]>
+    <+[\N] -[\h] -[\' \" / \\] -[\x00..\x1F]>
 }
 
 token file-path-char:escape-sequence
@@ -843,25 +864,71 @@ token reference-inline
 }
 
 # end reference-inline }}}
-# code-span {{{
+# code-inline {{{
 
-token code-span-delimiter
+token code-inline-delimiter
 {
     '`'
 }
 
-token code-span-text
+token code-inline-text
 {
-    <+[\N] -code-span-delimiter>*
+    <+[\N] -code-inline-delimiter>*
 }
 
-token code-span
+token code-inline
 {
-    <code-span-delimiter>
-    <code-span-text>
-    <code-span-delimiter>
+    <code-inline-delimiter>
+    <code-inline-text>
+    <code-inline-delimiter>
 }
 
-# end code-span }}}
+# end code-inline }}}
+# sectional-inline {{{
+
+token section-sign
+{
+    '§'
+}
+
+token sectional-inline-name-text-word
+{
+    <sectional-inline-name-text-char=sectional-block-name-text-char>+
+}
+
+token sectional-inline-name
+{
+    <+sectional-inline-name-text-word -file>
+    [ \h+ <+sectional-inline-name-text-word -file> ]*
+}
+
+proto token sectional-inline-text {*}
+
+token sectional-inline-text:file-only
+{
+    <sectional-inline-file=file>
+}
+
+token sectional-inline-text:reference-only
+{
+    <sectional-inline-reference=reference-inline>
+}
+
+token sectional-inline-text:name-and-file
+{
+    <sectional-inline-name> \h <sectional-inline-file=file>
+}
+
+token sectional-inline-text:name-and-reference
+{
+    <sectional-inline-name> \h <sectional-inline-reference=reference-inline>
+}
+
+token sectional-inline
+{
+    <section-sign> \h <sectional-inline-text>
+}
+
+# end sectional-inline }}}
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:
