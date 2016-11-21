@@ -1,16 +1,16 @@
 Syntax
 ======
 
-Finn is a superset of [vim-journal]'s syntax. The biggest difference
-from [vim-journal] is the concept of a Sectional Code Block, which is a
-modified [vim-journal] code block that receives special treatment from
-the Finn compiler.
+Finn is a superset of [vim-journal]'s syntax. The biggest difference from
+[vim-journal] is the concept of a Sectional Block, which is a modified
+[vim-journal] code block that receives special treatment from the Finn
+compiler.
 
 
-Sectional Code Blocks
----------------------
+Sectional Blocks
+----------------
 
-A basic Sectional Code Block looks like this:
+A basic Sectional Block looks like this:
 
 ```finn
 --- Name
@@ -32,17 +32,17 @@ Or this:
     content
     ```
 
-In the above Sectional Code Blocks, `Name` is the Sectional Code Block
-Name. `content` is the Sectional Code Block Content. The Sectional Code
-Block Delimiters would be the triple dashes or triple backticks.
+In the above Sectional Blocks, `Name` is the Sectional Block
+Name. `content` is the Sectional Block Content. The Sectional Block
+Delimiters would be the triple dashes or triple backticks.
 
-The above Sectional Code Blocks would be privately scoped, i.e. they
-can't be modified or referenced from any other Finn source file. They
-are limited in scope to the Finn source file that they appear in.
+The above Sectional Blocks would be privately scoped, i.e. they can't be
+modified or referenced from any other Finn source file. They are limited
+in scope to the Finn source file that they appear in.
 
-To create an exported Sectional Code Block that can be referenced by copy
+To create an exported Sectional Block that can be referenced by copy
 from other Finn source files, append an asterisk (`*`) to the Sectional
-Code Block Name, like this:
+Block Name, like this:
 
 ```finn
 --- Exported*
@@ -56,21 +56,21 @@ Or, equivalently:
     exported content
     ```
 
-To differentiate Finn Sectional Code Blocks from [vim-journal]'s normal
-unnamed code blocks, exactly one horizontal whitespace must exist between
-the Sectional Code Block Delimiter and the Sectional Code Block Name.
+To differentiate Finn Sectional Blocks from [vim-journal]'s normal unnamed
+code blocks, exactly one horizontal whitespace must exist between the
+Sectional Block Delimiter and the Sectional Block Name.
 
-This is an invalid Sectional Code Block:
+This is an invalid Sectional Block:
 
 ```finn
 ---DON'T DO THIS
-invalid sectional code block content
+invalid sectional block content
 ---
 ```
 
 ```finn
 ---DON'T DO THIS*
-invalid exported sectional code block content
+invalid exported sectional block content
 ---
 ```
 
@@ -83,11 +83,11 @@ my Str $greeting = 'Hello, World';
 ```
 
 
-Embedding Sectional Code Blocks Inside Other Sectional Code Blocks
-------------------------------------------------------------------
+Embedding Sectional Blocks Inside Other Sectional Blocks
+--------------------------------------------------------
 
-Embedding Sectional Code Blocks inside of other Sectional Code Blocks
-looks like this:
+Embedding Sectional Blocks inside of other Sectional Blocks looks
+like this:
 
 ```finn
 --- Cities in Washington
@@ -113,8 +113,8 @@ looks like this:
 ---
 ```
 
-In the above example, the contents of the Sectional Code Block named
-`Cities in Washington` would be as follows:
+In the above example, the contents of the Sectional Block named `Cities
+in Washington` would be as follows:
 
 ```
 - A is for Anacortes.
@@ -127,24 +127,24 @@ Note that the Section Sign (`§`) must appear at the start of a line,
 although it may be offset by whitespace.
 
 Note that the Section Sign (`§`) must be followed by exactly one
-horizontal whitespace, followed by a Sectional Code Block Name, the
-contents of which are to be included at that particular point in the
-Sectional Code Block referencing it.
+horizontal whitespace, followed by a Sectional Block Name, the contents
+of which are to be included at that particular point in the Sectional
+Block referencing it.
 
-Note that Sectional Code Blocks can embed other Sectional Code Blocks
-even if they are defined after the current Sectional Code Block.
+Note that Sectional Blocks can embed other Sectional Blocks even if they
+are defined after the current Sectional Block.
 
-Finally, note that Sectional Code Blocks can be appended to by creating
-additional Sectional Code Blocks under the same Sectional Code Block
-Name but with the additive modifier attached to the end (`+=`).
+Finally, note that Sectional Blocks can be appended to by creating
+additional Sectional Blocks under the same Sectional Block Name but with
+the additive modifier attached to the end (`+=`).
 
 
-Writing Sectional Code Blocks To A File By Path
------------------------------------------------
+Writing Sectional Blocks To A File By Path
+------------------------------------------
 
-Prepending a forward slash to a Sectional Code Block Name tells the Finn
-compiler to expect the Sectional Code Block Name to be the file path at
-which to write the contents of the associated Sectional Code Block.
+Prepending a forward slash to a Sectional Block Name tells the Finn
+compiler to expect the Sectional Block Name to be the file path at which
+to write the contents of the associated Sectional Block.
 
 Let's look at the following code snippet:
 
@@ -156,8 +156,8 @@ Washington
 ---
 ```
 
-In the above snippet, the contents of the Sectional Code Block
-`/cities/WA.md` will be written to `$PROJECT_ROOT/cities/WA.md`.
+In the above snippet, the contents of the Sectional Block `/cities/WA.md`
+will be written to `$PROJECT_ROOT/cities/WA.md`.
 
 Let's add some cities to `$PROJECT_ROOT/cities/WA.md`:
 
@@ -184,8 +184,19 @@ Functionally, treating the leading `/` in the file path as the
 to create nested directory trees full of Finn source files that may each
 write to an arbitrary file path under the project root.
 
-Sectional Code Blocks with a file path destination are globally scoped,
-and can be added to from any Finn source file being compiled.
+If you wish to write to a file path outside of `$PROJECT_ROOT`, prepend
+the file path with `file://`. The following Sectional Block writes its
+content to `/tmp/app/cache.txt`:
+
+```finn
+--- file:///tmp/app/cmd-history.txt
+cat TODO.md
+---
+```
+
+Sectional Blocks with a file path destination are globally scoped, and
+can be added to from any Finn source file being compiled. Just use the
+append operator.
 
 
 Embedding Finn Source Files Inside Other Finn Source Files
@@ -211,11 +222,11 @@ Or, equivalently:
 [1]: /finn/cities-in-wa/e-through-h.finn
 ```
 
-This syntax works inside and outside of Sectional Code Blocks.
+This syntax works inside and outside of Sectional Blocks.
 
 
-Referencing Exported Sectional Code Blocks
-------------------------------------------
+Referencing Exported Sectional Blocks
+-------------------------------------
 
 ```sh
 cat finn/share/recipes.finn
@@ -232,8 +243,7 @@ Sprinkle in Mrs. Dash, Salt and Pepper.
 ---
 ```
 
-Referencing an exported Sectional Code Block from
-`finn/share/recipes.finn`:
+Referencing an exported Sectional Block from `finn/share/recipes.finn`:
 
 ```finn
 § Egg Recipe [1]
@@ -241,10 +251,16 @@ Referencing an exported Sectional Code Block from
 [1]: /finn/share/recipes.finn
 ```
 
-This syntax works inside and outside of Sectional Code Blocks.
+Or, equivalently:
 
-Compiler error, `Secret Sauce` Sectional Code Block not exported from
-Finn source file:
+```finn
+§ Egg Recipe /finn/share/recipes.finn
+```
+
+This syntax works inside and outside of Sectional Blocks.
+
+Compiler error, `Secret Sauce` Sectional Block not exported from Finn
+source file:
 
 ```finn
 § Secret Sauce [1]
@@ -253,10 +269,10 @@ Finn source file:
 ```
 
 
-Appending Content To Exported Sectional Code Blocks
----------------------------------------------------
+Appending Content To Exported Sectional Blocks
+----------------------------------------------
 
-When adding content to an exported Sectional Code Block with the additive
+When adding content to an exported Sectional Block with the additive
 operator (`+=`), the export symbol (`*`) is optional.
 
 ```finn
