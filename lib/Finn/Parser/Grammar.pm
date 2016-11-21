@@ -66,6 +66,43 @@ I<Block text> may contain I<inline text> types.
 # end p6doc }}}
 
 =begin pod
+=head Document
+=end pod
+
+# document {{{
+
+# --- chunk {{{
+
+proto token chunk {*}
+token chunk:blank-line { <blank-line> }
+token chunk:comment-block { <comment-block> }
+token chunk:sectional-inline { <sectional-inline> }
+token chunk:reference-block { <reference-block> }
+token chunk:horizontal-rule { <horizontal-rule> }
+token chunk:sectional-block { <sectional-block> }
+token chunk:code-block { <code-block> }
+token chunk:header-block { <header-block> }
+token chunk:list-block { <list-block> }
+token chunk:paragraph-block { <paragraph> }
+
+# --- end chunk }}}
+
+token document
+{
+    <chunk> [ \n <chunk> ]*
+}
+
+# end document }}}
+# TOP {{{
+
+token TOP
+{
+    <document>? \n?
+}
+
+# end TOP }}}
+
+=begin pod
 =head Block Text
 =end pod
 
@@ -101,12 +138,18 @@ token comment
     <comment-delimiter-closing>
 }
 
+token comment-block
+{
+    ^^ \h* <comment> \h* $$
+}
+
 # end comment }}}
 # header {{{
 
 token header-text
 {
-    \N+
+    # C<<header-text>> cannot contain leading whitespace
+    \S \N*
 }
 
 token header1
@@ -123,15 +166,51 @@ token header2
 
 token header3
 {
-    # header3 is differentiated from one-line paragraph by a lack of a
-    # period (C<.>) or comma (C<,>) at line-ending
-    ^^ <header-text> <!after <[.,]>> $$
+    ^^
+
+    # text will be construed as C<<list-unordered-item>>, C<<list-todo>>
+    # or C<list-ordered-item> in the presence of a leading
+    # C<<bullet-point>>, C<<checkbox>> or C<<list-ordered-item-number>>,
+    # respectively
+    #
+    # note that this is not the case with C<<header1>> or C<<header2>>
+    <!before <bullet-point> | <checkbox> | <comment> | <list-ordered-item-number>>
+
+    <header-text>
+
+    # C<<header3>> is distinguishable from a one-line paragraph by a
+    # lack of a period (C<.>) or comma (C<,>) at line-ending
+    <!after <[.,]>>
+
+    $$
+}
+
+proto token header {*}
+token header:h1 { <header1> }
+token header:h2 { <header2> }
+token header:h3 { <header3> }
+
+# C<<header-block>> must be separated from other text blocks with a
+# C<<blank-line>>, C<<comment-block>> or C<<horizontal-rule>>, or it
+# must appear at the very top of the document
+proto token header-block {*}
+
+token header-block:top
+{
+    ^ <header>
+}
+
+token header-block:dispersed
+{
+    [ <blank-line> | <comment-block> | <horizontal-rule> ] \n <header>
 }
 
 # end header }}}
-# list-ordered-item {{{
+# list-block {{{
 
-# --- list-ordered-item-number {{{
+# --- list-ordered-item {{{
+
+# --- --- list-ordered-item-number {{{
 
 token list-ordered-item-number-value
 {
@@ -149,7 +228,7 @@ token list-ordered-item-number
     <list-ordered-item-number-terminator>
 }
 
-# --- end list-ordered-item-number }}}
+# --- --- end list-ordered-item-number }}}
 
 token list-ordered-item-text-offset(UInt:D $offset)
 {
@@ -161,7 +240,7 @@ token list-ordered-item-text-offset(UInt:D $offset)
 
 # C<$offset> is the amount of leading whitespace needed for
 # newline-separated adjoining text to be considered a part of this
-# C<list-ordered-item-text>
+# C<<list-ordered-item-text>>
 token list-ordered-item-text(UInt:D $offset)
 {
     \N+
@@ -181,7 +260,7 @@ token list-ordered-item
     :my UInt:D $item-number-chars = $<list-ordered-item-number>.chars;
 
     # C<$offset> is the required amount of leading whitespace for
-    # adjoining text belonging to the same C<list-unordered-item>
+    # adjoining text belonging to the same C<<list-unordered-item>>
     :my UInt:D $offset = $leading-whitespace + $item-number-chars + 1;
 
     [ \h <list-ordered-item-text($offset)> ]?
@@ -189,10 +268,10 @@ token list-ordered-item
     $$
 }
 
-# end list-ordered-item }}}
-# list-unordered-item {{{
+# --- end list-ordered-item }}}
+# --- list-unordered-item {{{
 
-# --- bullet-point {{{
+# --- --- bullet-point {{{
 
 proto token bullet-point {*}
 token bullet-point:sym<-> { <sym> }
@@ -213,7 +292,7 @@ token bullet-point:sym«<=» { <sym> }
 token bullet-point:sym«->» { <sym> }
 token bullet-point:sym«=>» { <sym> }
 
-# --- end bullet-point }}}
+# --- --- end bullet-point }}}
 
 token list-unordered-item-text-offset(UInt:D $offset)
 {
@@ -225,7 +304,7 @@ token list-unordered-item-text-offset(UInt:D $offset)
 
 # C<$offset> is the amount of leading whitespace needed for
 # newline-separated adjoining text to be considered a part of this
-# C<list-unordered-item-text>
+# C<<list-unordered-item-text>>
 token list-unordered-item-text(UInt:D $offset)
 {
     \N+
@@ -245,7 +324,7 @@ token list-unordered-item
     :my UInt:D $bullet-point = $<bullet-point>.chars;
 
     # C<$offset> is the required amount of leading whitespace for
-    # adjoining text belonging to the same C<list-unordered-item>
+    # adjoining text belonging to the same C<<list-unordered-item>>
     :my UInt:D $offset = $leading-whitespace + $bullet-point + 1;
 
     [ \h <list-unordered-item-text($offset)> ]?
@@ -253,10 +332,10 @@ token list-unordered-item
     $$
 }
 
-# end list-unordered-item }}}
-# list-todo-item {{{
+# --- end list-unordered-item }}}
+# --- list-todo-item {{{
 
-# --- checkbox {{{
+# --- --- checkbox {{{
 
 proto token checkbox-checked-char {*}
 token checkbox-checked-char:sym<x> { <sym> }
@@ -298,7 +377,7 @@ token checkbox:etc { <checkbox-etc> }
 token checkbox:exception { <checkbox-exception> }
 token checkbox:unchecked { <checkbox-unchecked> }
 
-# --- end checkbox }}}
+# --- --- end checkbox }}}
 
 token list-todo-item-text
 {
@@ -310,7 +389,15 @@ token list-todo-item
     <checkbox> \h <list-todo-item-text>
 }
 
-# end list-todo-item }}}
+# --- end list-todo-item }}}
+
+token list-block
+{
+    # XXX placeholder
+    .
+}
+
+# end list-block }}}
 # reference-block {{{
 
 token reference-block-line-text
@@ -506,6 +593,10 @@ token horizontal-rule-hard
     ^^ <horizontal-rule-hard-symbol> ** 2 <horizontal-rule-hard-symbol>* $$
 }
 
+proto token horizontal-rule {*}
+token horizontal-rule:soft { <horizontal-rule-soft> }
+token horizontal-rule:hard { <horizontal-rule-hard> }
+
 # end horizontal-rule }}}
 
 =begin pod
@@ -521,7 +612,8 @@ token bold-delimiter
 
 token bold-text
 {
-    # a non-whitespace character must come adjacent to bold delimiters
+    # a non-whitespace character must come adjacent to
+    # C<<bold-delimiter>>s
     <+[\S] -bold-delimiter> <+[\N] -bold-delimiter>*
 }
 
@@ -529,7 +621,8 @@ token bold
 {
     <bold-delimiter>
     <bold-text>
-    # a non-whitespace character must come adjacent to bold delimiters
+    # a non-whitespace character must come adjacent to
+    # C<<bold-delimiter>>s
     <!after \s>
     <bold-delimiter>
 }
@@ -544,7 +637,8 @@ token italic-delimiter
 
 token italic-text
 {
-    # a non-whitespace character must come adjacent to italic delimiters
+    # a non-whitespace character must come adjacent to
+    # C<<italic-delimiter>>s
     <+[\S] -italic-delimiter> <+[\N] -italic-delimiter>*
 }
 
@@ -552,7 +646,8 @@ token italic
 {
     <italic-delimiter>
     <italic-text>
-    # a non-whitespace character must come adjacent to italic delimiters
+    # a non-whitespace character must come adjacent to
+    # C<<italic-delimiter>>s
     <!after \s>
     <italic-delimiter>
 }
@@ -567,7 +662,8 @@ token underline-delimiter
 
 token underline-text
 {
-    # a non-whitespace character must come adjacent to underline delimiters
+    # a non-whitespace character must come adjacent to
+    # C<<underline-delimiter>>s
     <+[\S] -underline-delimiter>
 
     # underline can span multiple lines
@@ -578,7 +674,8 @@ token underline
 {
     <underline-delimiter>
     <underline-text>
-    # a non-whitespace character must come adjacent to underline delimiters
+    # a non-whitespace character must come adjacent to
+    # C<<underline-delimiter>>s
     <!after \s>
     <underline-delimiter>
 }
@@ -593,7 +690,8 @@ token strikethrough-delimiter
 
 token strikethrough-text
 {
-    # a non-whitespace character must come adjacent to strikethrough delimiters
+    # a non-whitespace character must come adjacent to
+    # C<<strikethrough-delimiter>>s
     <+[\S] -strikethrough-delimiter> <+[\N] -strikethrough-delimiter>*
 }
 
@@ -601,7 +699,8 @@ token strikethrough
 {
     <strikethrough-delimiter>
     <strikethrough-text>
-    # a non-whitespace character must come adjacent to underline delimiters
+    # a non-whitespace character must come adjacent to
+    # C<<strikethrough-delimiter>>s
     <!after \s>
     <strikethrough-delimiter>
 }
@@ -714,8 +813,8 @@ token time-minute
 
 token time-second
 {
-    # The grammar element time-second may have the value "60" at the end
-    # of months in which a leap second occurs.
+    # The grammar element C<<time-second>> may have the value "60"
+    # at the end of months in which a leap second occurs.
     <[0..5]> \d | 60
 }
 
@@ -884,6 +983,7 @@ token code-inline
 }
 
 # end code-inline }}}
+
 # sectional-inline {{{
 
 token section-sign
@@ -926,7 +1026,7 @@ token sectional-inline-text:name-and-reference
 
 token sectional-inline
 {
-    <section-sign> \h <sectional-inline-text>
+    ^^ \h* <section-sign> \h <sectional-inline-text> $$
 }
 
 # end sectional-inline }}}
