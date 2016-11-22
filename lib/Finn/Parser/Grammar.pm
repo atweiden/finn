@@ -34,32 +34,32 @@ be underlined.
 =item italic
 =item underline
 =item strikethrough
+=item boolean
 =item date
 =item time
 =item callout
 =item log-level
-=item code-inline
 =item url
 =item file
-=item reference
-=item sectional-inline
+=item reference-inline
+=item code-inline
 =back
 
 =head3 Block Text
 
-I<Block text> may contain I<inline text> types.
+In general, I<block text> may contain certain I<inline text> types.
 
 =over
-=item comment-text
-=item header-text
-=item paragraph-text
-=item list-ordered-item-text
-=item list-unordered-item-text
-=item list-todo-item-text
-=item log-message-text
-=item reference-block-text
-=item code-block-text
-=item sectional-block-text
+=item sectional-inline-block
+=item sectional-block
+=item code-block
+=item reference-block
+=item header-block
+=item list-block
+=item paragraph-block
+=item horizontal-rule
+=item comment-block
+=item blank-line
 =back
 =end pod
 
@@ -74,16 +74,16 @@ I<Block text> may contain I<inline text> types.
 # --- chunk {{{
 
 proto token chunk {*}
-token chunk:blank-line { <blank-line> }
-token chunk:comment-block { <comment-block> }
-token chunk:sectional-inline { <sectional-inline> }
-token chunk:reference-block { <reference-block> }
-token chunk:horizontal-rule { <horizontal-rule> }
+token chunk:sectional-inline-block { <sectional-inline-block> }
 token chunk:sectional-block { <sectional-block> }
 token chunk:code-block { <code-block> }
+token chunk:reference-block { <reference-block> }
 token chunk:header-block { <header-block> }
 token chunk:list-block { <list-block> }
 token chunk:paragraph-block { <paragraph> }
+token chunk:horizontal-rule { <horizontal-rule> }
+token chunk:comment-block { <comment-block> }
+token chunk:blank-line { <blank-line> }
 
 # --- end chunk }}}
 
@@ -148,6 +148,18 @@ token comment-block
 
 token header-text
 {
+    # C<<header-text>> will be construed as C<<list-unordered-item>>,
+    # C<<list-todo>>, C<<list-ordered-item>> or C<<sectional-inline>>
+    # in the presence of a leading C<<bullet-point>>, C<<checkbox>>,
+    # C<<list-ordered-item-number>> or C<<section-sign>> respectively
+    <!before
+        | <bullet-point>
+        | <checkbox>
+        | <comment>
+        | <list-ordered-item-number>
+        | <section-sign>
+    >
+
     # C<<header-text>> cannot contain leading whitespace
     \S \N*
 }
@@ -167,14 +179,6 @@ token header2
 token header3
 {
     ^^
-
-    # text will be construed as C<<list-unordered-item>>, C<<list-todo>>
-    # or C<list-ordered-item> in the presence of a leading
-    # C<<bullet-point>>, C<<checkbox>> or C<<list-ordered-item-number>>,
-    # respectively
-    #
-    # note that this is not the case with C<<header1>> or C<<header2>>
-    <!before <bullet-point> | <checkbox> | <comment> | <list-ordered-item-number>>
 
     <header-text>
 
@@ -557,6 +561,73 @@ token sectional-block:dashes
 }
 
 # end sectional-block }}}
+# sectional-inline-block {{{
+
+# --- sectional-inline {{{
+
+token section-sign
+{
+    '§'
+}
+
+token sectional-inline-name-text-word
+{
+    <sectional-inline-name-text-char=sectional-block-name-text-char>+
+}
+
+token sectional-inline-name
+{
+    <+sectional-inline-name-text-word -file>
+    [ \h+ <+sectional-inline-name-text-word -file> ]*
+}
+
+proto token sectional-inline-text {*}
+
+token sectional-inline-text:file-only
+{
+    <sectional-inline-file=file>
+}
+
+token sectional-inline-text:reference-only
+{
+    <sectional-inline-reference=reference-inline>
+}
+
+token sectional-inline-text:name-and-file
+{
+    <sectional-inline-name> \h <sectional-inline-file=file>
+}
+
+token sectional-inline-text:name-and-reference
+{
+    <sectional-inline-name> \h <sectional-inline-reference=reference-inline>
+}
+
+token sectional-inline
+{
+    ^^ \h* <section-sign> \h <sectional-inline-text> $$
+}
+
+# --- end sectional-inline }}}
+
+# C<<sectional-inline-block>> must be separated from other text blocks
+# with a C<<blank-line>>, C<<comment-block>> or C<<horizontal-rule>>,
+# or it must appear at the very top of the document
+proto token sectional-inline-block {*}
+
+token sectional-inline-block:top
+{
+    ^ <sectional-inline>
+    [ \n <sectional-inline> ]*
+}
+
+token sectional-inline-block:dispersed
+{
+    [ <blank-line> | <comment-block> | <horizontal-rule> ]
+    [ \n <sectional-inline> ]+
+}
+
+# end sectional-inline-block }}}
 # paragraph {{{
 
 token paragraph-line
@@ -983,52 +1054,5 @@ token code-inline
 }
 
 # end code-inline }}}
-
-# sectional-inline {{{
-
-token section-sign
-{
-    '§'
-}
-
-token sectional-inline-name-text-word
-{
-    <sectional-inline-name-text-char=sectional-block-name-text-char>+
-}
-
-token sectional-inline-name
-{
-    <+sectional-inline-name-text-word -file>
-    [ \h+ <+sectional-inline-name-text-word -file> ]*
-}
-
-proto token sectional-inline-text {*}
-
-token sectional-inline-text:file-only
-{
-    <sectional-inline-file=file>
-}
-
-token sectional-inline-text:reference-only
-{
-    <sectional-inline-reference=reference-inline>
-}
-
-token sectional-inline-text:name-and-file
-{
-    <sectional-inline-name> \h <sectional-inline-file=file>
-}
-
-token sectional-inline-text:name-and-reference
-{
-    <sectional-inline-name> \h <sectional-inline-reference=reference-inline>
-}
-
-token sectional-inline
-{
-    ^^ \h* <section-sign> \h <sectional-inline-text> $$
-}
-
-# end sectional-inline }}}
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:
