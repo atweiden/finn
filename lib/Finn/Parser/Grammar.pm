@@ -488,7 +488,7 @@ token code-block:dashes
 
 token sectional-block-name-text-char
 {
-    <+[\w] +[,.¡!¿?\'\"“”‘’()\{\}@\#$%^&`\\]>
+    <+[\w] +[,.¡!¿?\'\"“”‘’@\#$%^&`\\]>
 }
 
 
