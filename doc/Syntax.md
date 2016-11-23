@@ -238,7 +238,7 @@ loop
 
 If you wish to write to a file path outside of `$PROJECT_ROOT`, prepend
 the file path with `file://`. The following Sectional Block writes its
-content to `/tmp/app/cache.txt`:
+content to `/tmp/app/cmd-history.txt`:
 
 ```finn
 --- file:///tmp/app/cmd-history.txt
