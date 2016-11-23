@@ -271,10 +271,7 @@ Blocks. However, if it appears outside of a Sectional Block, it must:
 Sectional Blocks can be appended to by creating additional Sectional
 Blocks under the same Sectional Block Name but with the *additive
 operator* attached to the end (`+=`). Additive operators must be separated
-from the Sectional Block Name by a single horizontal whitespace. Only
-privately scoped or globally scoped Sectional Blocks can be appended to.
-Exported Sectional Blocks can be referenced by copy in a new Sectional
-Block, which can then be appended to.
+from the Sectional Block Name by a single horizontal whitespace.
 
 Example:
 
@@ -317,12 +314,16 @@ named `Cities in Washington` would be as follows:
 - D is for Davenport.
 ```
 
+Exported Sectional Blocks can only be appended to within the same file
+in which they are originally declared. From other files, it is possible
+to reference exported Sectional Blocks by copy in a new Sectional Block,
+and that new Sectional Block can then be appended to.
+
 #### Appending Content To Exported Sectional Blocks
 
 When adding content to an exported Sectional Block with the additive
-operator (`+=`), the export symbol (`*`) is optional.
-
-Example:
+operator (`+=`) from within the same file that the exported Sectional
+Block is first declared, the export symbol (`*`) is optional. Example:
 
 ```finn
 --- Florence*
@@ -354,11 +355,8 @@ Even more about Florence.
 
 Sectional Blocks can be redefined by creating additional Sectional Blocks
 under the same Sectional Block Name but with the *redefine operator*
-attached to the end (`:=`). Redefine operators must be separated
-from the Sectional Block Name by a single horizontal whitespace. Only
-privately scoped or globally scoped Sectional Blocks can be redefined.
-Exported Sectional Blocks can be referenced by copy in a new Sectional
-Block, which can then be redefined.
+attached to the end (`:=`). Redefine operators must be separated from
+the Sectional Block Name by a single horizontal whitespace.
 
 Example:
 
@@ -374,6 +372,11 @@ Example:
 
 In the above example, the `Materials` Sectional Block would contain the
 text `- Glass`.
+
+Exported Sectional Blocks can only be redefined within the same file in
+which they are originally declared. From other files, it is possible to
+reference exported Sectional Blocks by copy in a new Sectional Block,
+and that new Sectional Block can then be appended to.
 
 
 ## Writing Sectional Blocks To A File By Path
