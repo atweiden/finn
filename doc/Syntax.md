@@ -1,5 +1,4 @@
-Syntax
-======
+# Syntax
 
 Finn is a superset of [vim-journal]'s syntax. The biggest difference from
 [vim-journal] is the concept of a Sectional Block, which is a modified
@@ -7,15 +6,14 @@ Finn is a superset of [vim-journal]'s syntax. The biggest difference from
 compiler.
 
 
-Sectional Blocks
-----------------
+## Sectional Blocks
 
 Sectional Blocks are for all intents and purposes the same as regular
 code blocks, but with three key differences.
 
-The first key difference is that Sectional Blocks are parsed for
-Sectional Inline directives. Sectional Inline directives are like *include
-directives* in Haml and other HTML templating languages.
+The first key difference is that Sectional Blocks are parsed for Sectional
+Inlines. Sectional Inlines are essentially the Finn version of *include
+directives* found in Haml and other HTML templating languages.
 
 The second key difference is that Sectional Blocks can be added to
 and modified by name after being declared, much like variables in a
@@ -24,7 +22,8 @@ file in which they're declared, or they can be exported and referenced
 outside of the file in which they're declared.
 
 The third key difference is that Sectional Blocks, if specially marked,
-generate files on-disk from Sectional Block Content.
+generate files on-disk from Sectional Block Content. This enables Finn
+to generate a full codebase from its source files.
 
 A basic Sectional Block looks like this:
 
@@ -99,11 +98,185 @@ my Str $greeting = 'Hello, World';
 ```
 
 
-Embedding Sectional Blocks Inside Other Sectional Blocks with Sectional Inlines
--------------------------------------------------------------------------------
+## Sectional Inlines
 
-Embedding Sectional Blocks inside of other Sectional Blocks using
-Sectional Inlines looks like this:
+*Sectional Inlines* begin with a Section Sign (`§`). The Section Sign
+must appear at the start of a line in a Sectional Block, although it
+may be offset by leading whitespace. If it is offset by whitespace,
+the content being embedded will be soft-indented by an equal amount of
+leading whitespace.
+
+The Section Sign must be followed by exactly one horizontal
+whitespace. Sectional Inlines come in two flavors:
+
+1. Intra-file
+2. Inter-file
+
+Depending on the flavor of Sectional Inline, the horizontal whitespace
+following the Section sign must be followed by either a Sectional Block
+Name, a Sectional Block Name plus a file path, or just a file path.
+
+### Intra-file Sectional Inlines
+
+Intra-file Sectional Inlines come in one flavor: *By Sectional Block
+Name*. This type of Sectional Inline can only appear within a Sectional
+Block.
+
+#### Intra-file By Sectional Block Name
+
+This flavor of Sectional Inline embeds a Sectional Block that appears
+within the same file of the Sectional Inline by referencing a target
+Sectional Block Name. This target Sectional Block may appear either
+above or below the Sectional Inline, so long as it's in the same file.
+
+Example:
+
+```finn
+--- Cities By State
+§ Cities in Washington
+---
+
+--- Cities in Washington
+- A is for Anacortes.
+- B is for Bellingham.
+- C is for Centralia.
+- D is for Davenport.
+---
+```
+
+### Inter-file Sectional Inlines
+
+Inter-file Sectional Inlines come in two flavors: *By Sectional Block
+Name*, and *By File Path*.
+
+#### Inter-file By Sectional Block Name
+
+In this flavor of Inter-file Sectional Inline, an exported Sectional
+Block (its Sectional Block Name having an asterisk `*` appended to it)
+from a different Finn source file is referenced by its Sectional Block
+Name. Given:
+
+    $ cat finn/cities-in-ca/a-through-c.finn
+    ``` Cities Beginning with the Letter A*
+    - A is for Anaheim.
+    ```
+
+    ``` Cities Beginning with the Letter B*
+    - B is for Berkeley.
+    ```
+
+    ``` Cities Beginning with the Letter C*
+    - C is for Crescent City.
+    ```
+
+The following Finn source code will render `- A is for Anaheim.`:
+
+```finn
+§ Cities Beginning with the Letter A /finn/cities-in-ca/a-through-f.finn
+```
+
+Or, equivalently:
+
+```finn
+§ Cities Beginning with the Letter A [1]
+
+
+******************************************************************************
+
+[1]: /finn/cities-in-ca/a-through-f.finn
+```
+
+Another example:
+
+```sh
+cat finn/share/recipes.finn
+--- Egg Recipe*
+Put eggs in skillet. Cook.
+---
+
+--- Bacon Recipe*
+Lay bacon on baking pan. Bake.
+---
+
+--- Secret Sauce
+Sprinkle in Mrs. Dash, Salt and Pepper.
+---
+```
+
+To reference an exported Sectional Block from `finn/share/recipes.finn`:
+
+```finn
+§ Egg Recipe [1]
+
+
+******************************************************************************
+
+[1]: /finn/share/recipes.finn
+```
+
+Or, equivalently:
+
+```finn
+§ Egg Recipe /finn/share/recipes.finn
+```
+
+Compiler error, `Secret Sauce` Sectional Block not exported from Finn
+source file:
+
+```finn
+§ Secret Sauce /finn/share/recipes.finn
+```
+
+This type of Sectional Inline can appear inside and outside of Sectional
+Blocks. However, if it appears outside of a Sectional Block, it must:
+
+- appear at the very top of the Finn source file, or
+- appear following a blank line, horizontal rule, or comment block
+- appear as part of a consecutive series of Sectional Inlines separated
+  by newline
+
+#### Inter-file By File Path
+
+In this flavor of Inter-file Sectional Inline, the contents of an
+entire file referenced by path are embedded.
+
+```finn
+§ /finn/cities-in-ca/a-through-f.finn
+```
+
+Or, equivalently:
+
+```finn
+§ [1]
+
+
+******************************************************************************
+
+[1]: /finn/cities-in-ca/a-through-f.finn
+```
+
+This type of Sectional Inline can appear inside and outside of Sectional
+Blocks. However, if it appears outside of a Sectional Block, it must:
+
+- appear at the very top of the Finn source file, or
+- appear following a blank line, horizontal rule, or comment block
+- appear as part of a consecutive series of Sectional Inlines separated
+  by newline
+
+
+## Sectional Block Operators
+
+### The Additive Operator
+
+Sectional Blocks can be appended to by creating additional Sectional
+Blocks under the same Sectional Block Name but with the *additive
+operator* attached to the end (`+=`). Additive operators must be separated
+from the Sectional Block Name by a single horizontal whitespace. Only
+privately scoped or globally scoped Sectional Blocks can be appended to.
+Exported Sectional Blocks can be referenced by copy in a new Sectional
+Block, which can then be appended to.
+
+Example:
 
 ```finn
 --- Cities in Washington
@@ -123,14 +296,19 @@ Sectional Inlines looks like this:
 --- C
 - C is for Centralia.
 ---
+```
 
+We can add to the `Cities in Washington` Sectional Block using the
+*additive operator*:
+
+```finn
 --- Cities in Washington +=
 - D is for Davenport.
 ---
 ```
 
-In the above example, the contents of the Sectional Block named `Cities
-in Washington` would be as follows:
+After using the *additive operator*, the contents of the Sectional Block
+named `Cities in Washington` would be as follows:
 
 ```
 - A is for Anacortes.
@@ -139,26 +317,66 @@ in Washington` would be as follows:
 - D is for Davenport.
 ```
 
-For *Sectional Inlines*, note that the Section Sign (`§`) must appear at
-the start of a line in a Sectional Block, although it may be offset by
-whitespace. The Section Sign must be followed by exactly one horizontal
-whitespace, followed by a Sectional Block Name, the contents of which
-are to be included at that particular point in the Sectional Block
-referencing it.
+#### Appending Content To Exported Sectional Blocks
 
-Note that Sectional Inlines can reference Sectional Blocks by name for
-embedding even if the corresponding Sectional Blocks are defined after
-the current Sectional Block.
+When adding content to an exported Sectional Block with the additive
+operator (`+=`), the export symbol (`*`) is optional.
 
-Finally, note that Sectional Blocks can be appended to by creating
-additional Sectional Blocks under the same Sectional Block Name but with
-the additive operator attached to the end (`+=`). Additive operators
-must be separated from the Sectional Block Name by a single horizontal
-whitespace.
+Example:
+
+```finn
+--- Florence*
+About Florence, Italy
+
+---
+
+--- Florence +=
+More about Florence.
+---
+
+--- Florence* +=
+
+Even more about Florence.
+---
+```
+
+Results in:
+
+```markdown
+About Florence, Italy
+
+More about Florence.
+
+Even more about Florence.
+```
+
+### The Redefine Operator
+
+Sectional Blocks can be redefined by creating additional Sectional Blocks
+under the same Sectional Block Name but with the *redefine operator*
+attached to the end (`:=`). Redefine operators must be separated
+from the Sectional Block Name by a single horizontal whitespace. Only
+privately scoped or globally scoped Sectional Blocks can be redefined.
+Exported Sectional Blocks can be referenced by copy in a new Sectional
+Block, which can then be redefined.
+
+Example:
+
+```finn
+--- Materials
+- Plastic
+---
+
+--- Materials :=
+- Glass
+---
+```
+
+In the above example, the `Materials` Sectional Block would contain the
+text `- Glass`.
 
 
-Writing Sectional Blocks To A File By Path
-------------------------------------------
+## Writing Sectional Blocks To A File By Path
 
 Prepending a forward slash to a Sectional Block Name tells the Finn
 compiler to expect the Sectional Block Name to be the file path at which
@@ -255,132 +473,8 @@ set nocompatible
 ```
 
 Sectional Blocks with a file path destination are globally scoped, and
-can be added to from any Finn source file being compiled. Just use the
-additive operator (`+=`).
-
-
-Embedding External Source Files Inside Finn Source Files
---------------------------------------------------------
-
-To include an external source file in its entirety inside of a Finn
-source file, use a Sectional Inline that is unprefaced by a Sectional
-Block Name qualifier:
-
-```sh
-$ cat finn/cities-in-wa/e-through-h.finn
-- E is for Enumclaw.
-- F is for Ferndale.
-- G is for Goldendale.
-- H is for Hoquiam.
-```
-
-```finn
-Here are some more cities in Washington:
-
-§ /finn/cities-in-wa/e-through-h.finn
-```
-
-Or, equivalently:
-
-```finn
-Here are some more cities in Washington:
-
-§ [1]
-
-
-******************************************************************************
-
-[1]: /finn/cities-in-wa/e-through-h.finn
-```
-
-Here we are embedding the contents of `finn/cities-in-wa/e-through-h.finn`
-in its entirety.
-
-This syntax works inside and outside of Sectional Blocks.
-
-
-Referencing Exported Sectional Blocks
--------------------------------------
-
-Use a Sectional Inline prefaced by a Sectional Block Name qualifier to
-embed only the associated Sectional Block Content:
-
-```sh
-cat finn/share/recipes.finn
---- Egg Recipe*
-Put eggs in skillet. Cook.
----
-
---- Bacon Recipe*
-Lay bacon on baking pan. Bake.
----
-
---- Secret Sauce
-Sprinkle in Mrs. Dash, Salt and Pepper.
----
-```
-
-To reference an exported Sectional Block from `finn/share/recipes.finn`:
-
-```finn
-§ Egg Recipe [1]
-
-
-******************************************************************************
-
-[1]: /finn/share/recipes.finn
-```
-
-Or, equivalently:
-
-```finn
-§ Egg Recipe /finn/share/recipes.finn
-```
-
-This syntax works inside and outside of Sectional Blocks.
-
-Compiler error, `Secret Sauce` Sectional Block not exported from Finn
-source file:
-
-```finn
-§ Secret Sauce [1]
-
-
-******************************************************************************
-
-[1]: /finn/share/recipes.finn
-```
-
-
-Appending Content To Exported Sectional Blocks
-----------------------------------------------
-
-When adding content to an exported Sectional Block with the additive
-operator (`+=`), the export symbol (`*`) is optional.
-
-```finn
---- Florence*
-About Florence, Italy
-
----
-
---- Florence +=
-More about Florence.
----
-
---- Florence* +=
-
-Even more about Florence.
----
-```
-
-```markdown
-About Florence, Italy
-
-More about Florence.
-
-Even more about Florence.
-```
+can be added to or redefined from any Finn source file being compiled
+using the additive or redefine operators (`+=`, `:=` respectively).
 
 
 [vim-journal]: https://github.com/junegunn/vim-journal
