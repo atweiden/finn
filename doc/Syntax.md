@@ -147,7 +147,7 @@ are to be included at that particular point in the Sectional Block
 referencing it.
 
 Note that Sectional Inlines can reference Sectional Blocks by name for
-embedding even if the corresponding Sectional Blcoks are defined after
+embedding even if the corresponding Sectional Blocks are defined after
 the current Sectional Block.
 
 Finally, note that Sectional Blocks can be appended to by creating
@@ -162,7 +162,7 @@ Writing Sectional Blocks To A File By Path
 
 Prepending a forward slash to a Sectional Block Name tells the Finn
 compiler to expect the Sectional Block Name to be the file path at which
-to write the contents of the associated Sectional Block.
+to write the contents of the parsed Sectional Block Content.
 
 Let's look at the following code snippet:
 
@@ -227,8 +227,7 @@ last if $input eq 'green';
 
 The resulting `green.pl6` file:
 
-```sh
-$ cat green.pl6
+```perl6
 loop
 {
     my Str:D $input = $*IN.get;
@@ -263,6 +262,9 @@ additive operator (`+=`).
 Embedding External Source Files Inside Finn Source Files
 --------------------------------------------------------
 
+To include an external source file in its entirety inside of a Finn
+source file, use a Sectional Inline outside of a Sectional Block:
+
 ```sh
 $ cat finn/cities-in-wa/e-through-h.finn
 - E is for Enumclaw.
@@ -272,18 +274,23 @@ $ cat finn/cities-in-wa/e-through-h.finn
 ```
 
 ```finn
+Here are some more cities in Washington:
+
 § /finn/cities-in-wa/e-through-h.finn
 ```
 
 Or, equivalently:
 
 ```finn
+Here are some more cities in Washington:
+
 § [1]
+
+
+******************************************************************************
 
 [1]: /finn/cities-in-wa/e-through-h.finn
 ```
-
-This syntax works inside and outside of Sectional Blocks.
 
 
 Referencing Exported Sectional Blocks
@@ -309,6 +316,9 @@ Referencing an exported Sectional Block from `finn/share/recipes.finn`:
 ```finn
 § Egg Recipe [1]
 
+
+******************************************************************************
+
 [1]: /finn/share/recipes.finn
 ```
 
@@ -325,6 +335,9 @@ source file:
 
 ```finn
 § Secret Sauce [1]
+
+
+******************************************************************************
 
 [1]: /finn/share/recipes.finn
 ```
