@@ -263,7 +263,8 @@ Embedding External Source Files Inside Finn Source Files
 --------------------------------------------------------
 
 To include an external source file in its entirety inside of a Finn
-source file, use a Sectional Inline outside of a Sectional Block:
+source file, use a Sectional Inline that is unprefaced by a Sectional
+Block Name qualifier:
 
 ```sh
 $ cat finn/cities-in-wa/e-through-h.finn
@@ -292,9 +293,17 @@ Here are some more cities in Washington:
 [1]: /finn/cities-in-wa/e-through-h.finn
 ```
 
+Here we are embedding the contents of `finn/cities-in-wa/e-through-h.finn`
+in its entirety.
+
+This syntax works inside and outside of Sectional Blocks.
+
 
 Referencing Exported Sectional Blocks
 -------------------------------------
+
+Use a Sectional Inline prefaced by a Sectional Block Name qualifier to
+embed only the associated Sectional Block Content:
 
 ```sh
 cat finn/share/recipes.finn
@@ -311,7 +320,7 @@ Sprinkle in Mrs. Dash, Salt and Pepper.
 ---
 ```
 
-Referencing an exported Sectional Block from `finn/share/recipes.finn`:
+To reference an exported Sectional Block from `finn/share/recipes.finn`:
 
 ```finn
 § Egg Recipe [1]
