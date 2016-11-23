@@ -515,15 +515,15 @@ token sectional-block-name-annot-export
     '*'
 }
 
-proto token sectional-block-name-operative {*}
-token sectional-block-name-operative:additive { '+=' }
-token sectional-block-name-operative:redefine { ':=' }
+proto token sectional-block-name-operator {*}
+token sectional-block-name-operator:additive { '+=' }
+token sectional-block-name-operator:redefine { ':=' }
 
 token sectional-block-name
 {
     <sectional-block-name-text>
     <sectional-block-name-annot-export>?
-    [ \h <sectional-block-name-operative> ]?
+    [ \h <sectional-block-name-operator> ]?
 }
 
 proto token sectional-block {*}

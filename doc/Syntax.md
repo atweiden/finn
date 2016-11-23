@@ -17,9 +17,9 @@ directives* found in Haml and other HTML templating languages.
 
 The second key difference is that Sectional Blocks can be added to
 and modified by name after being declared, much like variables in a
-programming language. Sectional Blocks can be privately scoped to the
-file in which they're declared, or they can be exported and referenced
-outside of the file in which they're declared.
+programming language. Sectional Blocks are by default privately scoped
+to the file in which they're declared, but they can be exported and
+then referenced outside of the file in which they're declared.
 
 The third key difference is that Sectional Blocks, if specially marked,
 generate files on-disk from Sectional Block Content. This enables Finn
@@ -231,7 +231,7 @@ This type of Sectional Inline can appear inside and outside of Sectional
 Blocks. However, if it appears outside of a Sectional Block, it must:
 
 - appear at the very top of the Finn source file, or
-- appear following a blank line, horizontal rule, or comment block
+- appear following a blank line, horizontal rule or comment block, or
 - appear as part of a consecutive series of Sectional Inlines separated
   by newline
 
@@ -259,7 +259,7 @@ This type of Sectional Inline can appear inside and outside of Sectional
 Blocks. However, if it appears outside of a Sectional Block, it must:
 
 - appear at the very top of the Finn source file, or
-- appear following a blank line, horizontal rule, or comment block
+- appear following a blank line, horizontal rule or comment block, or
 - appear as part of a consecutive series of Sectional Inlines separated
   by newline
 
