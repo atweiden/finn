@@ -212,131 +212,6 @@ token header-block:dispersed
 # end header }}}
 # list-block {{{
 
-# --- list-ordered-item {{{
-
-# --- --- list-ordered-item-number {{{
-
-token list-ordered-item-number-value
-{
-    \d+
-}
-
-proto token list-ordered-item-number-terminator {*}
-token list-ordered-item-number-terminator:sym<.> { <sym> }
-token list-ordered-item-number-terminator:sym<:> { <sym> }
-token list-ordered-item-number-terminator:sym<)> { <sym> }
-
-token list-ordered-item-number
-{
-    <list-ordered-item-number-value>
-    <list-ordered-item-number-terminator>
-}
-
-# --- --- end list-ordered-item-number }}}
-
-token list-ordered-item-text-offset(UInt:D $offset)
-{
-    $<leading-whitespace> = \h* {}
-    :my UInt:D $leading-whitespace = $/<leading-whitespace>.chars;
-    <?{ $leading-whitespace == $offset }>
-    \N+
-}
-
-# C<$offset> is the amount of leading whitespace needed for
-# newline-separated adjoining text to be considered a part of this
-# C<<list-ordered-item-text>>
-token list-ordered-item-text(UInt:D $offset)
-{
-    \N+
-
-    # optional additional lines of offset text
-    [ $$ \n ^^ <list-ordered-item-text-offset($offset)> ]*
-}
-
-token list-ordered-item
-{
-    ^^
-
-    $<leading-whitespace> = \h* {}
-    :my UInt:D $leading-whitespace = $/<leading-whitespace>.chars;
-
-    <list-ordered-item-number> {}
-    :my UInt:D $item-number-chars = $<list-ordered-item-number>.chars;
-
-    # C<$offset> is the required amount of leading whitespace for
-    # adjoining text belonging to the same C<<list-unordered-item>>
-    :my UInt:D $offset = $leading-whitespace + $item-number-chars + 1;
-
-    [ \h <list-ordered-item-text($offset)> ]?
-
-    $$
-}
-
-# --- end list-ordered-item }}}
-# --- list-unordered-item {{{
-
-# --- --- bullet-point {{{
-
-proto token bullet-point {*}
-token bullet-point:sym<-> { <sym> }
-token bullet-point:sym<@> { <sym> }
-token bullet-point:sym<#> { <sym> }
-token bullet-point:sym<$> { <sym> }
-token bullet-point:sym<*> { <sym> }
-token bullet-point:sym<:> { <sym> }
-token bullet-point:sym<x> { <sym> }
-token bullet-point:sym<o> { <sym> }
-token bullet-point:sym<+> { <sym> }
-token bullet-point:sym<=> { <sym> }
-token bullet-point:sym<!> { <sym> }
-token bullet-point:sym<~> { <sym> }
-token bullet-point:sym«>» { <sym> }
-token bullet-point:sym«<-» { <sym> }
-token bullet-point:sym«<=» { <sym> }
-token bullet-point:sym«->» { <sym> }
-token bullet-point:sym«=>» { <sym> }
-
-# --- --- end bullet-point }}}
-
-token list-unordered-item-text-offset(UInt:D $offset)
-{
-    $<leading-whitespace> = \h* {}
-    :my UInt:D $leading-whitespace = $/<leading-whitespace>.chars;
-    <?{ $leading-whitespace == $offset }>
-    \N+
-}
-
-# C<$offset> is the amount of leading whitespace needed for
-# newline-separated adjoining text to be considered a part of this
-# C<<list-unordered-item-text>>
-token list-unordered-item-text(UInt:D $offset)
-{
-    \N+
-
-    # optional additional lines of offset text
-    [ $$ \n ^^ <list-unordered-item-text-offset($offset)> ]*
-}
-
-token list-unordered-item
-{
-    ^^
-
-    $<leading-whitespace> = \h* {}
-    :my UInt:D $leading-whitespace = $/<leading-whitespace>.chars;
-
-    <bullet-point> {}
-    :my UInt:D $bullet-point = $<bullet-point>.chars;
-
-    # C<$offset> is the required amount of leading whitespace for
-    # adjoining text belonging to the same C<<list-unordered-item>>
-    :my UInt:D $offset = $leading-whitespace + $bullet-point + 1;
-
-    [ \h <list-unordered-item-text($offset)> ]?
-
-    $$
-}
-
-# --- end list-unordered-item }}}
 # --- list-todo-item {{{
 
 # --- --- checkbox {{{
@@ -390,15 +265,165 @@ token list-todo-item-text
 
 token list-todo-item
 {
-    <checkbox> \h <list-todo-item-text>
+    ^^ \h* <checkbox> \h <list-todo-item-text> $$
 }
 
 # --- end list-todo-item }}}
+# --- list-unordered-item {{{
 
-token list-block
+# --- --- bullet-point {{{
+
+proto token bullet-point {*}
+token bullet-point:sym<-> { <sym> }
+token bullet-point:sym<@> { <sym> }
+token bullet-point:sym<#> { <sym> }
+token bullet-point:sym<$> { <sym> }
+token bullet-point:sym<*> { <sym> }
+token bullet-point:sym<:> { <sym> }
+token bullet-point:sym<x> { <sym> }
+token bullet-point:sym<o> { <sym> }
+token bullet-point:sym<+> { <sym> }
+token bullet-point:sym<=> { <sym> }
+token bullet-point:sym<!> { <sym> }
+token bullet-point:sym<~> { <sym> }
+token bullet-point:sym«>» { <sym> }
+token bullet-point:sym«<-» { <sym> }
+token bullet-point:sym«<=» { <sym> }
+token bullet-point:sym«->» { <sym> }
+token bullet-point:sym«=>» { <sym> }
+
+# --- --- end bullet-point }}}
+
+token list-unordered-item-text-offset(UInt:D $offset)
 {
-    # XXX placeholder
-    .
+    $<leading-whitespace> = \h* {}
+    :my UInt:D $leading-whitespace = $/<leading-whitespace>.chars;
+    <?{ $leading-whitespace == $offset }>
+    <!before
+        | <checkbox>
+        | <list-ordered-item-number>
+        | <bullet-point>
+    >
+    \N+
+}
+
+# C<$offset> is the amount of leading whitespace needed for
+# newline-separated adjoining text to be considered a part of this
+# C<<list-unordered-item-text>>
+token list-unordered-item-text(UInt:D $offset)
+{
+    \N+
+
+    # optional additional lines of offset text
+    [ $$ \n ^^ <list-unordered-item-text-offset($offset)> ]*
+}
+
+token list-unordered-item
+{
+    ^^
+
+    $<leading-whitespace> = \h* {}
+    :my UInt:D $leading-whitespace = $/<leading-whitespace>.chars;
+
+    <bullet-point> {}
+    :my UInt:D $bullet-point = $<bullet-point>.chars;
+
+    # C<$offset> is the required amount of leading whitespace for
+    # adjoining text belonging to the same C<<list-unordered-item>>
+    :my UInt:D $offset = $leading-whitespace + $bullet-point + 1;
+
+    [ \h <list-unordered-item-text($offset)> ]?
+
+    $$
+}
+
+# --- end list-unordered-item }}}
+# --- list-ordered-item {{{
+
+# --- --- list-ordered-item-number {{{
+
+token list-ordered-item-number-value
+{
+    \d+
+}
+
+proto token list-ordered-item-number-terminator {*}
+token list-ordered-item-number-terminator:sym<.> { <sym> }
+token list-ordered-item-number-terminator:sym<:> { <sym> }
+token list-ordered-item-number-terminator:sym<)> { <sym> }
+
+token list-ordered-item-number
+{
+    <list-ordered-item-number-value>
+    <list-ordered-item-number-terminator>
+}
+
+# --- --- end list-ordered-item-number }}}
+
+token list-ordered-item-text-offset(UInt:D $offset)
+{
+    $<leading-whitespace> = \h* {}
+    :my UInt:D $leading-whitespace = $/<leading-whitespace>.chars;
+    <?{ $leading-whitespace == $offset }>
+    <!before
+        | <checkbox>
+        | <list-ordered-item-number>
+        | <bullet-point>
+    >
+    \N+
+}
+
+# C<$offset> is the amount of leading whitespace needed for
+# newline-separated adjoining text to be considered a part of this
+# C<<list-ordered-item-text>>
+token list-ordered-item-text(UInt:D $offset)
+{
+    \N+
+
+    # optional additional lines of offset text
+    [ $$ \n ^^ <list-ordered-item-text-offset($offset)> ]*
+}
+
+token list-ordered-item
+{
+    ^^
+
+    $<leading-whitespace> = \h* {}
+    :my UInt:D $leading-whitespace = $/<leading-whitespace>.chars;
+
+    <list-ordered-item-number> {}
+    :my UInt:D $item-number-chars = $<list-ordered-item-number>.chars;
+
+    # C<$offset> is the required amount of leading whitespace for
+    # adjoining text belonging to the same C<<list-unordered-item>>
+    :my UInt:D $offset = $leading-whitespace + $item-number-chars + 1;
+
+    [ \h <list-ordered-item-text($offset)> ]?
+
+    $$
+}
+
+# --- end list-ordered-item }}}
+
+proto token list-item {*}
+token list-item:unordered { <list-unordered-item> }
+token list-item:todo { <list-todo-item> }
+token list-item:ordered { <list-ordered-item> }
+
+# C<<list-block>> must be separated from other text blocks with a
+# C<<blank-line>>, C<<comment-block>> or C<<horizontal-rule>>, or it
+# must appear at the very top of the document
+proto token list-block {*}
+
+token list-block:top
+{
+    ^ <list-item> [ \n <list-item> ]*
+}
+
+token list-block:dispersed
+{
+    [ <blank-line> | <comment-block> | <horizontal-rule> ]
+    [ \n <list-item> ]+
 }
 
 # end list-block }}}
