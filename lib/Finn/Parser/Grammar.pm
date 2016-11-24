@@ -300,9 +300,12 @@ token list-unordered-item-text-offset(UInt:D $offset)
     :my UInt:D $leading-whitespace = $/<leading-whitespace>.chars;
     <?{ $leading-whitespace == $offset }>
     <!before
+        [
         | <checkbox>
         | <list-ordered-item-number>
         | <bullet-point>
+        ]
+        \h
     >
     \N+
 }
@@ -366,9 +369,12 @@ token list-ordered-item-text-offset(UInt:D $offset)
     :my UInt:D $leading-whitespace = $/<leading-whitespace>.chars;
     <?{ $leading-whitespace == $offset }>
     <!before
+        [
         | <checkbox>
         | <list-ordered-item-number>
         | <bullet-point>
+        ]
+        \h
     >
     \N+
 }
@@ -608,6 +614,16 @@ token sectional-inline-name
 
 proto token sectional-inline-text {*}
 
+token sectional-inline-text:name-and-file
+{
+    <sectional-inline-name> \h <sectional-inline-file=file>
+}
+
+token sectional-inline-text:name-and-reference
+{
+    <sectional-inline-name> \h <sectional-inline-reference=reference-inline>
+}
+
 token sectional-inline-text:file-only
 {
     <sectional-inline-file=file>
@@ -618,14 +634,9 @@ token sectional-inline-text:reference-only
     <sectional-inline-reference=reference-inline>
 }
 
-token sectional-inline-text:name-and-file
+token sectional-inline-text:name-only
 {
-    <sectional-inline-name> \h <sectional-inline-file=file>
-}
-
-token sectional-inline-text:name-and-reference
-{
-    <sectional-inline-name> \h <sectional-inline-reference=reference-inline>
+    <sectional-inline-name>
 }
 
 token sectional-inline
