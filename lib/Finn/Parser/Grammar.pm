@@ -668,12 +668,12 @@ token sectional-inline-block:dispersed
 
 token paragraph-line
 {
-    \N+
+    ^^ \N+ $$
 }
 
 token paragraph
 {
-    ^^ <paragraph-line> $$ [ \n ^^ <paragraph-line> $$ ]*
+    <paragraph-line> [ \n <paragraph-line> ]*
 }
 
 # end paragraph }}}
