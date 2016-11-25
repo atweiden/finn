@@ -148,20 +148,20 @@ token comment-block
 
 token header-text
 {
+    # C<<header-text>> cannot contain leading whitespace
+    #
     # C<<header-text>> will be construed as C<<list-unordered-item>>,
     # C<<list-todo>>, C<<list-ordered-item>> or C<<sectional-inline>>
     # in the presence of a leading C<<bullet-point>>, C<<checkbox>>,
     # C<<list-ordered-item-number>> or C<<section-sign>> respectively
-    <!before
-        | <bullet-point>
-        | <checkbox>
-        | <comment>
-        | <list-ordered-item-number>
-        | <section-sign>
-    >
+    <+[\S]
+     -bullet-point
+     -checkbox
+     -comment
+     -list-ordered-item-number
+     -section-sign>
 
-    # C<<header-text>> cannot contain leading whitespace
-    \S \N*
+    \N*
 }
 
 token header1
@@ -187,8 +187,6 @@ token header3
     <!after <[.,]>>
 
     $$
-
-    <!before \n <paragraph-line>>
 }
 
 proto token header {*}
