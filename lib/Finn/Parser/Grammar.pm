@@ -663,12 +663,16 @@ token word
 token paragraph-line
 {
     ^^
+
+    \h*
+
     <!before
         | <code-block-delimiter-backticks>
         | <code-block-delimiter-dashes>
     >
-    <word>
-    [ \h+ <word> ]*
+
+    <word> [ \h+ <word> ]*
+
     $$
 }
 
