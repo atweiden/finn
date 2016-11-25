@@ -187,6 +187,8 @@ token header3
     <!after <[.,]>>
 
     $$
+
+    <!before \n <paragraph-line>>
 }
 
 proto token header {*}
@@ -469,33 +471,14 @@ token code-block-language
     \w+
 }
 
-token code-block-line-backticks
+token code-block-closing-delimiter-backticks
 {
-    # 3 non-newline chars are the minimum threshold for triple backticks
-    #
-    # if >= 3 non-newline chars, make sure we haven't seen a closing
-    # triple backtick delimiter
-    #
-    # if less than 3 non-newline chars exist, triple backticks are
-    # impossible
-    #
-    | \N ** 0
-    | \N ** 1..2
-    | \N ** 3 <!after <code-block-delimiter-backticks>> \N*
+    ^^ \h* <code-block-delimiter-backticks> $$
 }
 
-token code-block-line-dashes
+token code-block-closing-delimiter-dashes
 {
-    # 2 non-newline chars are the minimum threshold for dashes
-    #
-    # if >= 2 non-newline chars, make sure we haven't seen a closing
-    # dashes delimiter
-    #
-    # if less than 2 non-newline chars exist, dashes are impossible
-    #
-    | \N ** 0
-    | \N ** 1
-    | \N ** 2 <!after <code-block-delimiter-dashes>> \N*
+    ^^ \h* <code-block-delimiter-dashes> $$
 }
 
 proto token code-block {*}
@@ -503,19 +486,29 @@ proto token code-block {*}
 token code-block:backticks
 {
     ^^ \h* <code-block-delimiter-backticks> <code-block-language>? $$ \n
-    [ ^^ <code-block-line-backticks>? $$ \n ]*
-    ^^ \h* <code-block-delimiter-backticks> $$
+    <-code-block-closing-delimiter-backticks>*
+    <code-block-closing-delimiter-backticks>
 }
 
 token code-block:dashes
 {
     ^^ \h* <code-block-delimiter-dashes> [ <code-block-language> '-'* ]? $$ \n
-    [ ^^ <code-block-line-dashes>? $$ \n ]*
-    ^^ \h* <code-block-delimiter-dashes> $$
+    <-code-block-closing-delimiter-dashes>*
+    <code-block-closing-delimiter-dashes>
 }
 
 # end code-block }}}
 # sectional-block {{{
+
+token sectional-block-delimiter-backticks
+{
+    <.code-block-delimiter-backticks>
+}
+
+token sectional-block-delimiter-dashes
+{
+    <.code-block-delimiter-dashes>
+}
 
 token sectional-block-name-text-char
 {
@@ -557,38 +550,30 @@ token sectional-block-name
     [ \h <sectional-block-name-operator> ]?
 }
 
+token sectional-block-closing-delimiter-backticks
+{
+    <.code-block-closing-delimiter-backticks>
+}
+
+token sectional-block-closing-delimiter-dashes
+{
+    <.code-block-closing-delimiter-dashes>
+}
+
 proto token sectional-block {*}
 
 token sectional-block:backticks
 {
-    ^^
-    <sectional-block-delimiter-backticks=code-block-delimiter-backticks>
-    \h
-    <sectional-block-name>
-    $$
-    \n
-
-    [ ^^ <sectional-block-line-backticks=code-block-line-backticks> $$ \n ]*
-
-    ^^
-    <sectional-block-delimiter-backticks=code-block-delimiter-backticks>
-    $$
+    ^^ <sectional-block-delimiter-backticks> \h <sectional-block-name> $$ \n
+    <-code-block-closing-delimiter-backticks>*
+    ^^ <sectional-block-closing-delimiter-backticks> $$
 }
 
 token sectional-block:dashes
 {
-    ^^
-    <sectional-block-delimiter-dashes=code-block-delimiter-dashes>
-    \h
-    <sectional-block-name>
-    $$
-    \n
-
-    [ ^^ <sectional-block-line-dashes=code-block-line-dashes> $$ \n ]*
-
-    ^^
-    <sectional-block-delimiter-dashes=code-block-delimiter-dashes>
-    $$
+    ^^ <sectional-block-delimiter-dashes> \h <sectional-block-name> $$ \n
+    <-code-block-closing-delimiter-dashes>*
+    ^^ <sectional-block-closing-delimiter-dashes> $$
 }
 
 # end sectional-block }}}
@@ -666,9 +651,25 @@ token sectional-inline-block:dispersed
 # end sectional-inline-block }}}
 # paragraph {{{
 
+# --- word {{{
+
+token word
+{
+    \S+
+}
+
+# --- end word }}}
+
 token paragraph-line
 {
-    ^^ \N+ $$
+    ^^
+    <!before
+        | <code-block-delimiter-backticks>
+        | <code-block-delimiter-dashes>
+    >
+    <word>
+    [ \h+ <word> ]*
+    $$
 }
 
 token paragraph

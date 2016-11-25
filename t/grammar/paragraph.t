@@ -22,12 +22,13 @@ subtest
 subtest
 {
     my Str:D $paragraph = q:to/EOF/.trim;
-    --- -·· ·-·-·- --··-- - ··· -· ··-· ···- ····-
-    ··- - --·- ···- ····· --··· ----· -·- ·· ·-- --
-    --·- -·-- --·· --··· - ·-- - ·-- ··-· ···- -·-- ·-
-    ···- ·-·-·- ··--·· --- -·-· ··-· -··- ·- --- --
-    ··· --·- -·-- ··--- ···· ·-·· ···-- ·-· ·· -·
-    --- ···-- ····-
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. In accumsan
+    et velit vel egestas. Cum sociis natoque penatibus et magnis dis
+    parturient montes, nascetur ridiculus mus. Donec id fringilla libero,
+    eu bibendum risus. Cras non blandit risus. Phasellus sed velit sed
+    dolor tempus interdum. Donec tincidunt bibendum diam nec porta. Duis
+    est ipsum, porttitor et odio eu, eleifend cursus neque. Ut id egestas
+    orci, id aliquam risus.
     EOF
 
     ok
