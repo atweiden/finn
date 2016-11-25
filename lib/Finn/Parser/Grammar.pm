@@ -471,6 +471,16 @@ token code-block-language
     \w+
 }
 
+token code-block-content-backticks
+{
+    <-code-block-closing-delimiter-backticks>*
+}
+
+token code-block-content-dashes
+{
+    <-code-block-closing-delimiter-dashes>*
+}
+
 token code-block-closing-delimiter-backticks
 {
     ^^ \h* <code-block-delimiter-backticks> $$
@@ -486,14 +496,14 @@ proto token code-block {*}
 token code-block:backticks
 {
     ^^ \h* <code-block-delimiter-backticks> <code-block-language>? $$ \n
-    <-code-block-closing-delimiter-backticks>*
+    <code-block-content-backticks>
     <code-block-closing-delimiter-backticks>
 }
 
 token code-block:dashes
 {
     ^^ \h* <code-block-delimiter-dashes> [ <code-block-language> '-'* ]? $$ \n
-    <-code-block-closing-delimiter-dashes>*
+    <code-block-content-dashes>
     <code-block-closing-delimiter-dashes>
 }
 
@@ -550,6 +560,16 @@ token sectional-block-name
     [ \h <sectional-block-name-operator> ]?
 }
 
+token sectional-block-content-backticks
+{
+    <-code-block-closing-delimiter-backticks>*
+}
+
+token sectional-block-content-dashes
+{
+    <-code-block-closing-delimiter-dashes>*
+}
+
 token sectional-block-closing-delimiter-backticks
 {
     <.code-block-closing-delimiter-backticks>
@@ -565,15 +585,15 @@ proto token sectional-block {*}
 token sectional-block:backticks
 {
     ^^ <sectional-block-delimiter-backticks> \h <sectional-block-name> $$ \n
-    <-code-block-closing-delimiter-backticks>*
-    ^^ <sectional-block-closing-delimiter-backticks> $$
+    <sectional-block-content-backticks>
+    <sectional-block-closing-delimiter-backticks>
 }
 
 token sectional-block:dashes
 {
     ^^ <sectional-block-delimiter-dashes> \h <sectional-block-name> $$ \n
-    <-code-block-closing-delimiter-dashes>*
-    ^^ <sectional-block-closing-delimiter-dashes> $$
+    <sectional-block-content-dashes>
+    <sectional-block-closing-delimiter-dashes>
 }
 
 # end sectional-block }}}
