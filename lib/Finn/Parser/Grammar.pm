@@ -187,6 +187,8 @@ token header3
     <!after <[.,]>>
 
     $$
+
+    <!before \n <paragraph-line>>
 }
 
 proto token header {*}
