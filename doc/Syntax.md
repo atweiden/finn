@@ -114,13 +114,14 @@ whitespace. Sectional Inlines come in two flavors:
 
 Depending on the flavor of Sectional Inline, the horizontal whitespace
 following the Section sign must be followed by either a Sectional Block
-Name, a Sectional Block Name plus a file path, or just a file path.
+Name, a Sectional Block Name plus a file path, or just a file path. An
+*Inline Reference* can take the place of the file path.
 
 ### Intra-file Sectional Inlines
 
-Intra-file Sectional Inlines come in one flavor: *By Sectional Block
-Name*. This type of Sectional Inline can only appear within a Sectional
-Block.
+Intra-file Sectional Inlines come in only one flavor: *By Sectional
+Block Name*. This type of Sectional Inline can only appear within a
+Sectional Block.
 
 #### Intra-file By Sectional Block Name
 
@@ -175,7 +176,8 @@ The following Finn source code will render `- A is for Anaheim.`:
 § Cities Beginning with the Letter A /finn/cities-in-ca/a-through-f.finn
 ```
 
-Or, equivalently:
+Or, equivalently with an *Inline Reference* (`[1]`) taking place of the
+file path:
 
 ```finn
 § Cities Beginning with the Letter A [1]
