@@ -562,12 +562,12 @@ token sectional-block-name
 
 token sectional-block-content-backticks
 {
-    <-code-block-closing-delimiter-backticks>*
+    <-sectional-block-closing-delimiter-backticks>*
 }
 
 token sectional-block-content-dashes
 {
-    <-code-block-closing-delimiter-dashes>*
+    <-sectional-block-closing-delimiter-dashes>*
 }
 
 token sectional-block-closing-delimiter-backticks
@@ -584,14 +584,14 @@ proto token sectional-block {*}
 
 token sectional-block:backticks
 {
-    ^^ <sectional-block-delimiter-backticks> \h <sectional-block-name> $$ \n
+    ^^ \h* <sectional-block-delimiter-backticks> \h <sectional-block-name> $$ \n
     <sectional-block-content-backticks>
     <sectional-block-closing-delimiter-backticks>
 }
 
 token sectional-block:dashes
 {
-    ^^ <sectional-block-delimiter-dashes> \h <sectional-block-name> $$ \n
+    ^^ \h* <sectional-block-delimiter-dashes> \h <sectional-block-name> $$ \n
     <sectional-block-content-dashes>
     <sectional-block-closing-delimiter-dashes>
 }
