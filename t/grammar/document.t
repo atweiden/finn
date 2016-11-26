@@ -559,7 +559,7 @@ subtest 'finn-examples/novel',
     is-deeply ~$match<document><chunk>[12]<horizontal-rule>, @chunk[16];
     is-deeply ~$match<document><chunk>[13]<sectional-inline-block><blank-line>, @chunk[17];
     is-deeply ~$match<document><chunk>[13]<sectional-inline-block><sectional-inline>, @chunk[18];
-    ok $match<document><chunk>[19].isa(Any);
+    ok $match<document><chunk>[14].isa(Any);
 
     # @chunk tests }}}
 }
