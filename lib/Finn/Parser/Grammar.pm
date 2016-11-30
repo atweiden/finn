@@ -1113,5 +1113,30 @@ token code-inline
 }
 
 # end code-inline }}}
+# sectional-link {{{
+
+token sectional-link-delimiter
+{
+    '|'
+}
+
+token sectional-link-text
+{
+    # a non-whitespace character must come adjacent to
+    # C<<sectional-link-delimiter>>s
+    <+[\S] -sectional-link-delimiter> <+[\N] -sectional-link-delimiter>*
+}
+
+token sectional-link
+{
+    <sectional-link-delimiter>
+    <sectional-link-text>
+    # a non-whitespace character must come adjacent to
+    # C<<sectional-link-delimiter>>s
+    <!after \s>
+    <sectional-link-delimiter>
+}
+
+# end sectional-link }}}
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

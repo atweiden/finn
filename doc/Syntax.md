@@ -101,10 +101,9 @@ my Str $greeting = 'Hello, World';
 ## Sectional Inlines
 
 *Sectional Inlines* begin with a Section Sign (`§`). The Section Sign
-must appear at the start of a line in a Sectional Block, although it
-may be offset by leading whitespace. If it is offset by whitespace,
-the content being embedded will be soft-indented by an equal amount of
-leading whitespace.
+must appear at the start of a line, although it may be offset by leading
+whitespace. If it is offset by whitespace, the content being embedded
+will be soft-indented by an equal amount of leading whitespace.
 
 The Section Sign must be followed by exactly one horizontal
 whitespace. Sectional Inlines come in two flavors:
@@ -425,39 +424,6 @@ Functionally, treating the leading `/` in the file path as the
 to create nested directory trees full of Finn source files that may each
 write to an arbitrary file path under the project root.
 
-Note that prepending a Sectional Inline inside of a Sectional Block
-with leading whitespace will result in the Sectional Inline's linked-to
-Sectional Block Content being rendered padded with the same amount of
-leading whitespace:
-
-```finn
---- /green.pl6
-loop
-{
-    § Get User Input
-    § Check User Input
-}
----
-
---- Get User Input
-my Str:D $input = $*IN.get;
----
-
---- Check User Input
-last if $input eq 'green';
----
-```
-
-The resulting `green.pl6` file:
-
-```perl6
-loop
-{
-    my Str:D $input = $*IN.get;
-    last if $input eq 'green';
-}
-```
-
 If you wish to write to a file path outside of `$PROJECT_ROOT`, prepend
 the file path with `file://`. The following Sectional Block writes its
 content to `/tmp/app/cmd-history.txt`:
@@ -480,6 +446,54 @@ set nocompatible
 Sectional Blocks with a file path destination are globally scoped, and
 can be added to or redefined from any Finn source file being compiled
 using the additive or redefine operators (`+=`, `:=` respectively).
+
+
+## Sectional Links
+
+To link to a Sectional Block from prose, surround the sectional block name
+with vertical bars `|`. This is designed to be reminiscent of `vimdoc`.
+
+Example:
+
+```finn
+First we define the global config:
+
+--- Define Globals
+our $CFG = class :: {
+    has Str:D $.name is required;
+}.new(:name<Chiquita>);
+---
+
+Then we print the name:
+
+--- Print Name
+# Chiquita
+$CFG.name.say;
+---
+
+For the `$CFG` global, see |Define Globals|.
+```
+
+Example with exported Sectional Block:
+
+```sh
+$ cat finn/hello
+--- English*
+Hello
+---
+
+--- Spanish*
+Hola
+---
+
+--- Chinese*
+你好
+---
+```
+
+```finn
+See the Chinese example at |Chinese /finn/hello|.
+```
 
 
 [vim-journal]: https://github.com/junegunn/vim-journal
