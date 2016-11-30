@@ -378,7 +378,7 @@ text `- Glass`.
 Exported Sectional Blocks can only be redefined within the same file in
 which they are originally declared. From other files, it is possible to
 reference exported Sectional Blocks by copy in a new Sectional Block,
-and that new Sectional Block can then be appended to.
+and that new Sectional Block can then be redefined.
 
 
 ## Writing Sectional Blocks To A File By Path
