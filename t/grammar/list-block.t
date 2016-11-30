@@ -3,83 +3,15 @@ use lib 'lib';
 use Finn::Parser::Grammar;
 use Test;
 
-plan 7;
+plan 3;
 
 subtest
 {
     my Str:D $list-block = q:to/EOF/.trim-trailing;
-    - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
-      - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
-        - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
-          - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
-            - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
-    EOF
-
-    ok
-        Finn::Parser::Grammar.parse($list-block, :rule<list-block>),
-        'Parses list-block';
-}
-
-subtest
-{
-    my Str:D $list-block = q:to/EOF/.trim-trailing;
-
-    - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
-      - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
-        - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
-          - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
-            - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
-    EOF
-
-    ok
-        Finn::Parser::Grammar.parse($list-block, :rule<list-block>),
-        'Parses list-block';
-}
-
-subtest
-{
-    my Str:D $list-block = q:to/EOF/.trim-trailing;
-    /*
-     *
-     * comment
-     * comment
-     * comment
-     *
-     */
-    - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
-      - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
-        - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
-          - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
-            - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
-    EOF
-
-    ok
-        Finn::Parser::Grammar.parse($list-block, :rule<list-block>),
-        'Parses list-block';
-}
-
-subtest
-{
-    my Str:D $list-block = q:to/EOF/.trim-trailing;
-    /* a comment block */
-    - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
-      - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
-        - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
-          - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
-            - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
-    EOF
-
-    ok
-        Finn::Parser::Grammar.parse($list-block, :rule<list-block>),
-        'Parses list-block';
-}
-
-subtest
-{
-    my Str:D $list-block = q:to/EOF/.trim-trailing;
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
-      - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
+    - abcdefghijklmnopqrstuvwxyz /* inner comment */
+      ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890 /* eol comment */
+      - /* inner comment */ abcdefghijklmnopqrstuvwxyz /* eol comment */
+        ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890 /* eol comment */
         - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
           - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
             - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890

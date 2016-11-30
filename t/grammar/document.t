@@ -3,7 +3,7 @@ use lib 'lib';
 use Finn::Parser::Grammar;
 use Test;
 
-plan 4;
+plan 6;
 
 subtest 'finn-examples/app',
 {
@@ -397,6 +397,381 @@ subtest 'finn-examples/hangman',
     # @chunk tests }}}
 }
 
+subtest 'finn-examples/hard',
+{
+    my Str:D $document = 't/data/hard/Story';
+    my Match:D $match = Finn::Parser::Grammar.parsefile($document);
+
+    ok $match, 'Parses Finn source document';
+
+    # @chunk {{{
+
+    my Str:D @chunk =
+        '/* vim: set filetype=finn foldmethod=marker foldlevel=0: */',
+        '',
+        q:to/EOF/.trim-trailing,
+        Hard Example
+        ============
+        EOF
+        q:to/EOF/.trim-trailing,
+        this should be parsed as a `paragraph` since no `blank-line`,
+        `comment-line` or `horizontal-rule` precedes it, and a line follows it
+        EOF
+        '',
+        q:to/EOF/.trim-trailing,
+        this should be parsed as a `header3`
+        EOF
+        '',
+        q:to/EOF/.trim-trailing,
+        this should also be parsed as a `header3` /* eol comment */
+        EOF
+        '',
+        q:to/EOF/.trim-trailing,
+        this should be a paragraph since it ends in a comma (`,`),
+        EOF
+        '',
+        q:to/EOF/.trim-trailing,
+        this should also be a paragraph since it ends in a comma (`,`), /* eol comment */
+        EOF
+        '',
+        q:to/EOF/.trim-trailing,
+        this should be a paragraph since it ends in a period (`.`).
+        EOF
+        '',
+        q:to/EOF/.trim-trailing,
+        this should also be a paragraph since it ends in a period (`.`). /* eol comment */
+        EOF
+        '',
+        q:to/EOF/.trim-trailing,
+        this too should be a paragraph since it ends in a period (`.`). /*
+        comment-text                                                     *
+        comment-text                                                     *
+        comment-text                                                     *
+        comment-text                                                     *
+        comment-text                                                     */
+        EOF
+        '',
+        q:to/EOF/.trim-trailing,
+        /* lists
+         * {{{
+         */
+        EOF
+        '',
+        '[9] (header3 with trailing whitespace)                 ',
+        q:to/EOF/.trim-trailing,
+        - nine
+          ! nine
+            o nine
+              <- nine
+                -> nine
+                  = nine
+                    => nine
+                      <= nine
+                        @ nine
+                          $ nine
+                            : nine
+        EOF
+        '',
+        q:to/EOF/.trim-trailing,
+        [0] (header2)
+        --------------------
+        EOF
+        q:to/EOF/.trim-trailing,
+        - zero
+          # zero
+            * zero
+              x zero
+                + zero
+                  ! zero
+                    ~ zero
+                      > zero
+                        - zero /* eol comment */
+                          - z /* inner word comment */ ero
+                            - /* leading comment */ zero
+        EOF
+        '',
+        q:to/EOF/.trim-trailing,
+        [909] (header1)
+        ============================
+        EOF
+        q:to/EOF/.trim-trailing,
+        - nine zero nine
+        EOF
+        q:to/EOF/.trim-trailing,
+          /* comment */
+        EOF
+        q:to/EOF/.trim-trailing,
+          - nine zero nine
+        EOF
+        q:to/EOF/.trim-trailing,
+            /*
+             * comment
+             * comment
+             * comment
+             */
+        EOF
+        q:to/EOF/.trim-trailing,
+            - nine zero nine /*
+              comment         *
+              comment         *
+              comment         */
+              - nine zero 「nine」
+                - nine zero «nine»
+                  - nine zero ⟅nine⟆
+                    - nine zero ᚛nine᚜
+                      - nine zero _nine_
+                        - **nine** zero |nine|
+                          - nine *zero* {nine}
+                            - nine zero ~nine~
+        EOF
+        '',
+        q:to/EOF/.trim-trailing,
+        /*
+         * }}}
+         end lists */
+        EOF
+        '',
+        q:to/EOF/.trim-trailing,
+        /**/ this should be parsed as a paragraph
+        EOF
+        '',
+        q:to/EOF/.trim-trailing,
+        Header2
+        -
+        EOF
+        '~' x 78,
+        '',
+        q:to/EOF/.trim-trailing,
+        Another Header2
+        -
+        EOF
+        q:to/EOF/.trim-trailing,
+        This is a paragraph since it is not preceded by a `blank-line`,
+        `comment-block` or `horizontal-rule`. We just saw a `header2`.
+        EOF
+        '',
+        '~' x 78,
+        q:to/EOF/.trim-trailing,
+        this should be parsed as a `header3` since a `horizontal-rule-soft` precedes it
+        EOF
+        '',
+        q:to/EOF/.trim-trailing,
+        **another header3 since a `blank-line` precedes it**
+        EOF
+        '',
+        '*' x 78,
+        q:to/EOF/.trim-trailing,
+        this should be parsed as a `header3` since a `horizontal-rule-hard` precedes it
+        EOF
+        '*' x 78,
+        q:to/EOF/.trim-trailing,
+        this should not be a `header3` since one line of text comes after it
+        {{{one line of text goes here}}}
+        EOF
+        '',
+        '~' x 78,
+        q:to/EOF/.trim-trailing,
+        this should not be a `header3` since one line of text comes after it
+        one line of text goes here
+        EOF
+        '',
+        q:to/EOF/.trim-trailing,
+        this should be a `header3`
+        EOF
+        q:to/EOF/.trim-trailing,
+        x because a `blank-line` comes before it
+        [*] because a list comes after it
+        1. the list continues \ / _$@$#%$^%Y&&^%%@$$#$T%Y^U&^' ' ~with~ *offset*
+           **gibberish** underlined up to here_. file://~/tmp/ /a\/b.txt
+           {} [] some symbols come on the next offset line
+          2. indented list-item
+        EOF
+        q:to/EOF/.trim-trailing,
+            ```perl6
+            # indented perl6 code-block
+            my Str:D $greeting = 'Hello';
+            ```
+        EOF
+        q:to/EOF/.trim-trailing,
+            /* ------------- *
+             * comment-block *
+             * comment-block *
+             * comment-block *
+             * ------------- */
+        EOF
+        q:to/EOF/.trim-trailing,
+            -> here comes another code-block /* eol comment goes here */
+        EOF
+        q:to/EOF/.trim-trailing,
+              --perl6
+              # indented perl6 code-block
+              my Str:D $greeting = 'Hello';
+              --
+        EOF
+        q:to/EOF/.trim-trailing,
+        --- The Simpsons Quotes
+        'Doh!
+        ---
+        EOF
+        q:to/EOF/.trim-trailing,
+        ``` The Simpsons Quotes +=
+        Dental Plan!
+        ```
+        EOF
+        q:to/EOF/.trim-trailing,
+        -- The Simpsons Quotes +=
+        Lisa needs braces!
+        -------------------------------
+        EOF
+        q:to/EOF/.trim-trailing,
+        -- The Simpsons Quotes +=
+        Bart! Why you little
+        --
+        EOF
+        '',
+        '~' x 2,
+        q:to/EOF/.trim-trailing,
+        this should be a `header3`
+        EOF
+        q:to/EOF/.trim-trailing,
+        [o] because a `horizontal-rule` comes before it
+        [o] because a list comes after it
+        EOF
+        '',
+        '*' x 2,
+        q:to/EOF/.trim-trailing,
+        this should be a `header3`
+        EOF
+        q:to/EOF/.trim-trailing,
+        [=] because a `horizontal-rule` comes before it
+        [=] because a list comes after it
+        EOF
+        '',
+        q:to/EOF/.trim-trailing,
+              INFO Robot
+        EOF
+        '',
+        q:to/EOF/.trim-trailing,
+                           FIXME
+        EOF
+        q:to/EOF/.trim-trailing,
+                            ```
+                            \_/
+                            |:|
+                            -|-
+                            / \
+                            ```
+        EOF
+        '',
+        q:to/EOF/.trim-trailing,
+              DEBUG System
+        EOF
+        '',
+        '',
+        '',
+        Q:to/EOF/.trim-trailing;
+        ******************************************************************************
+
+        [1]: https://[2[3[4]]].finn
+        [9]: /\\/\/\/\/\/\/\/\/\/\/\/\/\\/
+        [0]: 1234567890-=`1234567890`
+        [909]: a
+        EOF
+
+    # end @chunk }}}
+    # @chunk tests {{{
+
+    is-deeply ~$match<document><chunk>[0]<comment-block>, @chunk[0];
+    is-deeply ~$match<document><chunk>[1]<header-block><blank-line>, @chunk[1];
+    is-deeply ~$match<document><chunk>[1]<header-block><header>, @chunk[2];
+    is-deeply ~$match<document><chunk>[2]<paragraph>, @chunk[3];
+    is-deeply ~$match<document><chunk>[3]<header-block><blank-line>, @chunk[4];
+    is-deeply ~$match<document><chunk>[3]<header-block><header>, @chunk[5];
+    is-deeply ~$match<document><chunk>[4]<header-block><blank-line>, @chunk[6];
+    is-deeply ~$match<document><chunk>[4]<header-block><header>, @chunk[7];
+    is-deeply ~$match<document><chunk>[5]<blank-line>, @chunk[8];
+    is-deeply ~$match<document><chunk>[6]<paragraph>, @chunk[9];
+    is-deeply ~$match<document><chunk>[7]<blank-line>, @chunk[10];
+    is-deeply ~$match<document><chunk>[8]<paragraph>, @chunk[11];
+    is-deeply ~$match<document><chunk>[9]<blank-line>, @chunk[12];
+    is-deeply ~$match<document><chunk>[10]<paragraph>, @chunk[13];
+    is-deeply ~$match<document><chunk>[11]<blank-line>, @chunk[14];
+    is-deeply ~$match<document><chunk>[12]<paragraph>, @chunk[15];
+    is-deeply ~$match<document><chunk>[13]<blank-line>, @chunk[16];
+    is-deeply ~$match<document><chunk>[14]<paragraph>, @chunk[17];
+    is-deeply ~$match<document><chunk>[15]<blank-line>, @chunk[18];
+    is-deeply ~$match<document><chunk>[16]<comment-block>, @chunk[19];
+    is-deeply ~$match<document><chunk>[17]<header-block><blank-line>, @chunk[20];
+    is-deeply ~$match<document><chunk>[17]<header-block><header>, @chunk[21];
+    is-deeply ~$match<document><chunk>[18]<list-block>, @chunk[22];
+    is-deeply ~$match<document><chunk>[19]<header-block><blank-line>, @chunk[23];
+    is-deeply ~$match<document><chunk>[19]<header-block><header>, @chunk[24];
+    is-deeply ~$match<document><chunk>[20]<list-block>, @chunk[25];
+    is-deeply ~$match<document><chunk>[21]<header-block><blank-line>, @chunk[26];
+    is-deeply ~$match<document><chunk>[21]<header-block><header>, @chunk[27];
+    is-deeply ~$match<document><chunk>[22]<list-block>, @chunk[28];
+    is-deeply ~$match<document><chunk>[23]<comment-block>, @chunk[29];
+    is-deeply ~$match<document><chunk>[24]<list-block>, @chunk[30];
+    is-deeply ~$match<document><chunk>[25]<comment-block>, @chunk[31];
+    is-deeply ~$match<document><chunk>[26]<list-block>, @chunk[32];
+    is-deeply ~$match<document><chunk>[27]<blank-line>, @chunk[33];
+    is-deeply ~$match<document><chunk>[28]<comment-block>, @chunk[34];
+    is-deeply ~$match<document><chunk>[29]<blank-line>, @chunk[35];
+    is-deeply ~$match<document><chunk>[30]<paragraph>, @chunk[36];
+    is-deeply ~$match<document><chunk>[31]<header-block><blank-line>, @chunk[37];
+    is-deeply ~$match<document><chunk>[31]<header-block><header>, @chunk[38];
+    is-deeply ~$match<document><chunk>[32]<horizontal-rule>, @chunk[39];
+    is-deeply ~$match<document><chunk>[33]<header-block><blank-line>, @chunk[40];
+    is-deeply ~$match<document><chunk>[33]<header-block><header>, @chunk[41];
+    is-deeply ~$match<document><chunk>[34]<paragraph>, @chunk[42];
+    is-deeply ~$match<document><chunk>[35]<blank-line>, @chunk[43];
+    is-deeply ~$match<document><chunk>[36]<header-block><horizontal-rule>, @chunk[44];
+    is-deeply ~$match<document><chunk>[36]<header-block><header>, @chunk[45];
+    is-deeply ~$match<document><chunk>[37]<header-block><blank-line>, @chunk[46];
+    is-deeply ~$match<document><chunk>[37]<header-block><header>, @chunk[47];
+    is-deeply ~$match<document><chunk>[38]<blank-line>, @chunk[48];
+    is-deeply ~$match<document><chunk>[39]<header-block><horizontal-rule>, @chunk[49];
+    is-deeply ~$match<document><chunk>[39]<header-block><header>, @chunk[50];
+    is-deeply ~$match<document><chunk>[40]<horizontal-rule>, @chunk[51];
+    is-deeply ~$match<document><chunk>[41]<paragraph>, @chunk[52];
+    is-deeply ~$match<document><chunk>[42]<blank-line>, @chunk[53];
+    is-deeply ~$match<document><chunk>[43]<horizontal-rule>, @chunk[54];
+    is-deeply ~$match<document><chunk>[44]<paragraph>, @chunk[55];
+    is-deeply ~$match<document><chunk>[45]<header-block><blank-line>, @chunk[56];
+    is-deeply ~$match<document><chunk>[45]<header-block><header>, @chunk[57];
+    is-deeply ~$match<document><chunk>[46]<list-block>, @chunk[58];
+    is-deeply ~$match<document><chunk>[47]<code-block>, @chunk[59];
+    is-deeply ~$match<document><chunk>[48]<comment-block>, @chunk[60];
+    is-deeply ~$match<document><chunk>[49]<list-block>, @chunk[61];
+    is-deeply ~$match<document><chunk>[50]<code-block>, @chunk[62];
+    is-deeply ~$match<document><chunk>[51]<sectional-block>, @chunk[63];
+    is-deeply ~$match<document><chunk>[52]<sectional-block>, @chunk[64];
+    is-deeply ~$match<document><chunk>[53]<sectional-block>, @chunk[65];
+    is-deeply ~$match<document><chunk>[54]<sectional-block>, @chunk[66];
+    is-deeply ~$match<document><chunk>[55]<blank-line>, @chunk[67];
+    is-deeply ~$match<document><chunk>[56]<header-block><horizontal-rule>, @chunk[68];
+    is-deeply ~$match<document><chunk>[56]<header-block><header>, @chunk[69];
+    is-deeply ~$match<document><chunk>[57]<list-block>, @chunk[70];
+    is-deeply ~$match<document><chunk>[58]<blank-line>, @chunk[71];
+    is-deeply ~$match<document><chunk>[59]<header-block><horizontal-rule>, @chunk[72];
+    is-deeply ~$match<document><chunk>[59]<header-block><header>, @chunk[73];
+    is-deeply ~$match<document><chunk>[60]<list-block>, @chunk[74];
+    is-deeply ~$match<document><chunk>[61]<blank-line>, @chunk[75];
+    is-deeply ~$match<document><chunk>[62]<paragraph>, @chunk[76];
+    is-deeply ~$match<document><chunk>[63]<blank-line>, @chunk[77];
+    is-deeply ~$match<document><chunk>[64]<paragraph>, @chunk[78];
+    is-deeply ~$match<document><chunk>[65]<code-block>, @chunk[79];
+    is-deeply ~$match<document><chunk>[66]<blank-line>, @chunk[80];
+    is-deeply ~$match<document><chunk>[67]<paragraph>, @chunk[81];
+    is-deeply ~$match<document><chunk>[68]<blank-line>, @chunk[82];
+    is-deeply ~$match<document><chunk>[69]<blank-line>, @chunk[83];
+    is-deeply ~$match<document><chunk>[70]<blank-line>, @chunk[84];
+    is-deeply ~$match<document><chunk>[71]<reference-block>, @chunk[85];
+    ok $match<document><chunk>[72].isa(Any);
+
+    # @chunk tests }}}
+}
+
 subtest 'finn-examples/hello',
 {
     my Str:D $document = 't/data/hello/Story';
@@ -560,6 +935,183 @@ subtest 'finn-examples/novel',
     is-deeply ~$match<document><chunk>[13]<sectional-inline-block><blank-line>, @chunk[17];
     is-deeply ~$match<document><chunk>[13]<sectional-inline-block><sectional-inline>, @chunk[18];
     ok $match<document><chunk>[14].isa(Any);
+
+    # @chunk tests }}}
+}
+
+subtest 'finn-examples/sample',
+{
+    my Str:D $document = 't/data/sample/Story';
+    my Match:D $match = Finn::Parser::Grammar.parsefile($document);
+
+    ok $match, 'Parses Finn source document';
+
+    # @chunk {{{
+
+    my Str:D @chunk =
+        '/* vim: set filetype=finn: */',
+        '',
+        q:to/EOF/.trim-trailing,
+        vim-finn
+        ========
+        EOF
+        '',
+        q:to/EOF/.trim-trailing,
+        *vim-finn*[1] is _a syntax plugin for Finn_, a superset of Junegunn Choi's
+        *vim-journal*[2] specifically designed for literate programming.
+        EOF
+        '',
+        '~' x 78,
+        '',
+        q:to/EOF/.trim-trailing,
+        Bullet lists [3]
+        ----------------
+        EOF
+        '',
+        q:to/EOF/.trim-trailing,
+        Example:
+        EOF
+        q:to/EOF/.trim-trailing,
+        - In typography, a bullet (•) is a typographical symbol or glyph used to
+          introduce items in a list.
+          = It is likely that the name originated from the resemblance of the
+            traditional circular bullet symbol (•) to a projectile bullet, which were
+            spherical until the second half of the 19th century
+            * The bullet symbol may take any of a variety of shapes, such as
+                1. circular,
+                2. square,
+                3. diamond,
+                4. arrow, etc.
+            * And typical word processor software offer a wide selection of shapes and
+              colours.
+                * When writing by hand, bullets may be drawn in any style
+                  o Historically, the index symbol was popular for similar uses.
+                    x Lists made with bullets are called bulleted lists.
+                      > The HTML element name for a bulleted list is "unordered list"
+                        ~ Because the list items are not arranged in numerical order.
+                          : (as they would be in a numbered list)
+                        ! Bullets are most often used in technical writing, reference
+                          works, notes and presentations
+        EOF
+        '',
+        '~' x 78,
+        '',
+        q:to/EOF/.trim-trailing,
+        To-do list [4]
+        --------------
+        EOF
+        '',
+        q:to/EOF/.trim-trailing,
+        As its name implies, the To-do list on an article's talk page shows the
+        list of improvements suggested for the article.
+        EOF
+        '',
+        q:to/EOF/.trim-trailing,
+        [v] Task 1
+          [ ] Task 1-1
+            [v] Task 1-1-1
+            [x] Task 1-1-2
+              [*] Task 1-1-2-1
+                [=] Task 1-1-2-1-1
+                [=] Task 1-1-2-1-2
+              [-] Task 1-1-2-2
+        EOF
+        '',
+        '~' x 78,
+        '',
+        q:to/EOF/.trim-trailing,
+        Software logs
+        -------------
+        EOF
+        '',
+        q:to/EOF/.trim-trailing,
+        2015/04/01 12:00:00 DEBUG Info message
+        2015/04/01 12:00:00 INFO Info message
+        2015/04/01 12:00:00 WARN Warning message
+        2015/04/01 12:00:00 ERROR Error message (FIXME)
+        EOF
+        '',
+        '~' x 78,
+        '',
+        q:to/EOF/.trim-trailing,
+        Code
+        ----
+        EOF
+        '',
+        q:to/EOF/.trim-trailing,
+        --clojure
+        (defn is-directory? [path]
+          (.isDirectory (io/file (path-for path))))
+        --
+        EOF
+        '',
+        q:to/EOF/.trim-trailing,
+        Blocks can be indented.
+        EOF
+        '',
+        q:to/EOF/.trim-trailing,
+          ```ruby
+          class Foo
+            def foobar
+              puts :baz
+            end
+          end
+          ```
+        EOF
+        '',
+        '',
+        q:to/EOF/.trim-trailing;
+        ******************************************************************************
+
+        [1]: https://github.com/atweiden/vim-finn
+        [2]: https://github.com/junegunn/vim-journal
+        [3]: http://en.wikipedia.org/wiki/Bullet_%28typography%29
+        [4]: http://en.wikipedia.org/wiki/Wikipedia:To-do_list
+        EOF
+
+    # end @chunk }}}
+    # @chunk tests {{{
+
+    is-deeply ~$match<document><chunk>[0]<comment-block>, @chunk[0];
+    is-deeply ~$match<document><chunk>[1]<header-block><blank-line>, @chunk[1];
+    is-deeply ~$match<document><chunk>[1]<header-block><header>, @chunk[2];
+    is-deeply ~$match<document><chunk>[2]<blank-line>, @chunk[3];
+    is-deeply ~$match<document><chunk>[3]<paragraph>, @chunk[4];
+    is-deeply ~$match<document><chunk>[4]<blank-line>, @chunk[5];
+    is-deeply ~$match<document><chunk>[5]<horizontal-rule>, @chunk[6];
+    is-deeply ~$match<document><chunk>[6]<header-block><blank-line>, @chunk[7];
+    is-deeply ~$match<document><chunk>[6]<header-block><header>, @chunk[8];
+    is-deeply ~$match<document><chunk>[7]<header-block><blank-line>, @chunk[9];
+    is-deeply ~$match<document><chunk>[7]<header-block><header>, @chunk[10];
+    is-deeply ~$match<document><chunk>[8]<list-block>, @chunk[11];
+    is-deeply ~$match<document><chunk>[9]<blank-line>, @chunk[12];
+    is-deeply ~$match<document><chunk>[10]<horizontal-rule>, @chunk[13];
+    is-deeply ~$match<document><chunk>[11]<header-block><blank-line>, @chunk[14];
+    is-deeply ~$match<document><chunk>[11]<header-block><header>, @chunk[15];
+    is-deeply ~$match<document><chunk>[12]<blank-line>, @chunk[16];
+    is-deeply ~$match<document><chunk>[13]<paragraph>, @chunk[17];
+    is-deeply ~$match<document><chunk>[14]<blank-line>, @chunk[18];
+    is-deeply ~$match<document><chunk>[15]<list-block>, @chunk[19];
+    is-deeply ~$match<document><chunk>[16]<blank-line>, @chunk[20];
+    is-deeply ~$match<document><chunk>[17]<horizontal-rule>, @chunk[21];
+    is-deeply ~$match<document><chunk>[18]<header-block><blank-line>, @chunk[22];
+    is-deeply ~$match<document><chunk>[18]<header-block><header>, @chunk[23];
+    is-deeply ~$match<document><chunk>[19]<blank-line>, @chunk[24];
+    is-deeply ~$match<document><chunk>[20]<paragraph>, @chunk[25];
+    is-deeply ~$match<document><chunk>[21]<blank-line>, @chunk[26];
+    is-deeply ~$match<document><chunk>[22]<horizontal-rule>, @chunk[27];
+    is-deeply ~$match<document><chunk>[23]<header-block><blank-line>, @chunk[28];
+    is-deeply ~$match<document><chunk>[23]<header-block><header>, @chunk[29];
+    is-deeply ~$match<document><chunk>[24]<blank-line>, @chunk[30];
+    is-deeply ~$match<document><chunk>[25]<code-block>, @chunk[31];
+    is-deeply ~$match<document><chunk>[26]<blank-line>, @chunk[32];
+    is-deeply ~$match<document><chunk>[27]<paragraph>, @chunk[33];
+    is-deeply ~$match<document><chunk>[28]<blank-line>, @chunk[34];
+    is-deeply ~$match<document><chunk>[29]<code-block>, @chunk[35];
+    is-deeply ~$match<document><chunk>[30]<blank-line>, @chunk[36];
+    is-deeply ~$match<document><chunk>[31]<blank-line>, @chunk[37];
+    is-deeply ~$match<document><chunk>[32]<reference-block>, @chunk[38];
+    ok $match<document><chunk>[33].isa(Any);
 
     # @chunk tests }}}
 }

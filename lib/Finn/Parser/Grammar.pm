@@ -144,7 +144,20 @@ token comment-block
 }
 
 # end comment }}}
+# gap {{{
+
+proto token gap {*}
+token gap:newline { \n }
+token gap:comment { <.comment> \h* $$ \n }
+
+# end gap }}}
 # header {{{
+
+# allow headers that are bolded or italicized
+token bold-italic-combo
+{
+    '*' ** 1..2 \w
+}
 
 token header-text
 {
@@ -156,6 +169,7 @@ token header-text
     # C<<list-ordered-item-number>> or C<<section-sign>> respectively
     <+[\S]
      -bullet-point
+     +bold-italic-combo
      -checkbox
      -comment
      -list-ordered-item-number
@@ -166,13 +180,13 @@ token header-text
 
 token header1
 {
-    ^^ <header-text> $$ \n
+    ^^ <header-text> $$ <.gap>
     ^^ '='+ $$
 }
 
 token header2
 {
-    ^^ <header-text> $$ \n
+    ^^ <header-text> $$ <.gap>
     ^^ '-'+ $$
 }
 
@@ -184,11 +198,11 @@ token header3
 
     # C<<header3>> is distinguishable from a one-line paragraph by a
     # lack of a period (C<.>) or comma (C<,>) at line-ending
-    <!after <[.,]>>
+    <!after <[.,]> [ \h* <.comment> \h* ]?>
 
     $$
 
-    <!before \n <paragraph-line>>
+    <!before <.gap> <paragraph-line>>
 }
 
 proto token header {*}
@@ -208,7 +222,7 @@ token header-block:top
 
 token header-block:dispersed
 {
-    [ <blank-line> | <comment-block> | <horizontal-rule> ] \n <header>
+    [ <blank-line> | <comment-block> | <horizontal-rule> ] <.gap> <header>
 }
 
 # end header }}}
@@ -302,12 +316,8 @@ token list-unordered-item-text-offset(UInt:D $offset)
     :my UInt:D $leading-whitespace = $/<leading-whitespace>.chars;
     <?{ $leading-whitespace == $offset }>
     <!before
-        [
-        | <checkbox>
-        | <list-ordered-item-number>
-        | <bullet-point>
-        ]
-        \h
+        | <comment>
+        | [ <checkbox> | <list-ordered-item-number> | <bullet-point> ] \h
     >
     \N+
 }
@@ -320,7 +330,7 @@ token list-unordered-item-text(UInt:D $offset)
     \N+
 
     # optional additional lines of offset text
-    [ $$ \n ^^ <list-unordered-item-text-offset($offset)> ]*
+    [ $$ <.gap> ^^ <list-unordered-item-text-offset($offset)> ]*
 }
 
 token list-unordered-item
@@ -371,12 +381,8 @@ token list-ordered-item-text-offset(UInt:D $offset)
     :my UInt:D $leading-whitespace = $/<leading-whitespace>.chars;
     <?{ $leading-whitespace == $offset }>
     <!before
-        [
-        | <checkbox>
-        | <list-ordered-item-number>
-        | <bullet-point>
-        ]
-        \h
+        | <comment>
+        | [ <checkbox> | <list-ordered-item-number> | <bullet-point> ] \h
     >
     \N+
 }
@@ -389,7 +395,7 @@ token list-ordered-item-text(UInt:D $offset)
     \N+
 
     # optional additional lines of offset text
-    [ $$ \n ^^ <list-ordered-item-text-offset($offset)> ]*
+    [ $$ <.gap> ^^ <list-ordered-item-text-offset($offset)> ]*
 }
 
 token list-ordered-item
@@ -418,20 +424,10 @@ token list-item:unordered { <list-unordered-item> }
 token list-item:todo { <list-todo-item> }
 token list-item:ordered { <list-ordered-item> }
 
-# C<<list-block>> must be separated from other text blocks with a
-# C<<blank-line>>, C<<comment-block>> or C<<horizontal-rule>>, or it
-# must appear at the very top of the document
-proto token list-block {*}
-
-token list-block:top
+token list-block
 {
-    ^ <list-item> [ \n <list-item> ]*
-}
-
-token list-block:dispersed
-{
-    [ <blank-line> | <comment-block> | <horizontal-rule> ]
-    [ \n <list-item> ]+
+    ^^ <list-item> $$
+    [ <.gap> ^^ <list-item> $$ ]*
 }
 
 # end list-block }}}
@@ -449,8 +445,8 @@ token reference-block-line
 
 token reference-block
 {
-    <horizontal-rule-hard> \n+
-    <reference-block-line> [ \n+ <reference-block-line> ]*
+    <horizontal-rule-hard> <.gap>+
+    <reference-block-line> [ <.gap>+ <reference-block-line> ]*
 }
 
 # end reference-block }}}
@@ -659,13 +655,13 @@ proto token sectional-inline-block {*}
 token sectional-inline-block:top
 {
     ^ <sectional-inline>
-    [ \n <sectional-inline> ]*
+    [ <.gap> <sectional-inline> ]*
 }
 
 token sectional-inline-block:dispersed
 {
     [ <blank-line> | <comment-block> | <horizontal-rule> ]
-    [ \n <sectional-inline> ]+
+    [ <.gap> <sectional-inline> ]+
 }
 
 # end sectional-inline-block }}}
@@ -689,6 +685,8 @@ token paragraph-line
     <!before
         | <code-block-delimiter-backticks>
         | <code-block-delimiter-dashes>
+        | <list-item>
+        | <horizontal-rule>
     >
 
     <word> [ \h+ <word> ]*
@@ -698,7 +696,7 @@ token paragraph-line
 
 token paragraph
 {
-    <paragraph-line> [ \n <paragraph-line> ]*
+    <paragraph-line> [ <.gap> <paragraph-line> ]*
 }
 
 # end paragraph }}}
