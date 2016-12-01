@@ -310,46 +310,30 @@ token bullet-point:sym«=>» { <sym> }
 
 # --- --- end bullet-point }}}
 
-token list-unordered-item-text-offset(UInt:D $offset)
+token list-unordered-item-text-continuation
 {
-    $<leading-whitespace> = \h* {}
-    :my UInt:D $leading-whitespace = $/<leading-whitespace>.chars;
-    <?{ $leading-whitespace == $offset }>
+    \h*
     <!before
         | <comment>
+        | <code-block-delimiter-backticks>
+        | <code-block-delimiter-dashes>
+        | <horizontal-rule>
         | [ <checkbox> | <list-ordered-item-number> | <bullet-point> ] \h
     >
-    \N+
+    \S \N*
 }
 
-# C<$offset> is the amount of leading whitespace needed for
-# newline-separated adjoining text to be considered a part of this
-# C<<list-unordered-item-text>>
-token list-unordered-item-text(UInt:D $offset)
+token list-unordered-item-text
 {
     \N+
 
-    # optional additional lines of offset text
-    [ $$ <.gap> ^^ <list-unordered-item-text-offset($offset)> ]*
+    # optional additional lines of continued text
+    [ $$ <.gap> ^^ <list-unordered-item-text-continuation> ]*
 }
 
 token list-unordered-item
 {
-    ^^
-
-    $<leading-whitespace> = \h* {}
-    :my UInt:D $leading-whitespace = $/<leading-whitespace>.chars;
-
-    <bullet-point> {}
-    :my UInt:D $bullet-point = $<bullet-point>.chars;
-
-    # C<$offset> is the required amount of leading whitespace for
-    # adjoining text belonging to the same C<<list-unordered-item>>
-    :my UInt:D $offset = $leading-whitespace + $bullet-point + 1;
-
-    [ \h <list-unordered-item-text($offset)> ]?
-
-    $$
+    ^^ \h* <bullet-point> [ \h <list-unordered-item-text> ]? $$
 }
 
 # --- end list-unordered-item }}}
@@ -375,46 +359,30 @@ token list-ordered-item-number
 
 # --- --- end list-ordered-item-number }}}
 
-token list-ordered-item-text-offset(UInt:D $offset)
+token list-ordered-item-text-continuation
 {
-    $<leading-whitespace> = \h* {}
-    :my UInt:D $leading-whitespace = $/<leading-whitespace>.chars;
-    <?{ $leading-whitespace == $offset }>
+    \h*
     <!before
         | <comment>
+        | <code-block-delimiter-backticks>
+        | <code-block-delimiter-dashes>
+        | <horizontal-rule>
         | [ <checkbox> | <list-ordered-item-number> | <bullet-point> ] \h
     >
-    \N+
+    \S \N*
 }
 
-# C<$offset> is the amount of leading whitespace needed for
-# newline-separated adjoining text to be considered a part of this
-# C<<list-ordered-item-text>>
-token list-ordered-item-text(UInt:D $offset)
+token list-ordered-item-text
 {
     \N+
 
-    # optional additional lines of offset text
-    [ $$ <.gap> ^^ <list-ordered-item-text-offset($offset)> ]*
+    # optional additional lines of continued text
+    [ $$ <.gap> ^^ <list-ordered-item-text-continuation> ]*
 }
 
 token list-ordered-item
 {
-    ^^
-
-    $<leading-whitespace> = \h* {}
-    :my UInt:D $leading-whitespace = $/<leading-whitespace>.chars;
-
-    <list-ordered-item-number> {}
-    :my UInt:D $item-number-chars = $<list-ordered-item-number>.chars;
-
-    # C<$offset> is the required amount of leading whitespace for
-    # adjoining text belonging to the same C<<list-unordered-item>>
-    :my UInt:D $offset = $leading-whitespace + $item-number-chars + 1;
-
-    [ \h <list-ordered-item-text($offset)> ]?
-
-    $$
+    ^^ \h* <list-ordered-item-number> [ \h <list-ordered-item-text> ]? $$
 }
 
 # --- end list-ordered-item }}}
