@@ -123,16 +123,16 @@ subtest 'finn-examples/hangman',
         q:to/EOF/.trim-trailing,
         --- /hangman.pl6
         'Welcome to hangman!'.say;
-        § Setup
+        § "Setup"
         my UInt:D $lives-left = 8;
         while $lives-left > 0
         {
-            § User input
-            § Check input
-            § Check win
+            § "User input"
+            § "Check input"
+            § "Check win"
         }
 
-        § End
+        § "End"
         ---
         EOF
         '',
@@ -177,7 +177,7 @@ subtest 'finn-examples/hangman',
         '',
         q:to/EOF/.trim-trailing,
         --- User input
-        § print dashes array
+        § "print dashes array"
         "You have $lives-left lives left".say;
         "What's your guess? ".print;
         my Str:D $guess = $*IN.get;
@@ -805,8 +805,8 @@ subtest 'finn-examples/hello',
         '',
         q:to/EOF/.trim-trailing,
         --- /bin/hello
-        § Import modules
-        § Print a string
+        § "Import modules"
+        § "Print a string"
         ---
         EOF
         '',
@@ -891,25 +891,26 @@ subtest 'finn-examples/novel',
         '~' x 78,
         '',
         q:to/EOF/.trim-trailing,
-        § /finn/chapter-01/intro.finn
+        § chapter-01/intro.finn
         EOF
         '',
         '~' x 78,
         '',
         q:to/EOF/.trim-trailing,
-        § /finn/chapter-02/intro.finn
+        § chapter-02/intro.finn
         EOF
         '',
         '~' x 78,
         '',
         q:to/EOF/.trim-trailing,
-        § /finn/chapter-03/intro.finn
+        § chapter-03/intro.finn
         EOF
         '',
         '~' x 78,
         '',
         q:to/EOF/.trim-trailing;
-        § /finn/chapter-04/intro.finn
+        El Fin
+        ------
         EOF
 
     # end @chunk }}}
@@ -932,8 +933,8 @@ subtest 'finn-examples/novel',
     is-deeply ~$match<document><chunk>[10]<sectional-inline-block><sectional-inline>, @chunk[14];
     is-deeply ~$match<document><chunk>[11]<blank-line>, @chunk[15];
     is-deeply ~$match<document><chunk>[12]<horizontal-rule>, @chunk[16];
-    is-deeply ~$match<document><chunk>[13]<sectional-inline-block><blank-line>, @chunk[17];
-    is-deeply ~$match<document><chunk>[13]<sectional-inline-block><sectional-inline>, @chunk[18];
+    is-deeply ~$match<document><chunk>[13]<header-block><blank-line>, @chunk[17];
+    is-deeply ~$match<document><chunk>[13]<header-block><header>, @chunk[18];
     ok $match<document><chunk>[14].isa(Any);
 
     # @chunk tests }}}
