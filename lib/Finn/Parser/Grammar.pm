@@ -39,10 +39,12 @@ be underlined.
 =item time
 =item callout
 =item log-level
+=item string
 =item url
 =item file
 =item reference-inline
 =item code-inline
+=item sectional-link
 =back
 
 =head3 Block Text
