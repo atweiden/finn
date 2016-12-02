@@ -3,7 +3,7 @@ imports:
 
 git module finn-examples:
     url: git://github.com/atweiden/finn-examples.git
-    rev: 316bcb7dac9f9e3ed702eb2ec8432e5e1774a1d0
+    rev: 70d39d18a694c17657f8a9923a84d68d50e45df1
     drop:
         - README.md
         - UNLICENSE
