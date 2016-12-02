@@ -499,13 +499,13 @@ proto token sectional-block-name-text {*}
 
 token sectional-block-name-text:path
 {
-    <file>
+    <file-absolute>
 }
 
 token sectional-block-name-text:normal
 {
-    <+sectional-block-name-text-word -file>
-    [ \h+ <+sectional-block-name-text-word -file> ]*
+    <+sectional-block-name-text-word -file-absolute>
+    [ \h+ <+sectional-block-name-text-word -file-absolute> ]*
 }
 
 token sectional-block-name-annot-export
@@ -570,27 +570,16 @@ token section-sign
     '§'
 }
 
-token sectional-inline-name-text-word
-{
-    <sectional-inline-name-text-char=sectional-block-name-text-char>+
-}
-
-token sectional-inline-name
-{
-    <+sectional-inline-name-text-word -file>
-    [ \h+ <+sectional-inline-name-text-word -file> ]*
-}
-
 proto token sectional-inline-text {*}
 
 token sectional-inline-text:name-and-file
 {
-    <sectional-inline-name> \h <sectional-inline-file=file>
+    <sectional-inline-name=string> \h <sectional-inline-file=file>
 }
 
 token sectional-inline-text:name-and-reference
 {
-    <sectional-inline-name> \h <sectional-inline-reference=reference-inline>
+    <sectional-inline-name=string> \h <sectional-inline-reference=reference-inline>
 }
 
 token sectional-inline-text:file-only
@@ -605,7 +594,7 @@ token sectional-inline-text:reference-only
 
 token sectional-inline-text:name-only
 {
-    <sectional-inline-name>
+    <sectional-inline-name=string>
 }
 
 token sectional-inline
@@ -1091,8 +1080,9 @@ proto token file-path-char {*}
 token file-path-char:common
 {
     # anything but linebreaks, whitespace, single-quotes, double-quotes,
-    # fwdslashes, backslashes and control characters (U+0000 to U+001F)
-    <+[\N] -[\h] -[\' \" / \\] -[\x00..\x1F]>
+    # fwdslashes, backslashes, square brackets, curly braces and control
+    # characters (U+0000 to U+001F)
+    <+[\N] -[\h] -[\' \" / \\] -[\[ \] \{ \}] -[\x00..\x1F]>
 }
 
 token file-path-char:escape-sequence
@@ -1123,6 +1113,10 @@ token file-path-char:escape-sequence
 # \"         - double-quote    (U+0022)
 # \/         - fwdslash        (U+002f)
 # \\         - backslash       (U+005C)
+# \[         - left bracket    (U+005b)
+# \]         - right bracket   (U+005d)
+# \{         - left brace      (U+007b)
+# \}         - right brace     (U+007d)
 # \uXXXX     - unicode         (U+XXXX)
 # \UXXXXXXXX - unicode         (U+XXXXXXXX)
 proto token file-path-escape {*}
@@ -1136,6 +1130,10 @@ token file-path-escape:sym<single-quote> { \' }
 token file-path-escape:sym<double-quote> { \" }
 token file-path-escape:sym<fwdslash> { '/' }
 token file-path-escape:sym<backslash> { \\ }
+token file-path-escape:sym<[> { <sym> }
+token file-path-escape:sym<]> { <sym> }
+token file-path-escape:sym<{> { <sym> }
+token file-path-escape:sym<}> { <sym> }
 token file-path-escape:sym<u> { <sym> <hex> ** 4 }
 token file-path-escape:sym<U> { <sym> <hex> ** 8 }
 
@@ -1144,7 +1142,12 @@ token file-path-absolute
     '/' <file-path-char>+ <file-path-absolute>*
 }
 
-token file
+token file-path-relative
+{
+    <file-path-char>+ <file-path-absolute>*
+}
+
+token file-absolute
 {
     'file://'?
     [
@@ -1153,6 +1156,15 @@ token file
         | '/'
     ]
 }
+
+token file-relative
+{
+    'file://'? <file-path-relative>
+}
+
+proto token file {*}
+token file:absolute { <file-absolute> }
+token file:relative { <file-relative> }
 
 # end file }}}
 # reference-inline {{{

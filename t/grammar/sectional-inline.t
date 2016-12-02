@@ -3,11 +3,11 @@ use lib 'lib';
 use Finn::Parser::Grammar;
 use Test;
 
-plan 25;
+plan 34;
 
 subtest
 {
-    my Str:D $sectional-inline = '§ A';
+    my Str:D $sectional-inline = '§ "A"';
 
     ok
         Finn::Parser::Grammar.parse($sectional-inline, :rule<sectional-inline>),
@@ -16,7 +16,7 @@ subtest
 
 subtest
 {
-    my Str:D $sectional-inline = '§ Abc';
+    my Str:D $sectional-inline = '§ "Abc"';
 
     ok
         Finn::Parser::Grammar.parse($sectional-inline, :rule<sectional-inline>),
@@ -25,7 +25,7 @@ subtest
 
 subtest
 {
-    my Str:D $sectional-inline = '§ Abc Foo Bar';
+    my Str:D $sectional-inline = '§ "Abc Foo Bar"';
 
     ok
         Finn::Parser::Grammar.parse($sectional-inline, :rule<sectional-inline>),
@@ -133,7 +133,7 @@ subtest
 
 subtest
 {
-    my Str:D $sectional-inline = '§ Name Of Section To Embed /';
+    my Str:D $sectional-inline = "§ 'Name Of Section To Embed' /";
 
     ok
         Finn::Parser::Grammar.parse($sectional-inline, :rule<sectional-inline>),
@@ -142,7 +142,7 @@ subtest
 
 subtest
 {
-    my Str:D $sectional-inline = '§ Name Of Section To Embed ~';
+    my Str:D $sectional-inline = "§ 'Name Of Section To Embed' ~";
 
     ok
         Finn::Parser::Grammar.parse($sectional-inline, :rule<sectional-inline>),
@@ -151,7 +151,7 @@ subtest
 
 subtest
 {
-    my Str:D $sectional-inline = '§ Name Of Section To Embed /a/b/c/d';
+    my Str:D $sectional-inline = "§ 'Name Of Section To Embed' /a/b/c/d";
 
     ok
         Finn::Parser::Grammar.parse($sectional-inline, :rule<sectional-inline>),
@@ -160,7 +160,7 @@ subtest
 
 subtest
 {
-    my Str:D $sectional-inline = '§ Name Of Section To Embed ~/a/b/c/d';
+    my Str:D $sectional-inline = "§ 'Name Of Section To Embed' ~/a/b/c/d";
 
     ok
         Finn::Parser::Grammar.parse($sectional-inline, :rule<sectional-inline>),
@@ -169,7 +169,7 @@ subtest
 
 subtest
 {
-    my Str:D $sectional-inline = '§ Name Of Section To Embed file:///';
+    my Str:D $sectional-inline = "§ 'Name Of Section To Embed' file:///";
 
     ok
         Finn::Parser::Grammar.parse($sectional-inline, :rule<sectional-inline>),
@@ -178,7 +178,7 @@ subtest
 
 subtest
 {
-    my Str:D $sectional-inline = '§ Name Of Section To Embed file://~';
+    my Str:D $sectional-inline = '§ "Name Of Section To Embed" file://~';
 
     ok
         Finn::Parser::Grammar.parse($sectional-inline, :rule<sectional-inline>),
@@ -187,7 +187,7 @@ subtest
 
 subtest
 {
-    my Str:D $sectional-inline = '§ Name Of Section To Embed file:///a/b/c/d';
+    my Str:D $sectional-inline = '§ "Name Of Section To Embed" file:///a/b/c/d';
 
     ok
         Finn::Parser::Grammar.parse($sectional-inline, :rule<sectional-inline>),
@@ -196,7 +196,7 @@ subtest
 
 subtest
 {
-    my Str:D $sectional-inline = '§ Name Of Section To Embed file://~/a/b/c/d';
+    my Str:D $sectional-inline = '§ "Name Of Section To Embed" file://~/a/b/c/d';
 
     ok
         Finn::Parser::Grammar.parse($sectional-inline, :rule<sectional-inline>),
@@ -205,7 +205,7 @@ subtest
 
 subtest
 {
-    my Str:D $sectional-inline = '§ Name Of Section To Embed [0]';
+    my Str:D $sectional-inline = '§ "Name Of Section To Embed" [0]';
 
     ok
         Finn::Parser::Grammar.parse($sectional-inline, :rule<sectional-inline>),
@@ -214,7 +214,7 @@ subtest
 
 subtest
 {
-    my Str:D $sectional-inline = '§ Name Of Section To Embed [1]';
+    my Str:D $sectional-inline = '§ "Name Of Section To Embed" [1]';
 
     ok
         Finn::Parser::Grammar.parse($sectional-inline, :rule<sectional-inline>),
@@ -223,7 +223,88 @@ subtest
 
 subtest
 {
-    my Str:D $sectional-inline = '§ Name Of Section To Embed [1010101010101]';
+    my Str:D $sectional-inline = '§ "Name Of Section To Embed" [1010101010101]';
+
+    ok
+        Finn::Parser::Grammar.parse($sectional-inline, :rule<sectional-inline>),
+        'Parses sectional-inline';
+}
+
+subtest
+{
+    my Str:D $sectional-inline = '§ "Name Of Section To Embed" relative-path';
+
+    ok
+        Finn::Parser::Grammar.parse($sectional-inline, :rule<sectional-inline>),
+        'Parses sectional-inline';
+}
+
+subtest
+{
+    my Str:D $sectional-inline = '§ "Name Of Section To Embed" relative/path';
+
+    ok
+        Finn::Parser::Grammar.parse($sectional-inline, :rule<sectional-inline>),
+        'Parses sectional-inline';
+}
+
+subtest
+{
+    my Str:D $sectional-inline = '§ relative-path';
+
+    ok
+        Finn::Parser::Grammar.parse($sectional-inline, :rule<sectional-inline>),
+        'Parses sectional-inline';
+}
+
+subtest
+{
+    my Str:D $sectional-inline = '§ relative/path';
+
+    ok
+        Finn::Parser::Grammar.parse($sectional-inline, :rule<sectional-inline>),
+        'Parses sectional-inline';
+}
+
+subtest
+{
+    my Str:D $sectional-inline = '§ a/b\/c\ d';
+
+    ok
+        Finn::Parser::Grammar.parse($sectional-inline, :rule<sectional-inline>),
+        'Parses sectional-inline';
+}
+
+subtest
+{
+    my Str:D $sectional-inline = Q{§ "z\\" a/b\/c\ d};
+
+    ok
+        Finn::Parser::Grammar.parse($sectional-inline, :rule<sectional-inline>),
+        'Parses sectional-inline';
+}
+
+subtest
+{
+    my Str:D $sectional-inline = '§ file://a';
+
+    ok
+        Finn::Parser::Grammar.parse($sectional-inline, :rule<sectional-inline>),
+        'Parses sectional-inline';
+}
+
+subtest
+{
+    my Str:D $sectional-inline = '§ file://a/b\/c\ d';
+
+    ok
+        Finn::Parser::Grammar.parse($sectional-inline, :rule<sectional-inline>),
+        'Parses sectional-inline';
+}
+
+subtest
+{
+    my Str:D $sectional-inline = '§ "a" file://a';
 
     ok
         Finn::Parser::Grammar.parse($sectional-inline, :rule<sectional-inline>),
