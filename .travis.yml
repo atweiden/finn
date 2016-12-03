@@ -9,12 +9,20 @@ perl6:
 
 sudo: false
 
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - python3
+      - python3-setuptools
+
 env:
     - PATH=~/.rakudobrew/bin:~/.rakudobrew/moar-nom/install/share/perl6/site/bin:~/.rakudobrew/moar-nom/panda/bin:~/.local/bin:$PATH
 
 before_install:
     # install buildinspace/peru
-    - pip install --user $(whoami) peru
+    - pip3 install --user $(whoami) peru
     # get finn-examples
     - cd $TRAVIS_BUILD_DIR
     - peru --file=.peru.yml --sync-dir="$PWD" sync
