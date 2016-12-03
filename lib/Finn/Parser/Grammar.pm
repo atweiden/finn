@@ -314,15 +314,14 @@ token bullet-point:sym«=>» { <sym> }
 
 token list-unordered-item-text-continuation
 {
-    \h*
     <!before
-        | <comment>
-        | <code-block-delimiter-backticks>
-        | <code-block-delimiter-dashes>
+        | <comment-block>
+        | <code-block>
+        | <sectional-block>
         | <horizontal-rule>
-        | [ <checkbox> | <list-ordered-item-number> | <bullet-point> ] \h
+        | <list-item>
     >
-    \S \N*
+    \N+
 }
 
 token list-unordered-item-text
@@ -363,15 +362,14 @@ token list-ordered-item-number
 
 token list-ordered-item-text-continuation
 {
-    \h*
     <!before
-        | <comment>
-        | <code-block-delimiter-backticks>
-        | <code-block-delimiter-dashes>
+        | <comment-block>
+        | <code-block>
+        | <sectional-block>
         | <horizontal-rule>
-        | [ <checkbox> | <list-ordered-item-number> | <bullet-point> ] \h
+        | <list-item>
     >
-    \S \N*
+    \N+
 }
 
 token list-ordered-item-text
@@ -639,16 +637,15 @@ token paragraph-line
 {
     ^^
 
-    \h*
-
     <!before
-        | <code-block-delimiter-backticks>
-        | <code-block-delimiter-dashes>
-        | <list-item>
+        | <comment-block>
+        | <code-block>
+        | <sectional-block>
         | <horizontal-rule>
+        | <list-item>
     >
 
-    <word> [ \h+ <word> ]*
+    \h* <word> [ \h+ <word> ]*
 
     $$
 }
