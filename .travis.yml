@@ -7,16 +7,23 @@ language: perl6
 perl6:
     - latest
 
+python:
+  - "3.5"
+
 sudo: true
 
 env:
     - PATH=~/.rakudobrew/bin:~/.rakudobrew/moar-nom/install/share/perl6/site/bin:~/.rakudobrew/moar-nom/panda/bin:$PATH
 
 before_install:
-    # install https://github.com/buildinspace/peru
-    - sudo add-apt-repository --yes ppa:buildinspace/peru
-    - sudo apt-get --yes update
-    - sudo apt-get --yes install peru
+    # get pip3 for installing buildinspace/peru
+    - sudo apt-get -y install python3-pip python-dev
+    - sudo pip3 install -U setuptools
+    - sudo pip3 install -U virtualenvwrapper
+    - python3 -V
+    - pip3 -V
+    # install buildinspace/peru
+    - sudo pip3 install peru
     # get finn-examples
     - cd $TRAVIS_BUILD_DIR
     - peru --file=.peru.yml --sync-dir="$PWD" sync
