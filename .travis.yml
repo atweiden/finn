@@ -7,15 +7,19 @@ language: perl6
 perl6:
     - latest
 
-sudo: false
+sudo: true
 
 env:
     - PATH=~/.rakudobrew/bin:~/.rakudobrew/moar-nom/install/share/perl6/site/bin:~/.rakudobrew/moar-nom/panda/bin:$PATH
 
 before_install:
+    # install https://github.com/buildinspace/peru
+    - sudo add-apt-repository ppa:buildinspace/peru
+    - sudo apt-get update
+    - sudo apt-get install peru
+    # get finn-examples
     - cd $TRAVIS_BUILD_DIR
-    # get t/data
-    - git clone https://github.com/atweiden/finn-examples t/data
+    - peru --file=.peru.yml --sync-dir="$PWD" sync
 
 install:
     - rakudobrew build panda
