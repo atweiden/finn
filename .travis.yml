@@ -9,24 +9,15 @@ perl6:
 
 sudo: false
 
-addons:
-  apt:
-    sources:
-        - deadsnakes
-        - ubuntu-toolchain-r-test
-    packages:
-        - python3.5
-        - python3-pip
-
 env:
-    - PATH=~/.rakudobrew/bin:~/.rakudobrew/moar-nom/install/share/perl6/site/bin:~/.rakudobrew/moar-nom/panda/bin:~/.local/bin:$PATH
+    - PATH=~/.rakudobrew/bin:~/.rakudobrew/moar-nom/install/share/perl6/site/bin:~/.rakudobrew/moar-nom/panda/bin:$PATH
 
 before_install:
-    # install buildinspace/peru
-    - pip3 install --user peru
-    # get finn-examples
     - cd $TRAVIS_BUILD_DIR
-    - peru --file=.peru.yml --sync-dir="$PWD" sync
+    # get t/data
+    - git clone https://github.com/atweiden/finn-examples t/data
+    - cd t/data
+    - git checkout 70d39d18a694c17657f8a9923a84d68d50e45df1
 
 install:
     - rakudobrew build panda
