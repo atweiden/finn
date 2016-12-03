@@ -20,5 +20,6 @@ before_install:
     - git checkout 70d39d18a694c17657f8a9923a84d68d50e45df1
 
 install:
+    - cd $TRAVIS_BUILD_DIR
     - rakudobrew build panda
     - panda --notests installdeps .
