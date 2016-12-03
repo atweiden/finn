@@ -22,7 +22,7 @@ env:
 
 before_install:
     # install buildinspace/peru
-    - pip3 install --user $(whoami) peru
+    - easy_install3 --user peru
     # get finn-examples
     - cd $TRAVIS_BUILD_DIR
     - peru --file=.peru.yml --sync-dir="$PWD" sync
