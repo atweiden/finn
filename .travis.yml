@@ -14,9 +14,9 @@ env:
 
 before_install:
     # install https://github.com/buildinspace/peru
-    - sudo add-apt-repository ppa:buildinspace/peru
-    - sudo apt-get update
-    - sudo apt-get install peru
+    - sudo add-apt-repository --yes ppa:buildinspace/peru
+    - sudo apt-get --yes update
+    - sudo apt-get --yes install peru
     # get finn-examples
     - cd $TRAVIS_BUILD_DIR
     - peru --file=.peru.yml --sync-dir="$PWD" sync
