@@ -21,9 +21,8 @@ programming language. Sectional Blocks are by default privately scoped
 to the file in which they're declared, but they can be exported and
 then referenced outside of the file in which they're declared.
 
-The third key difference is that Sectional Blocks, if specially marked,
-generate files on-disk from Sectional Block Content. This enables Finn
-to generate a full codebase from its source files.
+The third key difference is that Sectional Blocks, if specially named,
+generate files on-disk from Sectional Block Content.
 
 A basic Sectional Block looks like this:
 
@@ -48,8 +47,7 @@ Or this:
     ```
 
 In the above Sectional Blocks, `Name` is the Sectional Block
-Name. `content` is the Sectional Block Content. The Sectional Block
-Delimiters would be the triple dashes or triple backticks.
+Name. `content` is the Sectional Block Content.
 
 The above Sectional Blocks are privately scoped, i.e. they can't be
 modified or referenced from any other Finn source file. They are limited
@@ -103,7 +101,7 @@ my Str $greeting = 'Hello, World';
 *Sectional Inlines* begin with a Section Sign (`§`). The Section Sign
 must appear at the start of a line, although it may be offset by leading
 whitespace. If it is offset by whitespace, the content being embedded
-will be soft-indented by an equal amount of leading whitespace.
+will be indented by an equal amount of leading soft or hard tabs.
 
 The Section Sign must be followed by exactly one horizontal
 whitespace. Sectional Inlines come in two flavors:
@@ -112,9 +110,9 @@ whitespace. Sectional Inlines come in two flavors:
 2. Inter-file
 
 Depending on the flavor of Sectional Inline, the horizontal whitespace
-following the Section sign must be followed by either a Sectional Block
-Name, a Sectional Block Name plus a file path, or just a file path. An
-*Inline Reference* can take the place of the file path.
+following the Section sign must be followed by either a quoted Sectional
+Block Name, a quoted Sectional Block Name plus a file path, or just a
+file path. An *Inline Reference* can take the place of the file path.
 
 ### Intra-file Sectional Inlines
 
@@ -133,7 +131,7 @@ Example:
 
 ```finn
 --- Cities By State
-§ Cities in Washington
+§ "Cities in Washington"
 ---
 
 --- Cities in Washington
@@ -172,14 +170,14 @@ Name. Given:
 The following Finn source code will render `- A is for Anaheim.`:
 
 ```finn
-§ Cities Beginning with the Letter A /finn/cities-in-ca/a-through-f.finn
+§ "Cities Beginning with the Letter A" /finn/cities-in-ca/a-through-f.finn
 ```
 
 Or, equivalently with an *Inline Reference* (`[1]`) taking place of the
 file path:
 
 ```finn
-§ Cities Beginning with the Letter A [1]
+§ "Cities Beginning with the Letter A" [1]
 
 
 ******************************************************************************
@@ -207,7 +205,7 @@ Sprinkle in Mrs. Dash, Salt and Pepper.
 To reference an exported Sectional Block from `finn/share/recipes.finn`:
 
 ```finn
-§ Egg Recipe [1]
+§ "Egg Recipe" [1]
 
 
 ******************************************************************************
@@ -218,14 +216,14 @@ To reference an exported Sectional Block from `finn/share/recipes.finn`:
 Or, equivalently:
 
 ```finn
-§ Egg Recipe /finn/share/recipes.finn
+§ 'Egg Recipe' /finn/share/recipes.finn
 ```
 
 Compiler error, `Secret Sauce` Sectional Block not exported from Finn
 source file:
 
 ```finn
-§ Secret Sauce /finn/share/recipes.finn
+§ "Secret Sauce" /finn/share/recipes.finn
 ```
 
 This type of Sectional Inline can appear inside and outside of Sectional
@@ -278,9 +276,9 @@ Example:
 
 ```finn
 --- Cities in Washington
-§ A
-§ B
-§ C
+§ "A"
+§ "B"
+§ "C"
 ---
 
 --- A
@@ -450,8 +448,9 @@ using the additive or redefine operators (`+=`, `:=` respectively).
 
 ## Sectional Links
 
-To link to a Sectional Block from prose, surround the sectional block name
-with vertical bars `|`. This is designed to be reminiscent of `vimdoc`.
+To link to a Sectional Block from prose, surround the sectional block
+name with vertical bars `|`. This is designed to be reminiscent of
+`vimdoc`. As with Sectional Inlines, Sectional Block Names must be quoted.
 
 Example:
 
@@ -471,7 +470,7 @@ Then we print the name:
 $CFG.name.say;
 ---
 
-For the `$CFG` global, see |Define Globals|.
+For the `$CFG` global, see |"Define Globals"|.
 ```
 
 Example with exported Sectional Block:
@@ -492,7 +491,7 @@ Hola
 ```
 
 ```finn
-See the Chinese example at |Chinese /finn/hello|.
+See the Chinese example at |'Chinese' /finn/hello|.
 ```
 
 
