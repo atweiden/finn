@@ -10,8 +10,7 @@ Inspired by [vim-journal] and [Literate].
 **cmdline**
 
 ```sh
-# assemble story
-finn
+finn make path/to/finn/source/file
 ```
 
 **perl6**
@@ -19,13 +18,12 @@ finn
 ```perl6
 use Finn;
 my Str $file = 'Story';
-my Str $config-file = 'finn.toml';
 
 # get AST
 my Finn::Parser::AST $finn = Finn::Parser.parsefile($file).made;
 
-# assemble storyline programmatically
-Finn.assemble(:$file, :$config-file);
+# compile
+Finn.make(:$file);
 ```
 
 
@@ -37,7 +35,8 @@ a superset of [vim-journal].
 Literate is designed to produce HTML documentation. Finn is designed
 to look pretty in Vim.
 
-Literate source files contain embedded frontmatter. Finn avoids this.
+Literate source files contain embedded frontmatter. Finn source files
+don't.
 
 
 ## Installation
