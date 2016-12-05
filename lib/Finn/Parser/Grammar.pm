@@ -155,29 +155,19 @@ token gap:comment { <.comment> \h* $$ \n }
 # end gap }}}
 # header {{{
 
-# allow headers that are bolded or italicized
-token bold-italic-combo
-{
-    '*' ** 1..2 \w
-}
-
 token header-text
 {
-    # C<<header-text>> cannot contain leading whitespace
-    #
-    # C<<header-text>> will be construed as C<<list-unordered-item>>,
-    # C<<list-todo>>, C<<list-ordered-item>> or C<<sectional-inline>>
-    # in the presence of a leading C<<bullet-point>>, C<<checkbox>>,
-    # C<<list-ordered-item-number>> or C<<section-sign>> respectively
-    <+[\S]
-     -bullet-point
-     +bold-italic-combo
-     -checkbox
-     -comment
-     -list-ordered-item-number
-     -section-sign>
+    <!before
+        | <comment>
+        | <code-block>
+        | <sectional-block>
+        | <sectional-inline-block>
+        | <horizontal-rule>
+        | <list-item>
+    >
 
-    \N*
+    # C<<header-text>> cannot contain leading whitespace
+    \S \N*
 }
 
 token header1
