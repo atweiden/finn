@@ -1,9 +1,16 @@
 # Syntax
 
-Finn is a superset of [vim-journal]'s syntax. The biggest difference from
-[vim-journal] is the concept of a Sectional Block, which is a modified
-[vim-journal] code block that receives special treatment from the Finn
-compiler.
+## Overview
+
+Finn's syntax is a superset of [vim-journal]'s syntax.
+
+The main addition to [vim-journal]'s syntax is the Sectional Block,
+which is a modified [vim-journal] code block that receives special
+treatment from the Finn compiler.
+
+Finn also adds Sectional Inlines and Sectional Links, which are similar
+to Haml *include directives* and Vimdoc hot-links (vim: `:h help-writing`)
+respectively.
 
 
 ## Sectional Blocks
@@ -450,7 +457,8 @@ using the additive or redefine operators (`+=`, `:=` respectively).
 
 To link to a Sectional Block from prose, surround the sectional block
 name with vertical bars `|`. This is designed to be reminiscent of
-`vimdoc`. As with Sectional Inlines, Sectional Block Names must be quoted.
+Vimdoc hot-links. As with Sectional Inlines, Sectional Block Names must
+be quoted.
 
 Example:
 
