@@ -85,7 +85,7 @@ subtest 'finn-examples/app',
     is-deeply ~$match<document><chunk>[17]<horizontal-rule>, @chunk[22];
     ok $match<document><chunk>[18].isa(Any);
 
-    # @chunk tests }}}
+    # end @chunk tests }}}
 }
 
 subtest 'finn-examples/hangman',
@@ -394,7 +394,7 @@ subtest 'finn-examples/hangman',
     is-deeply ~$match<document><chunk>[56]<reference-block>, @chunk[66];
     ok $match<document><chunk>[57].isa(Any);
 
-    # @chunk tests }}}
+    # end @chunk tests }}}
 }
 
 subtest 'finn-examples/hard',
@@ -769,7 +769,7 @@ subtest 'finn-examples/hard',
     is-deeply ~$match<document><chunk>[71]<reference-block>, @chunk[85];
     ok $match<document><chunk>[72].isa(Any);
 
-    # @chunk tests }}}
+    # end @chunk tests }}}
 }
 
 subtest 'finn-examples/hello',
@@ -868,7 +868,7 @@ subtest 'finn-examples/hello',
     is-deeply ~$match<document><chunk>[17]<sectional-block>, @chunk[22];
     ok $match<document><chunk>[18].isa(Any);
 
-    # @chunk tests }}}
+    # end @chunk tests }}}
 }
 
 subtest 'finn-examples/novel',
@@ -937,7 +937,7 @@ subtest 'finn-examples/novel',
     is-deeply ~$match<document><chunk>[13]<header-block><header>, @chunk[18];
     ok $match<document><chunk>[14].isa(Any);
 
-    # @chunk tests }}}
+    # end @chunk tests }}}
 }
 
 subtest 'finn-examples/sample',
@@ -1114,7 +1114,7 @@ subtest 'finn-examples/sample',
     is-deeply ~$match<document><chunk>[32]<reference-block>, @chunk[38];
     ok $match<document><chunk>[33].isa(Any);
 
-    # @chunk tests }}}
+    # end @chunk tests }}}
 }
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:
