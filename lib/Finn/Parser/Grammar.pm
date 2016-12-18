@@ -75,17 +75,17 @@ In general, I<block text> may contain certain I<inline text> types.
 
 # --- chunk {{{
 
-proto token chunk {*}
+proto token chunk                  {*}
 token chunk:sectional-inline-block { <sectional-inline-block> }
-token chunk:sectional-block { <sectional-block> }
-token chunk:code-block { <code-block> }
-token chunk:reference-block { <reference-block> }
-token chunk:header-block { <header-block> }
-token chunk:list-block { <list-block> }
-token chunk:paragraph-block { <paragraph> }
-token chunk:horizontal-rule { <horizontal-rule> }
-token chunk:comment-block { <comment-block> }
-token chunk:blank-line { <blank-line> }
+token chunk:sectional-block        { <sectional-block> }
+token chunk:code-block             { <code-block> }
+token chunk:reference-block        { <reference-block> }
+token chunk:header-block           { <header-block> }
+token chunk:list-block             { <list-block> }
+token chunk:paragraph-block        { <paragraph> }
+token chunk:horizontal-rule        { <horizontal-rule> }
+token chunk:comment-block          { <comment-block> }
+token chunk:blank-line             { <blank-line> }
 
 # --- end chunk }}}
 
@@ -194,6 +194,8 @@ token header3
 
     $$
 
+    # C<<header3>> also can't come before a C<<paragraph-line>>,
+    # but it can come before a C<<list-block>> and other blocks
     <!before <.gap> <paragraph-line>>
 }
 
@@ -202,9 +204,9 @@ token header:h1 { <header1> }
 token header:h2 { <header2> }
 token header:h3 { <header3> }
 
-# C<<header-block>> must be separated from other text blocks with a
-# C<<blank-line>>, C<<comment-block>> or C<<horizontal-rule>>, or it
-# must appear at the very top of the document
+# C<<header-block>> must be separated from text blocks above it
+# with a C<<blank-line>>, C<<comment-block>> or C<<horizontal-rule>>,
+# or the header must appear at the very top of the document
 proto token header-block {*}
 
 token header-block:top
@@ -281,20 +283,20 @@ token list-todo-item
 
 # --- --- bullet-point {{{
 
-proto token bullet-point {*}
-token bullet-point:sym<-> { <sym> }
-token bullet-point:sym<@> { <sym> }
-token bullet-point:sym<#> { <sym> }
-token bullet-point:sym<$> { <sym> }
-token bullet-point:sym<*> { <sym> }
-token bullet-point:sym<:> { <sym> }
-token bullet-point:sym<x> { <sym> }
-token bullet-point:sym<o> { <sym> }
-token bullet-point:sym<+> { <sym> }
-token bullet-point:sym<=> { <sym> }
-token bullet-point:sym<!> { <sym> }
-token bullet-point:sym<~> { <sym> }
-token bullet-point:sym«>» { <sym> }
+proto token bullet-point   {*}
+token bullet-point:sym<->  { <sym> }
+token bullet-point:sym<@>  { <sym> }
+token bullet-point:sym<#>  { <sym> }
+token bullet-point:sym<$>  { <sym> }
+token bullet-point:sym<*>  { <sym> }
+token bullet-point:sym<:>  { <sym> }
+token bullet-point:sym<x>  { <sym> }
+token bullet-point:sym<o>  { <sym> }
+token bullet-point:sym<+>  { <sym> }
+token bullet-point:sym<=>  { <sym> }
+token bullet-point:sym<!>  { <sym> }
+token bullet-point:sym<~>  { <sym> }
+token bullet-point:sym«>»  { <sym> }
 token bullet-point:sym«<-» { <sym> }
 token bullet-point:sym«<=» { <sym> }
 token bullet-point:sym«->» { <sym> }
@@ -337,7 +339,7 @@ token list-ordered-item-number-value
     \d+
 }
 
-proto token list-ordered-item-number-terminator {*}
+proto token list-ordered-item-number-terminator  {*}
 token list-ordered-item-number-terminator:sym<.> { <sym> }
 token list-ordered-item-number-terminator:sym<:> { <sym> }
 token list-ordered-item-number-terminator:sym<)> { <sym> }
@@ -377,10 +379,10 @@ token list-ordered-item
 
 # --- end list-ordered-item }}}
 
-proto token list-item {*}
+proto token list-item     {*}
 token list-item:unordered { <list-unordered-item> }
-token list-item:todo { <list-todo-item> }
-token list-item:ordered { <list-ordered-item> }
+token list-item:todo      { <list-todo-item> }
+token list-item:ordered   { <list-ordered-item> }
 
 token list-block
 {
@@ -479,7 +481,6 @@ token sectional-block-name-text-char
     <+[\w] +[,.¡!¿?\'\"“”‘’@\#$%^&`\\]>
 }
 
-
 token sectional-block-name-text-word
 {
     <sectional-block-name-text-char>+
@@ -503,7 +504,7 @@ token sectional-block-name-annot-export
     '*'
 }
 
-proto token sectional-block-name-operator {*}
+proto token sectional-block-name-operator    {*}
 token sectional-block-name-operator:additive { '+=' }
 token sectional-block-name-operator:redefine { ':=' }
 
@@ -670,8 +671,8 @@ token horizontal-rule-hard
 }
 
 proto token horizontal-rule {*}
-token horizontal-rule:soft { <horizontal-rule-soft> }
-token horizontal-rule:hard { <horizontal-rule-hard> }
+token horizontal-rule:soft  { <horizontal-rule-soft> }
+token horizontal-rule:hard  { <horizontal-rule-hard> }
 
 # end horizontal-rule }}}
 
@@ -784,8 +785,8 @@ token strikethrough
 # end strikethrough }}}
 # boolean {{{
 
-proto token boolean {*}
-token boolean:sym<true> { <sym> }
+proto token boolean      {*}
+token boolean:sym<true>  { <sym> }
 token boolean:sym<false> { <sym> }
 
 # end boolean }}}
@@ -793,7 +794,7 @@ token boolean:sym<false> { <sym> }
 
 # --- weekday {{{
 
-proto token weekday {*}
+proto token weekday    {*}
 token weekday:sym<MON> { <sym> }
 token weekday:sym<TUE> { <sym> }
 token weekday:sym<WED> { <sym> }
@@ -808,7 +809,7 @@ token weekday:sym<Fri> { <sym> }
 # --- end weekday }}}
 # --- weekend {{{
 
-proto token weekend {*}
+proto token weekend    {*}
 token weekend:sym<SAT> { <sym> }
 token weekend:sym<SUN> { <sym> }
 token weekend:sym<Sat> { <sym> }
@@ -817,7 +818,7 @@ token weekend:sym<Sun> { <sym> }
 # --- end weekend }}}
 # --- month {{{
 
-proto token month {*}
+proto token month    {*}
 token month:sym<JAN> { <sym> }
 token month:sym<FEB> { <sym> }
 token month:sym<MAR> { <sym> }
@@ -861,7 +862,7 @@ token date-mday
     0 <[1..9]> | <[1..2]> \d | 3 <[0..1]>
 }
 
-proto token full-date-separator {*}
+proto token full-date-separator  {*}
 token full-date-separator:sym<-> { <sym> }
 token full-date-separator:sym</> { <sym> }
 
@@ -909,25 +910,25 @@ token partial-time
 # end datetime }}}
 # callout {{{
 
-proto token callout {*}
+proto token callout      {*}
 token callout:sym<FIXME> { <sym> }
-token callout:sym<TODO> { <sym> }
-token callout:sym<XXX> { <sym> }
+token callout:sym<TODO>  { <sym> }
+token callout:sym<XXX>   { <sym> }
 
 # end callout }}}
 # log-level {{{
 
-proto token log-level-ignore {*}
+proto token log-level-ignore      {*}
 token log-level-ignore:sym<DEBUG> { <sym> }
 token log-level-ignore:sym<TRACE> { <sym> }
 
-proto token log-level-info {*}
+proto token log-level-info     {*}
 token log-level-info:sym<INFO> { <sym> }
 
-proto token log-level-warn {*}
+proto token log-level-warn     {*}
 token log-level-warn:sym<WARN> { <sym> }
 
-proto token log-level-error {*}
+proto token log-level-error      {*}
 token log-level-error:sym<ERROR> { <sym> }
 token log-level-error:sym<FATAL> { <sym> }
 
@@ -987,16 +988,16 @@ token hex
 # \\         - backslash       (U+005C)
 # \uXXXX     - unicode         (U+XXXX)
 # \UXXXXXXXX - unicode         (U+XXXXXXXX)
-proto token escape {*}
-token escape:sym<b> { <sym> }
-token escape:sym<t> { <sym> }
-token escape:sym<n> { <sym> }
-token escape:sym<f> { <sym> }
-token escape:sym<r> { <sym> }
-token escape:sym<quote> { \" }
+proto token escape          {*}
+token escape:sym<b>         { <sym> }
+token escape:sym<t>         { <sym> }
+token escape:sym<n>         { <sym> }
+token escape:sym<f>         { <sym> }
+token escape:sym<r>         { <sym> }
+token escape:sym<quote>     { \" }
 token escape:sym<backslash> { \\ }
-token escape:sym<u> { <sym> <hex> ** 4 }
-token escape:sym<U> { <sym> <hex> ** 8 }
+token escape:sym<u>         { <sym> <hex> ** 4 }
+token escape:sym<U>         { <sym> <hex> ** 8 }
 
 # --- --- end escape }}}
 
@@ -1044,8 +1045,8 @@ token string-literal
 
 # --- end string-literal }}}
 
-proto token string {*}
-token string:basic { <string-basic> }
+proto token string   {*}
+token string:basic   { <string-basic> }
 token string:literal { <string-literal> }
 
 # end string }}}
@@ -1108,23 +1109,23 @@ token file-path-char:escape-sequence
 # \}         - right brace     (U+007d)
 # \uXXXX     - unicode         (U+XXXX)
 # \UXXXXXXXX - unicode         (U+XXXXXXXX)
-proto token file-path-escape {*}
-token file-path-escape:sym<whitespace> { \h }
-token file-path-escape:sym<b> { <sym> }
-token file-path-escape:sym<t> { <sym> }
-token file-path-escape:sym<n> { <sym> }
-token file-path-escape:sym<f> { <sym> }
-token file-path-escape:sym<r> { <sym> }
+proto token file-path-escape             {*}
+token file-path-escape:sym<whitespace>   { \h }
+token file-path-escape:sym<b>            { <sym> }
+token file-path-escape:sym<t>            { <sym> }
+token file-path-escape:sym<n>            { <sym> }
+token file-path-escape:sym<f>            { <sym> }
+token file-path-escape:sym<r>            { <sym> }
 token file-path-escape:sym<single-quote> { \' }
 token file-path-escape:sym<double-quote> { \" }
-token file-path-escape:sym<fwdslash> { '/' }
-token file-path-escape:sym<backslash> { \\ }
-token file-path-escape:sym<[> { <sym> }
-token file-path-escape:sym<]> { <sym> }
-token file-path-escape:sym<{> { <sym> }
-token file-path-escape:sym<}> { <sym> }
-token file-path-escape:sym<u> { <sym> <hex> ** 4 }
-token file-path-escape:sym<U> { <sym> <hex> ** 8 }
+token file-path-escape:sym<fwdslash>     { '/' }
+token file-path-escape:sym<backslash>    { \\ }
+token file-path-escape:sym<[>            { <sym> }
+token file-path-escape:sym<]>            { <sym> }
+token file-path-escape:sym<{>            { <sym> }
+token file-path-escape:sym<}>            { <sym> }
+token file-path-escape:sym<u>            { <sym> <hex> ** 4 }
+token file-path-escape:sym<U>            { <sym> <hex> ** 8 }
 
 token file-path-absolute
 {
@@ -1151,7 +1152,7 @@ token file-relative
     'file://'? <file-path-relative>
 }
 
-proto token file {*}
+proto token file    {*}
 token file:absolute { <file-absolute> }
 token file:relative { <file-relative> }
 
