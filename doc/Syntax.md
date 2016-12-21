@@ -502,5 +502,103 @@ Hola
 See the Chinese example at |'Chinese' /finn/hello|.
 ```
 
+## Reference Inlines
+
+A Reference Inline is the `[1]` in the following example:
+
+```finn
+See: foobar [1].
+```
+
+It tells the reader to reference the given *Reference Inline Number*
+(in this case `1`), to find out more about something (in this case,
+to find out more about `foobar`).
+
+If multiple Reference Inlines are to be given at a certain point in a Finn
+source document, the Reference Inlines can appear adjacent to one another:
+
+```finn
+See: foobar [1][2][3].
+```
+
+These are all valid Reference Inlines:
+
+```finn
+[0]
+ae[7]ea
+foobar[9].
+foobar[0]all[2000]the[10101010]live[1]long[7]day.
+![10000]
+```
+
+### Reference Inline Numbers
+
+Reference Inline Numbers must be natural numbers zero or greater. Negative
+numbers are not allowed. Leading zeroes are not allowed. Thousand
+separators are not allowed.
+
+
+## Reference Blocks
+
+Reference Blocks consist of a `horizontal-rule-hard`, followed by
+Reference Block Lines which are lines containing a Reference Inline
+(`[1]`), followed by a colon (`:`), followed by exactly one horizontal
+whitespace, followed by text. There can be an unlimited number of these
+lines in a Reference Block. Lines can be given one after the other and/or
+separated by blank lines or comment lines.
+
+Examples follow:
+
+```finn
+******************************************************************************
+
+[1]: https://foobar.info
+```
+
+```finn
+******************************************************************************
+[1000]: https://foobar.info
+```
+
+```finn
+******************************************************************************
+
+
+[1000]: https://foobar.info
+
+a paragraph line. new sectional-block below:
+
+******************************************************************************
+[9999]: So sayeth we.
+
+
+******************************************************************************
+/* twice */
+[10000]: So sayeth we.
+[10001]: So sayeth we.
+
+/*
+ * thrice
+ * thrice
+ * thrice
+ */
+
+[10002]: So sayeth we.
+[10003]: So sayeth we.
+[10004]: So sayeth we.
+```
+
+Reference Blocks may appear anywhere in a Finn source document, and
+can appear multiple times in the same file. The convention, however,
+is to have a single Reference Block at the very bottom of a Finn source
+document as needed.
+
+Reference Blocks are always privately scoped to the file in which they
+appear. Reference blocks in one Finn source file cannot be added to,
+redefined or referenced from any other Finn source file.
+
+If duplicate Reference Inline Numbers are encountered in a Finn source
+file, the last seen Reference Inline Number will take precedence.
+
 
 [vim-journal]: https://github.com/junegunn/vim-journal
