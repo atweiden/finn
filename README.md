@@ -19,11 +19,11 @@ finn make path/to/finn/source/file
 use Finn;
 my Str $file = 'Story';
 
-# get AST
-my Finn::Parser::AST $finn = Finn::Parser.parsefile($file).made;
+# get parse tree
+my Finn::Parser::ParseTree:D $parse-tree = Finn::Parser.parsefile($file).made;
 
-# compile
-Finn.make(:$file);
+# tangle
+Finn.tangle(:$file);
 ```
 
 

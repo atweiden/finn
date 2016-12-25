@@ -12,7 +12,7 @@ Finn::Parser::Grammar
 
 =begin code
 use Finn::Parser::Grammar;
-my $match = Finn::Parser::Grammar.parse('text');
+my Match:D $match = Finn::Parser::Grammar.parse('text');
 =end code
 
 =head DESCRIPTION
@@ -393,20 +393,22 @@ token list-block
 # end list-block }}}
 # reference-block {{{
 
-token reference-block-line-text
+token reference-block-reference-line-text
 {
     \N+
 }
 
-token reference-block-line
+token reference-block-reference-line
 {
-    ^^ <reference-inline> ':' \h <reference-block-line-text> $$
+    ^^ <reference-inline> ':' \h <reference-block-reference-line-text> $$
 }
 
 token reference-block
 {
-    <horizontal-rule-hard> <.gap>+
-    <reference-block-line> [ <.gap>+ <reference-block-line> ]*
+    <horizontal-rule-hard>
+    <.gap>+
+    <reference-block-reference-line>
+    [ <.gap>+ <reference-block-reference-line> ]*
 }
 
 # end reference-block }}}
@@ -1065,6 +1067,8 @@ token url
 # end url }}}
 # file {{{
 
+# --- file-path-char {{{
+
 proto token file-path-char {*}
 
 token file-path-char:common
@@ -1090,6 +1094,9 @@ token file-path-char:escape-sequence
         }
     ]
 }
+
+# --- end file-path-char }}}
+# --- file-path-escape {{{
 
 # For convenience, some popular characters have a compact escape sequence.
 #
@@ -1127,19 +1134,25 @@ token file-path-escape:sym<}>            { <sym> }
 token file-path-escape:sym<u>            { <sym> <hex> ** 4 }
 token file-path-escape:sym<U>            { <sym> <hex> ** 8 }
 
+# --- end file-path-escape }}}
+# --- file-protocol {{{
+
+token file-protocol
+{
+    'file://'
+}
+
+# --- end file-protocol }}}
+# --- file-absolute {{{
+
 token file-path-absolute
 {
     '/' <file-path-char>+ <file-path-absolute>*
 }
 
-token file-path-relative
-{
-    <file-path-char>+ <file-path-absolute>*
-}
-
 token file-absolute
 {
-    'file://'?
+    <file-protocol>?
     [
         | '~'? <file-path-absolute>
         | '~'
@@ -1147,10 +1160,20 @@ token file-absolute
     ]
 }
 
+# --- end file-absolute }}}
+# --- file-relative {{{
+
+token file-path-relative
+{
+    <file-path-char>+ <file-path-absolute>*
+}
+
 token file-relative
 {
-    'file://'? <file-path-relative>
+    <file-protocol>? <file-path-relative>
 }
+
+# --- end file-relative }}}
 
 proto token file    {*}
 token file:absolute { <file-absolute> }
