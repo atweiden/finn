@@ -126,7 +126,8 @@ method document($/)
 
 multi method TOP($/ where $<document>.so)
 {
-    make $<document>.made;
+    my Chunk:D @chunk = $<document>.made;
+    make Finn::Parser::ParseTree.new(:@chunk);
 }
 
 multi method TOP($/)
@@ -321,17 +322,17 @@ multi method header-block:dispersed ($/ where { $<header>.made ~~ Header[3] })
 
 # --- --- --- checkbox-checked {{{
 
-method checkbox-checked-char:sym<x> ($/)
+method checkbox-checked-char:sym<x>($/)
 {
     make ~$/;
 }
 
-method checkbox-checked-char:sym<o> ($/)
+method checkbox-checked-char:sym<o>($/)
 {
     make ~$/;
 }
 
-method checkbox-checked-char:sym<v> ($/)
+method checkbox-checked-char:sym<v>($/)
 {
     make ~$/;
 }
@@ -344,17 +345,17 @@ method checkbox-checked($/)
 # --- --- --- end checkbox-checked }}}
 # --- --- --- checkbox-etc {{{
 
-method checkbox-etc-char:sym<+> ($/)
+method checkbox-etc-char:sym<+>($/)
 {
     make ~$/;
 }
 
-method checkbox-etc-char:sym<=> ($/)
+method checkbox-etc-char:sym<=>($/)
 {
     make ~$/;
 }
 
-method checkbox-etc-char:sym<-> ($/)
+method checkbox-etc-char:sym<->($/)
 {
     make ~$/;
 }
@@ -367,12 +368,12 @@ method checkbox-etc($/)
 # --- --- --- end checkbox-etc }}}
 # --- --- --- checkbox-exception {{{
 
-method checkbox-exception-char:sym<*> ($/)
+method checkbox-exception-char:sym<*>($/)
 {
     make ~$/;
 }
 
-method checkbox-exception-char:sym<!> ($/)
+method checkbox-exception-char:sym<!>($/)
 {
     make ~$/;
 }
@@ -429,87 +430,87 @@ method list-todo-item($/)
 
 # --- --- bullet-point {{{
 
-method bullet-point:sym<-> ($/)
+method bullet-point:sym<->($/)
 {
     make ~$/;
 }
 
-method bullet-point:sym<@> ($/)
+method bullet-point:sym<@>($/)
 {
     make ~$/;
 }
 
-method bullet-point:sym<#> ($/)
+method bullet-point:sym<#>($/)
 {
     make ~$/;
 }
 
-method bullet-point:sym<$> ($/)
+method bullet-point:sym<$>($/)
 {
     make ~$/;
 }
 
-method bullet-point:sym<*> ($/)
+method bullet-point:sym<*>($/)
 {
     make ~$/;
 }
 
-method bullet-point:sym<:> ($/)
+method bullet-point:sym<:>($/)
 {
     make ~$/;
 }
 
-method bullet-point:sym<x> ($/)
+method bullet-point:sym<x>($/)
 {
     make ~$/;
 }
 
-method bullet-point:sym<o> ($/)
+method bullet-point:sym<o>($/)
 {
     make ~$/;
 }
 
-method bullet-point:sym<+> ($/)
+method bullet-point:sym<+>($/)
 {
     make ~$/;
 }
 
-method bullet-point:sym<=> ($/)
+method bullet-point:sym<=>($/)
 {
     make ~$/;
 }
 
-method bullet-point:sym<!> ($/)
+method bullet-point:sym<!>($/)
 {
     make ~$/;
 }
 
-method bullet-point:sym<~> ($/)
+method bullet-point:sym<~>($/)
 {
     make ~$/;
 }
 
-method bullet-point:sym«>» ($/)
+method bullet-point:sym«>»($/)
 {
     make ~$/;
 }
 
-method bullet-point:sym«<-» ($/)
+method bullet-point:sym«<-»($/)
 {
     make ~$/;
 }
 
-method bullet-point:sym«<=» ($/)
+method bullet-point:sym«<=»($/)
 {
     make ~$/;
 }
 
-method bullet-point:sym«->» ($/)
+method bullet-point:sym«->»($/)
 {
     make ~$/;
 }
 
-method bullet-point:sym«=>» ($/)
+method bullet-point:sym«=>»($/)
 {
     make ~$/;
 }
@@ -554,17 +555,17 @@ method list-ordered-item-number-value($/)
     make ~$/;
 }
 
-method list-ordered-item-number-terminator:sym<.> ($/)
+method list-ordered-item-number-terminator:sym<.>($/)
 {
     make ~$/;
 }
 
-method list-ordered-item-number-terminator:sym<:> ($/)
+method list-ordered-item-number-terminator:sym<:>($/)
 {
     make ~$/;
 }
 
-method list-ordered-item-number-terminator:sym<)> ($/)
+method list-ordered-item-number-terminator:sym<)>($/)
 {
     make ~$/;
 }
