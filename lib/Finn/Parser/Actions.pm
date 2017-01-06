@@ -641,7 +641,6 @@ method list-block($/)
 # horizontal-rule {{{
 
 # end horizontal-rule }}}
-# XXX redo comment-block in spirit of header-block
 # comment-block {{{
 
 method comment-delimiter-opening($/)
@@ -661,30 +660,36 @@ method comment-text($/)
 
 method comment($/)
 {
-    make
-        $<comment-delimiter-opening>.made
-        ~ $<comment-text>.made
-        ~ $<comment-delimiter-closing>.made;
+    my Str:D $content = $/.orig;
+    my Str:D $comment-delimiter-opening = $<comment-delimiter-opening>.made;
+    my Str:D $comment-delimiter-closing = $<comment-delimiter-closing>.made;
+    my Str:D $comment-text = $<comment-text>.made;
+    make Comment.new(
+        :$content,
+        :$comment-delimiter-opening,
+        :$comment-delimiter-closing,
+        :$comment-text
+    );
 }
 
 method comment-block($/)
 {
     my Bounds:D $bounds = gen-bounds();
-    make Chunk::CommentBlock.new(
-        :$bounds,
-        :content($<comment>.made),
-        :section(0)
-    );
+    my Str:D $content = $/.orig;
+    my UInt:D $section = 0;
+    my Comment:D $comment = $<comment>.made;
+    make Chunk::CommentBlock.new(:$bounds, :$content, :$section, :$comment);
 }
 
 # end comment-block }}}
-# XXX redo blank-link in spirit of header-block
 # blank-line {{{
 
 method blank-line($/)
 {
     my Bounds:D $bounds = gen-bounds();
-    make Chunk::BlankLine.new(:$bounds, :content($/.orig), :section(0));
+    my Str:D $content = $/.orig;
+    my UInt:D $section = 0;
+    make Chunk::BlankLine.new(:$bounds, :$content, :$section);
 }
 
 # end blank-line }}}

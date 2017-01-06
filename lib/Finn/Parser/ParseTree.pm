@@ -71,9 +71,19 @@ role Content
 =head Inline Text
 =end pod
 
+# role Comment {{{
+
+role Comment does Content
+{
+    has Str:D $.comment-delimiter-opening is required;
+    has Str:D $.comment-delimiter-closing is required;
+    has Str:D $.comment-text is required;
+}
+
+# end role Comment }}}
 # role File {{{
 
-role File::Path does Content
+role File::Path
 {
     has IO::Path:D $.path is required;
 }
@@ -85,10 +95,10 @@ role File::Protocol
     has Str:D $.protocol is required;
 }
 
-role File['Absolute']             does File::Path {*}
-role File['Absolute', 'Protocol'] does File::Path does File::Protocol {*}
-role File['Relative']             does File::Path {*}
-role File['Relative', 'Protocol'] does File::Path does File::Protocol {*}
+role File['Absolute']             does Content does File::Path {*}
+role File['Absolute', 'Protocol'] does Content does File::Path does File::Protocol {*}
+role File['Relative']             does Content does File::Path {*}
+role File['Relative', 'Protocol'] does Content does File::Path does File::Protocol {*}
 
 # end role File }}}
 # role Header {{{
@@ -312,7 +322,10 @@ role Chunk::HorizontalRule['Soft'] does Chunk {*}
 # end role Chunk::HorizontalRule }}}
 # role Chunk::CommentBlock {{{
 
-role Chunk::CommentBlock does Chunk {*}
+role Chunk::CommentBlock does Chunk
+{
+    has Comment:D $.comment is required;
+}
 
 # end role Chunk::CommentBlock }}}
 # role Chunk::BlankLine {{{
