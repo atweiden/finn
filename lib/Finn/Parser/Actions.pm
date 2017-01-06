@@ -946,7 +946,7 @@ multi method file-absolute($/)
 {
     my Str:D $content = $/.orig;
     my IO::Path:D $path = IO::Path.new($<file-path-absolute>.made);
-    make File['Absolute', 'Protocol'].new(:$content, :$path);
+    make File['Absolute'].new(:$content, :$path);
 }
 
 # --- end file-absolute }}}
