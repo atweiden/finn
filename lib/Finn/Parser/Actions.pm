@@ -146,44 +146,43 @@ multi method TOP($/)
 
 method sectional-inline-text:name-and-file ($/)
 {
-    make SectionalInline['Name', 'File'].new(
-        :content($/.orig),
-        :name($<sectional-inline-name>.made),
-        :file($<sectional-inline-file>.made)
-    );
+    my Str:D $content = $/.orig;
+    my Str:D $name = $<sectional-inline-name>.made;
+    my File:D $file = $<sectional-inline-file>.made;
+    make SectionalInline['Name', 'File'].new(:$content, :$name, :$file);
 }
 
 method sectional-inline-text:name-and-reference ($/)
 {
+    my Str:D $content = $/.orig;
+    my Str:D $name = $<sectional-inline-name>.made;
+    my ReferenceInline:D $reference-inline = $<sectional-inline-reference>.made;
     make SectionalInline['Name', 'Reference'].new(
-        :content($/.orig),
-        :name($<sectional-inline-name>.made),
-        :number($<sectional-inline-reference>.made)
+        :$content,
+        :$name,
+        :$reference-inline
     );
 }
 
 method sectional-inline-text:file-only ($/)
 {
-    make SectionalInline['File'].new(
-        :content($/.orig),
-        :file($<sectional-inline-file>.made)
-    );
+    my Str:D $content = $/.orig;
+    my File:D $file = $<sectional-inline-file>.made;
+    make SectionalInline['File'].new(:$content, :$file);
 }
 
 method sectional-inline-text:reference-only ($/)
 {
-    make SectionalInline['Reference'].new(
-        :content($/.orig),
-        :number($<sectional-inline-reference>.made)
-    );
+    my Str:D $content = $/.orig;
+    my ReferenceInline:D $reference-inline = $<sectional-inline-reference>.made;
+    make SectionalInline['Reference'].new(:$content, :$reference-inline);
 }
 
 method sectional-inline-text:name-only ($/)
 {
-    make SectionalInline['Name'].new(
-        :content($/.orig),
-        :name($<sectional-inline-name>.made)
-    );
+    my Str:D $content = $/.orig;
+    my Str:D $name = $<sectional-inline-name>.made;
+    make SectionalInline['Name'].new(:$content, :$name);
 }
 
 multi method sectional-inline($/)
@@ -195,16 +194,14 @@ multi method sectional-inline($/)
 
 method sectional-inline-block:top ($/)
 {
-    make Chunk::SectionalInlineBlock.new(
-        :sectional-inline(@<sectional-inline>».made)
-    );
+    my SectionalInline:D @sectional-inline = @<sectional-inline>».made;
+    make Chunk::SectionalInlineBlock.new(:@sectional-inline);
 }
 
 method sectional-inline-block:dispersed ($/)
 {
-    make Chunk::SectionalInlineBlock.new(
-        :sectional-inline(@<sectional-inline>».made)
-    );
+    my SectionalInline:D @sectional-inline = @<sectional-inline>».made;
+    make Chunk::SectionalInlineBlock.new(:@sectional-inline);
 }
 
 # end sectional-inline-block }}}
@@ -264,8 +261,8 @@ multi method header-block:top ($/ where { $<header>.made ~~ Header[1] })
 {
     my Bounds:D $bounds = gen-bounds();
     my Str:D $content = $/.orig;
-    my Header[1] $header1 = $<header>.made;
     my UInt:D $section = 0;
+    my Header[1] $header1 = $<header>.made;
     make Chunk::HeaderBlock[1].new(:$bounds, :$content, :$section, :$header1);
 }
 
@@ -273,8 +270,8 @@ multi method header-block:top ($/ where { $<header>.made ~~ Header[2] })
 {
     my Bounds:D $bounds = gen-bounds();
     my Str:D $content = $/.orig;
-    my Header[2] $header2 = $<header>.made;
     my UInt:D $section = 0;
+    my Header[2] $header2 = $<header>.made;
     make Chunk::HeaderBlock[2].new(:$bounds, :$content, :$section, :$header2);
 }
 
@@ -282,8 +279,8 @@ multi method header-block:top ($/ where { $<header>.made ~~ Header[3] })
 {
     my Bounds:D $bounds = gen-bounds();
     my Str:D $content = $/.orig;
-    my Header[3] $header3 = $<header>.made;
     my UInt:D $section = 0;
+    my Header[3] $header3 = $<header>.made;
     make Chunk::HeaderBlock[3].new(:$bounds, :$content, :$section, :$header3);
 }
 
@@ -291,8 +288,8 @@ multi method header-block:dispersed ($/ where { $<header>.made ~~ Header[1] })
 {
     my Bounds:D $bounds = gen-bounds();
     my Str:D $content = $/.orig;
-    my Header[1] $header1 = $<header>.made;
     my UInt:D $section = 0;
+    my Header[1] $header1 = $<header>.made;
     make Chunk::HeaderBlock[1].new(:$bounds, :$content, :$section, :$header1);
 }
 
@@ -300,8 +297,8 @@ multi method header-block:dispersed ($/ where { $<header>.made ~~ Header[2] })
 {
     my Bounds:D $bounds = gen-bounds();
     my Str:D $content = $/.orig;
-    my Header[2] $header2 = $<header>.made;
     my UInt:D $section = 0;
+    my Header[2] $header2 = $<header>.made;
     make Chunk::HeaderBlock[2].new(:$bounds, :$content, :$section, :$header2);
 }
 
@@ -309,8 +306,8 @@ multi method header-block:dispersed ($/ where { $<header>.made ~~ Header[3] })
 {
     my Bounds:D $bounds = gen-bounds();
     my Str:D $content = $/.orig;
-    my Header[3] $header3 = $<header>.made;
     my UInt:D $section = 0;
+    my Header[3] $header3 = $<header>.made;
     make Chunk::HeaderBlock[3].new(:$bounds, :$content, :$section, :$header3);
 }
 
