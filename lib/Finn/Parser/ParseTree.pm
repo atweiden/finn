@@ -109,6 +109,114 @@ role Header[2] does Content does Header::Text {*}
 role Header[3] does Content does Header::Text {*}
 
 # end role Header }}}
+# role ListItem {{{
+
+role ListItem::Text
+{
+    has Str:D $.list-item-text is required;
+}
+
+# --- role ListItem['Ordered'] {{{
+
+role ListItem['Ordered'] does Content does ListItem::Text {*}
+
+# --- end role ListItem['Ordered'] }}}
+# --- role ListItem['Todo'] {{{
+
+# checkbox component of a C<token <list-todo-item>>
+role Checkbox {*}
+
+# --- --- role CheckboxChecked {{{
+
+# --- --- --- role CheckboxCheckedChar {{{
+
+role CheckboxCheckedChar['x'] {*}
+role CheckboxCheckedChar['o'] {*}
+role CheckboxCheckedChar['v'] {*}
+
+# --- --- --- end role CheckboxCheckedChar }}}
+
+role CheckboxChecked['x'] does Content does Checkbox
+{
+    has CheckboxCheckedChar['x'] $.checkbox-checked-char is required;
+}
+
+role CheckboxChecked['o'] does Content does Checkbox
+{
+    has CheckboxCheckedChar['o'] $.checkbox-checked-char is required;
+}
+
+role CheckboxChecked['v'] does Content does Checkbox
+{
+    has CheckboxCheckedChar['v'] $.checkbox-checked-char is required;
+}
+
+# --- --- end role CheckboxChecked }}}
+# --- --- role CheckboxEtc {{{
+
+# --- --- --- role CheckboxEtcChar {{{
+
+role CheckboxEtcChar['+'] {*}
+role CheckboxEtcChar['='] {*}
+role CheckboxEtcChar['-'] {*}
+
+# --- --- --- end role CheckboxEtcChar }}}
+
+role CheckboxEtc['+'] does Content does Checkbox
+{
+    has CheckboxEtcChar['+'] $.checkbox-etc-char is required;
+}
+
+role CheckboxEtc['='] does Content does Checkbox
+{
+    has CheckboxEtcChar['='] $.checkbox-etc-char is required;
+}
+
+role CheckboxEtc['-'] does Content does Checkbox
+{
+    has CheckboxEtcChar['-'] $.checkbox-etc-char is required;
+}
+
+# --- --- end role CheckboxEtc }}}
+# --- --- role CheckboxException {{{
+
+# --- --- --- role CheckboxExceptionChar {{{
+
+role CheckboxExceptionChar['*'] {*}
+role CheckboxExceptionChar['!'] {*}
+
+# --- --- --- end role CheckboxExceptionChar }}}
+
+role CheckboxException['*'] does Content does Checkbox
+{
+    has CheckboxExceptionChar['*'] $.checkbox-exception-char is required;
+}
+
+role CheckboxException['!'] does Content does Checkbox
+{
+    has CheckboxExceptionChar['!'] $.checkbox-exception-char is required;
+}
+
+# --- --- end role CheckboxException }}}
+# --- --- role CheckboxUnchecked {{{
+
+role CheckboxUnchecked does Content does Checkbox {*}
+
+# --- --- end role CheckboxUnchecked }}}
+
+role ListItem['Todo'] does Content does ListItem::Text
+{
+    has Checkbox:D $.checkbox is required;
+}
+
+# --- end role ListItem['Todo'] }}}
+# --- role ListItem['Unordered'] {{{
+
+role ListItem['Unordered'] does Content does ListItem::Text {*}
+
+# --- end role ListItem['Unordered'] }}}
+
+# end role ListItem }}}
 # role ReferenceInline {{{
 
 role ReferenceInline does Content

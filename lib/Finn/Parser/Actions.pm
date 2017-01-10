@@ -258,7 +258,7 @@ method header:h3 ($/)
     make $<header3>.made;
 }
 
-multi method header-block:top ($/ where { $<header>.made ~~ Header[1] })
+multi method header-block:top ($/ where $<header>.made ~~ Header[1])
 {
     my Bounds:D $bounds = gen-bounds();
     my Str:D $content = $/.orig;
@@ -267,7 +267,7 @@ multi method header-block:top ($/ where { $<header>.made ~~ Header[1] })
     make Chunk::HeaderBlock[1].new(:$bounds, :$content, :$section, :$header1);
 }
 
-multi method header-block:top ($/ where { $<header>.made ~~ Header[2] })
+multi method header-block:top ($/ where $<header>.made ~~ Header[2])
 {
     my Bounds:D $bounds = gen-bounds();
     my Str:D $content = $/.orig;
@@ -276,7 +276,7 @@ multi method header-block:top ($/ where { $<header>.made ~~ Header[2] })
     make Chunk::HeaderBlock[2].new(:$bounds, :$content, :$section, :$header2);
 }
 
-multi method header-block:top ($/ where { $<header>.made ~~ Header[3] })
+multi method header-block:top ($/ where $<header>.made ~~ Header[3])
 {
     my Bounds:D $bounds = gen-bounds();
     my Str:D $content = $/.orig;
@@ -285,7 +285,7 @@ multi method header-block:top ($/ where { $<header>.made ~~ Header[3] })
     make Chunk::HeaderBlock[3].new(:$bounds, :$content, :$section, :$header3);
 }
 
-multi method header-block:dispersed ($/ where { $<header>.made ~~ Header[1] })
+multi method header-block:dispersed ($/ where $<header>.made ~~ Header[1])
 {
     my Bounds:D $bounds = gen-bounds();
     my Str:D $content = $/.orig;
@@ -294,7 +294,7 @@ multi method header-block:dispersed ($/ where { $<header>.made ~~ Header[1] })
     make Chunk::HeaderBlock[1].new(:$bounds, :$content, :$section, :$header1);
 }
 
-multi method header-block:dispersed ($/ where { $<header>.made ~~ Header[2] })
+multi method header-block:dispersed ($/ where $<header>.made ~~ Header[2])
 {
     my Bounds:D $bounds = gen-bounds();
     my Str:D $content = $/.orig;
@@ -303,7 +303,7 @@ multi method header-block:dispersed ($/ where { $<header>.made ~~ Header[2] })
     make Chunk::HeaderBlock[2].new(:$bounds, :$content, :$section, :$header2);
 }
 
-multi method header-block:dispersed ($/ where { $<header>.made ~~ Header[3] })
+multi method header-block:dispersed ($/ where $<header>.made ~~ Header[3])
 {
     my Bounds:D $bounds = gen-bounds();
     my Str:D $content = $/.orig;
@@ -313,7 +313,6 @@ multi method header-block:dispersed ($/ where { $<header>.made ~~ Header[3] })
 }
 
 # end header-block }}}
-# XXX redo list-block in spirit of header-block
 # list-block {{{
 
 # --- list-todo-item {{{
@@ -324,22 +323,47 @@ multi method header-block:dispersed ($/ where { $<header>.made ~~ Header[3] })
 
 method checkbox-checked-char:sym<x>($/)
 {
-    make ~$/;
+    make CheckboxCheckedChar['x'].new;
 }
 
 method checkbox-checked-char:sym<o>($/)
 {
-    make ~$/;
+    make CheckboxCheckedChar['o'].new;
 }
 
 method checkbox-checked-char:sym<v>($/)
 {
-    make ~$/;
+    make CheckboxCheckedChar['v'].new;
 }
 
-method checkbox-checked($/)
+multi method checkbox-checked(
+    $/ where $<checkbox-checked-char>.made ~~ CheckboxCheckedChar['x']
+)
 {
-    make $<checkbox-checked-char>.made;
+    my Str:D $content = $/.orig;
+    my CheckboxCheckedChar['x'] $checkbox-checked-char =
+        $<checkbox-checked-char>.made;
+    make CheckboxChecked['x'].new(:$content, :$checkbox-checked-char);
+}
+
+multi method checkbox-checked(
+    $/ where $<checkbox-checked-char>.made ~~ CheckboxCheckedChar['o']
+)
+{
+    my Str:D $content = $/.orig;
+    my CheckboxCheckedChar['o'] $checkbox-checked-char =
+        $<checkbox-checked-char>.made;
+    make CheckboxChecked['o'].new(:$content, :$checkbox-checked-char);
+}
+
+multi method checkbox-checked(
+    $/ where $<checkbox-checked-char>.made ~~ CheckboxCheckedChar['v']
+)
+{
+    my Str:D $content = $/.orig;
+    my CheckboxCheckedChar['v'] $checkbox-checked-char =
+        $<checkbox-checked-char>.made;
+    make CheckboxChecked['v'].new(:$content, :$checkbox-checked-char);
 }
 
 # --- --- --- end checkbox-checked }}}
@@ -347,22 +371,44 @@ method checkbox-checked($/)
 
 method checkbox-etc-char:sym<+>($/)
 {
-    make ~$/;
+    make CheckboxEtcChar['+'].new;
 }
 
 method checkbox-etc-char:sym<=>($/)
 {
-    make ~$/;
+    make CheckboxEtcChar['='].new;
 }
 
 method checkbox-etc-char:sym<->($/)
 {
-    make ~$/;
+    make CheckboxEtcChar['-'].new;
 }
 
-method checkbox-etc($/)
+multi method checkbox-etc(
+    $/ where $<checkbox-etc-char>.made ~~ CheckboxEtcChar['+']
+)
 {
-    make $<checkbox-etc-char>.made;
+    my Str:D $content = $/.orig;
+    my CheckboxEtcChar['+'] $checkbox-etc-char = $<checkbox-etc-char>.made;
+    make CheckboxEtc['+'].new(:$content, :$checkbox-etc-char);
+}
+
+multi method checkbox-etc(
+    $/ where $<checkbox-etc-char>.made ~~ CheckboxEtcChar['=']
+)
+{
+    my Str:D $content = $/.orig;
+    my CheckboxEtcChar['='] $checkbox-etc-char = $<checkbox-etc-char>.made;
+    make CheckboxEtc['='].new(:$content, :$checkbox-etc-char);
+}
+
+multi method checkbox-etc(
+    $/ where $<checkbox-etc-char>.made ~~ CheckboxEtcChar['-']
+)
+{
+    my Str:D $content = $/.orig;
+    my CheckboxEtcChar['-'] $checkbox-etc-char = $<checkbox-etc-char>.made;
+    make CheckboxEtc['-'].new(:$content, :$checkbox-etc-char);
 }
 
 # --- --- --- end checkbox-etc }}}
@@ -370,17 +416,32 @@ method checkbox-etc($/)
 
 method checkbox-exception-char:sym<*>($/)
 {
-    make ~$/;
+    make CheckboxExceptionChar['*'].new;
 }
 
 method checkbox-exception-char:sym<!>($/)
 {
-    make ~$/;
+    make CheckboxExceptionChar['!'].new;
 }
 
-method checkbox-exception($/)
+multi method checkbox-exception(
+    $/ where $<checkbox-exception-char>.made ~~ CheckboxExceptionChar['*']
+)
 {
-    make $<checkbox-exception-char>.made;
+    my Str:D $content = $/.orig;
+    my CheckboxExceptionChar['*'] $checkbox-exception-char =
+        $<checkbox-exception-char>.made;
+    make CheckboxException['*'].new(:$content, :$checkbox-exception-char);
+}
+
+multi method checkbox-exception(
+    $/ where $<checkbox-exception-char>.made ~~ CheckboxExceptionChar['!']
+)
+{
+    my Str:D $content = $/.orig;
+    my CheckboxExceptionChar['!'] $checkbox-exception-char =
+        $<checkbox-exception-char>.made;
+    make CheckboxException['!'].new(:$content, :$checkbox-exception-char);
 }
 
 # --- --- --- end checkbox-exception }}}
@@ -388,7 +449,8 @@ method checkbox-exception($/)
 
 method checkbox-unchecked($/)
 {
-    make ' ';
+    my Str:D $content = $/.orig;
+    make CheckboxUnchecked.new(:$content);
 }
 
 # --- --- --- end checkbox-unchecked }}}
@@ -422,7 +484,10 @@ method list-todo-item-text($/)
 
 method list-todo-item($/)
 {
-    make $<checkbox>.made ~ $<list-todo-item-text>.made;
+    my Str:D $content = $/.orig;
+    my Checkbox:D $checkbox = $<checkbox>.made;
+    my Str:D $list-item-text = $<list-todo-item-text>.made;
+    make ListItem['Todo'].new(:$content, :$checkbox, :$list-item-text);
 }
 
 # --- end list-todo-item }}}
