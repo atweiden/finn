@@ -502,30 +502,30 @@ token sectional-block-delimiter-opening-dashes
     <.code-block-delimiter-opening-dashes>
 }
 
-token sectional-block-name-text-char
+token sectional-block-name-identifier-char
 {
     <+[\w] +[,.¡!¿?\'\"“”‘’@\#$%^&`\\]>
 }
 
-token sectional-block-name-text-word
+token sectional-block-name-identifier-word
 {
-    <sectional-block-name-text-char>+
+    <sectional-block-name-identifier-char>+
 }
 
-proto token sectional-block-name-text {*}
+proto token sectional-block-name-identifier {*}
 
-token sectional-block-name-text:path
+token sectional-block-name-identifier:file
 {
     <file-absolute>
 }
 
-token sectional-block-name-text:normal
+token sectional-block-name-identifier:word
 {
-    <+sectional-block-name-text-word -file-absolute>
-    [ \h+ <+sectional-block-name-text-word -file-absolute> ]*
+    <+sectional-block-name-identifier-word -file-absolute>
+    [ \h+ <+sectional-block-name-identifier-word -file-absolute> ]*
 }
 
-token sectional-block-name-annot-export
+token sectional-block-name-identifier-export
 {
     '*'
 }
@@ -536,8 +536,8 @@ token sectional-block-name-operator:redefine { ':=' }
 
 token sectional-block-name
 {
-    <sectional-block-name-text>
-    <sectional-block-name-annot-export>?
+    <sectional-block-name-identifier>
+    <sectional-block-name-identifier-export>?
     [ \h <sectional-block-name-operator> ]?
 }
 
@@ -1150,6 +1150,7 @@ token file-path-char:escape-sequence
 # \"         - double-quote    (U+0022)
 # \/         - fwdslash        (U+002f)
 # \\         - backslash       (U+005C)
+# \*         - asterisk        (U+002a)
 # \[         - left bracket    (U+005b)
 # \]         - right bracket   (U+005d)
 # \{         - left brace      (U+007b)
@@ -1167,6 +1168,7 @@ token file-path-escape:sym<single-quote> { \' }
 token file-path-escape:sym<double-quote> { \" }
 token file-path-escape:sym<fwdslash>     { '/' }
 token file-path-escape:sym<backslash>    { \\ }
+token file-path-escape:sym<*>            { <sym> }
 token file-path-escape:sym<[>            { <sym> }
 token file-path-escape:sym<]>            { <sym> }
 token file-path-escape:sym<{>            { <sym> }

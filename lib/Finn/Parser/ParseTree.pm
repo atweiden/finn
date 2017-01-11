@@ -224,72 +224,69 @@ role ReferenceInline does Content
 }
 
 # end role ReferenceInline }}}
+# role SectionalBlock {{{
 
-=begin pod
-=head Chunks
-=end pod
+role SectionalInline {...}
 
-# role Chunk {{{
+# --- role SectionalBlockDelimiter {{{
 
-role Chunk does Content
+role SectionalBlockDelimiter['Backticks'] {*}
+role SectionalBlockDelimiter['Dashes'] {*}
+
+# --- end role SectionalBlockDelimiter }}}
+# --- role SectionalBlockName {{{
+
+role SectionalBlockName::Identifier::Export {*}
+
+role SectionalBlockName::Identifier['File']
 {
-    # file:line:column
-    has Bounds:D $.bounds is required;
-
-    # is a part of this section number
-    has UInt:D $.section is required;
+    has File:D $.file is required;
 }
 
-# end role Chunk }}}
-# role Chunk::SectionalInlineBlock {{{
+role SectionalBlockName::Identifier['Word']
+{
+    has Str:D $.word is required;
+}
 
-# --- role SectionalInline {{{
+role SectionalBlockName::Operator['Additive'] {*}
+role SectionalBlockName::Operator['Redefine'] {*}
 
-role SectionalInline::Name {...}
-role SectionalInline::File {...}
-role SectionalInline::Reference {...}
+role SectionalBlockName
+{
+    has SectionalBlockName::Identifier:D $.identifier is required;
+    has SectionalBlockName::Identifier::Export $.export;
+    has SectionalBlockName::Operator $.operator;
+}
 
-# this is a Haml-style include directive telling us to process
-# C<self.name> as Sectional Block and embed in-place
-#
-# XXX: it can only appear inside of a Sectional Block
-role SectionalInline['Name']
-    does Content
-    does SectionalInline::Name
-{*}
+# --- end role SectionalBlockName }}}
+# --- role SectionalBlockText {{{
 
-# this is a Haml-style include directive telling us to process the
-# entirety of the linked Finn source file
-role SectionalInline['File']
-    does Content
-    does SectionalInline::File
-{*}
+role SectionalBlockText::Chunk['SectionalInline']
+{
+    has SectionalInline:D $.sectional-inline is required;
+}
 
-# this is a Haml-style include directive telling us to process the
-# entirety of the linked Finn source file given by Reference Inline
-role SectionalInline['Reference']
-    does Content
-    does SectionalInline::Reference
-{*}
+role SectionalBlockText::Chunk['SourceCode']
+{
+    has Str:D $.source-code is required;
+}
 
-# this is a Haml-style include directive with added specificity
-# from C<sectional-block-name> qualifier, which gets stored in
-# C<self.name>
-#
-# tells us to process C<self.name> Sectional Block in C<self.file>
-role SectionalInline['Name', 'File']
-    does Content
-    does SectionalInline::Name
-    does SectionalInline::File
-{*}
+role SectionalBlockText
+{
+    has SectionalBlockText::Chunk:D @.chunk is required;
+}
 
-# same as C<SectionalInline['Name', 'File']> except C<self.name> is
-# resolved from Reference Inline
-role SectionalInline['Name', 'Reference']
-    does Content
-    does SectionalInline::Name
-    does SectionalInline::Reference
-{*}
+# --- end role SectionalBlockText }}}
+
+role SectionalBlock does Content
+{
+    has SectionalBlockDelimiter:D $.delimiter is required;
+    has SectionalBlockName:D $.name is required;
+    has SectionalBlockText:D $.text is required;
+}
+
+# end role SectionalBlock }}}
+# role SectionalInline {{{
 
 role SectionalInline::Name
 {
@@ -318,7 +315,68 @@ role SectionalInline::Reference
     has ReferenceInline:D $.reference-inline is required;
 }
 
-# --- end role SectionalInline }}}
+# this is a Haml-style include directive telling us to process
+# C<self.name> as Sectional Block and embed in-place
+# XXX: it can only appear inside of a Sectional Block
+role SectionalInline['Name']
+    does Content
+    does SectionalInline::Name
+{*}
+
+# this is a Haml-style include directive telling us to process the
+# entirety of the linked Finn source file and embed in-place
+role SectionalInline['File']
+    does Content
+    does SectionalInline::File
+{*}
+
+# this is a Haml-style include directive telling us to process the
+# entirety of the linked Finn source file given by Reference Inline and
+# embed in-place
+role SectionalInline['Reference']
+    does Content
+    does SectionalInline::Reference
+{*}
+
+# this is a Haml-style include directive with added specificity
+# from C<sectional-block-name> qualifier, which gets stored in
+# C<self.name>
+#
+# tells us to process C<self.name> from C<self.file> as Sectional Block
+# and embed in-place
+role SectionalInline['Name', 'File']
+    does Content
+    does SectionalInline::Name
+    does SectionalInline::File
+{*}
+
+# same as C<SectionalInline['Name', 'File']> except C<self.name> is
+# resolved from Reference Inline
+role SectionalInline['Name', 'Reference']
+    does Content
+    does SectionalInline::Name
+    does SectionalInline::Reference
+{*}
+
+# end role SectionalInline }}}
+
+=begin pod
+=head Chunks
+=end pod
+
+# role Chunk {{{
+
+role Chunk does Content
+{
+    # file:line:column
+    has Bounds:D $.bounds is required;
+
+    # is a part of this section number
+    has UInt:D $.section is required;
+}
+
+# end role Chunk }}}
+# role Chunk::SectionalInlineBlock {{{
 
 role Chunk::SectionalInlineBlock does Chunk
 {
@@ -328,52 +386,9 @@ role Chunk::SectionalInlineBlock does Chunk
 # end role Chunk::SectionalInlineBlock }}}
 # role Chunk::SectionalBlock {{{
 
-role SectionalBlock::Annot {...}
-role SectionalBlock::Meta {...}
-
-role Chunk::SectionalBlock['Name']
-    does Chunk
-    does SectionalBlock::Annot
-    does SectionalBlock::Meta
+role Chunk::SectionalBlock does Chunk
 {
-    has Str:D $.name is required;
-}
-
-role Chunk::SectionalBlock['File']
-    does Chunk
-    does SectionalBlock::Annot
-    does SectionalBlock::Meta
-{
-    has File:D $.file is required;
-}
-
-role SectionalBlock::Annot
-{
-    # does this Sectional Block's name contain an export symbol?
-    has Bool:D $.is-export = False;
-
-    # does this Sectional Block feature an Additive Operator?
-    has Bool:D $.is-additive = False;
-
-    # does this Sectional Block feature a Redefine Operator?
-    has Bool:D $.is-redefine = False;
-}
-
-role SectionalBlock::Meta
-{
-    # in which section numbers was this Sectional Block appended to with
-    # the Additive Operator?
-    has UInt $.added-to-in-section is rw;
-
-    # in which section numbers was this Sectional Block redefined with
-    # the Redefine Operator?
-    has UInt $.redefined-in-section is rw;
-
-    # in which section numbers was this Sectional Block referenced?
-    has UInt $.used-in-section is rw;
-
-    # in which section number does this Sectional Block first appear?
-    has UInt $.first-appears-in-section is rw;
+    has SectionalBlock:D $.sectional-block is required;
 }
 
 # end role Chunk::SectionalBlock }}}

@@ -224,6 +224,137 @@ method sectional-inline-block:dispersed ($/)
 # end sectional-inline-block }}}
 # sectional-block {{{
 
+# --- sectional-block-delimiter-opening {{{
+
+method sectional-block-delimiter-opening-backticks($/)
+{
+    make ~$/;
+}
+
+method sectional-block-delimiter-opening-dashes($/)
+{
+    make ~$/;
+}
+
+# --- end sectional-block-delimiter-opening }}}
+# --- sectional-block-name {{{
+
+# --- --- sectional-block-name-identifier {{{
+
+method sectional-block-name-identifier-export($/)
+{
+    make SectionalBlockName::Identifier::Export.new;
+}
+
+method sectional-block-name-identifier:file ($/)
+{
+    my File:D $file = $<file-absolute>.made;
+    make SectionalBlockName::Identifier['File'].new(:$file);
+}
+
+method sectional-block-name-identifier:word ($/)
+{
+    my Str:D $word = ~$/;
+    make SectionalBlockName::Identifier['Word'].new(:$word);
+}
+
+# --- --- end sectional-block-name-identifier }}}
+# --- --- sectional-block-name-operator {{{
+
+method sectional-block-name-operator:additive ($/)
+{
+    make SectionalBlockName::Operator::Additive.new;
+}
+
+method sectional-block-name-operator:redefine ($/)
+{
+    make SectionalBlockName::Operator::Redefine.new;
+}
+
+# --- --- end sectional-block-name-operator }}}
+
+method sectional-block-name($/)
+{
+    my SectionalBlockName::Identifier:D $identifier =
+        $<sectional-block-name-identifier>.made;
+    my SectionalBlockName::Identifier::Export $export =
+        $<sectional-block-name-identifier-export>.made
+            if ?$<sectional-block-name-identifier-export>;
+    my SectionalBlockName::Operator $operator =
+        $<sectional-block-name-operator>.made
+            if ?$<sectional-block-name-operator>;
+
+    my %h;
+    %h<export> = $export if $export;
+    %h<operator> = $operator if $operator;
+
+    make SectionalBlockName.new(:$identifier, |%h);
+}
+
+# --- end sectional-block-name }}}
+# --- sectional-block-content {{{
+
+method sectional-block-content-backticks($/)
+{
+    make ~$/;
+}
+
+method sectional-block-content-dashes($/)
+{
+    make ~$/;
+}
+
+# --- end sectional-block-content }}}
+# --- sectional-block-delimiter-closing {{{
+
+method sectional-block-delimiter-closing-backticks($/)
+{
+    make ~$/;
+}
+
+method sectional-block-delimiter-closing-dashes($/)
+{
+    make ~$/;
+}
+
+# --- end sectional-block-delimiter-closing }}}
+
+method sectional-block:backticks ($/)
+{
+    my Bounds:D $bounds = gen-bounds();
+    my Str:D $content = $/.orig;
+    my UInt:D $section = 0;
+    my SectionalBlockDelimiter['Backticks'] $delimiter .= new;
+    my SectionalBlockName:D $name = $<sectional-block-name>.made;
+    my Str:D $text = $<sectional-block-content-backticks>.made;
+    make SectionalBlock.new(
+        :$bounds,
+        :$content,
+        :$section,
+        :$delimiter,
+        :$name,
+        :$text
+    );
+}
+
+method sectional-block:dashes ($/)
+{
+    my Bounds:D $bounds = gen-bounds();
+    my Str:D $content = $/.orig;
+    my UInt:D $section = 0;
+    my SectionalBlockDelimiter['Dashes'] $delimiter .= new;
+    my SectionalBlockName:D $name = $<sectional-block-name>.made;
+    my Str:D $text = $<sectional-block-content-dashes>.made;
+    make SectionalBlock.new(
+        :$bounds,
+        :$content,
+        :$section,
+        :$delimiter,
+        :$name,
+        :$text
+    );
+}
+
 # end sectional-block }}}
 # code-block {{{
 
@@ -833,6 +964,11 @@ method file-path-escape:sym<fwdslash>($/)
 method file-path-escape:sym<backslash>($/)
 {
     make '\\';
+}
+
+method file-path-escape:sym<*>($/)
+{
+    make ~$/;
 }
 
 method file-path-escape:sym<[>($/)
