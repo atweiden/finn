@@ -304,6 +304,11 @@ token bullet-point:sym«=>» { <sym> }
 
 # --- --- end bullet-point }}}
 
+token list-unordered-item-text-first-line
+{
+    \N+
+}
+
 token list-unordered-item-text-continuation
 {
     <!before
@@ -318,7 +323,7 @@ token list-unordered-item-text-continuation
 
 token list-unordered-item-text
 {
-    \N+
+    <list-unordered-item-text-first-line>
 
     # optional additional lines of continued text
     [ $$ <.gap> ^^ <list-unordered-item-text-continuation> ]*
@@ -352,6 +357,11 @@ token list-ordered-item-number
 
 # --- --- end list-ordered-item-number }}}
 
+token list-ordered-item-text-first-line
+{
+    \N+
+}
+
 token list-ordered-item-text-continuation
 {
     <!before
@@ -366,7 +376,7 @@ token list-ordered-item-text-continuation
 
 token list-ordered-item-text
 {
-    \N+
+    <list-ordered-item-text-first-line>
 
     # optional additional lines of continued text
     [ $$ <.gap> ^^ <list-ordered-item-text-continuation> ]*

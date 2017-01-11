@@ -472,6 +472,12 @@ method bullet-point:sym«->»($/) { make BulletPoint['->'].new }
 method bullet-point:sym«=>»($/) { make BulletPoint['=>'].new }
 
 # --- --- end bullet-point }}}
+# --- --- list-unordered-item-text {{{
+
+method list-unordered-item-text-first-line($/)
+{
+    make ~$/;
+}
 
 method list-unordered-item-text-continuation($/)
 {
@@ -482,14 +488,18 @@ multi method list-unordered-item-text(
     $/ where @<list-unordered-item-text-continuation>.so
 )
 {
-    # XXX may need to add grammar token for first line of text
-    make ~$/ ~ @<list-unordered-item-text-continuation>».made.join("\n");
+    make (
+        $<list-unordered-item-text-first-line>.made,
+        @<list-unordered-item-text-continuation>».made.join("\n")
+    ).join("\n");
 }
 
 multi method list-unordered-item-text($/)
 {
-    make ~$/;
+    make $<list-unordered-item-text-first-line>.made;
 }
+
+# --- --- end list-unordered-item-text }}}
 
 multi method list-unordered-item($/ where $<list-unordered-item-text>.so)
 {
@@ -534,6 +544,12 @@ method list-ordered-item-number($/)
 }
 
 # --- --- end list-ordered-item-number }}}
+# --- --- list-ordered-item-text {{{
+
+method list-ordered-item-text-first-line($/)
+{
+    make ~$/;
+}
 
 method list-ordered-item-text-continuation($/)
 {
@@ -544,14 +560,18 @@ multi method list-ordered-item-text(
     $/ where @<list-ordered-item-text-continuation>.so
 )
 {
-    # XXX may need to add grammar token for first line of text
-    make ~$/ ~ @<list-ordered-item-text-continuation>».made.join;
+    make (
+        $<list-ordered-item-text-first-line>.made,
+        @<list-ordered-item-text-continuation>».made.join("\n")
+    ).join("\n");
 }
 
 multi method list-ordered-item-text($/)
 {
-    make ~$/;
+    make $<list-ordered-item-text-first-line>.made;
 }
+
+# --- --- end list-ordered-item-text }}}
 
 multi method list-ordered-item($/ where $<list-ordered-item-text>.so)
 {
