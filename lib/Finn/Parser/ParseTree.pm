@@ -128,74 +128,30 @@ role Checkbox {*}
 
 # --- --- role CheckboxChecked {{{
 
-# --- --- --- role CheckboxCheckedChar {{{
-
 role CheckboxCheckedChar['x'] {*}
 role CheckboxCheckedChar['o'] {*}
 role CheckboxCheckedChar['v'] {*}
-
-# --- --- --- end role CheckboxCheckedChar }}}
-
-role CheckboxChecked['x'] does Content does Checkbox
-{
-    has CheckboxCheckedChar['x'] $.checkbox-checked-char is required;
-}
-
-role CheckboxChecked['o'] does Content does Checkbox
-{
-    has CheckboxCheckedChar['o'] $.checkbox-checked-char is required;
-}
-
-role CheckboxChecked['v'] does Content does Checkbox
-{
-    has CheckboxCheckedChar['v'] $.checkbox-checked-char is required;
-}
+role CheckboxChecked['x'] does Content does Checkbox {*}
+role CheckboxChecked['o'] does Content does Checkbox {*}
+role CheckboxChecked['v'] does Content does Checkbox {*}
 
 # --- --- end role CheckboxChecked }}}
 # --- --- role CheckboxEtc {{{
 
-# --- --- --- role CheckboxEtcChar {{{
-
 role CheckboxEtcChar['+'] {*}
 role CheckboxEtcChar['='] {*}
 role CheckboxEtcChar['-'] {*}
-
-# --- --- --- end role CheckboxEtcChar }}}
-
-role CheckboxEtc['+'] does Content does Checkbox
-{
-    has CheckboxEtcChar['+'] $.checkbox-etc-char is required;
-}
-
-role CheckboxEtc['='] does Content does Checkbox
-{
-    has CheckboxEtcChar['='] $.checkbox-etc-char is required;
-}
-
-role CheckboxEtc['-'] does Content does Checkbox
-{
-    has CheckboxEtcChar['-'] $.checkbox-etc-char is required;
-}
+role CheckboxEtc['+'] does Content does Checkbox {*}
+role CheckboxEtc['='] does Content does Checkbox {*}
+role CheckboxEtc['-'] does Content does Checkbox {*}
 
 # --- --- end role CheckboxEtc }}}
 # --- --- role CheckboxException {{{
 
-# --- --- --- role CheckboxExceptionChar {{{
-
 role CheckboxExceptionChar['*'] {*}
 role CheckboxExceptionChar['!'] {*}
-
-# --- --- --- end role CheckboxExceptionChar }}}
-
-role CheckboxException['*'] does Content does Checkbox
-{
-    has CheckboxExceptionChar['*'] $.checkbox-exception-char is required;
-}
-
-role CheckboxException['!'] does Content does Checkbox
-{
-    has CheckboxExceptionChar['!'] $.checkbox-exception-char is required;
-}
+role CheckboxException['*'] does Content does Checkbox {*}
+role CheckboxException['!'] does Content does Checkbox {*}
 
 # --- --- end role CheckboxException }}}
 # --- --- role CheckboxUnchecked {{{

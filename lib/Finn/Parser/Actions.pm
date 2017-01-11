@@ -330,9 +330,7 @@ multi method checkbox-checked(
 )
 {
     my Str:D $content = $/.orig;
-    my CheckboxCheckedChar['x'] $checkbox-checked-char =
-        $<checkbox-checked-char>.made;
-    make CheckboxChecked['x'].new(:$content, :$checkbox-checked-char);
+    make CheckboxChecked['x'].new(:$content);
 }
 
 multi method checkbox-checked(
@@ -340,9 +338,7 @@ multi method checkbox-checked(
 )
 {
     my Str:D $content = $/.orig;
-    my CheckboxCheckedChar['o'] $checkbox-checked-char =
-        $<checkbox-checked-char>.made;
-    make CheckboxChecked['o'].new(:$content, :$checkbox-checked-char);
+    make CheckboxChecked['o'].new(:$content);
 }
 
 multi method checkbox-checked(
@@ -350,9 +346,7 @@ multi method checkbox-checked(
 )
 {
     my Str:D $content = $/.orig;
-    my CheckboxCheckedChar['v'] $checkbox-checked-char =
-        $<checkbox-checked-char>.made;
-    make CheckboxChecked['v'].new(:$content, :$checkbox-checked-char);
+    make CheckboxChecked['v'].new(:$content);
 }
 
 # --- --- --- end checkbox-checked }}}
@@ -367,8 +361,7 @@ multi method checkbox-etc(
 )
 {
     my Str:D $content = $/.orig;
-    my CheckboxEtcChar['+'] $checkbox-etc-char = $<checkbox-etc-char>.made;
-    make CheckboxEtc['+'].new(:$content, :$checkbox-etc-char);
+    make CheckboxEtc['+'].new(:$content);
 }
 
 multi method checkbox-etc(
@@ -376,8 +369,7 @@ multi method checkbox-etc(
 )
 {
     my Str:D $content = $/.orig;
-    my CheckboxEtcChar['='] $checkbox-etc-char = $<checkbox-etc-char>.made;
-    make CheckboxEtc['='].new(:$content, :$checkbox-etc-char);
+    make CheckboxEtc['='].new(:$content);
 }
 
 multi method checkbox-etc(
@@ -385,8 +377,7 @@ multi method checkbox-etc(
 )
 {
     my Str:D $content = $/.orig;
-    my CheckboxEtcChar['-'] $checkbox-etc-char = $<checkbox-etc-char>.made;
-    make CheckboxEtc['-'].new(:$content, :$checkbox-etc-char);
+    make CheckboxEtc['-'].new(:$content);
 }
 
 # --- --- --- end checkbox-etc }}}
@@ -400,9 +391,7 @@ multi method checkbox-exception(
 )
 {
     my Str:D $content = $/.orig;
-    my CheckboxExceptionChar['*'] $checkbox-exception-char =
-        $<checkbox-exception-char>.made;
-    make CheckboxException['*'].new(:$content, :$checkbox-exception-char);
+    make CheckboxException['*'].new(:$content);
 }
 
 multi method checkbox-exception(
@@ -410,9 +399,7 @@ multi method checkbox-exception(
 )
 {
     my Str:D $content = $/.orig;
-    my CheckboxExceptionChar['!'] $checkbox-exception-char =
-        $<checkbox-exception-char>.made;
-    make CheckboxException['!'].new(:$content, :$checkbox-exception-char);
+    make CheckboxException['!'].new(:$content);
 }
 
 # --- --- --- end checkbox-exception }}}
