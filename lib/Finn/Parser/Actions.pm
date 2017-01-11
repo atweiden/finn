@@ -195,14 +195,30 @@ method sectional-inline($/)
 
 method sectional-inline-block:top ($/)
 {
+    my Bounds:D $bounds = gen-bounds();
+    my Str:D $content = $/.orig;
+    my UInt:D $section = 0;
     my SectionalInline:D @sectional-inline = @<sectional-inline>».made;
-    make Chunk::SectionalInlineBlock.new(:@sectional-inline);
+    make Chunk::SectionalInlineBlock.new(
+        :$bounds,
+        :$content,
+        :$section,
+        :@sectional-inline
+    );
 }
 
 method sectional-inline-block:dispersed ($/)
 {
+    my Bounds:D $bounds = gen-bounds();
+    my Str:D $content = $/.orig;
+    my UInt:D $section = 0;
     my SectionalInline:D @sectional-inline = @<sectional-inline>».made;
-    make Chunk::SectionalInlineBlock.new(:@sectional-inline);
+    make Chunk::SectionalInlineBlock.new(
+        :$bounds,
+        :$content,
+        :$section,
+        :@sectional-inline
+    );
 }
 
 # end sectional-inline-block }}}
