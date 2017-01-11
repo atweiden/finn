@@ -315,6 +315,78 @@ multi method header-block:dispersed ($/ where $<header>.made ~~ Header[3])
 # end header-block }}}
 # list-block {{{
 
+# --- list-ordered-item {{{
+
+# --- --- list-ordered-item-number {{{
+
+method list-ordered-item-number-value($/)
+{
+    make +$/;
+}
+
+method list-ordered-item-number-terminator:sym<.>($/)
+{
+    make ListItem::Number::Terminator['.'].new;
+}
+
+method list-ordered-item-number-terminator:sym<:>($/)
+{
+    make ListItem::Number::Terminator[':'].new;
+}
+
+method list-ordered-item-number-terminator:sym<)>($/)
+{
+    make ListItem::Number::Terminator[')'].new;
+}
+
+method list-ordered-item-number($/)
+{
+    my ListItem::Number::Terminator:D $terminator =
+        $<list-ordered-item-number-terminator>.made;
+    my UInt:D $value = $<list-ordered-item-number-value>.made;
+    make ListItem::Number.new(:$terminator, :$value);
+}
+
+# --- --- end list-ordered-item-number }}}
+# --- --- list-ordered-item-text {{{
+
+method list-ordered-item-text-first-line($/)
+{
+    make ~$/;
+}
+
+method list-ordered-item-text-continuation($/)
+{
+    make ~$/;
+}
+
+multi method list-ordered-item-text(
+    $/ where @<list-ordered-item-text-continuation>.so
+)
+{
+    make (
+        $<list-ordered-item-text-first-line>.made,
+        @<list-ordered-item-text-continuation>».made.join("\n")
+    ).join("\n");
+}
+
+multi method list-ordered-item-text($/)
+{
+    make $<list-ordered-item-text-first-line>.made;
+}
+
+# --- --- end list-ordered-item-text }}}
+
+method list-ordered-item($/)
+{
+    my Str:D $content = $/.orig;
+    my Str:D $list-item-text =
+        ?$<list-ordered-item-text> ?? $<list-ordered-item-text>.made !! '';
+    my ListItem::Number:D $number = $<list-ordered-item-number>.made;
+    make ListItem['Ordered'].new(:$content, :$list-item-text, :$number);
+}
+
+# --- end list-ordered-item }}}
 # --- list-todo-item {{{
 
 # --- --- checkbox {{{
@@ -443,8 +515,8 @@ method list-todo-item-text($/)
 method list-todo-item($/)
 {
     my Str:D $content = $/.orig;
-    my Checkbox:D $checkbox = $<checkbox>.made;
     my Str:D $list-item-text = $<list-todo-item-text>.made;
+    my Checkbox:D $checkbox = $<checkbox>.made;
     make ListItem['Todo'].new(:$content, :$checkbox, :$list-item-text);
 }
 
@@ -501,93 +573,20 @@ multi method list-unordered-item-text($/)
 
 # --- --- end list-unordered-item-text }}}
 
-multi method list-unordered-item($/ where $<list-unordered-item-text>.so)
+method list-unordered-item($/)
 {
-    make $<bullet-point>.made ~ $<list-unordered-item-text>.made;
-}
-
-multi method list-unordered-item($/)
-{
-    make $<bullet-point>.made;
+    my Str:D $content = $/.orig;
+    my Str:D $list-item-text =
+        ?$<list-unordered-item-text> ?? $<list-unordered-item-text>.made !! '';
+    my BulletPoint:D $bullet-point = $<bullet-point>.made;
+    make ListItem['Unordered'].new(:$content, :$list-item-text, :$bullet-point);
 }
 
 # --- end list-unordered-item }}}
-# --- list-ordered-item {{{
 
-# --- --- list-ordered-item-number {{{
-
-method list-ordered-item-number-value($/)
+method list-item:ordered ($/)
 {
-    make ~$/;
-}
-
-method list-ordered-item-number-terminator:sym<.>($/)
-{
-    make ~$/;
-}
-
-method list-ordered-item-number-terminator:sym<:>($/)
-{
-    make ~$/;
-}
-
-method list-ordered-item-number-terminator:sym<)>($/)
-{
-    make ~$/;
-}
-
-method list-ordered-item-number($/)
-{
-    make
-        $<list-ordered-item-number-value>.made
-        ~ $<list-ordered-item-number-terminator>.made;
-}
-
-# --- --- end list-ordered-item-number }}}
-# --- --- list-ordered-item-text {{{
-
-method list-ordered-item-text-first-line($/)
-{
-    make ~$/;
-}
-
-method list-ordered-item-text-continuation($/)
-{
-    make ~$/;
-}
-
-multi method list-ordered-item-text(
-    $/ where @<list-ordered-item-text-continuation>.so
-)
-{
-    make (
-        $<list-ordered-item-text-first-line>.made,
-        @<list-ordered-item-text-continuation>».made.join("\n")
-    ).join("\n");
-}
-
-multi method list-ordered-item-text($/)
-{
-    make $<list-ordered-item-text-first-line>.made;
-}
-
-# --- --- end list-ordered-item-text }}}
-
-multi method list-ordered-item($/ where $<list-ordered-item-text>.so)
-{
-    make $<list-ordered-item-number>.made ~ $<list-ordered-item-text>.made;
-}
-
-multi method list-ordered-item($/)
-{
-    make $<list-ordered-item-number>.made;
-}
-
-# --- end list-ordered-item }}}
-
-method list-item:unordered ($/)
-{
-    make $<list-unordered-item>.made;
+    make $<list-ordered-item>.made;
 }
 
 method list-item:todo ($/)
@@ -595,19 +594,18 @@ method list-item:todo ($/)
     make $<list-todo-item>.made;
 }
 
-method list-item:ordered ($/)
+method list-item:unordered ($/)
 {
-    make $<list-ordered-item>.made;
+    make $<list-unordered-item>.made;
 }
 
 method list-block($/)
 {
     my Bounds:D $bounds = gen-bounds();
-    make Chunk::ListBlock.new(
-        :$bounds,
-        :content(@<list-item>».made.join("\n")),
-        :section(0)
-    );
+    my Str:D $content = $/.orig;
+    my UInt:D $section = 0;
+    my ListItem:D @list-item = @<list-item>».made;
+    make Chunk::ListBlock.new(:$bounds, :$content, :$section, :@list-item);
 }
 
 # end list-block }}}

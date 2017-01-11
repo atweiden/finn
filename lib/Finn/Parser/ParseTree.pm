@@ -118,7 +118,20 @@ role ListItem::Text
 
 # --- role ListItem['Ordered'] {{{
 
-role ListItem['Ordered'] does Content does ListItem::Text {*}
+role ListItem::Number::Terminator['.'] {*}
+role ListItem::Number::Terminator[':'] {*}
+role ListItem::Number::Terminator[')'] {*}
+
+role ListItem::Number
+{
+    has ListItem::Number::Terminator:D $.terminator is required;
+    has UInt:D $.value is required;
+}
+
+role ListItem['Ordered'] does Content does ListItem::Text
+{
+    has ListItem::Number:D $.number is required;
+}
 
 # --- end role ListItem['Ordered'] }}}
 # --- role ListItem['Todo'] {{{
@@ -168,7 +181,32 @@ role ListItem['Todo'] does Content does ListItem::Text
 # --- end role ListItem['Todo'] }}}
 # --- role ListItem['Unordered'] {{{
 
-role ListItem['Unordered'] does Content does ListItem::Text {*}
+# --- --- role BulletPoint {{{
+
+role BulletPoint['-']  {*}
+role BulletPoint['@']  {*}
+role BulletPoint['#']  {*}
+role BulletPoint['$']  {*}
+role BulletPoint['*']  {*}
+role BulletPoint[':']  {*}
+role BulletPoint['x']  {*}
+role BulletPoint['o']  {*}
+role BulletPoint['+']  {*}
+role BulletPoint['=']  {*}
+role BulletPoint['!']  {*}
+role BulletPoint['~']  {*}
+role BulletPoint['>']  {*}
+role BulletPoint['<-'] {*}
+role BulletPoint['<='] {*}
+role BulletPoint['->'] {*}
+role BulletPoint['=>'] {*}
+
+# --- --- end role BulletPoint }}}
+
+role ListItem['Unordered'] does Content does ListItem::Text
+{
+    has BulletPoint:D $.bullet-point is required;
+}
 
 # --- end role ListItem['Unordered'] }}}
 
@@ -370,7 +408,10 @@ role Chunk::HeaderBlock[3] does Chunk { has Header[3] $.header3 is required }
 # end role Chunk::HeaderBlock }}}
 # role Chunk::ListBlock {{{
 
-role Chunk::ListBlock does Chunk {*}
+role Chunk::ListBlock does Chunk
+{
+    has ListItem:D @.list-item is required;
+}
 
 # end role Chunk::ListBlock }}}
 # role Chunk::ParagraphBlock {{{
