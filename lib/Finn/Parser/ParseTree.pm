@@ -136,42 +136,46 @@ role ListItem['Ordered'] does Content does ListItem::Text
 # --- end role ListItem['Ordered'] }}}
 # --- role ListItem['Todo'] {{{
 
-# checkbox component of a C<token <list-todo-item>>
-role Checkbox {*}
-
-# --- --- role CheckboxChecked {{{
+# --- --- role Checkbox['Checked'] {{{
 
 role CheckboxCheckedChar['x'] {*}
 role CheckboxCheckedChar['o'] {*}
 role CheckboxCheckedChar['v'] {*}
-role CheckboxChecked['x'] does Content does Checkbox {*}
-role CheckboxChecked['o'] does Content does Checkbox {*}
-role CheckboxChecked['v'] does Content does Checkbox {*}
 
-# --- --- end role CheckboxChecked }}}
-# --- --- role CheckboxEtc {{{
+role Checkbox['Checked'] does Content
+{
+    has CheckboxCheckedChar:D $.checkbox-checked-char is required;
+}
+
+# --- --- end role Checkbox['Checked'] }}}
+# --- --- role Checkbox['Etc'] {{{
 
 role CheckboxEtcChar['+'] {*}
 role CheckboxEtcChar['='] {*}
 role CheckboxEtcChar['-'] {*}
-role CheckboxEtc['+'] does Content does Checkbox {*}
-role CheckboxEtc['='] does Content does Checkbox {*}
-role CheckboxEtc['-'] does Content does Checkbox {*}
 
-# --- --- end role CheckboxEtc }}}
-# --- --- role CheckboxException {{{
+role Checkbox['Etc'] does Content
+{
+    has CheckboxEtcChar:D $.checkbox-etc-char is required;
+}
+
+# --- --- end role Checkbox['Etc'] }}}
+# --- --- role Checkbox['Exception'] {{{
 
 role CheckboxExceptionChar['*'] {*}
 role CheckboxExceptionChar['!'] {*}
-role CheckboxException['*'] does Content does Checkbox {*}
-role CheckboxException['!'] does Content does Checkbox {*}
 
-# --- --- end role CheckboxException }}}
-# --- --- role CheckboxUnchecked {{{
+role Checkbox['Exception'] does Content
+{
+    has CheckboxExceptionChar:D $.checkbox-exception-char is required;
+}
 
-role CheckboxUnchecked does Content does Checkbox {*}
+# --- --- end role Checkbox['Exception'] }}}
+# --- --- role Checkbox['Unchecked'] {{{
 
-# --- --- end role CheckboxUnchecked }}}
+role Checkbox['Unchecked'] does Content {*}
+
+# --- --- end role Checkbox['Unchecked'] }}}
 
 role ListItem['Todo'] does Content does ListItem::Text
 {

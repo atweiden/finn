@@ -186,7 +186,7 @@ method sectional-inline-text:name-only ($/)
     make SectionalInline['Name'].new(:$content, :$name);
 }
 
-multi method sectional-inline($/)
+method sectional-inline($/)
 {
     make $<sectional-inline-text>.made;
 }
@@ -397,28 +397,12 @@ method checkbox-checked-char:sym<x>($/) { make CheckboxCheckedChar['x'].new }
 method checkbox-checked-char:sym<o>($/) { make CheckboxCheckedChar['o'].new }
 method checkbox-checked-char:sym<v>($/) { make CheckboxCheckedChar['v'].new }
 
-multi method checkbox-checked(
-    $/ where $<checkbox-checked-char>.made ~~ CheckboxCheckedChar['x']
-)
+method checkbox-checked($/)
 {
     my Str:D $content = $/.orig;
-    make CheckboxChecked['x'].new(:$content);
-}
-
-multi method checkbox-checked(
-    $/ where $<checkbox-checked-char>.made ~~ CheckboxCheckedChar['o']
-)
-{
-    my Str:D $content = $/.orig;
-    make CheckboxChecked['o'].new(:$content);
-}
-
-multi method checkbox-checked(
-    $/ where $<checkbox-checked-char>.made ~~ CheckboxCheckedChar['v']
-)
-{
-    my Str:D $content = $/.orig;
-    make CheckboxChecked['v'].new(:$content);
+    my CheckboxCheckedChar:D $checkbox-checked-char =
+        $<checkbox-checked-char>.made;
+    make Checkbox['Checked'].new(:$content, :$checkbox-checked-char);
 }
 
 # --- --- --- end checkbox-checked }}}
@@ -428,28 +412,11 @@ method checkbox-etc-char:sym<+>($/) { make CheckboxEtcChar['+'].new }
 method checkbox-etc-char:sym<=>($/) { make CheckboxEtcChar['='].new }
 method checkbox-etc-char:sym<->($/) { make CheckboxEtcChar['-'].new }
 
-multi method checkbox-etc(
-    $/ where $<checkbox-etc-char>.made ~~ CheckboxEtcChar['+']
-)
+method checkbox-etc($/)
 {
     my Str:D $content = $/.orig;
-    make CheckboxEtc['+'].new(:$content);
-}
-
-multi method checkbox-etc(
-    $/ where $<checkbox-etc-char>.made ~~ CheckboxEtcChar['=']
-)
-{
-    my Str:D $content = $/.orig;
-    make CheckboxEtc['='].new(:$content);
-}
-
-multi method checkbox-etc(
-    $/ where $<checkbox-etc-char>.made ~~ CheckboxEtcChar['-']
-)
-{
-    my Str:D $content = $/.orig;
-    make CheckboxEtc['-'].new(:$content);
+    my CheckboxEtcChar:D $checkbox-etc-char = $<checkbox-etc-char>.made;
+    make Checkbox['Etc'].new(:$content, :$checkbox-etc-char);
 }
 
 # --- --- --- end checkbox-etc }}}
@@ -458,20 +425,12 @@ multi method checkbox-etc(
 method checkbox-exception-char:sym<*>($/) { make CheckboxExceptionChar['*'].new }
 method checkbox-exception-char:sym<!>($/) { make CheckboxExceptionChar['!'].new }
 
-multi method checkbox-exception(
-    $/ where $<checkbox-exception-char>.made ~~ CheckboxExceptionChar['*']
-)
+method checkbox-exception($/)
 {
     my Str:D $content = $/.orig;
-    make CheckboxException['*'].new(:$content);
-}
-
-multi method checkbox-exception(
-    $/ where $<checkbox-exception-char>.made ~~ CheckboxExceptionChar['!']
-)
-{
-    my Str:D $content = $/.orig;
-    make CheckboxException['!'].new(:$content);
+    my CheckboxExceptionChar:D $checkbox-exception-char =
+        $<checkbox-exception-char>.made;
+    make Checkbox['Exception'].new(:$content, :$checkbox-exception-char);
 }
 
 # --- --- --- end checkbox-exception }}}
@@ -480,7 +439,7 @@ multi method checkbox-exception(
 method checkbox-unchecked($/)
 {
     my Str:D $content = $/.orig;
-    make CheckboxUnchecked.new(:$content);
+    make Checkbox['Unchecked'].new(:$content);
 }
 
 # --- --- --- end checkbox-unchecked }}}
