@@ -441,20 +441,20 @@ token code-block-language
 
 token code-block-content-backticks
 {
-    <-code-block-closing-delimiter-backticks>*
+    <-code-block-delimiter-closing-backticks>*
 }
 
 token code-block-content-dashes
 {
-    <-code-block-closing-delimiter-dashes>*
+    <-code-block-delimiter-closing-dashes>*
 }
 
-token code-block-closing-delimiter-backticks
+token code-block-delimiter-closing-backticks
 {
     ^^ \h* <code-block-delimiter-opening-backticks> $$
 }
 
-token code-block-closing-delimiter-dashes
+token code-block-delimiter-closing-dashes
 {
     ^^ \h* <code-block-delimiter-opening-dashes> $$
 }
@@ -472,7 +472,7 @@ token code-block:backticks
 
     <code-block-content-backticks>
 
-    <code-block-closing-delimiter-backticks>
+    <code-block-delimiter-closing-backticks>
 }
 
 token code-block:dashes
@@ -486,7 +486,7 @@ token code-block:dashes
 
     <code-block-content-dashes>
 
-    <code-block-closing-delimiter-dashes>
+    <code-block-delimiter-closing-dashes>
 }
 
 # end code-block }}}
@@ -543,22 +543,22 @@ token sectional-block-name
 
 token sectional-block-content-backticks
 {
-    <-sectional-block-closing-delimiter-backticks>*
+    <-sectional-block-delimiter-closing-backticks>*
 }
 
 token sectional-block-content-dashes
 {
-    <-sectional-block-closing-delimiter-dashes>*
+    <-sectional-block-delimiter-closing-dashes>*
 }
 
-token sectional-block-closing-delimiter-backticks
+token sectional-block-delimiter-closing-backticks
 {
-    <.code-block-closing-delimiter-backticks>
+    <.code-block-delimiter-closing-backticks>
 }
 
-token sectional-block-closing-delimiter-dashes
+token sectional-block-delimiter-closing-dashes
 {
-    <.code-block-closing-delimiter-dashes>
+    <.code-block-delimiter-closing-dashes>
 }
 
 proto token sectional-block {*}
@@ -575,7 +575,7 @@ token sectional-block:backticks
 
     <sectional-block-content-backticks>
 
-    <sectional-block-closing-delimiter-backticks>
+    <sectional-block-delimiter-closing-backticks>
 }
 
 token sectional-block:dashes
@@ -590,7 +590,7 @@ token sectional-block:dashes
 
     <sectional-block-content-dashes>
 
-    <sectional-block-closing-delimiter-dashes>
+    <sectional-block-delimiter-closing-dashes>
 }
 
 # end sectional-block }}}
