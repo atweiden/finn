@@ -424,12 +424,12 @@ token reference-block
 # end reference-block }}}
 # code-block {{{
 
-token code-block-delimiter-backticks
+token code-block-delimiter-opening-backticks
 {
     '```'
 }
 
-token code-block-delimiter-dashes
+token code-block-delimiter-opening-dashes
 {
     '-' '-'+
 }
@@ -451,41 +451,55 @@ token code-block-content-dashes
 
 token code-block-closing-delimiter-backticks
 {
-    ^^ \h* <code-block-delimiter-backticks> $$
+    ^^ \h* <code-block-delimiter-opening-backticks> $$
 }
 
 token code-block-closing-delimiter-dashes
 {
-    ^^ \h* <code-block-delimiter-dashes> $$
+    ^^ \h* <code-block-delimiter-opening-dashes> $$
 }
 
 proto token code-block {*}
 
 token code-block:backticks
 {
-    ^^ \h* <code-block-delimiter-backticks> <code-block-language>? $$ \n
+    ^^
+    \h*
+    <code-block-delimiter-opening-backticks>
+    <code-block-language>?
+    $$
+    \n
+
     <code-block-content-backticks>
+
     <code-block-closing-delimiter-backticks>
 }
 
 token code-block:dashes
 {
-    ^^ \h* <code-block-delimiter-dashes> [ <code-block-language> '-'* ]? $$ \n
+    ^^
+    \h*
+    <code-block-delimiter-opening-dashes>
+    [ <code-block-language> '-'* ]?
+    $$
+    \n
+
     <code-block-content-dashes>
+
     <code-block-closing-delimiter-dashes>
 }
 
 # end code-block }}}
 # sectional-block {{{
 
-token sectional-block-delimiter-backticks
+token sectional-block-delimiter-opening-backticks
 {
-    <.code-block-delimiter-backticks>
+    <.code-block-delimiter-opening-backticks>
 }
 
-token sectional-block-delimiter-dashes
+token sectional-block-delimiter-opening-dashes
 {
-    <.code-block-delimiter-dashes>
+    <.code-block-delimiter-opening-dashes>
 }
 
 token sectional-block-name-text-char
@@ -551,15 +565,31 @@ proto token sectional-block {*}
 
 token sectional-block:backticks
 {
-    ^^ \h* <sectional-block-delimiter-backticks> \h <sectional-block-name> $$ \n
+    ^^
+    \h*
+    <sectional-block-delimiter-opening-backticks>
+    \h
+    <sectional-block-name>
+    $$
+    \n
+
     <sectional-block-content-backticks>
+
     <sectional-block-closing-delimiter-backticks>
 }
 
 token sectional-block:dashes
 {
-    ^^ \h* <sectional-block-delimiter-dashes> \h <sectional-block-name> $$ \n
+    ^^
+    \h*
+    <sectional-block-delimiter-opening-dashes>
+    \h
+    <sectional-block-name>
+    $$
+    \n
+
     <sectional-block-content-dashes>
+
     <sectional-block-closing-delimiter-dashes>
 }
 
