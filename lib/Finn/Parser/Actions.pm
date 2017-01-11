@@ -321,20 +321,9 @@ multi method header-block:dispersed ($/ where $<header>.made ~~ Header[3])
 
 # --- --- --- checkbox-checked {{{
 
-method checkbox-checked-char:sym<x>($/)
-{
-    make CheckboxCheckedChar['x'].new;
-}
-
-method checkbox-checked-char:sym<o>($/)
-{
-    make CheckboxCheckedChar['o'].new;
-}
-
-method checkbox-checked-char:sym<v>($/)
-{
-    make CheckboxCheckedChar['v'].new;
-}
+method checkbox-checked-char:sym<x>($/) { make CheckboxCheckedChar['x'].new }
+method checkbox-checked-char:sym<o>($/) { make CheckboxCheckedChar['o'].new }
+method checkbox-checked-char:sym<v>($/) { make CheckboxCheckedChar['v'].new }
 
 multi method checkbox-checked(
     $/ where $<checkbox-checked-char>.made ~~ CheckboxCheckedChar['x']
@@ -369,20 +358,9 @@ multi method checkbox-checked(
 # --- --- --- end checkbox-checked }}}
 # --- --- --- checkbox-etc {{{
 
-method checkbox-etc-char:sym<+>($/)
-{
-    make CheckboxEtcChar['+'].new;
-}
-
-method checkbox-etc-char:sym<=>($/)
-{
-    make CheckboxEtcChar['='].new;
-}
-
-method checkbox-etc-char:sym<->($/)
-{
-    make CheckboxEtcChar['-'].new;
-}
+method checkbox-etc-char:sym<+>($/) { make CheckboxEtcChar['+'].new }
+method checkbox-etc-char:sym<=>($/) { make CheckboxEtcChar['='].new }
+method checkbox-etc-char:sym<->($/) { make CheckboxEtcChar['-'].new }
 
 multi method checkbox-etc(
     $/ where $<checkbox-etc-char>.made ~~ CheckboxEtcChar['+']
@@ -414,15 +392,8 @@ multi method checkbox-etc(
 # --- --- --- end checkbox-etc }}}
 # --- --- --- checkbox-exception {{{
 
-method checkbox-exception-char:sym<*>($/)
-{
-    make CheckboxExceptionChar['*'].new;
-}
-
-method checkbox-exception-char:sym<!>($/)
-{
-    make CheckboxExceptionChar['!'].new;
-}
+method checkbox-exception-char:sym<*>($/) { make CheckboxExceptionChar['*'].new }
+method checkbox-exception-char:sym<!>($/) { make CheckboxExceptionChar['!'].new }
 
 multi method checkbox-exception(
     $/ where $<checkbox-exception-char>.made ~~ CheckboxExceptionChar['*']
@@ -495,90 +466,23 @@ method list-todo-item($/)
 
 # --- --- bullet-point {{{
 
-method bullet-point:sym<->($/)
-{
-    make ~$/;
-}
-
-method bullet-point:sym<@>($/)
-{
-    make ~$/;
-}
-
-method bullet-point:sym<#>($/)
-{
-    make ~$/;
-}
-
-method bullet-point:sym<$>($/)
-{
-    make ~$/;
-}
-
-method bullet-point:sym<*>($/)
-{
-    make ~$/;
-}
-
-method bullet-point:sym<:>($/)
-{
-    make ~$/;
-}
-
-method bullet-point:sym<x>($/)
-{
-    make ~$/;
-}
-
-method bullet-point:sym<o>($/)
-{
-    make ~$/;
-}
-
-method bullet-point:sym<+>($/)
-{
-    make ~$/;
-}
-
-method bullet-point:sym<=>($/)
-{
-    make ~$/;
-}
-
-method bullet-point:sym<!>($/)
-{
-    make ~$/;
-}
-
-method bullet-point:sym<~>($/)
-{
-    make ~$/;
-}
-
-method bullet-point:sym«>»($/)
-{
-    make ~$/;
-}
-
-method bullet-point:sym«<-»($/)
-{
-    make ~$/;
-}
-
-method bullet-point:sym«<=»($/)
-{
-    make ~$/;
-}
-
-method bullet-point:sym«->»($/)
-{
-    make ~$/;
-}
-
-method bullet-point:sym«=>»($/)
-{
-    make ~$/;
-}
+method bullet-point:sym<->($/)  { make BulletPoint['-'].new }
+method bullet-point:sym<@>($/)  { make BulletPoint['@'].new }
+method bullet-point:sym<#>($/)  { make BulletPoint['#'].new }
+method bullet-point:sym<$>($/)  { make BulletPoint['$'].new }
+method bullet-point:sym<*>($/)  { make BulletPoint['*'].new }
+method bullet-point:sym<:>($/)  { make BulletPoint[':'].new }
+method bullet-point:sym<x>($/)  { make BulletPoint['x'].new }
+method bullet-point:sym<o>($/)  { make BulletPoint['o'].new }
+method bullet-point:sym<+>($/)  { make BulletPoint['+'].new }
+method bullet-point:sym<=>($/)  { make BulletPoint['='].new }
+method bullet-point:sym<!>($/)  { make BulletPoint['!'].new }
+method bullet-point:sym<~>($/)  { make BulletPoint['~'].new }
+method bullet-point:sym«>»($/)  { make BulletPoint['>'].new }
+method bullet-point:sym«<-»($/) { make BulletPoint['<-'].new }
+method bullet-point:sym«<=»($/) { make BulletPoint['<='].new }
+method bullet-point:sym«->»($/) { make BulletPoint['->'].new }
+method bullet-point:sym«=>»($/) { make BulletPoint['=>'].new }
 
 # --- --- end bullet-point }}}
 
