@@ -18,11 +18,6 @@ finn tangle path/to/finn/source/file
 ```perl6
 use Finn;
 my Str $file = 'Story';
-
-# get parse tree
-my Finn::Parser::ParseTree:D $parse-tree = Finn::Parser.parsefile($file).made;
-
-# tangle
 Finn.tangle(:$file);
 ```
 
