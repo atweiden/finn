@@ -10,7 +10,7 @@ Inspired by [vim-journal] and [Literate].
 **cmdline**
 
 ```sh
-finn make path/to/finn/source/file
+finn tangle path/to/finn/source/file
 ```
 
 **perl6**
