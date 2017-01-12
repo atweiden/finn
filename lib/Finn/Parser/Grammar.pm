@@ -148,7 +148,7 @@ token comment-block
 # end comment }}}
 # gap {{{
 
-proto token gap {*}
+proto token gap   {*}
 token gap:newline { \n }
 token gap:comment { <.comment> \h* $$ \n }
 
@@ -200,9 +200,9 @@ token header3
 }
 
 proto token header {*}
-token header:h1 { <header1> }
-token header:h2 { <header2> }
-token header:h3 { <header3> }
+token header:h1    { <header1> }
+token header:h2    { <header2> }
+token header:h3    { <header3> }
 
 # C<<header-block>> must be separated from text blocks above it
 # with a C<<blank-line>>, C<<comment-block>> or C<<horizontal-rule>>,
@@ -226,7 +226,7 @@ token header-block:dispersed
 
 # --- --- checkbox {{{
 
-proto token checkbox-checked-char {*}
+proto token checkbox-checked-char  {*}
 token checkbox-checked-char:sym<x> { <sym> }
 token checkbox-checked-char:sym<o> { <sym> }
 token checkbox-checked-char:sym<v> { <sym> }
@@ -236,7 +236,7 @@ token checkbox-checked
     '[' <checkbox-checked-char> ']'
 }
 
-proto token checkbox-etc-char {*}
+proto token checkbox-etc-char  {*}
 token checkbox-etc-char:sym<+> { <sym> }
 token checkbox-etc-char:sym<=> { <sym> }
 token checkbox-etc-char:sym<-> { <sym> }
@@ -246,7 +246,7 @@ token checkbox-etc
     '[' <checkbox-etc-char> ']'
 }
 
-proto token checkbox-exception-char {*}
+proto token checkbox-exception-char  {*}
 token checkbox-exception-char:sym<*> { <sym> }
 token checkbox-exception-char:sym<!> { <sym> }
 
@@ -260,9 +260,9 @@ token checkbox-unchecked
     '[ ]'
 }
 
-proto token checkbox {*}
-token checkbox:checked { <checkbox-checked> }
-token checkbox:etc { <checkbox-etc> }
+proto token checkbox     {*}
+token checkbox:checked   { <checkbox-checked> }
+token checkbox:etc       { <checkbox-etc> }
 token checkbox:exception { <checkbox-exception> }
 token checkbox:unchecked { <checkbox-unchecked> }
 
