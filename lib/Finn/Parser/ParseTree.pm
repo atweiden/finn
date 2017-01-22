@@ -68,9 +68,14 @@ role Content
 # end role Content }}}
 
 =begin pod
-=head Inline Text
+=head Elements
 =end pod
 
+# role BlankLine {{{
+
+role BlankLine does Content {*}
+
+# end role BlankLine }}}
 # role Comment {{{
 
 role Comment does Content
@@ -81,15 +86,24 @@ role Comment does Content
 }
 
 # end role Comment }}}
+# role CommentBlock {{{
+
+role CommentBlock does Content
+{
+    has Comment:D $.comment is required;
+}
+
+# end role CommentBlock }}}
 # role File {{{
 
+# C<File::Path> contains a file path given in Finn source document
 role File::Path
 {
     has IO::Path:D $.path is required;
 }
 
-# The C<File::Protocol> role is instantiated when C<File::Path> comes
-# with a protocol (e.g. file://) prepended to it
+# C<File::Protocol> is instantiated when C<File::Path> comes with
+# a protocol (e.g. file://) prepended to it
 role File::Protocol
 {
     has Str:D $.protocol is required;
@@ -109,6 +123,46 @@ role Header[2] does Content does Header::Text {*}
 role Header[3] does Content does Header::Text {*}
 
 # end role Header }}}
+# role HeaderBlock {{{
+
+# Header comes after BlankLine
+role HeaderBlock['BlankLine'] does Content
+{
+    has BlankLine:D $.blank-line is required;
+    has Header:D $.header is required;
+}
+
+# Header comes after CommentBlock
+role HeaderBlock['CommentBlock'] does Content
+{
+    has CommentBlock:D $.comment-block is required;
+    has Header:D $.header is required;
+}
+
+# Header comes after HorizontalRule
+role HeaderBlock['HorizontalRule'] does Content
+{
+    has HorizontalRule $.horizontal-rule is required;
+    has Header:D $.header is required;
+}
+
+# Header comes at top of Finn document
+role HeaderBlock['Top'] does Content
+{
+    has Header:D $.header is required;
+}
+
+# end role HeaderBlock }}}
+# role ListBlock {{{
+
+role ListItem {...}
+
+role ListBlock does Content
+{
+    has ListItem:D @.list-item is required;
+}
+
+# end role ListBlock }}}
 # role ListItem {{{
 
 role ListItem::Text
@@ -215,6 +269,29 @@ role ListItem['Unordered'] does Content does ListItem::Text
 # --- end role ListItem['Unordered'] }}}
 
 # end role ListItem }}}
+# role ReferenceBlock {{{
+
+role ReferenceInline {...}
+
+# --- role ReferenceLine {{{
+
+role ReferenceLine
+{
+    # the Reference Block Reference Line Reference Inline
+    has ReferenceInline:D $.reference-inline is required;
+
+    # the Reference Block Reference Line Text
+    has Str:D $.reference-text is required;
+}
+
+# --- end role ReferenceLine }}}
+
+role ReferenceBlock does Content
+{
+    has ReferenceLine:D @.reference-line is required;
+}
+
+# end role ReferenceBlock }}}
 # role ReferenceInline {{{
 
 role ReferenceInline does Content
@@ -238,19 +315,25 @@ role SectionalBlockDelimiter['Dashes'] {*}
 
 role SectionalBlockName::Identifier::Export {*}
 
+# the Sectional Block Name is a file
 role SectionalBlockName::Identifier['File']
 {
     has File:D $.file is required;
 }
 
+# the Sectional Block Name is an unquoted string
 role SectionalBlockName::Identifier['Word']
 {
     has Str:D $.word is required;
 }
 
+# Sectional Block Name Operator can be either additive (+=) or
+# redefine (:=)
 role SectionalBlockName::Operator['Additive'] {*}
 role SectionalBlockName::Operator['Redefine'] {*}
 
+# Sectional Block Name has an identifier, which may be exported,
+# and an optional Operator
 role SectionalBlockName
 {
     has SectionalBlockName::Identifier:D $.identifier is required;
@@ -261,16 +344,19 @@ role SectionalBlockName
 # --- end role SectionalBlockName }}}
 # --- role SectionalBlockText {{{
 
+# Sectional Block Content can feature Sectional Inlines
 role SectionalBlockText::Chunk['SectionalInline']
 {
     has SectionalInline:D $.sectional-inline is required;
 }
 
+# Sectional Block Content is considered source code by default
 role SectionalBlockText::Chunk['SourceCode']
 {
     has Str:D $.source-code is required;
 }
 
+# each Sectional Block contains chunks of C<SectionalBlockText>
 role SectionalBlockText
 {
     has SectionalBlockText::Chunk:D @.chunk is required;
@@ -278,6 +364,8 @@ role SectionalBlockText
 
 # --- end role SectionalBlockText }}}
 
+# each Sectional Block has delimiters (dashes or backticks), a name
+# and associated text
 role SectionalBlock does Content
 {
     has SectionalBlockDelimiter:D $.delimiter is required;
@@ -288,59 +376,38 @@ role SectionalBlock does Content
 # end role SectionalBlock }}}
 # role SectionalInline {{{
 
-role SectionalInline::Name
-{
-    # the linked Sectional Block Name
-    has Str:D $.name is required;
+role SectionalInline::Name      {...}
+role SectionalInline::File      {...}
+role SectionalInline::Reference {...}
 
-    # in which section number does the linked Sectional Block Name
-    # first appear?
-    #
-    # <L|http://literate.zbyedidia.webfactional.com/examples/wc.html#1:8>
-    has UInt $.first-appears-in-section is rw;
-}
-
-role SectionalInline::File
-{
-    # the linked Finn source file
-    #
-    # inter-file content must know where it came from for backtracing
-    # purposes
-    has File:D $.file is required;
-}
-
-role SectionalInline::Reference
-{
-    # the linked Reference Inline
-    has ReferenceInline:D $.reference-inline is required;
-}
-
-# this is a Haml-style include directive telling us to process
-# C<self.name> as Sectional Block and embed in-place
+# C<role SectionalInline['Name']> is a Haml-style include directive
+# telling us to process C<self.name> as Sectional Block and embed
+# in-place
 # XXX: it can only appear inside of a Sectional Block
 role SectionalInline['Name']
     does Content
     does SectionalInline::Name
 {*}
 
-# this is a Haml-style include directive telling us to process the
-# entirety of the linked Finn source file and embed in-place
+# C<role SectionalInline['File']> is a Haml-style include directive
+# telling us to process the entirety of the linked Finn source file
+# and embed in-place
 role SectionalInline['File']
     does Content
     does SectionalInline::File
 {*}
 
-# this is a Haml-style include directive telling us to process the
-# entirety of the linked Finn source file given by Reference Inline and
-# embed in-place
+# C<role SectionalInline['Reference']> is a Haml-style include
+# directive telling us to process the entirety of the linked Finn
+# source file given by Reference Inline and embed in-place
 role SectionalInline['Reference']
     does Content
     does SectionalInline::Reference
 {*}
 
-# this is a Haml-style include directive with added specificity
-# from C<sectional-block-name> qualifier, which gets stored in
-# C<self.name>
+# C<role SectionalInline['Name', 'File']> is a Haml-style include
+# directive with added specificity from C<sectional-block-name>
+# qualifier, which gets stored in C<self.name>
 #
 # tells us to process C<self.name> from C<self.file> as Sectional Block
 # and embed in-place
@@ -350,13 +417,33 @@ role SectionalInline['Name', 'File']
     does SectionalInline::File
 {*}
 
-# same as C<SectionalInline['Name', 'File']> except C<self.name> is
-# resolved from Reference Inline
+# C<role SectionalInline['Name', 'Reference']> is the same as
+# C<role SectionalInline['Name', 'File']> except the C<self.name>
+# Sectional Block Name is searched for in the File resolved from
+# Reference Inline
 role SectionalInline['Name', 'Reference']
     does Content
     does SectionalInline::Name
     does SectionalInline::Reference
 {*}
+
+role SectionalInline::Name
+{
+    # the linked Sectional Block Name
+    has Str:D $.name is required;
+}
+
+role SectionalInline::File
+{
+    # the linked Finn source file
+    has File:D $.file is required;
+}
+
+role SectionalInline::Reference
+{
+    # the linked Reference Inline
+    has ReferenceInline:D $.reference-inline is required;
+}
 
 # end role SectionalInline }}}
 
@@ -399,22 +486,9 @@ role Chunk::CodeBlock does Chunk {*}
 # end role Chunk::CodeBlock }}}
 # role Chunk::ReferenceBlock {{{
 
-# --- role ReferenceBlockReferenceLine {{{
-
-role ReferenceBlockReferenceLine
-{
-    # the Reference Block Reference Line Reference Inline Number
-    has UInt:D $.number is required;
-
-    # the Reference Block Reference Line Text
-    has Str:D $.text is required;
-}
-
-# --- end role ReferenceBlockReferenceLine }}}
-
 role Chunk::ReferenceBlock does Chunk
 {
-    has ReferenceBlockReferenceLine:D @.reference-line is required;
+    has ReferenceBlock:D $.reference-block is required;
 }
 
 # end role Chunk::ReferenceBlock }}}
@@ -429,7 +503,7 @@ role Chunk::HeaderBlock[3] does Chunk { has Header[3] $.header3 is required }
 
 role Chunk::ListBlock does Chunk
 {
-    has ListItem:D @.list-item is required;
+    has ListBlock:D $.list-block is required;
 }
 
 # end role Chunk::ListBlock }}}
@@ -448,15 +522,44 @@ role Chunk::HorizontalRule['Soft'] does Chunk {*}
 
 role Chunk::CommentBlock does Chunk
 {
-    has Comment:D $.comment is required;
+    has CommentBlock:D $.comment-block is required;
 }
 
 # end role Chunk::CommentBlock }}}
 # role Chunk::BlankLine {{{
 
-role Chunk::BlankLine does Chunk {*}
+role Chunk::BlankLine does Chunk
+{
+    has BlankLine:D $.blank-line is required;
+}
 
 # end role Chunk::BlankLine }}}
+
+=begin pod
+=head Document
+=end pod
+
+# class Document {{{
+
+class Document
+{
+    has Chunk:D @.chunk is required;
+}
+
+# end class Document }}}
+
+=begin pod
+=head Parse Tree
+=end pod
+
+# class Finn::Parser::ParseTree {{{
+
+class Finn::Parser::ParseTree
+{
+    has Document:D $.document is required;
+}
+
+# end class Finn::Parser::ParseTree }}}
 
 =begin pod
 =head Content
@@ -527,18 +630,5 @@ result.
 =end pod
 
 # end role Content::SectionalBlock }}}
-
-=begin pod
-=head Parse Tree
-=end pod
-
-# class Finn::Parser::ParseTree {{{
-
-class Finn::Parser::ParseTree
-{
-    has Chunk:D @.chunk is required;
-}
-
-# end class Finn::Parser::ParseTree }}}
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:
