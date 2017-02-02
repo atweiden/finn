@@ -118,7 +118,8 @@ method chunk:blank-line ($/)
 
 method document($/)
 {
-    make @<chunk>».made;
+    my Chunk:D @chunk = @<chunk>».made;
+    make Document.new(:@chunk);
 }
 
 # end document }}}
@@ -126,8 +127,8 @@ method document($/)
 
 multi method TOP($/ where $<document>.so)
 {
-    my Chunk:D @chunk = $<document>.made;
-    make Finn::Parser::ParseTree.new(:@chunk);
+    my Document:D $document = $<document>.made;
+    make Finn::Parser::ParseTree.new(:$document);
 }
 
 multi method TOP($/)
@@ -195,30 +196,16 @@ method sectional-inline($/)
 
 method sectional-inline-block:top ($/)
 {
-    my Bounds:D $bounds = gen-bounds();
     my Str:D $content = $/.orig;
-    my UInt:D $section = 0;
     my SectionalInline:D @sectional-inline = @<sectional-inline>».made;
-    make Chunk::SectionalInlineBlock.new(
-        :$bounds,
-        :$content,
-        :$section,
-        :@sectional-inline
-    );
+    make SectionalInlineBlock.new(:$content, :@sectional-inline);
 }
 
 method sectional-inline-block:dispersed ($/)
 {
-    my Bounds:D $bounds = gen-bounds();
     my Str:D $content = $/.orig;
-    my UInt:D $section = 0;
     my SectionalInline:D @sectional-inline = @<sectional-inline>».made;
-    make Chunk::SectionalInlineBlock.new(
-        :$bounds,
-        :$content,
-        :$section,
-        :@sectional-inline
-    );
+    make SectionalInlineBlock.new(:$content, :@sectional-inline);
 }
 
 # end sectional-inline-block }}}
@@ -277,10 +264,10 @@ method sectional-block-name($/)
 {
     my SectionalBlockName::Identifier:D $identifier =
         $<sectional-block-name-identifier>.made;
-    my SectionalBlockName::Identifier::Export $export =
+    my SectionalBlockName::Identifier::Export:D $export =
         $<sectional-block-name-identifier-export>.made
             if ?$<sectional-block-name-identifier-export>;
-    my SectionalBlockName::Operator $operator =
+    my SectionalBlockName::Operator:D $operator =
         $<sectional-block-name-operator>.made
             if ?$<sectional-block-name-operator>;
 
@@ -321,38 +308,20 @@ method sectional-block-delimiter-closing-dashes($/)
 
 method sectional-block:backticks ($/)
 {
-    my Bounds:D $bounds = gen-bounds();
     my Str:D $content = $/.orig;
-    my UInt:D $section = 0;
     my SectionalBlockDelimiter['Backticks'] $delimiter .= new;
     my SectionalBlockName:D $name = $<sectional-block-name>.made;
     my Str:D $text = $<sectional-block-content-backticks>.made;
-    make SectionalBlock.new(
-        :$bounds,
-        :$content,
-        :$section,
-        :$delimiter,
-        :$name,
-        :$text
-    );
+    make SectionalBlock.new(:$content, :$delimiter, :$name, :$text);
 }
 
 method sectional-block:dashes ($/)
 {
-    my Bounds:D $bounds = gen-bounds();
     my Str:D $content = $/.orig;
-    my UInt:D $section = 0;
     my SectionalBlockDelimiter['Dashes'] $delimiter .= new;
     my SectionalBlockName:D $name = $<sectional-block-name>.made;
     my Str:D $text = $<sectional-block-content-dashes>.made;
-    make SectionalBlock.new(
-        :$bounds,
-        :$content,
-        :$section,
-        :$delimiter,
-        :$name,
-        :$text
-    );
+    make SectionalBlock.new(:$content, :$delimiter, :$name, :$text);
 }
 
 # end sectional-block }}}
@@ -405,59 +374,141 @@ method header:h3 ($/)
     make $<header3>.made;
 }
 
+# --- header-block:top {{{
+
 multi method header-block:top ($/ where $<header>.made ~~ Header[1])
 {
-    my Bounds:D $bounds = gen-bounds();
     my Str:D $content = $/.orig;
-    my UInt:D $section = 0;
-    my Header[1] $header1 = $<header>.made;
-    make Chunk::HeaderBlock[1].new(:$bounds, :$content, :$section, :$header1);
+    my Header[1] $header = $<header>.made;
+    make HeaderBlock['Top'].new(:$content, :$header);
 }
 
 multi method header-block:top ($/ where $<header>.made ~~ Header[2])
 {
-    my Bounds:D $bounds = gen-bounds();
     my Str:D $content = $/.orig;
-    my UInt:D $section = 0;
-    my Header[2] $header2 = $<header>.made;
-    make Chunk::HeaderBlock[2].new(:$bounds, :$content, :$section, :$header2);
+    my Header[2] $header = $<header>.made;
+    make HeaderBlock['Top'].new(:$content, :$header);
 }
 
 multi method header-block:top ($/ where $<header>.made ~~ Header[3])
 {
-    my Bounds:D $bounds = gen-bounds();
     my Str:D $content = $/.orig;
-    my UInt:D $section = 0;
-    my Header[3] $header3 = $<header>.made;
-    make Chunk::HeaderBlock[3].new(:$bounds, :$content, :$section, :$header3);
+    my Header[3] $header = $<header>.made;
+    make HeaderBlock['Top'].new(:$content, :$header);
 }
 
-multi method header-block:dispersed ($/ where $<header>.made ~~ Header[1])
+# --- end header-block:top }}}
+# --- header-block:after-blank-line {{{
+
+multi method header-block:after-blank-line (
+    $/ where $<header>.made ~~ Header[1]
+)
 {
-    my Bounds:D $bounds = gen-bounds();
     my Str:D $content = $/.orig;
-    my UInt:D $section = 0;
-    my Header[1] $header1 = $<header>.made;
-    make Chunk::HeaderBlock[1].new(:$bounds, :$content, :$section, :$header1);
+    my BlankLine:D $blank-line = $<blank-line>.made;
+    my Header[1] $header = $<header>.made;
+    make HeaderBlock['BlankLine'].new(:$content, :$blank-line, :$header);
 }
 
-multi method header-block:dispersed ($/ where $<header>.made ~~ Header[2])
+multi method header-block:after-blank-line (
+    $/ where $<header>.made ~~ Header[2]
+)
 {
-    my Bounds:D $bounds = gen-bounds();
     my Str:D $content = $/.orig;
-    my UInt:D $section = 0;
-    my Header[2] $header2 = $<header>.made;
-    make Chunk::HeaderBlock[2].new(:$bounds, :$content, :$section, :$header2);
+    my BlankLine:D $blank-line = $<blank-line>.made;
+    my Header[2] $header = $<header>.made;
+    make HeaderBlock['BlankLine'].new(:$content, :$blank-line, :$header);
 }
 
-multi method header-block:dispersed ($/ where $<header>.made ~~ Header[3])
+multi method header-block:after-blank-line (
+    $/ where $<header>.made ~~ Header[3]
+)
 {
-    my Bounds:D $bounds = gen-bounds();
     my Str:D $content = $/.orig;
-    my UInt:D $section = 0;
-    my Header[3] $header3 = $<header>.made;
-    make Chunk::HeaderBlock[3].new(:$bounds, :$content, :$section, :$header3);
+    my BlankLine:D $blank-line = $<blank-line>.made;
+    my Header[3] $header = $<header>.made;
+    make HeaderBlock['BlankLine'].new(:$content, :$blank-line, :$header);
 }
+
+# --- end header-block:after-blank-line }}}
+# --- header-block:after-comment-block {{{
+
+multi method header-block:after-comment-block (
+    $/ where $<header>.made ~~ Header[1]
+)
+{
+    my Str:D $content = $/.orig;
+    my CommentBlock:D $comment-block = $<comment-block>.made;
+    my Header[1] $header = $<header>.made;
+    make HeaderBlock['CommentBlock'].new(:$content, :$comment-block, :$header);
+}
+
+multi method header-block:after-comment-block (
+    $/ where $<header>.made ~~ Header[2]
+)
+{
+    my Str:D $content = $/.orig;
+    my CommentBlock:D $comment-block = $<comment-block>.made;
+    my Header[2] $header = $<header>.made;
+    make HeaderBlock['CommentBlock'].new(:$content, :$comment-block, :$header);
+}
+
+multi method header-block:after-comment-block (
+    $/ where $<header>.made ~~ Header[3]
+)
+{
+    my Str:D $content = $/.orig;
+    my CommentBlock:D $comment-block = $<comment-block>.made;
+    my Header[3] $header = $<header>.made;
+    make HeaderBlock['CommentBlock'].new(:$content, :$comment-block, :$header);
+}
+
+# --- end header-block:after-comment-block }}}
+# --- header-block:after-horizontal-rule {{{
+
+multi method header-block:after-horizontal-rule (
+    $/ where $<header>.made ~~ Header[1]
+)
+{
+    my Str:D $content = $/.orig;
+    has HorizontalRule:D $horizontal-rule = $<horizontal-rule>.made;
+    my Header[1] $header = $<header>.made;
+    make HeaderBlock['HorizontalRule'].new(
+        :$content,
+        :$horizontal-rule,
+        :$header
+    );
+}
+
+multi method header-block:after-horizontal-rule (
+    $/ where $<header>.made ~~ Header[2]
+)
+{
+    my Str:D $content = $/.orig;
+    has HorizontalRule:D $horizontal-rule = $<horizontal-rule>.made;
+    my Header[2] $header = $<header>.made;
+    make HeaderBlock['HorizontalRule'].new(
+        :$content,
+        :$horizontal-rule,
+        :$header
+    );
+}
+
+multi method header-block:after-horizontal-rule (
+    $/ where $<header>.made ~~ Header[3]
+)
+{
+    my Str:D $content = $/.orig;
+    has HorizontalRule:D $horizontal-rule = $<horizontal-rule>.made;
+    my Header[3] $header = $<header>.made;
+    make HeaderBlock['HorizontalRule'].new(
+        :$content,
+        :$horizontal-rule,
+        :$header
+    );
+}
+
+# --- end header-block:after-horizontal-rule }}}
 
 # end header-block }}}
 # list-block {{{
@@ -707,11 +758,9 @@ method list-item:unordered ($/)
 
 method list-block($/)
 {
-    my Bounds:D $bounds = gen-bounds();
     my Str:D $content = $/.orig;
-    my UInt:D $section = 0;
     my ListItem:D @list-item = @<list-item>».made;
-    make Chunk::ListBlock.new(:$bounds, :$content, :$section, :@list-item);
+    make ListBlock.new(:$content, :@list-item);
 }
 
 # end list-block }}}
@@ -719,6 +768,28 @@ method list-block($/)
 
 # end paragraph-block }}}
 # horizontal-rule {{{
+
+method horizontal-rule-soft($/)
+{
+    my Str:D $content = ~$/;
+    make HorizontalRule['Soft'].new(:$content);
+}
+
+method horizontal-rule-hard($/)
+{
+    my Str:D $content = ~$/;
+    make HorizontalRule['Hard'].new(:$content);
+}
+
+method horizontal-rule:soft ($/)
+{
+    make $<horizontal-rule-soft>.made;
+}
+
+method horizontal-rule:hard ($/)
+{
+    make $<horizontal-rule-hard>.made;
+}
 
 # end horizontal-rule }}}
 # comment-block {{{
@@ -754,11 +825,9 @@ method comment($/)
 
 method comment-block($/)
 {
-    my Bounds:D $bounds = gen-bounds();
     my Str:D $content = $/.orig;
-    my UInt:D $section = 0;
     my Comment:D $comment = $<comment>.made;
-    make Chunk::CommentBlock.new(:$bounds, :$content, :$section, :$comment);
+    make CommentBlock.new(:$content, :$comment);
 }
 
 # end comment-block }}}
@@ -766,10 +835,8 @@ method comment-block($/)
 
 method blank-line($/)
 {
-    my Bounds:D $bounds = gen-bounds();
     my Str:D $content = $/.orig;
-    my UInt:D $section = 0;
-    make Chunk::BlankLine.new(:$bounds, :$content, :$section);
+    make BlankLine.new(:$content);
 }
 
 # end blank-line }}}
@@ -1095,21 +1162,5 @@ method reference-inline($/)
 }
 
 # end reference-inline }}}
-
-=begin pod
-=head Helper Functions
-=end pod
-
-# sub gen-bounds {{{
-
-sub gen-bounds() returns Bounds:D
-{
-    # XXX fix dummy data
-    my Bounds::Begins:D $begins = Bounds::Begins.new(:line(0), :column(0));
-    my Bounds::Ends:D $ends = Bounds::Ends.new(:line(0), :column(0));
-    my Bounds:D $bounds = Bounds.new(:$begins, :$ends);
-}
-
-# end sub gen-bounds }}}
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

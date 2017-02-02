@@ -153,6 +153,12 @@ role HeaderBlock['Top'] does Content
 }
 
 # end role HeaderBlock }}}
+# role HorizontalRule {{{
+
+role HorizontalRule['Hard'] does Content {*}
+role HorizontalRule['Soft'] does Content {*}
+
+# end role HorizontalRule }}}
 # role ListBlock {{{
 
 role ListItem {...}

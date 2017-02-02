@@ -207,17 +207,11 @@ token header:h3    { <header3> }
 # C<<header-block>> must be separated from text blocks above it
 # with a C<<blank-line>>, C<<comment-block>> or C<<horizontal-rule>>,
 # or the header must appear at the very top of the document
-proto token header-block {*}
-
-token header-block:top
-{
-    ^ <header>
-}
-
-token header-block:dispersed
-{
-    [ <blank-line> | <comment-block> | <horizontal-rule> ] <.gap> <header>
-}
+proto token header-block                 {*}
+token header-block:top                   { ^ <header> }
+token header-block:after-blank-line      { <blank-line>  <.gap> <header> }
+token header-block:after-comment-block   { <comment-block> <.gap> <header> }
+token header-block:after-horizontal-rule { <horizontal-rule> <.gap> <header> }
 
 # end header }}}
 # list-block {{{
