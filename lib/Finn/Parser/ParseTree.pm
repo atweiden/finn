@@ -459,7 +459,84 @@ role SectionalInline::Reference
 
 # role Chunk {{{
 
-role Chunk does Content
+role Chunk::Meta {...}
+
+# --- role Chunk['SectionalInlineBlock'] {{{
+
+role Chunk['SectionalInlineBlock'] does Chunk::Meta does Content
+{
+    has SectionalInline:D @.sectional-inline is required;
+}
+
+# --- end role Chunk['SectionalInlineBlock'] }}}
+# --- role Chunk['SectionalBlock'] {{{
+
+role Chunk['SectionalBlock'] does Chunk::Meta does Content
+{
+    has SectionalBlock:D $.sectional-block is required;
+}
+
+# --- end role Chunk['SectionalBlock'] }}}
+# --- role Chunk['CodeBlock'] {{{
+
+role Chunk['CodeBlock'] does Chunk::Meta does Content {*}
+
+# --- end role Chunk['CodeBlock'] }}}
+# --- role Chunk['ReferenceBlock'] {{{
+
+role Chunk['ReferenceBlock'] does Chunk::Meta does Content
+{
+    has ReferenceBlock:D $.reference-block is required;
+}
+
+# --- end role Chunk['ReferenceBlock'] }}}
+# --- role Chunk['HeaderBlock'] {{{
+
+role Chunk['HeaderBlock'] does Chunk::Meta does Content
+{
+    has HeaderBlock:D $.header-block is required;
+}
+
+# --- end role Chunk['HeaderBlock'] }}}
+# --- role Chunk['ListBlock'] {{{
+
+role Chunk['ListBlock'] does Chunk::Meta does Content
+{
+    has ListBlock:D $.list-block is required;
+}
+
+# --- end role Chunk['ListBlock'] }}}
+# --- role Chunk['ParagraphBlock'] {{{
+
+role Chunk::ParagraphBlock does Chunk::Meta does Content {*}
+
+# --- end role Chunk['ParagraphBlock'] }}}
+# --- role Chunk['HorizontalRule'] {{{
+
+role Chunk['HorizontalRule'] does Chunk::Meta does Content
+{
+    has HorizontalRule:D $.horizontal-rule is required;
+}
+
+# --- end role Chunk['HorizontalRule'] }}}
+# --- role Chunk['CommentBlock'] {{{
+
+role Chunk['CommentBlock'] does Chunk::Meta does Content
+{
+    has CommentBlock:D $.comment-block is required;
+}
+
+# --- end role Chunk['CommentBlock'] }}}
+# --- role Chunk['BlankLine'] {{{
+
+role Chunk['BlankLine'] does Chunk::Meta does Content
+{
+    has BlankLine:D $.blank-line is required;
+}
+
+# --- end role Chunk['BlankLine'] }}}
+
+role Chunk::Meta
 {
     # file:line:column
     has Bounds:D $.bounds is required;
@@ -469,77 +546,6 @@ role Chunk does Content
 }
 
 # end role Chunk }}}
-# role Chunk::SectionalInlineBlock {{{
-
-role Chunk::SectionalInlineBlock does Chunk
-{
-    has SectionalInline:D @.sectional-inline is required;
-}
-
-# end role Chunk::SectionalInlineBlock }}}
-# role Chunk::SectionalBlock {{{
-
-role Chunk::SectionalBlock does Chunk
-{
-    has SectionalBlock:D $.sectional-block is required;
-}
-
-# end role Chunk::SectionalBlock }}}
-# role Chunk::CodeBlock {{{
-
-role Chunk::CodeBlock does Chunk {*}
-
-# end role Chunk::CodeBlock }}}
-# role Chunk::ReferenceBlock {{{
-
-role Chunk::ReferenceBlock does Chunk
-{
-    has ReferenceBlock:D $.reference-block is required;
-}
-
-# end role Chunk::ReferenceBlock }}}
-# role Chunk::HeaderBlock {{{
-
-role Chunk::HeaderBlock[1] does Chunk { has Header[1] $.header1 is required }
-role Chunk::HeaderBlock[2] does Chunk { has Header[2] $.header2 is required }
-role Chunk::HeaderBlock[3] does Chunk { has Header[3] $.header3 is required }
-
-# end role Chunk::HeaderBlock }}}
-# role Chunk::ListBlock {{{
-
-role Chunk::ListBlock does Chunk
-{
-    has ListBlock:D $.list-block is required;
-}
-
-# end role Chunk::ListBlock }}}
-# role Chunk::ParagraphBlock {{{
-
-role Chunk::ParagraphBlock does Chunk {*}
-
-# end role Chunk::ParagraphBlock }}}
-# role Chunk::HorizontalRule {{{
-
-role Chunk::HorizontalRule['Hard'] does Chunk {*}
-role Chunk::HorizontalRule['Soft'] does Chunk {*}
-
-# end role Chunk::HorizontalRule }}}
-# role Chunk::CommentBlock {{{
-
-role Chunk::CommentBlock does Chunk
-{
-    has CommentBlock:D $.comment-block is required;
-}
-
-# end role Chunk::CommentBlock }}}
-# role Chunk::BlankLine {{{
-
-role Chunk::BlankLine does Chunk
-{
-    has BlankLine:D $.blank-line is required;
-}
-
-# end role Chunk::BlankLine }}}
 
 =begin pod
 =head Document
