@@ -471,7 +471,7 @@ multi method header-block:after-horizontal-rule (
 )
 {
     my Str:D $content = $/.orig;
-    has HorizontalRule:D $horizontal-rule = $<horizontal-rule>.made;
+    my HorizontalRule:D $horizontal-rule = $<horizontal-rule>.made;
     my Header[1] $header = $<header>.made;
     make HeaderBlock['HorizontalRule'].new(
         :$content,
@@ -485,7 +485,7 @@ multi method header-block:after-horizontal-rule (
 )
 {
     my Str:D $content = $/.orig;
-    has HorizontalRule:D $horizontal-rule = $<horizontal-rule>.made;
+    my HorizontalRule:D $horizontal-rule = $<horizontal-rule>.made;
     my Header[2] $header = $<header>.made;
     make HeaderBlock['HorizontalRule'].new(
         :$content,
@@ -499,7 +499,7 @@ multi method header-block:after-horizontal-rule (
 )
 {
     my Str:D $content = $/.orig;
-    has HorizontalRule:D $horizontal-rule = $<horizontal-rule>.made;
+    my HorizontalRule:D $horizontal-rule = $<horizontal-rule>.made;
     my Header[3] $header = $<header>.made;
     make HeaderBlock['HorizontalRule'].new(
         :$content,
