@@ -508,7 +508,7 @@ role Chunk['ListBlock'] does Chunk::Meta does Content
 # --- end role Chunk['ListBlock'] }}}
 # --- role Chunk['ParagraphBlock'] {{{
 
-role Chunk::ParagraphBlock does Chunk::Meta does Content {*}
+role Chunk['ParagraphBlock'] does Chunk::Meta does Content {*}
 
 # --- end role Chunk['ParagraphBlock'] }}}
 # --- role Chunk['HorizontalRule'] {{{
