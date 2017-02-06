@@ -211,19 +211,6 @@ method sectional-inline-block:dispersed ($/)
 # end sectional-inline-block }}}
 # sectional-block {{{
 
-# --- sectional-block-delimiter-opening {{{
-
-method sectional-block-delimiter-opening-backticks($/)
-{
-    make ~$/;
-}
-
-method sectional-block-delimiter-opening-dashes($/)
-{
-    make ~$/;
-}
-
-# --- end sectional-block-delimiter-opening }}}
 # --- sectional-block-name {{{
 
 # --- --- sectional-block-name-identifier {{{
@@ -292,19 +279,6 @@ method sectional-block-content-dashes($/)
 }
 
 # --- end sectional-block-content }}}
-# --- sectional-block-delimiter-closing {{{
-
-method sectional-block-delimiter-closing-backticks($/)
-{
-    make ~$/;
-}
-
-method sectional-block-delimiter-closing-dashes($/)
-{
-    make ~$/;
-}
-
-# --- end sectional-block-delimiter-closing }}}
 
 method sectional-block:backticks ($/)
 {
@@ -327,19 +301,6 @@ method sectional-block:dashes ($/)
 # end sectional-block }}}
 # code-block {{{
 
-# --- code-block-delimiter-opening {{{
-
-method code-block-delimiter-opening-backticks($/)
-{
-    make ~$/;
-}
-
-method code-block-delimiter-opening-dashes($/)
-{
-    make ~$/;
-}
-
-# --- end code-block-delimiter-opening }}}
 # --- code-block-language {{{
 
 method code-block-language($/)
@@ -361,19 +322,6 @@ method code-block-content-dashes($/)
 }
 
 # --- end code-block-content }}}
-# --- code-block-delimiter-closing {{{
-
-method code-block-delimiter-closing-backticks($/)
-{
-    make ~$/;
-}
-
-method code-block-delimiter-closing-dashes($/)
-{
-    make ~$/;
-}
-
-# --- end code-block-delimiter-closing }}}
 
 method code-block:backticks ($/)
 {
@@ -389,7 +337,7 @@ method code-block:dashes ($/)
     my Str:D $content = $/.orig;
     my CodeBlockDelimiter['Dashes'] $delimiter .= new;
     my Str:D $language = $<code-block-language>.made;
-    my Str:D $text = $<code-block-content-backticks>.made;
+    my Str:D $text = $<code-block-content-dashes>.made;
     make CodeBlock.new(:$content, :$delimiter, :$language, :$text);
 }
 
@@ -759,16 +707,6 @@ method horizontal-rule:hard ($/)
 # end horizontal-rule }}}
 # comment-block {{{
 
-method comment-delimiter-opening($/)
-{
-    make ~$/;
-}
-
-method comment-delimiter-closing($/)
-{
-    make ~$/;
-}
-
 method comment-text($/)
 {
     make ~$/;
@@ -777,15 +715,8 @@ method comment-text($/)
 method comment($/)
 {
     my Str:D $content = $/.orig;
-    my Str:D $comment-delimiter-opening = $<comment-delimiter-opening>.made;
-    my Str:D $comment-delimiter-closing = $<comment-delimiter-closing>.made;
     my Str:D $comment-text = $<comment-text>.made;
-    make Comment.new(
-        :$content,
-        :$comment-delimiter-opening,
-        :$comment-delimiter-closing,
-        :$comment-text
-    );
+    make Comment.new(:$content, :$comment-text);
 }
 
 method comment-block($/)

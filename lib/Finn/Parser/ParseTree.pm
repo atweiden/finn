@@ -99,8 +99,6 @@ role CodeBlock does Content
 
 role Comment does Content
 {
-    has Str:D $.comment-delimiter-opening is required;
-    has Str:D $.comment-delimiter-closing is required;
     has Str:D $.comment-text is required;
 }
 
