@@ -290,8 +290,12 @@ role ParagraphBlock does Content {*}
 # role ReferenceBlock {{{
 
 role ReferenceInline {...}
+role ReferenceLine   {...}
 
-# --- role ReferenceLine {{{
+role ReferenceBlock does Content
+{
+    has ReferenceLine:D @.reference-line is required;
+}
 
 role ReferenceLine
 {
@@ -300,13 +304,6 @@ role ReferenceLine
 
     # the Reference Block Reference Line Text
     has Str:D $.reference-text is required;
-}
-
-# --- end role ReferenceLine }}}
-
-role ReferenceBlock does Content
-{
-    has ReferenceLine:D @.reference-line is required;
 }
 
 # end role ReferenceBlock }}}
