@@ -542,14 +542,14 @@ role Chunk['ListBlock'] does Chunk::Meta does Content
 }
 
 # --- end role Chunk['ListBlock'] }}}
-# --- role Chunk['ParagraphBlock'] {{{
+# --- role Chunk['Paragraph'] {{{
 
-role Chunk['ParagraphBlock'] does Chunk::Meta does Content
+role Chunk['Paragraph'] does Chunk::Meta does Content
 {
     has Paragraph:D $.paragraph is required;
 }
 
-# --- end role Chunk['ParagraphBlock'] }}}
+# --- end role Chunk['Paragraph'] }}}
 # --- role Chunk['HorizontalRule'] {{{
 
 role Chunk['HorizontalRule'] does Chunk::Meta does Content

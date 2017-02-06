@@ -117,13 +117,13 @@ method chunk:list-block ($/)
     make Chunk['ListBlock'].new(:$bounds, :$content, :$list-block);
 }
 
-method chunk:paragraph-block ($/)
+method chunk:paragraph ($/)
 {
     make $<paragraph>.made;
     my Bounds:D $bounds = gen-bounds();
     my Str:D $content = $/.orig;
     my Paragraph:D $paragraph = $<paragraph>.made;
-    make Chunk['ParagraphBlock'].new(:$bounds, :$content, :$paragraph);
+    make Chunk['Paragraph'].new(:$bounds, :$content, :$paragraph);
 }
 
 method chunk:horizontal-rule ($/)

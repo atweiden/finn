@@ -58,7 +58,7 @@ In general, I<block text> may contain certain I<inline text> types.
 =item reference-block
 =item header-block
 =item list-block
-=item paragraph-block
+=item paragraph
 =item horizontal-rule
 =item comment-block
 =item blank-line
@@ -82,7 +82,7 @@ token chunk:code-block             { <code-block> }
 token chunk:reference-block        { <reference-block> }
 token chunk:header-block           { <header-block> }
 token chunk:list-block             { <list-block> }
-token chunk:paragraph-block        { <paragraph> }
+token chunk:paragraph              { <paragraph> }
 token chunk:horizontal-rule        { <horizontal-rule> }
 token chunk:comment-block          { <comment-block> }
 token chunk:blank-line             { <blank-line> }
