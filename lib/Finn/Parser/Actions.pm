@@ -374,141 +374,40 @@ method header:h3 ($/)
     make $<header3>.made;
 }
 
-# --- header-block:top {{{
-
-multi method header-block:top ($/ where $<header>.made ~~ Header[1])
+multi method header-block:top ($/)
 {
     my Str:D $content = $/.orig;
-    my Header[1] $header = $<header>.made;
+    my Header:D $header = $<header>.made;
     make HeaderBlock['Top'].new(:$content, :$header);
 }
 
-multi method header-block:top ($/ where $<header>.made ~~ Header[2])
-{
-    my Str:D $content = $/.orig;
-    my Header[2] $header = $<header>.made;
-    make HeaderBlock['Top'].new(:$content, :$header);
-}
-
-multi method header-block:top ($/ where $<header>.made ~~ Header[3])
-{
-    my Str:D $content = $/.orig;
-    my Header[3] $header = $<header>.made;
-    make HeaderBlock['Top'].new(:$content, :$header);
-}
-
-# --- end header-block:top }}}
-# --- header-block:after-blank-line {{{
-
-multi method header-block:after-blank-line (
-    $/ where $<header>.made ~~ Header[1]
-)
+multi method header-block:after-blank-line ($/)
 {
     my Str:D $content = $/.orig;
     my BlankLine:D $blank-line = $<blank-line>.made;
-    my Header[1] $header = $<header>.made;
+    my Header:D $header = $<header>.made;
     make HeaderBlock['BlankLine'].new(:$content, :$blank-line, :$header);
 }
 
-multi method header-block:after-blank-line (
-    $/ where $<header>.made ~~ Header[2]
-)
-{
-    my Str:D $content = $/.orig;
-    my BlankLine:D $blank-line = $<blank-line>.made;
-    my Header[2] $header = $<header>.made;
-    make HeaderBlock['BlankLine'].new(:$content, :$blank-line, :$header);
-}
-
-multi method header-block:after-blank-line (
-    $/ where $<header>.made ~~ Header[3]
-)
-{
-    my Str:D $content = $/.orig;
-    my BlankLine:D $blank-line = $<blank-line>.made;
-    my Header[3] $header = $<header>.made;
-    make HeaderBlock['BlankLine'].new(:$content, :$blank-line, :$header);
-}
-
-# --- end header-block:after-blank-line }}}
-# --- header-block:after-comment-block {{{
-
-multi method header-block:after-comment-block (
-    $/ where $<header>.made ~~ Header[1]
-)
+multi method header-block:after-comment-block ($/)
 {
     my Str:D $content = $/.orig;
     my CommentBlock:D $comment-block = $<comment-block>.made;
-    my Header[1] $header = $<header>.made;
+    my Header:D $header = $<header>.made;
     make HeaderBlock['CommentBlock'].new(:$content, :$comment-block, :$header);
 }
 
-multi method header-block:after-comment-block (
-    $/ where $<header>.made ~~ Header[2]
-)
-{
-    my Str:D $content = $/.orig;
-    my CommentBlock:D $comment-block = $<comment-block>.made;
-    my Header[2] $header = $<header>.made;
-    make HeaderBlock['CommentBlock'].new(:$content, :$comment-block, :$header);
-}
-
-multi method header-block:after-comment-block (
-    $/ where $<header>.made ~~ Header[3]
-)
-{
-    my Str:D $content = $/.orig;
-    my CommentBlock:D $comment-block = $<comment-block>.made;
-    my Header[3] $header = $<header>.made;
-    make HeaderBlock['CommentBlock'].new(:$content, :$comment-block, :$header);
-}
-
-# --- end header-block:after-comment-block }}}
-# --- header-block:after-horizontal-rule {{{
-
-multi method header-block:after-horizontal-rule (
-    $/ where $<header>.made ~~ Header[1]
-)
+multi method header-block:after-horizontal-rule ($/)
 {
     my Str:D $content = $/.orig;
     my HorizontalRule:D $horizontal-rule = $<horizontal-rule>.made;
-    my Header[1] $header = $<header>.made;
+    my Header:D $header = $<header>.made;
     make HeaderBlock['HorizontalRule'].new(
         :$content,
         :$horizontal-rule,
         :$header
     );
 }
-
-multi method header-block:after-horizontal-rule (
-    $/ where $<header>.made ~~ Header[2]
-)
-{
-    my Str:D $content = $/.orig;
-    my HorizontalRule:D $horizontal-rule = $<horizontal-rule>.made;
-    my Header[2] $header = $<header>.made;
-    make HeaderBlock['HorizontalRule'].new(
-        :$content,
-        :$horizontal-rule,
-        :$header
-    );
-}
-
-multi method header-block:after-horizontal-rule (
-    $/ where $<header>.made ~~ Header[3]
-)
-{
-    my Str:D $content = $/.orig;
-    my HorizontalRule:D $horizontal-rule = $<horizontal-rule>.made;
-    my Header[3] $header = $<header>.made;
-    make HeaderBlock['HorizontalRule'].new(
-        :$content,
-        :$horizontal-rule,
-        :$header
-    );
-}
-
-# --- end header-block:after-horizontal-rule }}}
 
 # end header-block }}}
 # list-block {{{
