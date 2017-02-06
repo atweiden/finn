@@ -696,9 +696,21 @@ method list-block($/)
 }
 
 # end list-block }}}
-# paragraph-block {{{
+# paragraph {{{
 
-# end paragraph-block }}}
+method paragraph-line($/)
+{
+    make ~$/;
+}
+
+method paragraph($/)
+{
+    my Str:D $content = $/.orig;
+    my Str:D $text = @<paragraph-line>».join("\n");
+    make Paragraph.new(:$content, :$text);
+}
+
+# end paragraph }}}
 # horizontal-rule {{{
 
 method horizontal-rule-soft($/)

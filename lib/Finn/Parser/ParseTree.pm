@@ -294,11 +294,14 @@ role ListItem['Unordered'] does Content does ListItem::Text
 # --- end role ListItem['Unordered'] }}}
 
 # end role ListItem }}}
-# role ParagraphBlock {{{
+# role Paragraph {{{
 
-role ParagraphBlock does Content {*}
+role Paragraph does Content
+{
+    has Str:D $.text is required;
+}
 
-# end role ParagraphBlock }}}
+# end role Paragraph }}}
 # role ReferenceBlock {{{
 
 role ReferenceInline {...}
@@ -543,7 +546,7 @@ role Chunk['ListBlock'] does Chunk::Meta does Content
 
 role Chunk['ParagraphBlock'] does Chunk::Meta does Content
 {
-    has ParagraphBlock:D $.paragraph-block is required;
+    has Paragraph:D $.paragraph is required;
 }
 
 # --- end role Chunk['ParagraphBlock'] }}}
