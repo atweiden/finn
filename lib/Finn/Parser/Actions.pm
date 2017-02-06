@@ -327,6 +327,72 @@ method sectional-block:dashes ($/)
 # end sectional-block }}}
 # code-block {{{
 
+# --- code-block-delimiter-opening {{{
+
+method code-block-delimiter-opening-backticks($/)
+{
+    make ~$/;
+}
+
+method code-block-delimiter-opening-dashes($/)
+{
+    make ~$/;
+}
+
+# --- end code-block-delimiter-opening }}}
+# --- code-block-language {{{
+
+method code-block-language($/)
+{
+    make ~$/;
+}
+
+# --- end code-block-language }}}
+# --- code-block-content {{{
+
+method code-block-content-backticks($/)
+{
+    make ~$/;
+}
+
+method code-block-content-dashes($/)
+{
+    make ~$/;
+}
+
+# --- end code-block-content }}}
+# --- code-block-delimiter-closing {{{
+
+method code-block-delimiter-closing-backticks($/)
+{
+    make ~$/;
+}
+
+method code-block-delimiter-closing-dashes($/)
+{
+    make ~$/;
+}
+
+# --- end code-block-delimiter-closing }}}
+
+method code-block:backticks ($/)
+{
+    my Str:D $content = $/.orig;
+    my CodeBlockDelimiter['Backticks'] $delimiter .= new;
+    my Str:D $language = $<code-block-language>.made;
+    my Str:D $text = $<code-block-content-backticks>.made;
+    make CodeBlock.new(:$content, :$delimiter, :$language, :$text);
+}
+
+method code-block:dashes ($/)
+{
+    my Str:D $content = $/.orig;
+    my CodeBlockDelimiter['Dashes'] $delimiter .= new;
+    my Str:D $language = $<code-block-language>.made;
+    my Str:D $text = $<code-block-content-backticks>.made;
+    make CodeBlock.new(:$content, :$delimiter, :$language, :$text);
+}
+
 # end code-block }}}
 # reference-block {{{
 

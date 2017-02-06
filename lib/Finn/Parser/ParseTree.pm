@@ -78,7 +78,21 @@ role BlankLine does Content {*}
 # end role BlankLine }}}
 # role CodeBlock {{{
 
-role CodeBlock does Content {*}
+# --- role CodeBlockDelimiter {{{
+
+role CodeBlockDelimiter['Backticks'] {*}
+role CodeBlockDelimiter['Dashes'] {*}
+
+# --- end role CodeBlockDelimiter }}}
+
+# each Code Block has delimiters (dashes or backticks), a language and
+# associated text
+role CodeBlock does Content
+{
+    has CodeBlockDelimiter:D $.delimiter is required;
+    has Str:D $.language is required;
+    has Str:D $.text is required;
+}
 
 # end role CodeBlock }}}
 # role Comment {{{
