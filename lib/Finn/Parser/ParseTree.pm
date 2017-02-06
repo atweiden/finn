@@ -306,6 +306,7 @@ role ReferenceLine   {...}
 
 role ReferenceBlock does Content
 {
+    has HorizontalRule:D $.horizontal-rule is required;
     has ReferenceLine:D @.reference-line is required;
 }
 

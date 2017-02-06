@@ -344,6 +344,25 @@ method code-block:dashes ($/)
 # end code-block }}}
 # reference-block {{{
 
+method reference-block-reference-line-text($/)
+{
+    make ~$/;
+}
+
+method reference-block-reference-line($/)
+{
+    my ReferenceInline:D $reference-inline = $<reference-inline>.made;
+    my Str:D $reference-text = $<reference-block-reference-line-text>.made;
+    make ReferenceLine.new(:$reference-inline, :$reference-text);
+}
+
+method reference-block($/)
+{
+    my HorizontalRule['Hard'] $horizontal-rule = $<horizontal-rule-hard>.made;
+    my ReferenceLine:D @reference-line = @<reference-block-reference-line>».made;
+    make ReferenceBlock.new(:$horizontal-rule, :@reference-line);
+}
+
 # end reference-block }}}
 # header-block {{{
 
