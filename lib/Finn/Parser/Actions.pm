@@ -68,7 +68,7 @@ method chunk:sectional-inline-block ($/)
 {
     my Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my SectionalInlineBlock:D $sectional-inline-block =
         $<sectional-inline-block>.made;
     make Chunk['SectionalInlineBlock'].new(
@@ -83,7 +83,7 @@ method chunk:sectional-block ($/)
 {
     my Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my SectionalBlock:D $sectional-block = $<sectional-block>.made;
     make Chunk['SectionalBlock'].new(
         :$bounds,
@@ -97,7 +97,7 @@ method chunk:code-block ($/)
 {
     my Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my CodeBlock:D $code-block = $<code-block>.made;
     make Chunk['CodeBlock'].new(:$bounds, :$section, :$content, :$code-block);
 }
@@ -106,7 +106,7 @@ method chunk:reference-block ($/)
 {
     my Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my ReferenceBlock:D $reference-block = $<reference-block>.made;
     make Chunk['ReferenceBlock'].new(
         :$bounds,
@@ -120,7 +120,7 @@ method chunk:header-block ($/)
 {
     my Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my HeaderBlock:D $header-block = $<header-block>.made;
     make Chunk['HeaderBlock'].new(
         :$bounds,
@@ -134,7 +134,7 @@ method chunk:list-block ($/)
 {
     my Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my ListBlock:D $list-block = $<list-block>.made;
     make Chunk['ListBlock'].new(:$bounds, :$section, :$content, :$list-block);
 }
@@ -143,7 +143,7 @@ method chunk:paragraph ($/)
 {
     my Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my Paragraph:D $paragraph = $<paragraph>.made;
     make Chunk['Paragraph'].new(:$bounds, :$section, :$content, :$paragraph);
 }
@@ -152,7 +152,7 @@ method chunk:horizontal-rule ($/)
 {
     my Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my HorizontalRule:D $horizontal-rule = $<horizontal-rule>.made;
     make Chunk['HorizontalRule'].new(
         :$bounds,
@@ -166,7 +166,7 @@ method chunk:comment-block ($/)
 {
     my Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my CommentBlock:D $comment-block = $<comment-block>.made;
     make Chunk['CommentBlock'].new(
         :$bounds,
@@ -180,7 +180,7 @@ method chunk:blank-line ($/)
 {
     my Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my BlankLine:D $blank-line = $<blank-line>.made;
     make Chunk['BlankLine'].new(:$bounds, :$section, :$content, :$blank-line);
 }
@@ -219,7 +219,7 @@ multi method TOP($/)
 
 method sectional-inline-text:name-and-file ($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my Str:D $name = $<sectional-inline-name>.made;
     my File:D $file = $<sectional-inline-file>.made;
     make SectionalInline['Name', 'File'].new(:$content, :$name, :$file);
@@ -227,7 +227,7 @@ method sectional-inline-text:name-and-file ($/)
 
 method sectional-inline-text:name-and-reference ($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my Str:D $name = $<sectional-inline-name>.made;
     my ReferenceInline:D $reference-inline = $<sectional-inline-reference>.made;
     make SectionalInline['Name', 'Reference'].new(
@@ -239,21 +239,21 @@ method sectional-inline-text:name-and-reference ($/)
 
 method sectional-inline-text:file-only ($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my File:D $file = $<sectional-inline-file>.made;
     make SectionalInline['File'].new(:$content, :$file);
 }
 
 method sectional-inline-text:reference-only ($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my ReferenceInline:D $reference-inline = $<sectional-inline-reference>.made;
     make SectionalInline['Reference'].new(:$content, :$reference-inline);
 }
 
 method sectional-inline-text:name-only ($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my Str:D $name = $<sectional-inline-name>.made;
     make SectionalInline['Name'].new(:$content, :$name);
 }
@@ -267,14 +267,14 @@ method sectional-inline($/)
 
 method sectional-inline-block:top ($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my SectionalInline:D @sectional-inline = @<sectional-inline>».made;
     make SectionalInlineBlock.new(:$content, :@sectional-inline);
 }
 
 method sectional-inline-block:dispersed ($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my SectionalInline:D @sectional-inline = @<sectional-inline>».made;
     make SectionalInlineBlock.new(:$content, :@sectional-inline);
 }
@@ -353,7 +353,7 @@ method sectional-block-content-dashes($/)
 
 method sectional-block:backticks ($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my SectionalBlockDelimiter['Backticks'] $delimiter .= new;
     my SectionalBlockName:D $name = $<sectional-block-name>.made;
     my Str:D $text = $<sectional-block-content-backticks>.made;
@@ -362,7 +362,7 @@ method sectional-block:backticks ($/)
 
 method sectional-block:dashes ($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my SectionalBlockDelimiter['Dashes'] $delimiter .= new;
     my SectionalBlockName:D $name = $<sectional-block-name>.made;
     my Str:D $text = $<sectional-block-content-dashes>.made;
@@ -396,7 +396,7 @@ method code-block-content-dashes($/)
 
 method code-block:backticks ($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my CodeBlockDelimiter['Backticks'] $delimiter .= new;
     my Str:D $language = $<code-block-language>.made;
     my Str:D $text = $<code-block-content-backticks>.made;
@@ -405,7 +405,7 @@ method code-block:backticks ($/)
 
 method code-block:dashes ($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my CodeBlockDelimiter['Dashes'] $delimiter .= new;
     my Str:D $language = $<code-block-language>.made;
     my Str:D $text = $<code-block-content-dashes>.made;
@@ -444,21 +444,21 @@ method header-text($/)
 
 method header1($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my Str:D $header-text = $<header-text>.made;
     make Header[1].new(:$content, :$header-text);
 }
 
 method header2($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my Str:D $header-text = $<header-text>.made;
     make Header[2].new(:$content, :$header-text);
 }
 
 method header3($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my Str:D $header-text = $<header-text>.made;
     make Header[3].new(:$content, :$header-text);
 }
@@ -480,14 +480,14 @@ method header:h3 ($/)
 
 multi method header-block:top ($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my Header:D $header = $<header>.made;
     make HeaderBlock['Top'].new(:$content, :$header);
 }
 
 multi method header-block:after-blank-line ($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my BlankLine:D $blank-line = $<blank-line>.made;
     my Header:D $header = $<header>.made;
     make HeaderBlock['BlankLine'].new(:$content, :$blank-line, :$header);
@@ -495,7 +495,7 @@ multi method header-block:after-blank-line ($/)
 
 multi method header-block:after-comment-block ($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my CommentBlock:D $comment-block = $<comment-block>.made;
     my Header:D $header = $<header>.made;
     make HeaderBlock['CommentBlock'].new(:$content, :$comment-block, :$header);
@@ -503,7 +503,7 @@ multi method header-block:after-comment-block ($/)
 
 multi method header-block:after-horizontal-rule ($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my HorizontalRule:D $horizontal-rule = $<horizontal-rule>.made;
     my Header:D $header = $<header>.made;
     make HeaderBlock['HorizontalRule'].new(
@@ -580,7 +580,7 @@ multi method list-ordered-item-text($/)
 
 method list-ordered-item($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my Str:D $list-item-text =
         ?$<list-ordered-item-text> ?? $<list-ordered-item-text>.made !! '';
     my ListItem::Number:D $number = $<list-ordered-item-number>.made;
@@ -600,7 +600,7 @@ method checkbox-checked-char:sym<v>($/) { make CheckboxCheckedChar['v'].new }
 
 method checkbox-checked($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my CheckboxCheckedChar:D $checkbox-checked-char =
         $<checkbox-checked-char>.made;
     make Checkbox['Checked'].new(:$content, :$checkbox-checked-char);
@@ -615,7 +615,7 @@ method checkbox-etc-char:sym<->($/) { make CheckboxEtcChar['-'].new }
 
 method checkbox-etc($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my CheckboxEtcChar:D $checkbox-etc-char = $<checkbox-etc-char>.made;
     make Checkbox['Etc'].new(:$content, :$checkbox-etc-char);
 }
@@ -628,7 +628,7 @@ method checkbox-exception-char:sym<!>($/) { make CheckboxExceptionChar['!'].new 
 
 method checkbox-exception($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my CheckboxExceptionChar:D $checkbox-exception-char =
         $<checkbox-exception-char>.made;
     make Checkbox['Exception'].new(:$content, :$checkbox-exception-char);
@@ -639,7 +639,7 @@ method checkbox-exception($/)
 
 method checkbox-unchecked($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     make Checkbox['Unchecked'].new(:$content);
 }
 
@@ -674,7 +674,7 @@ method list-todo-item-text($/)
 
 method list-todo-item($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my Str:D $list-item-text = $<list-todo-item-text>.made;
     my Checkbox:D $checkbox = $<checkbox>.made;
     make ListItem['Todo'].new(:$content, :$checkbox, :$list-item-text);
@@ -735,7 +735,7 @@ multi method list-unordered-item-text($/)
 
 method list-unordered-item($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my Str:D $list-item-text =
         ?$<list-unordered-item-text> ?? $<list-unordered-item-text>.made !! '';
     my BulletPoint:D $bullet-point = $<bullet-point>.made;
@@ -761,7 +761,7 @@ method list-item:unordered ($/)
 
 method list-block($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my ListItem:D @list-item = @<list-item>».made;
     make ListBlock.new(:$content, :@list-item);
 }
@@ -776,7 +776,7 @@ method paragraph-line($/)
 
 method paragraph($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my Str:D $text = @<paragraph-line>».made.join("\n");
     make Paragraph.new(:$content, :$text);
 }
@@ -816,14 +816,14 @@ method comment-text($/)
 
 method comment($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my Str:D $comment-text = $<comment-text>.made;
     make Comment.new(:$content, :$comment-text);
 }
 
 method comment-block($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my Comment:D $comment = $<comment>.made;
     make CommentBlock.new(:$content, :$comment);
 }
@@ -833,7 +833,7 @@ method comment-block($/)
 
 method blank-line($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     make BlankLine.new(:$content);
 }
 
@@ -1089,7 +1089,7 @@ multi method file-path-absolute($/)
 
 multi method file-absolute($/ where $<file-protocol>.so)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my IO::Path:D $path = IO::Path.new($<file-path-absolute>.made);
     my File::Protocol:D $protocol = $<file-protocol>.made;
     make File['Absolute', 'Protocol'].new(:$content, :$path, :$protocol);
@@ -1097,7 +1097,7 @@ multi method file-absolute($/ where $<file-protocol>.so)
 
 multi method file-absolute($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my IO::Path:D $path = IO::Path.new($<file-path-absolute>.made);
     make File['Absolute'].new(:$content, :$path);
 }
@@ -1117,7 +1117,7 @@ multi method file-path-relative($/)
 
 multi method file-relative($/ where $<file-protocol>.so)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my IO::Path:D $path =
         IO::Path.new($.file.IO.dirname ~ '/' ~ $<file-path-relative>.made);
     my File::Protocol:D $protocol = $<file-protocol>.made;
@@ -1126,7 +1126,7 @@ multi method file-relative($/ where $<file-protocol>.so)
 
 multi method file-relative($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my IO::Path:D $path =
         IO::Path.new($.file.IO.dirname ~ '/' ~ $<file-path-relative>.made);
     make File['Relative'].new(:$content, :$path);
@@ -1154,7 +1154,7 @@ method reference-inline-number($/)
 
 method reference-inline($/)
 {
-    my Str:D $content = $/.orig;
+    my Str:D $content = ~$/;
     my UInt:D $number = $<reference-inline-number>.made;
     make ReferenceInline.new(:$content, :$number);
 }
