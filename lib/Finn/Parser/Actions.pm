@@ -67,11 +67,13 @@ has UInt:D $.section = 0;
 method chunk:sectional-inline-block ($/)
 {
     my Bounds:D $bounds = gen-bounds();
+    my UInt:D $section = 0;
     my Str:D $content = $/.orig;
     my SectionalInlineBlock:D $sectional-inline-block =
         $<sectional-inline-block>.made;
     make Chunk['SectionalInlineBlock'].new(
         :$bounds,
+        :$section,
         :$content,
         :$sectional-inline-block
     );
@@ -80,74 +82,107 @@ method chunk:sectional-inline-block ($/)
 method chunk:sectional-block ($/)
 {
     my Bounds:D $bounds = gen-bounds();
+    my UInt:D $section = 0;
     my Str:D $content = $/.orig;
     my SectionalBlock:D $sectional-block = $<sectional-block>.made;
-    make Chunk['SectionalBlock'].new(:$bounds, :$content, :$sectional-block);
+    make Chunk['SectionalBlock'].new(
+        :$bounds,
+        :$section,
+        :$content,
+        :$sectional-block
+    );
 }
 
 method chunk:code-block ($/)
 {
     my Bounds:D $bounds = gen-bounds();
+    my UInt:D $section = 0;
     my Str:D $content = $/.orig;
     my CodeBlock:D $code-block = $<code-block>.made;
-    make Chunk['CodeBlock'].new(:$bounds, :$content, :$code-block);
+    make Chunk['CodeBlock'].new(:$bounds, :$section, :$content, :$code-block);
 }
 
 method chunk:reference-block ($/)
 {
     my Bounds:D $bounds = gen-bounds();
+    my UInt:D $section = 0;
     my Str:D $content = $/.orig;
     my ReferenceBlock:D $reference-block = $<reference-block>.made;
-    make Chunk['ReferenceBlock'].new(:$bounds, :$content, :$reference-block);
+    make Chunk['ReferenceBlock'].new(
+        :$bounds,
+        :$section,
+        :$content,
+        :$reference-block
+    );
 }
 
 method chunk:header-block ($/)
 {
     my Bounds:D $bounds = gen-bounds();
+    my UInt:D $section = 0;
     my Str:D $content = $/.orig;
     my HeaderBlock:D $header-block = $<header-block>.made;
-    make Chunk['HeaderBlock'].new(:$bounds, :$content, :$header-block);
+    make Chunk['HeaderBlock'].new(
+        :$bounds,
+        :$section,
+        :$content,
+        :$header-block
+    );
 }
 
 method chunk:list-block ($/)
 {
     my Bounds:D $bounds = gen-bounds();
+    my UInt:D $section = 0;
     my Str:D $content = $/.orig;
     my ListBlock:D $list-block = $<list-block>.made;
-    make Chunk['ListBlock'].new(:$bounds, :$content, :$list-block);
+    make Chunk['ListBlock'].new(:$bounds, :$section, :$content, :$list-block);
 }
 
 method chunk:paragraph ($/)
 {
-    make $<paragraph>.made;
     my Bounds:D $bounds = gen-bounds();
+    my UInt:D $section = 0;
     my Str:D $content = $/.orig;
     my Paragraph:D $paragraph = $<paragraph>.made;
-    make Chunk['Paragraph'].new(:$bounds, :$content, :$paragraph);
+    make Chunk['Paragraph'].new(:$bounds, :$section, :$content, :$paragraph);
 }
 
 method chunk:horizontal-rule ($/)
 {
     my Bounds:D $bounds = gen-bounds();
+    my UInt:D $section = 0;
     my Str:D $content = $/.orig;
     my HorizontalRule:D $horizontal-rule = $<horizontal-rule>.made;
-    make Chunk['HorizontalRule'].new(:$bounds, :$content, :$horizontal-rule);
+    make Chunk['HorizontalRule'].new(
+        :$bounds,
+        :$section,
+        :$content,
+        :$horizontal-rule
+    );
 }
 
 method chunk:comment-block ($/)
 {
     my Bounds:D $bounds = gen-bounds();
+    my UInt:D $section = 0;
     my Str:D $content = $/.orig;
     my CommentBlock:D $comment-block = $<comment-block>.made;
-    make Chunk['CommentBlock'].new(:$bounds, :$content, :$comment-block);
+    make Chunk['CommentBlock'].new(
+        :$bounds,
+        :$section,
+        :$content,
+        :$comment-block
+    );
 }
 
 method chunk:blank-line ($/)
 {
     my Bounds:D $bounds = gen-bounds();
+    my UInt:D $section = 0;
     my Str:D $content = $/.orig;
     my BlankLine:D $blank-line = $<blank-line>.made;
-    make Chunk['BlankLine'].new(:$bounds, :$content, :$blank-line);
+    make Chunk['BlankLine'].new(:$bounds, :$section, :$content, :$blank-line);
 }
 
 # --- end chunk }}}
@@ -742,7 +777,7 @@ method paragraph-line($/)
 method paragraph($/)
 {
     my Str:D $content = $/.orig;
-    my Str:D $text = @<paragraph-line>».join("\n");
+    my Str:D $text = @<paragraph-line>».made.join("\n");
     make Paragraph.new(:$content, :$text);
 }
 
