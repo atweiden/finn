@@ -54,26 +54,12 @@ class Bounds
 # end class Bounds }}}
 
 =begin pod
-=head Content
-=end pod
-
-# role Content {{{
-
-role Content
-{
-    # original text ($/.orig)
-    has Str:D $.content is required;
-}
-
-# end role Content }}}
-
-=begin pod
 =head Elements
 =end pod
 
 # role BlankLine {{{
 
-role BlankLine does Content {*}
+role BlankLine {*}
 
 # end role BlankLine }}}
 # role CodeBlock {{{
@@ -87,7 +73,7 @@ role CodeBlockDelimiter['Dashes'] {*}
 
 # each Code Block has delimiters (dashes or backticks), a language and
 # associated text
-role CodeBlock does Content
+role CodeBlock
 {
     has CodeBlockDelimiter:D $.delimiter is required;
     has Str:D $.language is required;
@@ -97,7 +83,7 @@ role CodeBlock does Content
 # end role CodeBlock }}}
 # role Comment {{{
 
-role Comment does Content
+role Comment
 {
     has Str:D $.comment-text is required;
 }
@@ -105,7 +91,7 @@ role Comment does Content
 # end role Comment }}}
 # role CommentBlock {{{
 
-role CommentBlock does Content
+role CommentBlock
 {
     has Comment:D $.comment is required;
 }
@@ -126,18 +112,18 @@ role File::Protocol
     has Str:D $.protocol is required;
 }
 
-role File['Absolute']             does Content does File::Path {*}
-role File['Absolute', 'Protocol'] does Content does File::Path does File::Protocol {*}
-role File['Relative']             does Content does File::Path {*}
-role File['Relative', 'Protocol'] does Content does File::Path does File::Protocol {*}
+role File['Absolute']             does File::Path {*}
+role File['Absolute', 'Protocol'] does File::Path does File::Protocol {*}
+role File['Relative']             does File::Path {*}
+role File['Relative', 'Protocol'] does File::Path does File::Protocol {*}
 
 # end role File }}}
 # role Header {{{
 
 role Header::Text { has Str:D $.header-text is required }
-role Header[1] does Content does Header::Text {*}
-role Header[2] does Content does Header::Text {*}
-role Header[3] does Content does Header::Text {*}
+role Header[1] does Header::Text {*}
+role Header[2] does Header::Text {*}
+role Header[3] does Header::Text {*}
 
 # end role Header }}}
 # role HeaderBlock {{{
@@ -145,28 +131,28 @@ role Header[3] does Content does Header::Text {*}
 role HorizontalRule {...}
 
 # Header comes after BlankLine
-role HeaderBlock['BlankLine'] does Content
+role HeaderBlock['BlankLine']
 {
     has BlankLine:D $.blank-line is required;
     has Header:D $.header is required;
 }
 
 # Header comes after CommentBlock
-role HeaderBlock['CommentBlock'] does Content
+role HeaderBlock['CommentBlock']
 {
     has CommentBlock:D $.comment-block is required;
     has Header:D $.header is required;
 }
 
 # Header comes after HorizontalRule
-role HeaderBlock['HorizontalRule'] does Content
+role HeaderBlock['HorizontalRule']
 {
     has HorizontalRule:D $.horizontal-rule is required;
     has Header:D $.header is required;
 }
 
 # Header comes at top of Finn document
-role HeaderBlock['Top'] does Content
+role HeaderBlock['Top']
 {
     has Header:D $.header is required;
 }
@@ -174,15 +160,15 @@ role HeaderBlock['Top'] does Content
 # end role HeaderBlock }}}
 # role HorizontalRule {{{
 
-role HorizontalRule['Hard'] does Content {*}
-role HorizontalRule['Soft'] does Content {*}
+role HorizontalRule['Hard'] {*}
+role HorizontalRule['Soft'] {*}
 
 # end role HorizontalRule }}}
 # role ListBlock {{{
 
 role ListItem {...}
 
-role ListBlock does Content
+role ListBlock
 {
     has ListItem:D @.list-item is required;
 }
@@ -207,7 +193,7 @@ role ListItem::Number
     has UInt:D $.value is required;
 }
 
-role ListItem['Ordered'] does Content does ListItem::Text
+role ListItem['Ordered'] does ListItem::Text
 {
     has ListItem::Number:D $.number is required;
 }
@@ -221,7 +207,7 @@ role CheckboxCheckedChar['x'] {*}
 role CheckboxCheckedChar['o'] {*}
 role CheckboxCheckedChar['v'] {*}
 
-role Checkbox['Checked'] does Content
+role Checkbox['Checked']
 {
     has CheckboxCheckedChar:D $.checkbox-checked-char is required;
 }
@@ -233,7 +219,7 @@ role CheckboxEtcChar['+'] {*}
 role CheckboxEtcChar['='] {*}
 role CheckboxEtcChar['-'] {*}
 
-role Checkbox['Etc'] does Content
+role Checkbox['Etc']
 {
     has CheckboxEtcChar:D $.checkbox-etc-char is required;
 }
@@ -244,7 +230,7 @@ role Checkbox['Etc'] does Content
 role CheckboxExceptionChar['*'] {*}
 role CheckboxExceptionChar['!'] {*}
 
-role Checkbox['Exception'] does Content
+role Checkbox['Exception']
 {
     has CheckboxExceptionChar:D $.checkbox-exception-char is required;
 }
@@ -252,11 +238,11 @@ role Checkbox['Exception'] does Content
 # --- --- end role Checkbox['Exception'] }}}
 # --- --- role Checkbox['Unchecked'] {{{
 
-role Checkbox['Unchecked'] does Content {*}
+role Checkbox['Unchecked'] {*}
 
 # --- --- end role Checkbox['Unchecked'] }}}
 
-role ListItem['Todo'] does Content does ListItem::Text
+role ListItem['Todo'] does ListItem::Text
 {
     has Checkbox:D $.checkbox is required;
 }
@@ -286,7 +272,7 @@ role BulletPoint['=>'] {*}
 
 # --- --- end role BulletPoint }}}
 
-role ListItem['Unordered'] does Content does ListItem::Text
+role ListItem['Unordered'] does ListItem::Text
 {
     has BulletPoint:D $.bullet-point is required;
 }
@@ -296,7 +282,7 @@ role ListItem['Unordered'] does Content does ListItem::Text
 # end role ListItem }}}
 # role Paragraph {{{
 
-role Paragraph does Content
+role Paragraph
 {
     has Str:D $.text is required;
 }
@@ -307,7 +293,7 @@ role Paragraph does Content
 role ReferenceInline {...}
 role ReferenceLine   {...}
 
-role ReferenceBlock does Content
+role ReferenceBlock
 {
     has HorizontalRule:D $.horizontal-rule is required;
     has ReferenceLine:D @.reference-line is required;
@@ -325,7 +311,7 @@ role ReferenceLine
 # end role ReferenceBlock }}}
 # role ReferenceInline {{{
 
-role ReferenceInline does Content
+role ReferenceInline
 {
     # the Reference Inline Number
     has UInt:D $.number is required;
@@ -397,7 +383,7 @@ role SectionalBlockText
 
 # each Sectional Block has delimiters (dashes or backticks), a name
 # and associated text
-role SectionalBlock does Content
+role SectionalBlock
 {
     has SectionalBlockDelimiter:D $.delimiter is required;
     has SectionalBlockName:D $.name is required;
@@ -415,26 +401,17 @@ role SectionalInline::Reference {...}
 # telling us to process C<self.name> as Sectional Block and embed
 # in-place
 # XXX: it can only appear inside of a Sectional Block
-role SectionalInline['Name']
-    does Content
-    does SectionalInline::Name
-{*}
+role SectionalInline['Name'] does SectionalInline::Name {*}
 
 # C<role SectionalInline['File']> is a Haml-style include directive
 # telling us to process the entirety of the linked Finn source file
 # and embed in-place
-role SectionalInline['File']
-    does Content
-    does SectionalInline::File
-{*}
+role SectionalInline['File'] does SectionalInline::File {*}
 
 # C<role SectionalInline['Reference']> is a Haml-style include
 # directive telling us to process the entirety of the linked Finn
 # source file given by Reference Inline and embed in-place
-role SectionalInline['Reference']
-    does Content
-    does SectionalInline::Reference
-{*}
+role SectionalInline['Reference'] does SectionalInline::Reference {*}
 
 # C<role SectionalInline['Name', 'File']> is a Haml-style include
 # directive with added specificity from C<sectional-block-name>
@@ -443,7 +420,6 @@ role SectionalInline['Reference']
 # tells us to process C<self.name> from C<self.file> as Sectional Block
 # and embed in-place
 role SectionalInline['Name', 'File']
-    does Content
     does SectionalInline::Name
     does SectionalInline::File
 {*}
@@ -453,7 +429,6 @@ role SectionalInline['Name', 'File']
 # Sectional Block Name is searched for in the File resolved from
 # Reference Inline
 role SectionalInline['Name', 'Reference']
-    does Content
     does SectionalInline::Name
     does SectionalInline::Reference
 {*}
@@ -479,7 +454,7 @@ role SectionalInline::Reference
 # end role SectionalInline }}}
 # role SectionalInlineBlock {{{
 
-role SectionalInlineBlock does Content
+role SectionalInlineBlock
 {
     has SectionalInline:D @.sectional-inline is required;
 }
@@ -496,7 +471,7 @@ role Chunk::Meta {...}
 
 # --- role Chunk['SectionalInlineBlock'] {{{
 
-role Chunk['SectionalInlineBlock'] does Chunk::Meta does Content
+role Chunk['SectionalInlineBlock'] does Chunk::Meta
 {
     has SectionalInlineBlock:D $.sectional-inline-block is required;
 }
@@ -504,7 +479,7 @@ role Chunk['SectionalInlineBlock'] does Chunk::Meta does Content
 # --- end role Chunk['SectionalInlineBlock'] }}}
 # --- role Chunk['SectionalBlock'] {{{
 
-role Chunk['SectionalBlock'] does Chunk::Meta does Content
+role Chunk['SectionalBlock'] does Chunk::Meta
 {
     has SectionalBlock:D $.sectional-block is required;
 }
@@ -512,7 +487,7 @@ role Chunk['SectionalBlock'] does Chunk::Meta does Content
 # --- end role Chunk['SectionalBlock'] }}}
 # --- role Chunk['CodeBlock'] {{{
 
-role Chunk['CodeBlock'] does Chunk::Meta does Content
+role Chunk['CodeBlock'] does Chunk::Meta
 {
     has CodeBlock:D $.code-block is required;
 }
@@ -520,7 +495,7 @@ role Chunk['CodeBlock'] does Chunk::Meta does Content
 # --- end role Chunk['CodeBlock'] }}}
 # --- role Chunk['ReferenceBlock'] {{{
 
-role Chunk['ReferenceBlock'] does Chunk::Meta does Content
+role Chunk['ReferenceBlock'] does Chunk::Meta
 {
     has ReferenceBlock:D $.reference-block is required;
 }
@@ -528,7 +503,7 @@ role Chunk['ReferenceBlock'] does Chunk::Meta does Content
 # --- end role Chunk['ReferenceBlock'] }}}
 # --- role Chunk['HeaderBlock'] {{{
 
-role Chunk['HeaderBlock'] does Chunk::Meta does Content
+role Chunk['HeaderBlock'] does Chunk::Meta
 {
     has HeaderBlock:D $.header-block is required;
 }
@@ -536,7 +511,7 @@ role Chunk['HeaderBlock'] does Chunk::Meta does Content
 # --- end role Chunk['HeaderBlock'] }}}
 # --- role Chunk['ListBlock'] {{{
 
-role Chunk['ListBlock'] does Chunk::Meta does Content
+role Chunk['ListBlock'] does Chunk::Meta
 {
     has ListBlock:D $.list-block is required;
 }
@@ -544,7 +519,7 @@ role Chunk['ListBlock'] does Chunk::Meta does Content
 # --- end role Chunk['ListBlock'] }}}
 # --- role Chunk['Paragraph'] {{{
 
-role Chunk['Paragraph'] does Chunk::Meta does Content
+role Chunk['Paragraph'] does Chunk::Meta
 {
     has Paragraph:D $.paragraph is required;
 }
@@ -552,7 +527,7 @@ role Chunk['Paragraph'] does Chunk::Meta does Content
 # --- end role Chunk['Paragraph'] }}}
 # --- role Chunk['HorizontalRule'] {{{
 
-role Chunk['HorizontalRule'] does Chunk::Meta does Content
+role Chunk['HorizontalRule'] does Chunk::Meta
 {
     has HorizontalRule:D $.horizontal-rule is required;
 }
@@ -560,7 +535,7 @@ role Chunk['HorizontalRule'] does Chunk::Meta does Content
 # --- end role Chunk['HorizontalRule'] }}}
 # --- role Chunk['CommentBlock'] {{{
 
-role Chunk['CommentBlock'] does Chunk::Meta does Content
+role Chunk['CommentBlock'] does Chunk::Meta
 {
     has CommentBlock:D $.comment-block is required;
 }
@@ -568,7 +543,7 @@ role Chunk['CommentBlock'] does Chunk::Meta does Content
 # --- end role Chunk['CommentBlock'] }}}
 # --- role Chunk['BlankLine'] {{{
 
-role Chunk['BlankLine'] does Chunk::Meta does Content
+role Chunk['BlankLine'] does Chunk::Meta
 {
     has BlankLine:D $.blank-line is required;
 }
