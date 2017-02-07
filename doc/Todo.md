@@ -4,6 +4,8 @@ Todo
 Finn
 ----
 
+### give sectional-inline-block:dispersed similar treatment as header
+
 ### fix code-block and sectional-block grammar
 
 - delimiters must come at start of line (`^^`)
