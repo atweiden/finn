@@ -223,13 +223,37 @@ method sectional-inline($/)
 method sectional-inline-block:top ($/)
 {
     my SectionalInline:D @sectional-inline = @<sectional-inline>».made;
-    make SectionalInlineBlock.new(:@sectional-inline);
+    make SectionalInlineBlock['Top'].new(:@sectional-inline);
 }
 
-method sectional-inline-block:dispersed ($/)
+multi method sectional-inline-block:after-blank-line ($/)
 {
+    my BlankLine:D $blank-line = $<blank-line>.made;
     my SectionalInline:D @sectional-inline = @<sectional-inline>».made;
-    make SectionalInlineBlock.new(:@sectional-inline);
+    make SectionalInlineBlock['BlankLine'].new(
+        :$blank-line,
+        :@sectional-inline
+    );
+}
+
+multi method sectional-inline-block:after-comment-block ($/)
+{
+    my CommentBlock:D $comment-block = $<comment-block>.made;
+    my SectionalInline:D @sectional-inline = @<sectional-inline>».made;
+    make SectionalInlineBlock['CommentBlock'].new(
+        :$comment-block,
+        :@sectional-inline
+    );
+}
+
+multi method sectional-inline-block:after-horizontal-rule ($/)
+{
+    my HorizontalRule:D $horizontal-rule = $<horizontal-rule>.made;
+    my SectionalInline:D @sectional-inline = @<sectional-inline>».made;
+    make SectionalInlineBlock['HorizontalRule'].new(
+        :$horizontal-rule,
+        :@sectional-inline
+    );
 }
 
 # end sectional-inline-block }}}

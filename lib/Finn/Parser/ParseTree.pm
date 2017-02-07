@@ -454,7 +454,29 @@ role SectionalInline::Reference
 # end role SectionalInline }}}
 # role SectionalInlineBlock {{{
 
-role SectionalInlineBlock
+# SectionalInline comes after BlankLine
+role SectionalInlineBlock['BlankLine']
+{
+    has BlankLine:D $.blank-line is required;
+    has SectionalInline:D @.sectional-inline is required;
+}
+
+# SectionalInline comes after CommentBlock
+role SectionalInlineBlock['CommentBlock']
+{
+    has CommentBlock:D $.comment-block is required;
+    has SectionalInline:D @.sectional-inline is required;
+}
+
+# SectionalInline comes after HorizontalRule
+role SectionalInlineBlock['HorizontalRule']
+{
+    has HorizontalRule:D $.horizontal-rule is required;
+    has SectionalInline:D @.sectional-inline is required;
+}
+
+# SectionalInline comes at top of Finn document
+role SectionalInlineBlock['Top']
 {
     has SectionalInline:D @.sectional-inline is required;
 }

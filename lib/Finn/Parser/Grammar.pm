@@ -638,14 +638,22 @@ proto token sectional-inline-block {*}
 
 token sectional-inline-block:top
 {
-    ^ <sectional-inline>
-    [ <.gap> <sectional-inline> ]*
+    ^ <sectional-inline> [ <.gap> <sectional-inline> ]*
 }
 
-token sectional-inline-block:dispersed
+token sectional-inline-block:after-blank-line
 {
-    [ <blank-line> | <comment-block> | <horizontal-rule> ]
-    [ <.gap> <sectional-inline> ]+
+    <blank-line> [ <.gap> <sectional-inline> ]+
+}
+
+token sectional-inline-block:after-comment-block
+{
+    <comment-block> [ <.gap> <sectional-inline> ]+
+}
+
+token sectional-inline-block:after-horizontal-rule
+{
+    <horizontal-rule> [ <.gap> <sectional-inline> ]+
 }
 
 # end sectional-inline-block }}}
