@@ -4,10 +4,13 @@ Todo
 Finn
 ----
 
+### fix `$/.orig` in Actions
+
+- `$/.orig` grabs too much of the Match text
+
 ### fix code-block and sectional-block grammar
 
-- s/delimiter/opening-delimiter
-  - delimiters must come at start of line (`^^`)
+- delimiters must come at start of line (`^^`)
 
 ### test Syntax.md examples
 
