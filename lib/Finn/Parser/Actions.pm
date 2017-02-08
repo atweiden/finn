@@ -372,7 +372,8 @@ method code-block-content-dashes($/)
 method code-block:backticks ($/)
 {
     my CodeBlockDelimiter['Backticks'] $delimiter .= new;
-    my Str:D $language = $<code-block-language>.made;
+    my Str:D $language =
+        ?$<code-block-language> ?? $<code-block-language>.made !! '';
     my Str:D $text = $<code-block-content-backticks>.made;
     make CodeBlock.new(:$delimiter, :$language, :$text);
 }
@@ -380,7 +381,8 @@ method code-block:backticks ($/)
 method code-block:dashes ($/)
 {
     my CodeBlockDelimiter['Dashes'] $delimiter .= new;
-    my Str:D $language = $<code-block-language>.made;
+    my Str:D $language =
+        ?$<code-block-language> ?? $<code-block-language>.made !! '';
     my Str:D $text = $<code-block-content-dashes>.made;
     make CodeBlock.new(:$delimiter, :$language, :$text);
 }
