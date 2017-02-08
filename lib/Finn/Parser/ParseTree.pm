@@ -387,7 +387,9 @@ role SectionalBlock
 {
     has SectionalBlockDelimiter:D $.delimiter is required;
     has SectionalBlockName:D $.name is required;
-    has SectionalBlockText:D $.text is required;
+    # XXX SectionalBlockText reparsing NYI
+    #has SectionalBlockText:D $.text is required;
+    has Str:D $.text is required;
 }
 
 # end role SectionalBlock }}}
