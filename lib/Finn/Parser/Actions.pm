@@ -1037,20 +1037,23 @@ multi method file-path-absolute($/)
     make '/' ~ @<file-path-char>».made.join;
 }
 
-multi method file-absolute($/ where $<file-protocol>.so)
-{
-    my IO::Path:D $path = IO::Path.new($<file-path-absolute>.made);
-    my Str:D $protocol = $<file-protocol>.made;
-    make File['Absolute', 'Protocol'].new(:$path, :$protocol);
-}
-
 multi method file-absolute($/)
 {
-    my IO::Path:D $path = IO::Path.new($<file-path-absolute>.made);
-    make File['Absolute'].new(:$path);
+    my Str:D $file-absolute = $<file-path-absolute>.made;
+    make %(:$file-absolute);
 }
 
 # --- end file-absolute }}}
+# --- file-absolute-protocol {{{
+
+method file-absolute-protocol($/)
+{
+    my Str:D $file-absolute = $<file-absolute>.made;
+    my Str:D $file-protocol = $<file-protocol>.made;
+    make %(:$file-absolute, :$file-protocol);
+}
+
+# --- end file-absolute-protocol }}}
 # --- file-relative {{{
 
 multi method file-path-relative($/ where @<file-path-absolute>.so)
@@ -1063,31 +1066,54 @@ multi method file-path-relative($/)
     make @<file-path-char>».made.join;
 }
 
-multi method file-relative($/ where $<file-protocol>.so)
-{
-    my IO::Path:D $path =
-        IO::Path.new($.file.IO.dirname ~ '/' ~ $<file-path-relative>.made);
-    my Str:D $protocol = $<file-protocol>.made;
-    make File['Relative', 'Protocol'].new(:$path, :$protocol);
-}
-
 multi method file-relative($/)
 {
-    my IO::Path:D $path =
-        IO::Path.new($.file.IO.dirname ~ '/' ~ $<file-path-relative>.made);
-    make File['Relative'].new(:$path);
+    my Str:D $file-relative = $<file-path-relative>.made;
+    make %(:$file-relative);
 }
 
 # --- end file-relative }}}
+# --- file-relative-protocol {{{
+
+method file-relative-protocol($/)
+{
+    my Str:D $file-relative = $<file-relative>.made;
+    my Str:D $file-protocol = $<file-protocol>.made;
+    make %(:$file-relative, :$file-protocol);
+}
+
+# --- end file-relative-protocol }}}
 
 method file:absolute ($/)
 {
-    make $<file-absolute>.made;
+    my Str:D $file-absolute = $<file-absolute>.made<file-absolute>;
+    my IO::Path:D $path = IO::Path.new($file-absolute);
+    make File['Absolute'].new(:$path);
+}
+
+method file:absolute-protocol ($/)
+{
+    my Str:D $file-absolute = $<file-absolute>.made<file-absolute>;
+    my IO::Path:D $path = IO::Path.new($file-absolute);
+    my Str:D $protocol = $<file-protocol>.made<file-protocol>;
+    make File['Absolute', 'Protocol'].new(:$path, :$protocol);
 }
 
 method file:relative ($/)
 {
-    make $<file-relative>.made;
+    my Str:D $file-relative = $<file-relative>.made<file-relative>;
+    my IO::Path:D $path =
+        IO::Path.new($.file.IO.dirname ~ '/' ~ $file-relative);
+    make File['Relative'].new(:$path);
+}
+
+method file:relative-protocol ($/)
+{
+    my Str:D $file-relative = $<file-relative>.made<file-relative>;
+    my IO::Path:D $path =
+        IO::Path.new($.file.IO.dirname ~ '/' ~ $file-relative);
+    my Str:D $protocol = $<file-protocol>.made<file-protocol>;
+    make File['Relative', 'Protocol'].new(:$path, :$protocol);
 }
 
 # end file }}}

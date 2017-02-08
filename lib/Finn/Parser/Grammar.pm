@@ -1196,15 +1196,20 @@ token file-path-absolute
 
 token file-absolute
 {
-    <file-protocol>?
-    [
-        | '~'? <file-path-absolute>
-        | '~'
-        | '/'
-    ]
+    | '~'? <file-path-absolute>
+    | '~'
+    | '/'
 }
 
 # --- end file-absolute }}}
+# --- file-absolute-protocol {{{
+
+token file-absolute-protocol
+{
+    <file-protocol> <file-absolute>
+}
+
+# --- end file-absolute-protocol }}}
 # --- file-relative {{{
 
 token file-path-relative
@@ -1214,14 +1219,24 @@ token file-path-relative
 
 token file-relative
 {
-    <file-protocol>? <file-path-relative>
+    <file-path-relative>
 }
 
 # --- end file-relative }}}
+# --- file-relative-protocol {{{
 
-proto token file    {*}
-token file:absolute { <file-absolute> }
-token file:relative { <file-relative> }
+token file-relative-protocol
+{
+    <file-protocol> <file-relative>
+}
+
+# --- end file-relative-protocol }}}
+
+proto token file             {*}
+token file:absolute-protocol { <file-absolute-protocol> }
+token file:relative-protocol { <file-relative-protocol> }
+token file:absolute          { <file-absolute> }
+token file:relative          { <file-relative> }
 
 # end file }}}
 # reference-inline {{{
