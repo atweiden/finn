@@ -429,9 +429,9 @@ Functionally, treating the leading `/` in the file path as the
 to create nested directory trees full of Finn source files that may each
 write to an arbitrary file path under the project root.
 
-If you wish to write to a file path outside of `$PROJECT_ROOT`, prepend
-the file path with `file://`. The following Sectional Block writes its
-content to `/tmp/app/cmd-history.txt`:
+If you wish to escape this paradigm of the leading `/` signifiying
+`$PROJECT_ROOT`, prepend the file path with `file://`. The following
+Sectional Block writes its content to `/tmp/app/cmd-history.txt`:
 
 ```finn
 --- file:///tmp/app/cmd-history.txt
@@ -445,6 +445,14 @@ under `$HOME`:
 ```finn
 --- ~/.vimrc
 set nocompatible
+---
+```
+
+An example of a relative path:
+
+```finn
+--- file://README
+readme
 ---
 ```
 

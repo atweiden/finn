@@ -268,9 +268,33 @@ method sectional-block-name-identifier-export($/)
     make SectionalBlockName::Identifier::Export.new;
 }
 
+method sectional-block-name-identifier-file:absolute ($/)
+{
+    my Str:D $file-absolute = $<file-absolute>.made<file-absolute>;
+    my IO::Path:D $path = IO::Path.new($file-absolute);
+    make File['Absolute'].new(:$path);
+}
+
+method sectional-block-name-identifier-file:absolute-protocol ($/)
+{
+    my Str:D $file-absolute = $<file-absolute>.made<file-absolute>;
+    my IO::Path:D $path = IO::Path.new($file-absolute);
+    my Str:D $protocol = $<file-protocol>.made<file-protocol>;
+    make File['Absolute', 'Protocol'].new(:$path, :$protocol);
+}
+
+method sectional-block-name-identifier-file:relative-protocol ($/)
+{
+    my Str:D $file-relative = $<file-relative>.made<file-relative>;
+    my IO::Path:D $path =
+        IO::Path.new($.file.IO.dirname ~ '/' ~ $file-relative);
+    my Str:D $protocol = $<file-protocol>.made<file-protocol>;
+    make File['Relative', 'Protocol'].new(:$path, :$protocol);
+}
+
 method sectional-block-name-identifier:file ($/)
 {
-    my File:D $file = $<file-absolute>.made;
+    my File:D $file = $<sectional-block-name-identifier-file>.made;
     make SectionalBlockName::Identifier['File'].new(:$file);
 }
 

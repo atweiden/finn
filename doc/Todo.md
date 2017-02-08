@@ -4,10 +4,6 @@ Todo
 Finn
 ----
 
-### fix code-block and sectional-block grammar
-
-- delimiters must come at start of line (`^^`)
-
 ### test Syntax.md examples
 
 - extract examples and test

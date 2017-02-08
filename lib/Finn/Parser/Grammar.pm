@@ -506,17 +506,39 @@ token sectional-block-name-identifier-word
     <sectional-block-name-identifier-char>+
 }
 
-proto token sectional-block-name-identifier {*}
+proto token sectional-block-name-identifier-file {*}
 
-token sectional-block-name-identifier:file
+token sectional-block-name-identifier-file:absolute
 {
     <file-absolute>
 }
 
+token sectional-block-name-identifier-file:absolute-protocol
+{
+    <file-absolute-protocol>
+}
+
+token sectional-block-name-identifier-file:relative-protocol
+{
+    <file-relative-protocol>
+}
+
+proto token sectional-block-name-identifier {*}
+
+token sectional-block-name-identifier:file
+{
+    <sectional-block-name-identifier-file>
+}
+
 token sectional-block-name-identifier:word
 {
-    <+sectional-block-name-identifier-word -file-absolute>
-    [ \h+ <+sectional-block-name-identifier-word -file-absolute> ]*
+    <+sectional-block-name-identifier-word
+     -sectional-block-name-identifier-file>
+    [
+        \h+
+        <+sectional-block-name-identifier-word
+         -sectional-block-name-identifier-file>
+    ]*
 }
 
 token sectional-block-name-identifier-export
