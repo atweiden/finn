@@ -1021,7 +1021,7 @@ method file-path-escape:sym<U>($/)
 
 method file-protocol($/)
 {
-    make File::Protocol.new(:protocol(~$/));
+    make ~$/;
 }
 
 # --- end file-protocol }}}
@@ -1040,7 +1040,7 @@ multi method file-path-absolute($/)
 multi method file-absolute($/ where $<file-protocol>.so)
 {
     my IO::Path:D $path = IO::Path.new($<file-path-absolute>.made);
-    my File::Protocol:D $protocol = $<file-protocol>.made;
+    my Str:D $protocol = $<file-protocol>.made;
     make File['Absolute', 'Protocol'].new(:$path, :$protocol);
 }
 
@@ -1067,7 +1067,7 @@ multi method file-relative($/ where $<file-protocol>.so)
 {
     my IO::Path:D $path =
         IO::Path.new($.file.IO.dirname ~ '/' ~ $<file-path-relative>.made);
-    my File::Protocol:D $protocol = $<file-protocol>.made;
+    my Str:D $protocol = $<file-protocol>.made;
     make File['Relative', 'Protocol'].new(:$path, :$protocol);
 }
 
