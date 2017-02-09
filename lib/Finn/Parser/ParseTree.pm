@@ -59,7 +59,10 @@ class Bounds
 
 # role BlankLine {{{
 
-role BlankLine {*}
+role BlankLine
+{
+    has Str:D $.text is required;
+}
 
 # end role BlankLine }}}
 # role CodeBlock {{{
@@ -85,7 +88,7 @@ role CodeBlock
 
 role Comment
 {
-    has Str:D $.comment-text is required;
+    has Str:D $.text is required;
 }
 
 # end role Comment }}}
@@ -120,7 +123,7 @@ role File['Relative', 'Protocol'] does File::Path does File::Protocol {*}
 # end role File }}}
 # role Header {{{
 
-role Header::Text { has Str:D $.header-text is required }
+role Header::Text { has Str:D $.text is required }
 role Header[1] does Header::Text {*}
 role Header[2] does Header::Text {*}
 role Header[3] does Header::Text {*}
@@ -178,7 +181,7 @@ role ListBlock
 
 role ListItem::Text
 {
-    has Str:D $.list-item-text is required;
+    has Str:D $.text is required;
 }
 
 # --- role ListItem['Ordered'] {{{
@@ -209,7 +212,7 @@ role CheckboxCheckedChar['v'] {*}
 
 role Checkbox['Checked']
 {
-    has CheckboxCheckedChar:D $.checkbox-checked-char is required;
+    has CheckboxCheckedChar:D $.char is required;
 }
 
 # --- --- end role Checkbox['Checked'] }}}
@@ -221,7 +224,7 @@ role CheckboxEtcChar['-'] {*}
 
 role Checkbox['Etc']
 {
-    has CheckboxEtcChar:D $.checkbox-etc-char is required;
+    has CheckboxEtcChar:D $.char is required;
 }
 
 # --- --- end role Checkbox['Etc'] }}}
@@ -232,7 +235,7 @@ role CheckboxExceptionChar['!'] {*}
 
 role Checkbox['Exception']
 {
-    has CheckboxExceptionChar:D $.checkbox-exception-char is required;
+    has CheckboxExceptionChar:D $.char is required;
 }
 
 # --- --- end role Checkbox['Exception'] }}}
@@ -359,27 +362,21 @@ role SectionalBlockName
 }
 
 # --- end role SectionalBlockName }}}
-# --- role SectionalBlockText {{{
+# --- role SectionalBlockContent {{{
 
 # Sectional Block Content can feature Sectional Inlines
-role SectionalBlockText::Chunk['SectionalInline']
+role SectionalBlockContent['SectionalInline']
 {
     has SectionalInline:D $.sectional-inline is required;
 }
 
-# Sectional Block Content is considered source code by default
-role SectionalBlockText::Chunk['SourceCode']
+# otherwise Sectional Block Content is considered text (source code)
+role SectionalBlockContent['Text']
 {
-    has Str:D $.source-code is required;
+    has Str:D $.text is required;
 }
 
-# each Sectional Block contains chunks of C<SectionalBlockText>
-role SectionalBlockText
-{
-    has SectionalBlockText::Chunk:D @.chunk is required;
-}
-
-# --- end role SectionalBlockText }}}
+# --- end role SectionalBlockContent }}}
 
 # each Sectional Block has delimiters (dashes or backticks), a name
 # and associated text
@@ -387,8 +384,8 @@ role SectionalBlock
 {
     has SectionalBlockDelimiter:D $.delimiter is required;
     has SectionalBlockName:D $.name is required;
-    # XXX SectionalBlockText reparsing NYI
-    #has SectionalBlockText:D $.text is required;
+    # XXX SectionalBlockContent reparsing NYI
+    #has SectionalBlockContent:D @.content is required;
     has Str:D $.text is required;
 }
 

@@ -443,20 +443,20 @@ method header-text($/)
 
 method header1($/)
 {
-    my Str:D $header-text = $<header-text>.made;
-    make Header[1].new(:$header-text);
+    my Str:D $text = $<header-text>.made;
+    make Header[1].new(:$text);
 }
 
 method header2($/)
 {
-    my Str:D $header-text = $<header-text>.made;
-    make Header[2].new(:$header-text);
+    my Str:D $text = $<header-text>.made;
+    make Header[2].new(:$text);
 }
 
 method header3($/)
 {
-    my Str:D $header-text = $<header-text>.made;
-    make Header[3].new(:$header-text);
+    my Str:D $text = $<header-text>.made;
+    make Header[3].new(:$text);
 }
 
 method header:h1 ($/)
@@ -568,10 +568,10 @@ multi method list-ordered-item-text($/)
 
 method list-ordered-item($/)
 {
-    my Str:D $list-item-text =
-        ?$<list-ordered-item-text> ?? $<list-ordered-item-text>.made !! '';
     my ListItem::Number:D $number = $<list-ordered-item-number>.made;
-    make ListItem['Ordered'].new(:$list-item-text, :$number);
+    my Str:D $text =
+        ?$<list-ordered-item-text> ?? $<list-ordered-item-text>.made !! '';
+    make ListItem['Ordered'].new(:$number, :$text);
 }
 
 # --- end list-ordered-item }}}
@@ -587,9 +587,8 @@ method checkbox-checked-char:sym<v>($/) { make CheckboxCheckedChar['v'].new }
 
 method checkbox-checked($/)
 {
-    my CheckboxCheckedChar:D $checkbox-checked-char =
-        $<checkbox-checked-char>.made;
-    make Checkbox['Checked'].new(:$checkbox-checked-char);
+    my CheckboxCheckedChar:D $char = $<checkbox-checked-char>.made;
+    make Checkbox['Checked'].new(:$char);
 }
 
 # --- --- --- end checkbox-checked }}}
@@ -601,8 +600,8 @@ method checkbox-etc-char:sym<->($/) { make CheckboxEtcChar['-'].new }
 
 method checkbox-etc($/)
 {
-    my CheckboxEtcChar:D $checkbox-etc-char = $<checkbox-etc-char>.made;
-    make Checkbox['Etc'].new(:$checkbox-etc-char);
+    my CheckboxEtcChar:D $char = $<checkbox-etc-char>.made;
+    make Checkbox['Etc'].new(:$char);
 }
 
 # --- --- --- end checkbox-etc }}}
@@ -613,9 +612,8 @@ method checkbox-exception-char:sym<!>($/) { make CheckboxExceptionChar['!'].new 
 
 method checkbox-exception($/)
 {
-    my CheckboxExceptionChar:D $checkbox-exception-char =
-        $<checkbox-exception-char>.made;
-    make Checkbox['Exception'].new(:$checkbox-exception-char);
+    my CheckboxExceptionChar:D $char = $<checkbox-exception-char>.made;
+    make Checkbox['Exception'].new(:$char);
 }
 
 # --- --- --- end checkbox-exception }}}
@@ -657,9 +655,9 @@ method list-todo-item-text($/)
 
 method list-todo-item($/)
 {
-    my Str:D $list-item-text = $<list-todo-item-text>.made;
     my Checkbox:D $checkbox = $<checkbox>.made;
-    make ListItem['Todo'].new(:$checkbox, :$list-item-text);
+    my Str:D $text = $<list-todo-item-text>.made;
+    make ListItem['Todo'].new(:$checkbox, :$text);
 }
 
 # --- end list-todo-item }}}
@@ -717,10 +715,10 @@ multi method list-unordered-item-text($/)
 
 method list-unordered-item($/)
 {
-    my Str:D $list-item-text =
-        ?$<list-unordered-item-text> ?? $<list-unordered-item-text>.made !! '';
     my BulletPoint:D $bullet-point = $<bullet-point>.made;
-    make ListItem['Unordered'].new(:$list-item-text, :$bullet-point);
+    my Str:D $text =
+        ?$<list-unordered-item-text> ?? $<list-unordered-item-text>.made !! '';
+    make ListItem['Unordered'].new(:$bullet-point, :$text);
 }
 
 # --- end list-unordered-item }}}
@@ -793,8 +791,8 @@ method comment-text($/)
 
 method comment($/)
 {
-    my Str:D $comment-text = $<comment-text>.made;
-    make Comment.new(:$comment-text);
+    my Str:D $text = $<comment-text>.made;
+    make Comment.new(:$text);
 }
 
 method comment-block($/)
@@ -808,7 +806,8 @@ method comment-block($/)
 
 method blank-line($/)
 {
-    make BlankLine.new;
+    my Str:D $text = ~$/;
+    make BlankLine.new(:$text);
 }
 
 # end blank-line }}}
