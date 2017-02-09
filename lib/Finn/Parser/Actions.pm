@@ -1,4 +1,5 @@
 use v6;
+use Finn::Parser::Grammar::SectionalBlockContent;
 use Finn::Parser::ParseTree;
 unit class Finn::Parser::Actions;
 
@@ -342,30 +343,36 @@ method sectional-block-name($/)
 
 method sectional-block-content-backticks($/)
 {
-    make ~$/;
+    my SectionalBlockContent:D @content =
+        Finn::Parser::Grammar::SectionalBlockContent.parse(~$/);
+    make @content;
 }
 
 method sectional-block-content-dashes($/)
 {
-    make ~$/;
+    my SectionalBlockContent:D @content =
+        Finn::Parser::Grammar::SectionalBlockContent.parse(~$/);
+    make @content;
 }
 
 # --- end sectional-block-content }}}
 
 method sectional-block:backticks ($/)
 {
+    my SectionalBlockContent:D @content =
+        $<sectional-block-content-backticks>.made;
     my SectionalBlockDelimiter['Backticks'] $delimiter .= new;
     my SectionalBlockName:D $name = $<sectional-block-name>.made;
-    my Str:D $text = $<sectional-block-content-backticks>.made;
-    make SectionalBlock.new(:$delimiter, :$name, :$text);
+    make SectionalBlock.new(:@content, :$delimiter, :$name);
 }
 
 method sectional-block:dashes ($/)
 {
+    my SectionalBlockContent:D @content =
+        $<sectional-block-content-dashes>.made;
     my SectionalBlockDelimiter['Dashes'] $delimiter .= new;
     my SectionalBlockName:D $name = $<sectional-block-name>.made;
-    my Str:D $text = $<sectional-block-content-dashes>.made;
-    make SectionalBlock.new(:$delimiter, :$name, :$text);
+    make SectionalBlock.new(:@content, :$delimiter, :$name);
 }
 
 # end sectional-block }}}
