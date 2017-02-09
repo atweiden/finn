@@ -486,6 +486,8 @@ token code-block:dashes
 # end code-block }}}
 # sectional-block {{{
 
+# --- sectional-block-delimiter-opening {{{
+
 token sectional-block-delimiter-opening-backticks
 {
     <.code-block-delimiter-opening-backticks>
@@ -495,6 +497,9 @@ token sectional-block-delimiter-opening-dashes
 {
     <.code-block-delimiter-opening-dashes>
 }
+
+# --- end sectional-block-delimiter-opening }}}
+# --- sectional-block-name {{{
 
 token sectional-block-name-identifier-char
 {
@@ -557,6 +562,9 @@ token sectional-block-name
     [ \h <sectional-block-name-operator> ]?
 }
 
+# --- end sectional-block-name }}}
+# --- sectional-block-content {{{
+
 token sectional-block-content-backticks
 {
     <-sectional-block-delimiter-closing-backticks>*
@@ -567,6 +575,9 @@ token sectional-block-content-dashes
     <-sectional-block-delimiter-closing-dashes>*
 }
 
+# --- end sectional-block-content }}}
+# --- sectional-block-delimiter-closing {{{
+
 token sectional-block-delimiter-closing-backticks
 {
     <.code-block-delimiter-closing-backticks>
@@ -576,6 +587,8 @@ token sectional-block-delimiter-closing-dashes
 {
     <.code-block-delimiter-closing-dashes>
 }
+
+# --- end sectional-block-delimiter-closing }}}
 
 proto token sectional-block {*}
 
