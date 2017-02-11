@@ -1,7 +1,7 @@
 use v6;
-use Finn::Parser::Grammar;
-use Finn::Parser::ParseTree;
-unit class Finn::Parser::Grammar::SectionalBlockContent;
+use Finn::Parser::Grammar::SectionalInline;
+unit grammar Finn::Parser::Grammar::SectionalBlockContent;
+also does Finn::Parser::Grammar::SectionalInline;
 
 # p6doc {{{
 
@@ -14,82 +14,41 @@ Finn::Parser::Grammar::SectionalBlockContent
 
 =begin code
 use Finn::Parser::Grammar::SectionalBlockContent;
-use Finn::Parser::ParseTree;
-my SectionalBlockContent:D @content =
+my Match:D $match =
     Finn::Parser::Grammar::SectionalBlockContent.parse('content');
 =end code
 
 =head DESCRIPTION
 
-Finn::Parser::Grammar::SectionalBlockContent contains a private grammar
-for parsing Sectional Block Content. Parsing Sectional Block Content is
+Finn::Parser::Grammar::SectionalBlockContent contains a grammar for
+parsing Sectional Block Content. Parsing Sectional Block Content is
 necessary for detection of embedded Sectional Inlines.
-
-The class method C<parse> instantiates a C<SectionalBlockContentActions>
-class and parses Sectional Block Content with the included private
-grammar, returning C<Array[SectionalBlockContent:D]>.
 =end pod
 
 # end p6doc }}}
 
-# my grammar SectionalBlockContentGrammar {{{
+# TOP {{{
 
-my grammar SectionalBlockContentGrammar is Finn::Parser::Grammar
+token TOP
 {
-    token TOP { <content>? \n? }
-
-    token content { <line> [ \n <line> ]* }
-
-    proto token line            {*}
-    token line:sectional-inline { <sectional-inline> }
-    token line:text             { ^^ <!before <sectional-inline>> \N* $$ }
+    <content>? \n?
 }
 
-# end my grammar SectionalBlockContentGrammar }}}
-# my class SectionalBlockContentActions {{{
+# end TOP }}}
+# content {{{
 
-my class SectionalBlockContentActions
+token content
 {
-    multi method TOP($/ where $<content>.so)
-    {
-        make $<content>.made;
-    }
-
-    multi method TOP($/)
-    {
-        make Nil;
-    }
-
-    method content($/)
-    {
-        make @<line>».made;
-    }
-
-    method line:sectional-inline ($/)
-    {
-        my SectionalInline:D $sectional-inline = $<sectional-inline>.made;
-        make SectionalBlockContent['SectionalInline'].new(:$sectional-inline);
-    }
-
-    method line:text ($/)
-    {
-        my Str:D $text = ~$/;
-        make SectionalBlockContent['Text'].new(:$text);
-    }
+    <line> [ \n <line> ]*
 }
 
-# end my class SectionalBlockContentActions }}}
+# end content }}}
+# line {{{
 
-# method parse {{{
+proto token line            {*}
+token line:sectional-inline { <sectional-inline> }
+token line:text             { ^^ <!before <sectional-inline>> \N* $$ }
 
-method parse(Str:D $content) returns Array:D
-{
-    my SectionalBlockContentActions:D $actions =
-        SectionalBlockContentActions.new;
-    my SectionalBlockContent:D @content =
-        SectionalBlockContentGrammar.parse($content, :$actions).made;
-}
-
-# end method parse }}}
+# end line }}}
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

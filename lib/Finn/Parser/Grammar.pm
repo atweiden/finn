@@ -1,5 +1,13 @@
 use v6;
+use Finn::Parser::Grammar::File;
+use Finn::Parser::Grammar::ReferenceInline;
+use Finn::Parser::Grammar::SectionalInline;
+use Finn::Parser::Grammar::String;
 unit grammar Finn::Parser::Grammar;
+also does Finn::Parser::Grammar::File;
+also does Finn::Parser::Grammar::ReferenceInline;
+also does Finn::Parser::Grammar::SectionalInline;
+also does Finn::Parser::Grammar::String;
 
 # p6doc {{{
 
@@ -17,9 +25,7 @@ my Match:D $match = Finn::Parser::Grammar.parse('text');
 
 =head DESCRIPTION
 
-Parses Finn file format.
-
-Parses block text first, then re-parses block text for inline text.
+Finn source document parser.
 
 =head2 Inline Vs. Block Text
 
@@ -612,47 +618,6 @@ token sectional-block:dashes
 # end sectional-block }}}
 # sectional-inline-block {{{
 
-# --- sectional-inline {{{
-
-token section-sign
-{
-    '§'
-}
-
-proto token sectional-inline-text {*}
-
-token sectional-inline-text:name-and-file
-{
-    <sectional-inline-name=string> \h <sectional-inline-file=file>
-}
-
-token sectional-inline-text:name-and-reference
-{
-    <sectional-inline-name=string> \h <sectional-inline-reference=reference-inline>
-}
-
-token sectional-inline-text:file-only
-{
-    <sectional-inline-file=file>
-}
-
-token sectional-inline-text:reference-only
-{
-    <sectional-inline-reference=reference-inline>
-}
-
-token sectional-inline-text:name-only
-{
-    <sectional-inline-name=string>
-}
-
-token sectional-inline
-{
-    ^^ \h* <section-sign> \h <sectional-inline-text> $$
-}
-
-# --- end sectional-inline }}}
-
 # C<<sectional-inline-block>> must be separated from other text blocks
 # with a C<<blank-line>>, C<<comment-block>> or C<<horizontal-rule>>,
 # or it must appear at the very top of the document
@@ -999,123 +964,6 @@ token log-level-error:sym<ERROR> { <sym> }
 token log-level-error:sym<FATAL> { <sym> }
 
 # end log-level }}}
-# string {{{
-
-# --- string-basic {{{
-
-# --- --- string-basic-char {{{
-
-proto token string-basic-char {*}
-
-token string-basic-char:common
-{
-    # anything but linebreaks, double-quotes, backslashes and control
-    # characters (U+0000 to U+001F)
-    <+[\N] -[\" \\] -[\x00..\x1F]>
-}
-
-token string-basic-char:tab
-{
-    \t
-}
-
-token string-basic-char:escape-sequence
-{
-    # backslash followed by a valid (TOML) escape code, or error
-    \\
-    [
-        <escape>
-
-        ||
-
-        .
-        {
-            die;
-        }
-    ]
-}
-
-# --- --- end string-basic-char }}}
-# --- --- escape {{{
-
-token hex
-{
-    <[0..9A..F]>
-}
-
-# For convenience, some popular characters have a compact escape sequence.
-#
-# \b         - backspace       (U+0008)
-# \t         - tab             (U+0009)
-# \n         - linefeed        (U+000A)
-# \f         - form feed       (U+000C)
-# \r         - carriage return (U+000D)
-# \"         - quote           (U+0022)
-# \\         - backslash       (U+005C)
-# \uXXXX     - unicode         (U+XXXX)
-# \UXXXXXXXX - unicode         (U+XXXXXXXX)
-proto token escape          {*}
-token escape:sym<b>         { <sym> }
-token escape:sym<t>         { <sym> }
-token escape:sym<n>         { <sym> }
-token escape:sym<f>         { <sym> }
-token escape:sym<r>         { <sym> }
-token escape:sym<quote>     { \" }
-token escape:sym<backslash> { \\ }
-token escape:sym<u>         { <sym> <hex> ** 4 }
-token escape:sym<U>         { <sym> <hex> ** 8 }
-
-# --- --- end escape }}}
-
-token string-basic-text
-{
-    <string-basic-char>+
-}
-
-token string-basic
-{
-    '"' <string-basic-text> '"'
-}
-
-# --- end string-basic }}}
-# --- string-literal {{{
-
-# --- --- string-literal-char {{{
-
-proto token string-literal-char {*}
-
-token string-literal-char:common
-{
-    # anything but linebreaks and single quotes
-    # Since there is no escaping, there is no way to write a single
-    # quote inside a literal string enclosed by single quotes.
-    <+[\N] -[\']>
-}
-
-token string-literal-char:backslash
-{
-    \\
-}
-
-# --- --- end string-literal-char }}}
-
-token string-literal-text
-{
-    <string-literal-char>+
-}
-
-token string-literal
-{
-    \' <string-literal-text> \'
-}
-
-# --- end string-literal }}}
-
-proto token string   {*}
-token string:basic   { <string-basic> }
-token string:literal { <string-literal> }
-
-# end string }}}
 # url {{{
 
 token url-scheme
@@ -1129,156 +977,6 @@ token url
 }
 
 # end url }}}
-# file {{{
-
-# --- file-path-char {{{
-
-proto token file-path-char {*}
-
-token file-path-char:common
-{
-    # anything but linebreaks, whitespace, single-quotes, double-quotes,
-    # fwdslashes, backslashes, square brackets, curly braces and control
-    # characters (U+0000 to U+001F)
-    <+[\N] -[\h] -[\' \" / \\] -[\[ \] \{ \}] -[\x00..\x1F]>
-}
-
-token file-path-char:escape-sequence
-{
-    # backslash followed by a valid file-path-escape code, or error
-    \\
-    [
-        <file-path-escape>
-
-        ||
-
-        .
-        {
-            die;
-        }
-    ]
-}
-
-# --- end file-path-char }}}
-# --- file-path-escape {{{
-
-# For convenience, some popular characters have a compact escape sequence.
-#
-# \          - whitespace      (U+0020)
-# \b         - backspace       (U+0008)
-# \t         - tab             (U+0009)
-# \n         - linefeed        (U+000A)
-# \f         - form feed       (U+000C)
-# \r         - carriage return (U+000D)
-# \'         - single-quote    (U+0027)
-# \"         - double-quote    (U+0022)
-# \/         - fwdslash        (U+002f)
-# \\         - backslash       (U+005C)
-# \*         - asterisk        (U+002a)
-# \[         - left bracket    (U+005b)
-# \]         - right bracket   (U+005d)
-# \{         - left brace      (U+007b)
-# \}         - right brace     (U+007d)
-# \uXXXX     - unicode         (U+XXXX)
-# \UXXXXXXXX - unicode         (U+XXXXXXXX)
-proto token file-path-escape             {*}
-token file-path-escape:sym<whitespace>   { \h }
-token file-path-escape:sym<b>            { <sym> }
-token file-path-escape:sym<t>            { <sym> }
-token file-path-escape:sym<n>            { <sym> }
-token file-path-escape:sym<f>            { <sym> }
-token file-path-escape:sym<r>            { <sym> }
-token file-path-escape:sym<single-quote> { \' }
-token file-path-escape:sym<double-quote> { \" }
-token file-path-escape:sym<fwdslash>     { '/' }
-token file-path-escape:sym<backslash>    { \\ }
-token file-path-escape:sym<*>            { <sym> }
-token file-path-escape:sym<[>            { <sym> }
-token file-path-escape:sym<]>            { <sym> }
-token file-path-escape:sym<{>            { <sym> }
-token file-path-escape:sym<}>            { <sym> }
-token file-path-escape:sym<u>            { <sym> <hex> ** 4 }
-token file-path-escape:sym<U>            { <sym> <hex> ** 8 }
-
-# --- end file-path-escape }}}
-# --- file-protocol {{{
-
-token file-protocol
-{
-    'file://'
-}
-
-# --- end file-protocol }}}
-# --- file-absolute {{{
-
-token file-path-absolute
-{
-    '/' <file-path-char>+ <file-path-absolute>*
-}
-
-token file-absolute
-{
-    | '~'? <file-path-absolute>
-    | '~'
-    | '/'
-}
-
-# --- end file-absolute }}}
-# --- file-absolute-protocol {{{
-
-token file-absolute-protocol
-{
-    <file-protocol> <file-absolute>
-}
-
-# --- end file-absolute-protocol }}}
-# --- file-relative {{{
-
-token file-path-relative
-{
-    <file-path-char>+ <file-path-absolute>*
-}
-
-token file-relative
-{
-    <file-path-relative>
-}
-
-# --- end file-relative }}}
-# --- file-relative-protocol {{{
-
-token file-relative-protocol
-{
-    <file-protocol> <file-relative>
-}
-
-# --- end file-relative-protocol }}}
-
-proto token file             {*}
-token file:absolute-protocol { <file-absolute-protocol> }
-token file:relative-protocol { <file-relative-protocol> }
-token file:absolute          { <file-absolute> }
-token file:relative          { <file-relative> }
-
-# end file }}}
-# reference-inline {{{
-
-token reference-inline-number
-{
-    0
-
-    |
-
-    # Leading zeros are not allowed.
-    <[1..9]> [ \d+ ]?
-}
-
-token reference-inline
-{
-    '[' <reference-inline-number> ']'
-}
-
-# end reference-inline }}}
 # code-inline {{{
 
 token code-inline-delimiter

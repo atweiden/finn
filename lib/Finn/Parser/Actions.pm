@@ -1,7 +1,16 @@
 use v6;
+use Finn::Parser::Actions::File;
+use Finn::Parser::Actions::ReferenceInline;
+use Finn::Parser::Actions::SectionalBlockContent;
+use Finn::Parser::Actions::SectionalInline;
+use Finn::Parser::Actions::String;
 use Finn::Parser::Grammar::SectionalBlockContent;
 use Finn::Parser::ParseTree;
 unit class Finn::Parser::Actions;
+also does Finn::Parser::Actions::File;
+also does Finn::Parser::Actions::ReferenceInline;
+also does Finn::Parser::Actions::SectionalInline;
+also does Finn::Parser::Actions::String;
 
 # p6doc {{{
 
@@ -180,47 +189,6 @@ multi method TOP($/)
 
 # sectional-inline-block {{{
 
-# --- sectional-inline {{{
-
-method sectional-inline-text:name-and-file ($/)
-{
-    my Str:D $name = $<sectional-inline-name>.made;
-    my File:D $file = $<sectional-inline-file>.made;
-    make SectionalInline['Name', 'File'].new(:$name, :$file);
-}
-
-method sectional-inline-text:name-and-reference ($/)
-{
-    my Str:D $name = $<sectional-inline-name>.made;
-    my ReferenceInline:D $reference-inline = $<sectional-inline-reference>.made;
-    make SectionalInline['Name', 'Reference'].new(:$name, :$reference-inline);
-}
-
-method sectional-inline-text:file-only ($/)
-{
-    my File:D $file = $<sectional-inline-file>.made;
-    make SectionalInline['File'].new(:$file);
-}
-
-method sectional-inline-text:reference-only ($/)
-{
-    my ReferenceInline:D $reference-inline = $<sectional-inline-reference>.made;
-    make SectionalInline['Reference'].new(:$reference-inline);
-}
-
-method sectional-inline-text:name-only ($/)
-{
-    my Str:D $name = $<sectional-inline-name>.made;
-    make SectionalInline['Name'].new(:$name);
-}
-
-method sectional-inline($/)
-{
-    make $<sectional-inline-text>.made;
-}
-
-# --- end sectional-inline }}}
-
 method sectional-inline-block:top ($/)
 {
     my SectionalInline:D @sectional-inline = @<sectional-inline>».made;
@@ -343,15 +311,17 @@ method sectional-block-name($/)
 
 method sectional-block-content-backticks($/)
 {
+    my Finn::Parser::Actions::SectionalBlockContent $actions .= new;
     my SectionalBlockContent:D @content =
-        Finn::Parser::Grammar::SectionalBlockContent.parse(~$/);
+        Finn::Parser::Grammar::SectionalBlockContent.parse(~$/, :$actions).made;
     make @content;
 }
 
 method sectional-block-content-dashes($/)
 {
+    my Finn::Parser::Actions::SectionalBlockContent $actions .= new;
     my SectionalBlockContent:D @content =
-        Finn::Parser::Grammar::SectionalBlockContent.parse(~$/);
+        Finn::Parser::Grammar::SectionalBlockContent.parse(~$/, :$actions).made;
     make @content;
 }
 
@@ -818,349 +788,6 @@ method blank-line($/)
 }
 
 # end blank-line }}}
-
-=begin pod
-=head Inline Text
-=end pod
-
-# string {{{
-
-# --- string-basic {{{
-
-# --- --- string-basic-char {{{
-
-method string-basic-char:common ($/)
-{
-    make ~$/;
-}
-
-method string-basic-char:tab ($/)
-{
-    make ~$/;
-}
-
-method string-basic-char:escape-sequence ($/)
-{
-    make $<escape>.made;
-}
-
-# --- --- end string-basic-char }}}
-# --- --- escape {{{
-
-method escape:sym<b>($/)
-{
-    make "\b";
-}
-
-method escape:sym<t>($/)
-{
-    make "\t";
-}
-
-method escape:sym<n>($/)
-{
-    make "\n";
-}
-
-method escape:sym<f>($/)
-{
-    make "\f";
-}
-
-method escape:sym<r>($/)
-{
-    make "\r";
-}
-
-method escape:sym<quote>($/)
-{
-    make "\"";
-}
-
-method escape:sym<backslash>($/)
-{
-    make '\\';
-}
-
-method escape:sym<u>($/)
-{
-    make chr(:16(@<hex>.join));
-}
-
-method escape:sym<U>($/)
-{
-    make chr(:16(@<hex>.join));
-}
-
-# --- --- end escape }}}
-
-method string-basic-text($/)
-{
-    make @<string-basic-char>».made.join;
-}
-
-method string-basic($/)
-{
-    make $<string-basic-text>.made;
-}
-
-# --- end string-basic }}}
-# --- string-literal {{{
-
-# --- --- string-literal-char {{{
-
-method string-literal-char:common ($/)
-{
-    make ~$/;
-}
-
-method string-literal-char:backslash ($/)
-{
-    make '\\';
-}
-
-# --- --- end string-literal-char }}}
-
-method string-literal-text($/)
-{
-    make @<string-literal-char>».made.join;
-}
-
-method string-literal($/)
-{
-    make $<string-literal-text>.made;
-}
-
-# --- end string-literal }}}
-
-method string:basic ($/)
-{
-    make $<string-basic>.made;
-}
-
-method string:literal ($/)
-{
-    make $<string-literal>.made;
-}
-
-# end string }}}
-# file {{{
-
-# --- file-path-char {{{
-
-method file-path-char:common ($/)
-{
-    make ~$/;
-}
-
-method file-path-char:escape-sequence ($/)
-{
-    make $<file-path-escape>.made;
-}
-
-# --- end file-path-char }}}
-# --- file-path-escape {{{
-
-method file-path-escape:sym<whitespace>($/)
-{
-    make ~$/;
-}
-
-method file-path-escape:sym<b>($/)
-{
-    make "\b";
-}
-
-method file-path-escape:sym<t>($/)
-{
-    make "\t";
-}
-
-method file-path-escape:sym<n>($/)
-{
-    make "\n";
-}
-
-method file-path-escape:sym<f>($/)
-{
-    make "\f";
-}
-
-method file-path-escape:sym<r>($/)
-{
-    make "\r";
-}
-
-method file-path-escape:sym<single-quote>($/)
-{
-    make "'";
-}
-
-method file-path-escape:sym<double-quote>($/)
-{
-    make "\"";
-}
-
-method file-path-escape:sym<fwdslash>($/)
-{
-    make '/';
-}
-
-method file-path-escape:sym<backslash>($/)
-{
-    make '\\';
-}
-
-method file-path-escape:sym<*>($/)
-{
-    make ~$/;
-}
-
-method file-path-escape:sym<[>($/)
-{
-    make ~$/;
-}
-
-method file-path-escape:sym<]>($/)
-{
-    make ~$/;
-}
-
-method file-path-escape:sym<{>($/)
-{
-    make ~$/;
-}
-
-method file-path-escape:sym<}>($/)
-{
-    make ~$/;
-}
-
-method file-path-escape:sym<u>($/)
-{
-    make chr(:16(@<hex>.join));
-}
-
-method file-path-escape:sym<U>($/)
-{
-    make chr(:16(@<hex>.join));
-}
-
-# --- end file-path-escape }}}
-# --- file-protocol {{{
-
-method file-protocol($/)
-{
-    make ~$/;
-}
-
-# --- end file-protocol }}}
-# --- file-absolute {{{
-
-multi method file-path-absolute($/ where @<file-path-absolute>.so)
-{
-    make '/' ~ @<file-path-char>».made.join ~ @<file-path-absolute>».made.join;
-}
-
-multi method file-path-absolute($/)
-{
-    make '/' ~ @<file-path-char>».made.join;
-}
-
-multi method file-absolute($/)
-{
-    my Str:D $file-absolute = $<file-path-absolute>.made;
-    make %(:$file-absolute);
-}
-
-# --- end file-absolute }}}
-# --- file-absolute-protocol {{{
-
-method file-absolute-protocol($/)
-{
-    my Str:D $file-absolute = $<file-absolute>.made<file-absolute>;
-    my Str:D $file-protocol = $<file-protocol>.made;
-    make %(:$file-absolute, :$file-protocol);
-}
-
-# --- end file-absolute-protocol }}}
-# --- file-relative {{{
-
-multi method file-path-relative($/ where @<file-path-absolute>.so)
-{
-    make @<file-path-char>».made.join ~ @<file-path-absolute>».made.join;
-}
-
-multi method file-path-relative($/)
-{
-    make @<file-path-char>».made.join;
-}
-
-multi method file-relative($/)
-{
-    my Str:D $file-relative = $<file-path-relative>.made;
-    make %(:$file-relative);
-}
-
-# --- end file-relative }}}
-# --- file-relative-protocol {{{
-
-method file-relative-protocol($/)
-{
-    my Str:D $file-relative = $<file-relative>.made<file-relative>;
-    my Str:D $file-protocol = $<file-protocol>.made;
-    make %(:$file-relative, :$file-protocol);
-}
-
-# --- end file-relative-protocol }}}
-
-method file:absolute ($/)
-{
-    my Str:D $file-absolute = $<file-absolute>.made<file-absolute>;
-    my IO::Path:D $path = IO::Path.new($file-absolute);
-    make File['Absolute'].new(:$path);
-}
-
-method file:absolute-protocol ($/)
-{
-    my Str:D $file-absolute = $<file-absolute-protocol>.made<file-absolute>;
-    my IO::Path:D $path = IO::Path.new($file-absolute);
-    my Str:D $protocol = $<file-absolute-protocol>.made<file-protocol>;
-    make File['Absolute', 'Protocol'].new(:$path, :$protocol);
-}
-
-method file:relative ($/)
-{
-    my Str:D $file-relative = $<file-relative>.made<file-relative>;
-    my IO::Path:D $path =
-        IO::Path.new($.file.IO.dirname ~ '/' ~ $file-relative);
-    make File['Relative'].new(:$path);
-}
-
-method file:relative-protocol ($/)
-{
-    my Str:D $file-relative = $<file-relative-protocol>.made<file-relative>;
-    my IO::Path:D $path =
-        IO::Path.new($.file.IO.dirname ~ '/' ~ $file-relative);
-    my Str:D $protocol = $<file-relative-protocol>.made<file-protocol>;
-    make File['Relative', 'Protocol'].new(:$path, :$protocol);
-}
-
-# end file }}}
-# reference-inline {{{
-
-method reference-inline-number($/)
-{
-    make +$/;
-}
-
-method reference-inline($/)
-{
-    my UInt:D $number = $<reference-inline-number>.made;
-    make ReferenceInline.new(:$number);
-}
-
-# end reference-inline }}}
 
 =begin pod
 =head Helper Functions
