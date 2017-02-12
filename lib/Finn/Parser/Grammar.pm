@@ -418,6 +418,8 @@ token reference-block
 # end reference-block }}}
 # code-block {{{
 
+# --- code-block-delimiter-opening {{{
+
 token code-block-delimiter-opening-backticks
 {
     '```'
@@ -428,10 +430,16 @@ token code-block-delimiter-opening-dashes
     '-' '-'+
 }
 
+# --- end code-block-delimiter-opening }}}
+# --- code-block-language {{{
+
 token code-block-language
 {
     \w+
 }
+
+# --- end code-block-language }}}
+# --- code-block-content {{{
 
 token code-block-content-backticks
 {
@@ -443,6 +451,9 @@ token code-block-content-dashes
     <-code-block-delimiter-closing-dashes>*
 }
 
+# --- end code-block-content }}}
+# --- code-block-delimiter-closing {{{
+
 token code-block-delimiter-closing-backticks
 {
     ^^ \h* <code-block-delimiter-opening-backticks> $$
@@ -452,6 +463,8 @@ token code-block-delimiter-closing-dashes
 {
     ^^ \h* <code-block-delimiter-opening-dashes> $$
 }
+
+# --- end code-block-delimiter-closing }}}
 
 proto token code-block {*}
 
@@ -486,6 +499,8 @@ token code-block:dashes
 # end code-block }}}
 # sectional-block {{{
 
+# --- sectional-block-delimiter-opening {{{
+
 token sectional-block-delimiter-opening-backticks
 {
     <.code-block-delimiter-opening-backticks>
@@ -495,6 +510,9 @@ token sectional-block-delimiter-opening-dashes
 {
     <.code-block-delimiter-opening-dashes>
 }
+
+# --- end sectional-block-delimiter-opening }}}
+# --- sectional-block-name {{{
 
 token sectional-block-name-identifier-char
 {
@@ -557,15 +575,63 @@ token sectional-block-name
     [ \h <sectional-block-name-operator> ]?
 }
 
+# --- end sectional-block-name }}}
+# --- sectional-block-content {{{
+
+# --- --- sectional-block-content-line {{{
+
+proto token sectional-block-content-line-backticks {*}
+
+token sectional-block-content-line-backticks:sectional-inline
+{
+    <sectional-inline>
+}
+
+token sectional-block-content-line-backticks:text
+{
+    ^^
+    <!before
+        | <sectional-inline>
+        | <sectional-block-delimiter-closing-backticks>
+    >
+    \N*
+    $$
+}
+
+proto token sectional-block-content-line-dashes {*}
+
+token sectional-block-content-line-dashes:sectional-inline
+{
+    <sectional-inline>
+}
+
+token sectional-block-content-line-dashes:text
+{
+    ^^
+    <!before
+        | <sectional-inline>
+        | <sectional-block-delimiter-closing-dashes>
+    >
+    \N*
+    $$
+}
+
+# --- --- end sectional-block-content-line }}}
+
 token sectional-block-content-backticks
 {
-    <-sectional-block-delimiter-closing-backticks>*
+    <sectional-block-content-line-backticks>
+    [ \n <sectional-block-content-line-backticks> ]*
 }
 
 token sectional-block-content-dashes
 {
-    <-sectional-block-delimiter-closing-dashes>*
+    <sectional-block-content-line-dashes>
+    [ \n <sectional-block-content-line-dashes> ]*
 }
+
+# --- end sectional-block-content }}}
+# --- sectional-block-delimiter-closing {{{
 
 token sectional-block-delimiter-closing-backticks
 {
@@ -576,6 +642,8 @@ token sectional-block-delimiter-closing-dashes
 {
     <.code-block-delimiter-closing-dashes>
 }
+
+# --- end sectional-block-delimiter-closing }}}
 
 proto token sectional-block {*}
 
@@ -589,7 +657,7 @@ token sectional-block:backticks
     $$
     \n
 
-    <sectional-block-content-backticks>
+    [ <sectional-block-content-backticks> \n ]?
 
     <sectional-block-delimiter-closing-backticks>
 }
@@ -604,7 +672,7 @@ token sectional-block:dashes
     $$
     \n
 
-    <sectional-block-content-dashes>
+    [ <sectional-block-content-dashes> \n ]?
 
     <sectional-block-delimiter-closing-dashes>
 }

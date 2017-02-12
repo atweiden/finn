@@ -13,13 +13,12 @@
         "source"     : "https://github.com/atweiden/finn"
     },
     "provides" : {
-        "Finn"                                         : "lib/Finn.pm",
-        "Finn::Parser"                                 : "lib/Finn/Parser.pm",
-        "Finn::Parser::Actions"                        : "lib/Finn/Parser/Actions.pm",
-        "Finn::Parser::Grammar"                        : "lib/Finn/Parser/Grammar.pm",
-        "Finn::Parser::Grammar::SectionalBlockContent" : "lib/Finn/Parser/Grammar/SectionalBlockContent.pm",
-        "Finn::Parser::ParseTree"                      : "lib/Finn/Parser/ParseTree.pm",
-        "Finn::Tangler"                                : "lib/Finn/Tangler.pm",
-        "X::Finn"                                      : "lib/X/Finn.pm"
+        "Finn"                    : "lib/Finn.pm",
+        "Finn::Parser"            : "lib/Finn/Parser.pm",
+        "Finn::Parser::Actions"   : "lib/Finn/Parser/Actions.pm",
+        "Finn::Parser::Grammar"   : "lib/Finn/Parser/Grammar.pm",
+        "Finn::Parser::ParseTree" : "lib/Finn/Parser/ParseTree.pm",
+        "Finn::Tangler"           : "lib/Finn/Tangler.pm",
+        "X::Finn"                 : "lib/X/Finn.pm"
     }
 }
