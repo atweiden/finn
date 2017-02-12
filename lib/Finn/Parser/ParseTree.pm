@@ -384,7 +384,7 @@ role SectionalBlock
 {
     has SectionalBlockDelimiter:D $.delimiter is required;
     has SectionalBlockName:D $.name is required;
-    has SectionalBlockContent:D @.content is required;
+    has SectionalBlockContent:D @.content;
 }
 
 # end role SectionalBlock }}}

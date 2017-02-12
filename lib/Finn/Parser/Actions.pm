@@ -384,7 +384,9 @@ method sectional-block-content-dashes($/)
 
 # --- end sectional-block-content }}}
 
-method sectional-block:backticks ($/)
+multi method sectional-block:backticks (
+    $/ where $<sectional-block-content-backticks>.so
+)
 {
     my SectionalBlockContent:D @content =
         $<sectional-block-content-backticks>.made;
@@ -393,13 +395,27 @@ method sectional-block:backticks ($/)
     make SectionalBlock.new(:@content, :$delimiter, :$name);
 }
 
-method sectional-block:dashes ($/)
+multi method sectional-block:backticks ($/)
+{
+    my SectionalBlockDelimiter['Backticks'] $delimiter .= new;
+    my SectionalBlockName:D $name = $<sectional-block-name>.made;
+    make SectionalBlock.new(:$delimiter, :$name);
+}
+
+multi method sectional-block:dashes ($/ where $<sectional-block-content-dashes>.so)
 {
     my SectionalBlockContent:D @content =
         $<sectional-block-content-dashes>.made;
     my SectionalBlockDelimiter['Dashes'] $delimiter .= new;
     my SectionalBlockName:D $name = $<sectional-block-name>.made;
     make SectionalBlock.new(:@content, :$delimiter, :$name);
+}
+
+multi method sectional-block:dashes ($/)
+{
+    my SectionalBlockDelimiter['Dashes'] $delimiter .= new;
+    my SectionalBlockName:D $name = $<sectional-block-name>.made;
+    make SectionalBlock.new(:$delimiter, :$name);
 }
 
 # end sectional-block }}}
