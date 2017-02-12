@@ -88,7 +88,7 @@ role CodeBlock
 
 role Comment
 {
-    has Str:D $.text is required;
+    has Str $.text;
 }
 
 # end role Comment }}}

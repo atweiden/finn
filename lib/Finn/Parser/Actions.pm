@@ -884,10 +884,15 @@ method comment-text($/)
     make ~$/;
 }
 
-method comment($/)
+multi method comment($/ where $<comment-text>.made.so)
 {
     my Str:D $text = $<comment-text>.made;
     make Comment.new(:$text);
+}
+
+multi method comment($/)
+{
+    make Comment.new;
 }
 
 method comment-block($/)
