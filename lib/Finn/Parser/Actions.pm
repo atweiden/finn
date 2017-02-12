@@ -174,7 +174,7 @@ multi method TOP($/)
 # end TOP }}}
 
 =begin pod
-=head Block Text
+=head Block Elements
 =end pod
 
 # sectional-inline-block {{{
@@ -847,7 +847,7 @@ method blank-line($/)
 # end blank-line }}}
 
 =begin pod
-=head Inline Text
+=head Inline Elements
 =end pod
 
 # string {{{

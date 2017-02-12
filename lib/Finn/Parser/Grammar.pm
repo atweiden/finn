@@ -17,17 +17,15 @@ my Match:D $match = Finn::Parser::Grammar.parse('text');
 
 =head DESCRIPTION
 
-Parses Finn file format.
+Finn source document parser.
 
-Parses block text first, then re-parses block text for inline text.
+=head2 Inline Vs. Block Elements
 
-=head2 Inline Vs. Block Text
+=head3 Inline Elements
 
-=head3 Inline Text
-
-In general, I<inline text> types cannot be mixed and matched. If
-something is bold it cannot be italic. If something is a date, it can't
-be underlined.
+In general, I<inline elements> cannot be mixed and matched. If something
+is bold it cannot be italic. If something is a date, it can't be
+underlined.
 
 =over
 =item bold
@@ -47,9 +45,9 @@ be underlined.
 =item sectional-link
 =back
 
-=head3 Block Text
+=head3 Block Elements
 
-In general, I<block text> may contain certain I<inline text> types.
+In general, I<block elements> may contain certain I<inline elements>.
 
 =over
 =item sectional-inline-block
@@ -105,7 +103,7 @@ token TOP
 # end TOP }}}
 
 =begin pod
-=head Block Text
+=head Block Elements
 =end pod
 
 # blank-line {{{
@@ -781,7 +779,6 @@ token paragraph
 }
 
 # end paragraph }}}
-
 # horizontal-rule {{{
 
 token horizontal-rule-soft-symbol
@@ -811,7 +808,7 @@ token horizontal-rule:hard  { <horizontal-rule-hard> }
 # end horizontal-rule }}}
 
 =begin pod
-=head Inline Text
+=head Inline Elements
 =end pod
 
 # bold {{{
