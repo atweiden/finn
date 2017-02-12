@@ -66,7 +66,7 @@ has UInt:D $.section = 0;
 
 method chunk:sectional-inline-block ($/)
 {
-    my Bounds:D $bounds = gen-bounds();
+    my Chunk::Meta::Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
     my SectionalInlineBlock:D $sectional-inline-block =
         $<sectional-inline-block>.made;
@@ -79,7 +79,7 @@ method chunk:sectional-inline-block ($/)
 
 method chunk:sectional-block ($/)
 {
-    my Bounds:D $bounds = gen-bounds();
+    my Chunk::Meta::Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
     my SectionalBlock:D $sectional-block = $<sectional-block>.made;
     make Chunk['SectionalBlock'].new(:$bounds, :$section, :$sectional-block);
@@ -87,7 +87,7 @@ method chunk:sectional-block ($/)
 
 method chunk:code-block ($/)
 {
-    my Bounds:D $bounds = gen-bounds();
+    my Chunk::Meta::Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
     my CodeBlock:D $code-block = $<code-block>.made;
     make Chunk['CodeBlock'].new(:$bounds, :$section, :$code-block);
@@ -95,7 +95,7 @@ method chunk:code-block ($/)
 
 method chunk:reference-block ($/)
 {
-    my Bounds:D $bounds = gen-bounds();
+    my Chunk::Meta::Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
     my ReferenceBlock:D $reference-block = $<reference-block>.made;
     make Chunk['ReferenceBlock'].new(:$bounds, :$section, :$reference-block);
@@ -103,7 +103,7 @@ method chunk:reference-block ($/)
 
 method chunk:header-block ($/)
 {
-    my Bounds:D $bounds = gen-bounds();
+    my Chunk::Meta::Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
     my HeaderBlock:D $header-block = $<header-block>.made;
     make Chunk['HeaderBlock'].new(:$bounds, :$section, :$header-block);
@@ -111,7 +111,7 @@ method chunk:header-block ($/)
 
 method chunk:list-block ($/)
 {
-    my Bounds:D $bounds = gen-bounds();
+    my Chunk::Meta::Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
     my ListBlock:D $list-block = $<list-block>.made;
     make Chunk['ListBlock'].new(:$bounds, :$section, :$list-block);
@@ -119,7 +119,7 @@ method chunk:list-block ($/)
 
 method chunk:paragraph ($/)
 {
-    my Bounds:D $bounds = gen-bounds();
+    my Chunk::Meta::Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
     my Paragraph:D $paragraph = $<paragraph>.made;
     make Chunk['Paragraph'].new(:$bounds, :$section, :$paragraph);
@@ -127,7 +127,7 @@ method chunk:paragraph ($/)
 
 method chunk:horizontal-rule ($/)
 {
-    my Bounds:D $bounds = gen-bounds();
+    my Chunk::Meta::Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
     my HorizontalRule:D $horizontal-rule = $<horizontal-rule>.made;
     make Chunk['HorizontalRule'].new(:$bounds, :$section, :$horizontal-rule);
@@ -135,7 +135,7 @@ method chunk:horizontal-rule ($/)
 
 method chunk:comment-block ($/)
 {
-    my Bounds:D $bounds = gen-bounds();
+    my Chunk::Meta::Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
     my CommentBlock:D $comment-block = $<comment-block>.made;
     make Chunk['CommentBlock'].new(:$bounds, :$section, :$comment-block);
@@ -143,7 +143,7 @@ method chunk:comment-block ($/)
 
 method chunk:blank-line ($/)
 {
-    my Bounds:D $bounds = gen-bounds();
+    my Chunk::Meta::Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
     my BlankLine:D $blank-line = $<blank-line>.made;
     make Chunk['BlankLine'].new(:$bounds, :$section, :$blank-line);
@@ -1261,12 +1261,15 @@ method reference-inline($/)
 
 # sub gen-bounds {{{
 
-sub gen-bounds() returns Bounds:D
+sub gen-bounds() returns Chunk::Meta::Bounds:D
 {
     # XXX fix dummy data
-    my Bounds::Begins:D $begins = Bounds::Begins.new(:line(0), :column(0));
-    my Bounds::Ends:D $ends = Bounds::Ends.new(:line(0), :column(0));
-    my Bounds:D $bounds = Bounds.new(:$begins, :$ends);
+    my Chunk::Meta::Bounds::Begins:D $begins =
+        Chunk::Meta::Bounds::Begins.new(:line(0), :column(0));
+    my Chunk::Meta::Bounds::Ends:D $ends =
+        Chunk::Meta::Bounds::Ends.new(:line(0), :column(0));
+    my Chunk::Meta::Bounds:D $bounds =
+        Chunk::Meta::Bounds.new(:$begins, :$ends);
 }
 
 # end sub gen-bounds }}}

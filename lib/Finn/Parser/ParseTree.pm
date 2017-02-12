@@ -28,32 +28,6 @@ parameterized, for building a parse tree from Finn source files.
 # end p6doc }}}
 
 =begin pod
-=head Bounds
-=end pod
-
-# class Bounds {{{
-
-# --- role Boundary {{{
-
-role Boundary
-{
-    has UInt:D $.line is required;
-    has UInt:D $.column is required;
-}
-
-# --- end role Boundary }}}
-
-class Bounds::Begins does Boundary {*}
-class Bounds::Ends does Boundary {*}
-class Bounds
-{
-    has Bounds::Begins:D $.begins is required;
-    has Bounds::Ends:D $.ends is required;
-}
-
-# end class Bounds }}}
-
-=begin pod
 =head Elements
 =end pod
 
@@ -569,14 +543,34 @@ role Chunk['BlankLine'] does Chunk::Meta
 
 # --- end role Chunk['BlankLine'] }}}
 
+class Chunk::Meta::Bounds {...}
+
 role Chunk::Meta
 {
     # file:line:column
-    has Bounds:D $.bounds is required;
+    has Chunk::Meta::Bounds:D $.bounds is required;
 
     # is a part of this section number
     has UInt:D $.section is required;
 }
+
+# --- class Chunk::Meta::Bounds {{{
+
+role Chunk::Meta::Bounds::Boundary
+{
+    has UInt:D $.line is required;
+    has UInt:D $.column is required;
+}
+
+class Chunk::Meta::Bounds::Begins does Chunk::Meta::Bounds::Boundary {*}
+class Chunk::Meta::Bounds::Ends does Chunk::Meta::Bounds::Boundary {*}
+class Chunk::Meta::Bounds
+{
+    has Chunk::Meta::Bounds::Begins:D $.begins is required;
+    has Chunk::Meta::Bounds::Ends:D $.ends is required;
+}
+
+# --- end class Chunk::Meta::Bounds }}}
 
 # end role Chunk }}}
 
