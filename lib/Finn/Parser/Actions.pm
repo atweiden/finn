@@ -443,22 +443,67 @@ method code-block-content-dashes($/)
 
 # --- end code-block-content }}}
 
-method code-block:backticks ($/)
+multi method code-block:backticks (
+    $/ where
+        $<code-block-language>.so && $<code-block-content-backticks>.made.so
+)
 {
     my CodeBlockDelimiter['Backticks'] $delimiter .= new;
-    my Str:D $language =
-        ?$<code-block-language> ?? $<code-block-language>.made !! '';
+    my Str:D $language = $<code-block-language>.made;
     my Str:D $text = $<code-block-content-backticks>.made;
     make CodeBlock.new(:$delimiter, :$language, :$text);
 }
 
-method code-block:dashes ($/)
+multi method code-block:backticks ($/ where $<code-block-language>.so)
+{
+    my CodeBlockDelimiter['Backticks'] $delimiter .= new;
+    my Str:D $language = $<code-block-language>.made;
+    make CodeBlock.new(:$delimiter, :$language);
+}
+
+multi method code-block:backticks (
+    $/ where $<code-block-content-backticks>.made.so
+)
+{
+    my CodeBlockDelimiter['Backticks'] $delimiter .= new;
+    my Str:D $text = $<code-block-content-backticks>.made;
+    make CodeBlock.new(:$delimiter, :$text);
+}
+
+multi method code-block:backticks ($/)
+{
+    my CodeBlockDelimiter['Backticks'] $delimiter .= new;
+    make CodeBlock.new(:$delimiter);
+}
+
+multi method code-block:dashes (
+    $/ where $<code-block-language>.so && $<code-block-content-dashes>.made.so
+)
 {
     my CodeBlockDelimiter['Dashes'] $delimiter .= new;
-    my Str:D $language =
-        ?$<code-block-language> ?? $<code-block-language>.made !! '';
+    my Str:D $language = $<code-block-language>.made;
     my Str:D $text = $<code-block-content-dashes>.made;
     make CodeBlock.new(:$delimiter, :$language, :$text);
+}
+
+multi method code-block:dashes ($/ where $<code-block-language>.so)
+{
+    my CodeBlockDelimiter['Dashes'] $delimiter .= new;
+    my Str:D $language = $<code-block-language>.made;
+    make CodeBlock.new(:$delimiter, :$language);
+}
+
+multi method code-block:dashes ($/ where $<code-block-content-dashes>.made.so)
+{
+    my CodeBlockDelimiter['Dashes'] $delimiter .= new;
+    my Str:D $text = $<code-block-content-dashes>.made;
+    make CodeBlock.new(:$delimiter, :$text);
+}
+
+multi method code-block:dashes ($/)
+{
+    my CodeBlockDelimiter['Dashes'] $delimiter .= new;
+    make CodeBlock.new(:$delimiter);
 }
 
 # end code-block }}}

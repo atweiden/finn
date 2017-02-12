@@ -79,8 +79,8 @@ role CodeBlockDelimiter['Dashes'] {*}
 role CodeBlock
 {
     has CodeBlockDelimiter:D $.delimiter is required;
-    has Str:D $.language is required;
-    has Str:D $.text is required;
+    has Str $.language;
+    has Str $.text;
 }
 
 # end role CodeBlock }}}
