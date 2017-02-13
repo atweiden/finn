@@ -694,7 +694,9 @@ token sectional-inline-text:name-and-file
 
 token sectional-inline-text:name-and-reference
 {
-    <sectional-inline-name=string> \h <sectional-inline-reference=reference-inline>
+    <sectional-inline-name=string>
+    \h
+    <sectional-inline-reference=reference-inline>
 }
 
 token sectional-inline-text:file-only

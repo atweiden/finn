@@ -24,20 +24,21 @@ my Finn::Parser::ParseTree $parse-tree =
 =head DESCRIPTION
 
 Works in tandem with C<Finn::Parser::Grammar> and
-C<Finn::Parser::ParseTree> to build a parse tree from Finn source files.
+C<Finn::Parser::ParseTree> to build a parse tree from Finn source
+documents.
 
 Follows C<sectional-inline>s and C<sectional-link>s which link to external
-files that are assumed to be Finn source files. Parses external source
-files in turn. Initial concept code doesn't do any optimization, and
-may parse the same external source file many times.
+files that are assumed to be Finn source documents. Parses external source
+documents in turn. Initial concept code doesn't do any optimization,
+and may parse the same external source document many times.
 
 Since C<sectional-inline>s may contain C<reference-inline>s
-linking to external files in place of file paths, and since the
-C<reference-block>(s) containing external file mappings for these
-C<reference-inline>s encountered may appear anywhere in a Finn source
-document, C<sectional-inline>s can't be blindly followed when first
-seen. The entire Finn source document has to finish parsing before
-C<sectional-inline>s can be followed.
+linking to external documents in place of file paths, and since the
+C<reference-block>(s) containing external document file path mappings
+for these C<reference-inline>s encountered may appear anywhere in a
+Finn source document, C<sectional-inline>s can't be blindly followed
+when first seen. The entire Finn source document has to finish parsing
+before C<sectional-inline>s can be followed.
 =end pod
 
 # end p6doc }}}
@@ -402,7 +403,9 @@ multi method sectional-block:backticks ($/)
     make SectionalBlock.new(:$delimiter, :$name);
 }
 
-multi method sectional-block:dashes ($/ where $<sectional-block-content-dashes>.so)
+multi method sectional-block:dashes (
+    $/ where $<sectional-block-content-dashes>.so
+)
 {
     my SectionalBlockContent:D @content =
         $<sectional-block-content-dashes>.made;
@@ -444,8 +447,8 @@ method code-block-content-dashes($/)
 # --- end code-block-content }}}
 
 multi method code-block:backticks (
-    $/ where
-        $<code-block-language>.so && $<code-block-content-backticks>.made.so
+    $/ where $<code-block-language>.so
+        && $<code-block-content-backticks>.made.so
 )
 {
     my CodeBlockDelimiter['Backticks'] $delimiter .= new;
@@ -524,7 +527,8 @@ method reference-block-reference-line($/)
 method reference-block($/)
 {
     my HorizontalRule['Hard'] $horizontal-rule = $<horizontal-rule-hard>.made;
-    my ReferenceLine:D @reference-line = @<reference-block-reference-line>».made;
+    my ReferenceLine:D @reference-line =
+        @<reference-block-reference-line>».made;
     make ReferenceBlock.new(:$horizontal-rule, :@reference-line);
 }
 
@@ -702,8 +706,15 @@ method checkbox-etc($/)
 # --- --- --- end checkbox-etc }}}
 # --- --- --- checkbox-exception {{{
 
-method checkbox-exception-char:sym<*>($/) { make CheckboxExceptionChar['*'].new }
-method checkbox-exception-char:sym<!>($/) { make CheckboxExceptionChar['!'].new }
+method checkbox-exception-char:sym<*>($/)
+{
+    make CheckboxExceptionChar['*'].new;
+}
+
+method checkbox-exception-char:sym<!>($/)
+{
+    make CheckboxExceptionChar['!'].new;
+}
 
 method checkbox-exception($/)
 {

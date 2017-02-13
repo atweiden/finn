@@ -22,7 +22,7 @@ my Finn::Parser::ParseTree $parse-tree =
 =head DESCRIPTION
 
 Finn::Parser::ParseTree contains punned roles, many of which are
-parameterized, for building a parse tree from Finn source files.
+parameterized, for building a parse tree from Finn source documents.
 =end pod
 
 # end p6doc }}}
