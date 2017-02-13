@@ -310,32 +310,55 @@ method sectional-block-name-identifier:word ($/)
 
 method sectional-block-name-operator:additive ($/)
 {
-    make SectionalBlockName::Operator::Additive.new;
+    make SectionalBlockName::Operator['Additive'].new;
 }
 
 method sectional-block-name-operator:redefine ($/)
 {
-    make SectionalBlockName::Operator::Redefine.new;
+    make SectionalBlockName::Operator['Redefine'].new;
 }
 
 # --- --- end sectional-block-name-operator }}}
 
-method sectional-block-name($/)
+multi method sectional-block-name(
+    $/ where $<sectional-block-name-identifier-export>.so
+        && $<sectional-block-name-operator>.so
+)
 {
     my SectionalBlockName::Identifier:D $identifier =
         $<sectional-block-name-identifier>.made;
     my SectionalBlockName::Identifier::Export:D $export =
-        $<sectional-block-name-identifier-export>.made
-            if ?$<sectional-block-name-identifier-export>;
+        $<sectional-block-name-identifier-export>.made;
     my SectionalBlockName::Operator:D $operator =
-        $<sectional-block-name-operator>.made
-            if ?$<sectional-block-name-operator>;
+        $<sectional-block-name-operator>.made;
+    make SectionalBlockName.new(:$identifier, :$export, :$operator);
+}
 
-    my %h;
-    %h<export> = $export if $export;
-    %h<operator> = $operator if $operator;
+multi method sectional-block-name(
+    $/ where $<sectional-block-name-identifier-export>.so
+)
+{
+    my SectionalBlockName::Identifier:D $identifier =
+        $<sectional-block-name-identifier>.made;
+    my SectionalBlockName::Identifier::Export:D $export =
+        $<sectional-block-name-identifier-export>.made;
+    make SectionalBlockName.new(:$identifier, :$export);
+}
 
-    make SectionalBlockName.new(:$identifier, |%h);
+multi method sectional-block-name($/ where $<sectional-block-name-operator>.so)
+{
+    my SectionalBlockName::Identifier:D $identifier =
+        $<sectional-block-name-identifier>.made;
+    my SectionalBlockName::Operator:D $operator =
+        $<sectional-block-name-operator>.made;
+    make SectionalBlockName.new(:$identifier, :$operator);
+}
+
+multi method sectional-block-name($/)
+{
+    my SectionalBlockName::Identifier:D $identifier =
+        $<sectional-block-name-identifier>.made;
+    make SectionalBlockName.new(:$identifier);
 }
 
 # --- end sectional-block-name }}}
