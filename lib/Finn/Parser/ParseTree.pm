@@ -89,9 +89,9 @@ role File::Protocol
     has Str:D $.protocol is required;
 }
 
-role File['Absolute']             does File::Path {*}
+role File['Absolute']             does File::Path                     {*}
 role File['Absolute', 'Protocol'] does File::Path does File::Protocol {*}
-role File['Relative']             does File::Path {*}
+role File['Relative']             does File::Path                     {*}
 role File['Relative', 'Protocol'] does File::Path does File::Protocol {*}
 
 # end role File }}}

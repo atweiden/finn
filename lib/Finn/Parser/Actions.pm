@@ -1184,19 +1184,55 @@ method file-protocol($/)
 # --- end file-protocol }}}
 # --- file-absolute {{{
 
+# --- --- file-path-absolute {{{
+
+method file-path-absolute-home($/)
+{
+    make ~$/;
+}
+
+method file-path-absolute-root($/)
+{
+    make ~$/;
+}
+
 multi method file-path-absolute($/ where @<file-path-absolute>.so)
 {
-    make '/' ~ @<file-path-char>».made.join ~ @<file-path-absolute>».made.join;
+    make
+        ~ $<file-path-absolute-root>.made
+        ~ @<file-path-char>».made.join
+        ~ @<file-path-absolute>».made.join;
 }
 
 multi method file-path-absolute($/)
 {
-    make '/' ~ @<file-path-char>».made.join;
+    make $<file-path-absolute-root>.made ~ @<file-path-char>».made.join;
 }
 
-multi method file-absolute($/)
+# --- --- end file-path-absolute }}}
+
+multi method file-absolute:deep ($/ where $<file-path-absolute-home>.so)
+{
+    my Str:D $file-absolute =
+        $<file-path-absolute-home>.made ~ $<file-path-absolute>.made;
+    make %(:$file-absolute);
+}
+
+multi method file-absolute:deep ($/)
 {
     my Str:D $file-absolute = $<file-path-absolute>.made;
+    make %(:$file-absolute);
+}
+
+method file-absolute:home ($/)
+{
+    my Str:D $file-absolute = $<file-path-absolute-home>.made;
+    make %(:$file-absolute);
+}
+
+method file-absolute:root ($/)
+{
+    my Str:D $file-absolute = $<file-path-absolute-root>.made;
     make %(:$file-absolute);
 }
 

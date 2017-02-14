@@ -1278,17 +1278,25 @@ token file-protocol
 # --- end file-protocol }}}
 # --- file-absolute {{{
 
-token file-path-absolute
+token file-path-absolute-home
 {
-    '/' <file-path-char>+ <file-path-absolute>*
+    '~'
 }
 
-token file-absolute
+token file-path-absolute-root
 {
-    | '~'? <file-path-absolute>
-    | '~'
-    | '/'
+    '/'
 }
+
+token file-path-absolute
+{
+    <file-path-absolute-root> <file-path-char>+ <file-path-absolute>*
+}
+
+proto token file-absolute {*}
+token file-absolute:deep  { <file-path-absolute-home>? <file-path-absolute> }
+token file-absolute:home  { <file-path-absolute-home> }
+token file-absolute:root  { <file-path-absolute-root> }
 
 # --- end file-absolute }}}
 # --- file-absolute-protocol {{{
