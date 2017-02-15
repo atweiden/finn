@@ -7,6 +7,490 @@ use Test;
 
 plan 3;
 
+# sub is-true {{{
+
+sub is-true(Bool:D $a, Bool:D $b) returns Bool:D
+{
+    my Bool:D $is-true = $a && $b;
+}
+
+# sub end is-true }}}
+# sub cmp-ok-list-block {{{
+
+# --- ListItem['Ordered'] {{{
+
+# --- --- ListItem::Number {{{
+
+# --- --- --- ListItem::Number::Terminator {{{
+
+multi sub infix:<cmp>(
+    ListItem::Number::Terminator['.'] $a,
+    ListItem::Number::Terminator['.'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ ListItem::Number::Terminator['.']
+            && $b ~~ ListItem::Number::Terminator['.'];
+}
+
+multi sub infix:<cmp>(
+    ListItem::Number::Terminator[':'] $a,
+    ListItem::Number::Terminator[':'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ ListItem::Number::Terminator[':']
+            && $b ~~ ListItem::Number::Terminator[':'];
+}
+
+multi sub infix:<cmp>(
+    ListItem::Number::Terminator[')'] $a,
+    ListItem::Number::Terminator[')'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ ListItem::Number::Terminator[')']
+            && $b ~~ ListItem::Number::Terminator[')'];
+}
+
+multi sub infix:<cmp>(
+    ListItem::Number::Terminator $,
+    ListItem::Number::Terminator $
+) returns Bool:D
+{
+    False;
+}
+
+# --- --- --- end ListItem::Number::Terminator }}}
+
+multi sub infix:<cmp>(
+    ListItem::Number:D $a,
+    ListItem::Number:D $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.terminator cmp $b.terminator
+            && $a.value == $b.value;
+}
+
+# --- --- end ListItem::Number }}}
+
+multi sub infix:<cmp>(
+    ListItem['Ordered'] $a,
+    ListItem['Ordered'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.number cmp $b.number
+            && $a.text eqv $b.text;
+}
+
+# --- end ListItem['Ordered'] }}}
+# --- ListItem['Todo'] {{{
+
+# --- --- Checkbox['Checked'] {{{
+
+# --- --- --- CheckboxCheckedChar {{{
+
+multi sub infix:<cmp>(
+    CheckboxCheckedChar['x'] $a,
+    CheckboxCheckedChar['x'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ CheckboxCheckedChar['x']
+            && $b ~~ CheckboxCheckedChar['x'];
+}
+
+multi sub infix:<cmp>(
+    CheckboxCheckedChar['o'] $a,
+    CheckboxCheckedChar['o'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ CheckboxCheckedChar['o']
+            && $b ~~ CheckboxCheckedChar['o'];
+}
+
+multi sub infix:<cmp>(
+    CheckboxCheckedChar['v'] $a,
+    CheckboxCheckedChar['v'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ CheckboxCheckedChar['v']
+            && $b ~~ CheckboxCheckedChar['v'];
+}
+
+multi sub infix:<cmp>(
+    CheckboxCheckedChar $,
+    CheckboxCheckedChar $
+) returns Bool:D
+{
+    False;
+}
+
+# --- --- --- end CheckboxCheckedChar }}}
+
+multi sub infix:<cmp>(
+    Checkbox['Checked'] $a,
+    Checkbox['Checked'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same = $a.char cmp $b.char;
+}
+
+# --- --- end Checkbox['Checked'] }}}
+# --- --- Checkbox['Etc'] {{{
+
+# --- --- --- CheckboxEtcChar {{{
+
+multi sub infix:<cmp>(
+    CheckboxEtcChar['+'] $a,
+    CheckboxEtcChar['+'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ CheckboxEtcChar['+']
+            && $b ~~ CheckboxEtcChar['+'];
+}
+
+multi sub infix:<cmp>(
+    CheckboxEtcChar['='] $a,
+    CheckboxEtcChar['='] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ CheckboxEtcChar['=']
+            && $b ~~ CheckboxEtcChar['='];
+}
+
+multi sub infix:<cmp>(
+    CheckboxEtcChar['-'] $a,
+    CheckboxEtcChar['-'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ CheckboxEtcChar['-']
+            && $b ~~ CheckboxEtcChar['-'];
+}
+
+multi sub infix:<cmp>(
+    CheckboxEtcChar $,
+    CheckboxEtcChar $
+) returns Bool:D
+{
+    False;
+}
+
+# --- --- --- end CheckboxEtcChar }}}
+
+multi sub infix:<cmp>(
+    Checkbox['Etc'] $a,
+    Checkbox['Etc'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same = $a.char cmp $b.char;
+}
+
+# --- --- end Checkbox['Etc'] }}}
+# --- --- Checkbox['Exception'] {{{
+
+# --- --- --- CheckboxExceptionChar {{{
+
+multi sub infix:<cmp>(
+    CheckboxExceptionChar['*'] $a,
+    CheckboxExceptionChar['*'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ CheckboxExceptionChar['*']
+            && $b ~~ CheckboxExceptionChar['*'];
+}
+
+multi sub infix:<cmp>(
+    CheckboxExceptionChar['!'] $a,
+    CheckboxExceptionChar['!'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ CheckboxExceptionChar['!']
+            && $b ~~ CheckboxExceptionChar['!'];
+}
+
+multi sub infix:<cmp>(
+    CheckboxExceptionChar $,
+    CheckboxExceptionChar $
+) returns Bool:D
+{
+    False;
+}
+
+# --- --- --- end CheckboxExceptionChar }}}
+
+multi sub infix:<cmp>(
+    Checkbox['Exception'] $a,
+    Checkbox['Exception'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same = $a.char cmp $b.char;
+}
+
+# --- --- end Checkbox['Exception'] }}}
+# --- --- Checkbox['Unchecked'] {{{
+
+multi sub infix:<cmp>(
+    Checkbox['Unchecked'] $a where *.so,
+    Checkbox['Unchecked'] $b where *.so
+) returns Bool:D
+{
+    True;
+}
+
+# --- --- end Checkbox['Unchecked'] }}}
+
+multi sub infix:<cmp>(Checkbox $, Checkbox $) returns Bool:D
+{
+    False;
+}
+
+multi sub infix:<cmp>(ListItem['Todo'] $a, ListItem['Todo'] $b) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.checkbox cmp $b.checkbox
+            && $a.text eqv $b.text;
+}
+
+# --- end ListItem['Todo'] }}}
+# --- ListItem['Unordered'] {{{
+
+# --- --- BulletPoint {{{
+
+multi sub infix:<cmp>(
+    BulletPoint['-'] $a,
+    BulletPoint['-'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['-']
+            && $b ~~ BulletPoint['-'];
+}
+
+multi sub infix:<cmp>(
+    BulletPoint['@'] $a,
+    BulletPoint['@'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['@']
+            && $b ~~ BulletPoint['@'];
+}
+
+multi sub infix:<cmp>(
+    BulletPoint['#'] $a,
+    BulletPoint['#'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['#']
+            && $b ~~ BulletPoint['#'];
+}
+
+multi sub infix:<cmp>(
+    BulletPoint['$'] $a,
+    BulletPoint['$'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['$']
+            && $b ~~ BulletPoint['$'];
+}
+
+multi sub infix:<cmp>(
+    BulletPoint['*'] $a,
+    BulletPoint['*'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['*']
+            && $b ~~ BulletPoint['*'];
+}
+
+multi sub infix:<cmp>(
+    BulletPoint[':'] $a,
+    BulletPoint[':'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint[':']
+            && $b ~~ BulletPoint[':'];
+}
+
+multi sub infix:<cmp>(
+    BulletPoint['x'] $a,
+    BulletPoint['x'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['x']
+            && $b ~~ BulletPoint['x'];
+}
+
+multi sub infix:<cmp>(
+    BulletPoint['o'] $a,
+    BulletPoint['o'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['o']
+            && $b ~~ BulletPoint['o'];
+}
+
+multi sub infix:<cmp>(
+    BulletPoint['+'] $a,
+    BulletPoint['+'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['+']
+            && $b ~~ BulletPoint['+'];
+}
+
+multi sub infix:<cmp>(
+    BulletPoint['='] $a,
+    BulletPoint['='] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['=']
+            && $b ~~ BulletPoint['='];
+}
+
+multi sub infix:<cmp>(
+    BulletPoint['!'] $a,
+    BulletPoint['!'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['!']
+            && $b ~~ BulletPoint['!'];
+}
+
+multi sub infix:<cmp>(
+    BulletPoint['~'] $a,
+    BulletPoint['~'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['~']
+            && $b ~~ BulletPoint['~'];
+}
+
+multi sub infix:<cmp>(
+    BulletPoint['>'] $a,
+    BulletPoint['>'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['>']
+            && $b ~~ BulletPoint['>'];
+}
+
+multi sub infix:<cmp>(
+    BulletPoint['<-'] $a,
+    BulletPoint['<-'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['<-']
+            && $b ~~ BulletPoint['<-'];
+}
+
+multi sub infix:<cmp>(
+    BulletPoint['<='] $a,
+    BulletPoint['<='] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['<=']
+            && $b ~~ BulletPoint['<='];
+}
+
+multi sub infix:<cmp>(
+    BulletPoint['->'] $a,
+    BulletPoint['->'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['->']
+            && $b ~~ BulletPoint['->'];
+}
+
+multi sub infix:<cmp>(
+    BulletPoint['=>'] $a,
+    BulletPoint['=>'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['=>']
+            && $b ~~ BulletPoint['=>'];
+}
+
+multi sub infix:<cmp>(
+    BulletPoint $,
+    BulletPoint $
+) returns Bool:D
+{
+    False;
+}
+
+# --- --- end BulletPoint }}}
+
+multi sub infix:<cmp>(
+    ListItem['Unordered'] $a,
+    ListItem['Unordered'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.bullet-point cmp $b.bullet-point
+            && $a.text eqv $b.text;
+}
+
+# --- end ListItem['Unordered'] }}}
+
+multi sub infix:<cmp>(ListItem $, ListItem $) returns Bool:D
+{
+    False;
+}
+
+multi sub infix:<cmp>(
+    ListBlock:D $a,
+    ListBlock:D $b where { .list-item.elems == $a.list-item.elems }
+) returns Bool:D
+{
+    my Bool:D @is-same = do loop (
+        my UInt:D $i = 0;
+        $i < $a.list-item.elems;
+        $i++
+    )
+    {
+        $a.list-item[$i] cmp $b.list-item[$i]
+    }
+    my Bool:D $is-same = [[&is-true]] @is-same;
+}
+
+multi sub infix:<cmp>(ListBlock $, ListBlock $) returns Bool:D
+{
+    False;
+}
+
+sub cmp-ok-list-block(ListBlock:D $a, ListBlock:D $b) returns Bool:D
+{
+    $a cmp $b;
+}
+
+# end sub cmp-ok-list-block }}}
+
 subtest
 {
     my Finn::Parser::Actions $actions .= new;
@@ -85,8 +569,9 @@ subtest
         $list-item-d,
         $list-item-e;
 
-    is-deeply
+    cmp-ok
         Finn::Parser::Grammar.parse($list-block, :rule<list-block>, :$actions).made,
+        &cmp-ok-list-block,
         ListBlock.new(:@list-item),
         'ListBlock OK';
 }
@@ -177,8 +662,9 @@ subtest
         $list-item-d,
         $list-item-e;
 
-    is-deeply
+    cmp-ok
         Finn::Parser::Grammar.parse($list-block, :rule<list-block>, :$actions).made,
+        &cmp-ok-list-block,
         ListBlock.new(:@list-item),
         'ListBlock OK';
 }
@@ -345,8 +831,9 @@ subtest
         $list-item-i,
         $list-item-j;
 
-    is-deeply
+    cmp-ok
         Finn::Parser::Grammar.parse($list-block, :rule<list-block>, :$actions).made,
+        &cmp-ok-list-block,
         ListBlock.new(:@list-item),
         'ListBlock OK';
 }
