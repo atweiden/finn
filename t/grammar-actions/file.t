@@ -7,59 +7,44 @@ use Test;
 
 plan 2;
 
-# sub infix:<cmp> {{{
+# sub cmp-ok-file {{{
 
-=begin pod
-=head C<sub infix:<cmp>>
-
-The output of C<got> and C<expected> are I<identical> with
-C<is-deeply>. Tests are failing for reasons I don't understand. That is
-the reason for introducing custom C<sub infix:<cmp>>.
-=end pod
-
-multi sub infix:<cmp>(File['Absolute'] $a, File['Absolute'] $b) returns Order:D
+multi sub cmp-ok-file(File['Absolute'] $a, File['Absolute'] $b) returns Bool:D
 {
-    my Order:D $order-path = $a.path cmp $b.path;
+    my Bool:D $is-same = $a.path eqv $b.path;
 }
 
-multi sub infix:<cmp>(
+multi sub cmp-ok-file(
     File['Absolute', 'Protocol'] $a,
     File['Absolute', 'Protocol'] $b
-) returns Order:D
+) returns Bool:D
 {
-    my Order:D $order-path = $a.path cmp $b.path;
-    my Order:D $order-protocol = $a.protocol cmp $b.protocol;
-    my Order:D $sameness = $order-path eqv Same && $order-protocol eqv Same
-        ?? Same
-        !! Less;
+    my Bool:D $is-same-path = $a.path eqv $b.path;
+    my Bool:D $is-same-protocol = $a.protocol eqv $b.protocol;
+    my Bool:D $is-same = $is-same-path && $is-same-protocol;
 }
 
-multi sub infix:<cmp>(File['Relative'] $a, File['Relative'] $b) returns Order:D
+multi sub cmp-ok-file(File['Relative'] $a, File['Relative'] $b) returns Bool:D
 {
-    my Order:D $order-path = $a.path cmp $b.path;
+    my Bool:D $is-same = $a.path eqv $b.path;
 }
 
-multi sub infix:<cmp>(
+multi sub cmp-ok-file(
     File['Relative', 'Protocol'] $a,
     File['Relative', 'Protocol'] $b
-) returns Order:D
+) returns Bool:D
 {
-    my Order:D $order-path = $a.path cmp $b.path;
-    my Order:D $order-protocol = $a.protocol cmp $b.protocol;
-    my Order:D $sameness = $order-path eqv Same && $order-protocol eqv Same
-        ?? Same
-        !! Less;
+    my Bool:D $is-same-path = $a.path eqv $b.path;
+    my Bool:D $is-same-protocol = $a.protocol eqv $b.protocol;
+    my Bool:D $is-same = $is-same-path && $is-same-protocol;
 }
 
-multi sub infix:<cmp>(
-    File $a,
-    File $b
-) returns Order:D
+multi sub cmp-ok-file(File $, File $) returns Bool:D
 {
-    Less;
+    False;
 }
 
-# end sub infix:<cmp> }}}
+# end sub cmp-ok-file }}}
 
 subtest 'absolute',
 {
@@ -94,9 +79,10 @@ subtest 'absolute',
         File['Absolute', 'Protocol'].new(:path(IO::Path.new('~/a/b/c/d/e/f')), :$protocol);
     loop (my UInt:D $i = 0; $i < @file.elems; $i++)
     {
-        is-deeply
-            Finn::Parser::Grammar.parse(@file[$i], :rule<file>, :$actions).made cmp @file-made[$i],
-            Same,
+        cmp-ok
+            Finn::Parser::Grammar.parse(@file[$i], :rule<file>, :$actions).made,
+            &cmp-ok-file,
+            @file-made[$i],
             'File OK';
     }
 }
@@ -119,9 +105,10 @@ subtest 'relative',
         File['Relative', 'Protocol'].new(:path(IO::Path.new('./a/b/c/d/e/f')), :$protocol);
     loop (my UInt:D $i = 0; $i < @file.elems; $i++)
     {
-        is-deeply
-            Finn::Parser::Grammar.parse(@file[$i], :rule<file>, :$actions).made cmp @file-made[$i],
-            Same,
+        cmp-ok
+            Finn::Parser::Grammar.parse(@file[$i], :rule<file>, :$actions).made,
+            &cmp-ok-file,
+            @file-made[$i],
             'File OK';
     }
 }
