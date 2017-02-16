@@ -41,7 +41,6 @@ subtest
      *
     EOF
     $text ~= ' ';
-
     is-deeply
         Finn::Parser::Grammar.parse($comment, :$rule, :$actions).made,
         Comment.new(:$text),
