@@ -3,210 +3,11 @@ use lib 'lib';
 use Finn::Parser::Actions;
 use Finn::Parser::Grammar;
 use Finn::Parser::ParseTree;
+use lib 't/lib';
+use FinnTest;
 use Test;
 
 plan 4;
-
-# cmp-ok-list-item-unordered {{{
-
-# --- BulletPoint {{{
-
-multi sub infix:<eqv>(
-    BulletPoint['-'] $a,
-    BulletPoint['-'] $b
-) returns Bool:D
-{
-    my Bool:D $is-same =
-        $a ~~ BulletPoint['-']
-            && $b ~~ BulletPoint['-'];
-}
-
-multi sub infix:<eqv>(
-    BulletPoint['@'] $a,
-    BulletPoint['@'] $b
-) returns Bool:D
-{
-    my Bool:D $is-same =
-        $a ~~ BulletPoint['@']
-            && $b ~~ BulletPoint['@'];
-}
-
-multi sub infix:<eqv>(
-    BulletPoint['#'] $a,
-    BulletPoint['#'] $b
-) returns Bool:D
-{
-    my Bool:D $is-same =
-        $a ~~ BulletPoint['#']
-            && $b ~~ BulletPoint['#'];
-}
-
-multi sub infix:<eqv>(
-    BulletPoint['$'] $a,
-    BulletPoint['$'] $b
-) returns Bool:D
-{
-    my Bool:D $is-same =
-        $a ~~ BulletPoint['$']
-            && $b ~~ BulletPoint['$'];
-}
-
-multi sub infix:<eqv>(
-    BulletPoint['*'] $a,
-    BulletPoint['*'] $b
-) returns Bool:D
-{
-    my Bool:D $is-same =
-        $a ~~ BulletPoint['*']
-            && $b ~~ BulletPoint['*'];
-}
-
-multi sub infix:<eqv>(
-    BulletPoint[':'] $a,
-    BulletPoint[':'] $b
-) returns Bool:D
-{
-    my Bool:D $is-same =
-        $a ~~ BulletPoint[':']
-            && $b ~~ BulletPoint[':'];
-}
-
-multi sub infix:<eqv>(
-    BulletPoint['x'] $a,
-    BulletPoint['x'] $b
-) returns Bool:D
-{
-    my Bool:D $is-same =
-        $a ~~ BulletPoint['x']
-            && $b ~~ BulletPoint['x'];
-}
-
-multi sub infix:<eqv>(
-    BulletPoint['o'] $a,
-    BulletPoint['o'] $b
-) returns Bool:D
-{
-    my Bool:D $is-same =
-        $a ~~ BulletPoint['o']
-            && $b ~~ BulletPoint['o'];
-}
-
-multi sub infix:<eqv>(
-    BulletPoint['+'] $a,
-    BulletPoint['+'] $b
-) returns Bool:D
-{
-    my Bool:D $is-same =
-        $a ~~ BulletPoint['+']
-            && $b ~~ BulletPoint['+'];
-}
-
-multi sub infix:<eqv>(
-    BulletPoint['='] $a,
-    BulletPoint['='] $b
-) returns Bool:D
-{
-    my Bool:D $is-same =
-        $a ~~ BulletPoint['=']
-            && $b ~~ BulletPoint['='];
-}
-
-multi sub infix:<eqv>(
-    BulletPoint['!'] $a,
-    BulletPoint['!'] $b
-) returns Bool:D
-{
-    my Bool:D $is-same =
-        $a ~~ BulletPoint['!']
-            && $b ~~ BulletPoint['!'];
-}
-
-multi sub infix:<eqv>(
-    BulletPoint['~'] $a,
-    BulletPoint['~'] $b
-) returns Bool:D
-{
-    my Bool:D $is-same =
-        $a ~~ BulletPoint['~']
-            && $b ~~ BulletPoint['~'];
-}
-
-multi sub infix:<eqv>(
-    BulletPoint['>'] $a,
-    BulletPoint['>'] $b
-) returns Bool:D
-{
-    my Bool:D $is-same =
-        $a ~~ BulletPoint['>']
-            && $b ~~ BulletPoint['>'];
-}
-
-multi sub infix:<eqv>(
-    BulletPoint['<-'] $a,
-    BulletPoint['<-'] $b
-) returns Bool:D
-{
-    my Bool:D $is-same =
-        $a ~~ BulletPoint['<-']
-            && $b ~~ BulletPoint['<-'];
-}
-
-multi sub infix:<eqv>(
-    BulletPoint['<='] $a,
-    BulletPoint['<='] $b
-) returns Bool:D
-{
-    my Bool:D $is-same =
-        $a ~~ BulletPoint['<=']
-            && $b ~~ BulletPoint['<='];
-}
-
-multi sub infix:<eqv>(
-    BulletPoint['->'] $a,
-    BulletPoint['->'] $b
-) returns Bool:D
-{
-    my Bool:D $is-same =
-        $a ~~ BulletPoint['->']
-            && $b ~~ BulletPoint['->'];
-}
-
-multi sub infix:<eqv>(
-    BulletPoint['=>'] $a,
-    BulletPoint['=>'] $b
-) returns Bool:D
-{
-    my Bool:D $is-same =
-        $a ~~ BulletPoint['=>']
-            && $b ~~ BulletPoint['=>'];
-}
-
-multi sub infix:<eqv>(
-    BulletPoint $,
-    BulletPoint $
-) returns Bool:D
-{
-    False;
-}
-
-# --- end BulletPoint }}}
-
-multi sub cmp-ok-list-item-unordered(
-    ListItem['Unordered'] $a,
-    ListItem['Unordered'] $b
-) returns Bool:D
-{
-    my Bool:D $is-same =
-        $a.bullet-point eqv $b.bullet-point
-            && $a.text eqv $b.text;
-}
-
-multi sub cmp-ok-list-item-unordered(ListItem $, ListItem $) returns Bool:D
-{
-    False;
-}
-
-# end cmp-ok-list-item-unordered }}}
 
 subtest
 {
@@ -287,6 +88,11 @@ subtest
         &cmp-ok-list-item-unordered,
         ListItem['Unordered'].new(:$bullet-point, :$text),
         q{ListItem['Unordered'] OK};
+}
+
+sub cmp-ok-list-item-unordered(ListItem:D $a, ListItem:D $b) returns Bool:D
+{
+    my Bool:D $is-same = $a eqv $b;
 }
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

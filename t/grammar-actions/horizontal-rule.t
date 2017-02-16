@@ -3,37 +3,11 @@ use lib 'lib';
 use Finn::Parser::Actions;
 use Finn::Parser::Grammar;
 use Finn::Parser::ParseTree;
+use lib 't/lib';
+use FinnTest;
 use Test;
 
 plan 4;
-
-# sub cmp-ok-horizontal-rule {{{
-
-multi sub cmp-ok-horizontal-rule(
-    HorizontalRule['Hard'] $a,
-    HorizontalRule['Hard'] $b
-) returns Bool:D
-{
-    $a ~~ HorizontalRule['Hard'] && $b ~~ HorizontalRule['Hard'];
-}
-
-multi sub cmp-ok-horizontal-rule(
-    HorizontalRule['Soft'] $a,
-    HorizontalRule['Soft'] $b
-) returns Bool:D
-{
-    $a ~~ HorizontalRule['Soft'] && $b ~~ HorizontalRule['Soft'];
-}
-
-multi sub cmp-ok-horizontal-rule(
-    HorizontalRule $,
-    HorizontalRule $
-) returns Bool:D
-{
-    False;
-}
-
-# end sub cmp-ok-horizontal-rule }}}
 
 subtest
 {
@@ -85,6 +59,14 @@ subtest
         &cmp-ok-horizontal-rule,
         HorizontalRule['Hard'].new,
         q{HorizontalRule['Hard'] OK};
+}
+
+sub cmp-ok-horizontal-rule(
+    HorizontalRule:D $a,
+    HorizontalRule:D $b
+) returns Bool:D
+{
+    my Bool:D $is-same = $a eqv $b;
 }
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

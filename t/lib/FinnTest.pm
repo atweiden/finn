@@ -1,0 +1,657 @@
+use v6;
+use Finn::Parser::ParseTree;
+unit module FinnTest;
+
+# p6doc {{{
+
+=begin pod
+=head NAME
+
+FinnTest
+
+=head SYNOPSIS
+
+=begin code
+use FinnTest;
+=end code
+
+=head DESCRIPTION
+
+Contains subroutines for testing Finn.
+=end pod
+
+# end p6doc }}}
+
+# file {{{
+
+multi sub infix:<eqv>(
+    File['Absolute'] $a,
+    File['Absolute'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same-path = $a.path eqv $b.path;
+}
+
+multi sub infix:<eqv>(
+    File['Absolute', 'Protocol'] $a,
+    File['Absolute', 'Protocol'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same-path = $a.path eqv $b.path;
+    my Bool:D $is-same-protocol = $a.protocol eqv $b.protocol;
+    my Bool:D $is-same = $is-same-path && $is-same-protocol;
+}
+
+multi sub infix:<eqv>(
+    File['Relative'] $a,
+    File['Relative'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same-path = $a.path eqv $b.path;
+}
+
+multi sub infix:<eqv>(
+    File['Relative', 'Protocol'] $a,
+    File['Relative', 'Protocol'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same-path = $a.path eqv $b.path;
+    my Bool:D $is-same-protocol = $a.protocol eqv $b.protocol;
+    my Bool:D $is-same = $is-same-path && $is-same-protocol;
+}
+
+multi sub infix:<eqv>(File $, File $) is export returns Bool:D
+{
+    False;
+}
+
+# end file }}}
+# header {{{
+
+multi sub infix:<eqv>(Header[1] $a, Header[1] $b) is export returns Bool:D
+{
+    my Bool:D $is-same = $a.text eqv $b.text;
+}
+
+multi sub infix:<eqv>(Header[2] $a, Header[2] $b) is export returns Bool:D
+{
+    my Bool:D $is-same = $a.text eqv $b.text;
+}
+
+multi sub infix:<eqv>(Header[3] $a, Header[3] $b) is export returns Bool:D
+{
+    my Bool:D $is-same = $a.text eqv $b.text;
+}
+
+multi sub infix:<eqv>(Header $, Header $) is export returns Bool:D
+{
+    False;
+}
+
+# end header }}}
+# horizontal-rule {{{
+
+multi sub infix:<eqv>(
+    HorizontalRule['Hard'] $a,
+    HorizontalRule['Hard'] $b
+) is export returns Bool:D
+{
+    $a ~~ HorizontalRule['Hard'] && $b ~~ HorizontalRule['Hard'];
+}
+
+multi sub infix:<eqv>(
+    HorizontalRule['Soft'] $a,
+    HorizontalRule['Soft'] $b
+) is export returns Bool:D
+{
+    $a ~~ HorizontalRule['Soft'] && $b ~~ HorizontalRule['Soft'];
+}
+
+multi sub infix:<eqv>(
+    HorizontalRule $,
+    HorizontalRule $
+) is export returns Bool:D
+{
+    False;
+}
+
+# horizontal-rule }}}
+# list-block {{{
+
+multi sub infix:<eqv>(
+    ListBlock:D $a,
+    ListBlock:D $b where { .list-item.elems == $a.list-item.elems }
+) is export returns Bool:D
+{
+    my Bool:D @is-same = do loop (
+        my UInt:D $i = 0;
+        $i < $a.list-item.elems;
+        $i++
+    )
+    {
+        $a.list-item[$i] eqv $b.list-item[$i]
+    }
+    my Bool:D $is-same = [[&is-true]] @is-same;
+}
+
+multi sub infix:<eqv>(ListBlock $, ListBlock $) is export returns Bool:D
+{
+    False;
+}
+
+# end list-block }}}
+# list-item {{{
+
+# --- ListItem['Ordered'] {{{
+
+# --- --- ListItem::Number {{{
+
+# --- --- --- ListItem::Number::Terminator {{{
+
+multi sub infix:<eqv>(
+    ListItem::Number::Terminator['.'] $a,
+    ListItem::Number::Terminator['.'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ ListItem::Number::Terminator['.']
+            && $b ~~ ListItem::Number::Terminator['.'];
+}
+
+multi sub infix:<eqv>(
+    ListItem::Number::Terminator[':'] $a,
+    ListItem::Number::Terminator[':'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ ListItem::Number::Terminator[':']
+            && $b ~~ ListItem::Number::Terminator[':'];
+}
+
+multi sub infix:<eqv>(
+    ListItem::Number::Terminator[')'] $a,
+    ListItem::Number::Terminator[')'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ ListItem::Number::Terminator[')']
+            && $b ~~ ListItem::Number::Terminator[')'];
+}
+
+multi sub infix:<eqv>(
+    ListItem::Number::Terminator $,
+    ListItem::Number::Terminator $
+) is export returns Bool:D
+{
+    False;
+}
+
+# --- --- --- end ListItem::Number::Terminator }}}
+
+multi sub infix:<eqv>(
+    ListItem::Number:D $a,
+    ListItem::Number:D $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.terminator eqv $b.terminator
+            && $a.value == $b.value;
+}
+
+# --- --- end ListItem::Number }}}
+
+multi sub infix:<eqv>(
+    ListItem['Ordered'] $a,
+    ListItem['Ordered'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.number eqv $b.number
+            && $a.text eqv $b.text;
+}
+
+# --- end ListItem['Ordered'] }}}
+# --- ListItem['Todo'] {{{
+
+# --- --- Checkbox['Checked'] {{{
+
+# --- --- --- CheckboxCheckedChar {{{
+
+multi sub infix:<eqv>(
+    CheckboxCheckedChar['x'] $a,
+    CheckboxCheckedChar['x'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ CheckboxCheckedChar['x']
+            && $b ~~ CheckboxCheckedChar['x'];
+}
+
+multi sub infix:<eqv>(
+    CheckboxCheckedChar['o'] $a,
+    CheckboxCheckedChar['o'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ CheckboxCheckedChar['o']
+            && $b ~~ CheckboxCheckedChar['o'];
+}
+
+multi sub infix:<eqv>(
+    CheckboxCheckedChar['v'] $a,
+    CheckboxCheckedChar['v'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ CheckboxCheckedChar['v']
+            && $b ~~ CheckboxCheckedChar['v'];
+}
+
+multi sub infix:<eqv>(
+    CheckboxCheckedChar $,
+    CheckboxCheckedChar $
+) is export returns Bool:D
+{
+    False;
+}
+
+# --- --- --- end CheckboxCheckedChar }}}
+
+multi sub infix:<eqv>(
+    Checkbox['Checked'] $a,
+    Checkbox['Checked'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same = $a.char eqv $b.char;
+}
+
+# --- --- end Checkbox['Checked'] }}}
+# --- --- Checkbox['Etc'] {{{
+
+# --- --- --- CheckboxEtcChar {{{
+
+multi sub infix:<eqv>(
+    CheckboxEtcChar['+'] $a,
+    CheckboxEtcChar['+'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ CheckboxEtcChar['+']
+            && $b ~~ CheckboxEtcChar['+'];
+}
+
+multi sub infix:<eqv>(
+    CheckboxEtcChar['='] $a,
+    CheckboxEtcChar['='] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ CheckboxEtcChar['=']
+            && $b ~~ CheckboxEtcChar['='];
+}
+
+multi sub infix:<eqv>(
+    CheckboxEtcChar['-'] $a,
+    CheckboxEtcChar['-'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ CheckboxEtcChar['-']
+            && $b ~~ CheckboxEtcChar['-'];
+}
+
+multi sub infix:<eqv>(
+    CheckboxEtcChar $,
+    CheckboxEtcChar $
+) is export returns Bool:D
+{
+    False;
+}
+
+# --- --- --- end CheckboxEtcChar }}}
+
+multi sub infix:<eqv>(
+    Checkbox['Etc'] $a,
+    Checkbox['Etc'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same = $a.char eqv $b.char;
+}
+
+# --- --- end Checkbox['Etc'] }}}
+# --- --- Checkbox['Exception'] {{{
+
+# --- --- --- CheckboxExceptionChar {{{
+
+multi sub infix:<eqv>(
+    CheckboxExceptionChar['*'] $a,
+    CheckboxExceptionChar['*'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ CheckboxExceptionChar['*']
+            && $b ~~ CheckboxExceptionChar['*'];
+}
+
+multi sub infix:<eqv>(
+    CheckboxExceptionChar['!'] $a,
+    CheckboxExceptionChar['!'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ CheckboxExceptionChar['!']
+            && $b ~~ CheckboxExceptionChar['!'];
+}
+
+multi sub infix:<eqv>(
+    CheckboxExceptionChar $,
+    CheckboxExceptionChar $
+) is export returns Bool:D
+{
+    False;
+}
+
+# --- --- --- end CheckboxExceptionChar }}}
+
+multi sub infix:<eqv>(
+    Checkbox['Exception'] $a,
+    Checkbox['Exception'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same = $a.char eqv $b.char;
+}
+
+# --- --- end Checkbox['Exception'] }}}
+# --- --- Checkbox['Unchecked'] {{{
+
+multi sub infix:<eqv>(
+    Checkbox['Unchecked'] $a where *.so,
+    Checkbox['Unchecked'] $b where *.so
+) is export returns Bool:D
+{
+    True;
+}
+
+# --- --- end Checkbox['Unchecked'] }}}
+
+multi sub infix:<eqv>(Checkbox $, Checkbox $) is export returns Bool:D
+{
+    False;
+}
+
+multi sub infix:<eqv>(ListItem['Todo'] $a, ListItem['Todo'] $b) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.checkbox eqv $b.checkbox
+            && $a.text eqv $b.text;
+}
+
+# --- end ListItem['Todo'] }}}
+# --- ListItem['Unordered'] {{{
+
+# --- --- BulletPoint {{{
+
+multi sub infix:<eqv>(
+    BulletPoint['-'] $a,
+    BulletPoint['-'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['-']
+            && $b ~~ BulletPoint['-'];
+}
+
+multi sub infix:<eqv>(
+    BulletPoint['@'] $a,
+    BulletPoint['@'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['@']
+            && $b ~~ BulletPoint['@'];
+}
+
+multi sub infix:<eqv>(
+    BulletPoint['#'] $a,
+    BulletPoint['#'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['#']
+            && $b ~~ BulletPoint['#'];
+}
+
+multi sub infix:<eqv>(
+    BulletPoint['$'] $a,
+    BulletPoint['$'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['$']
+            && $b ~~ BulletPoint['$'];
+}
+
+multi sub infix:<eqv>(
+    BulletPoint['*'] $a,
+    BulletPoint['*'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['*']
+            && $b ~~ BulletPoint['*'];
+}
+
+multi sub infix:<eqv>(
+    BulletPoint[':'] $a,
+    BulletPoint[':'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint[':']
+            && $b ~~ BulletPoint[':'];
+}
+
+multi sub infix:<eqv>(
+    BulletPoint['x'] $a,
+    BulletPoint['x'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['x']
+            && $b ~~ BulletPoint['x'];
+}
+
+multi sub infix:<eqv>(
+    BulletPoint['o'] $a,
+    BulletPoint['o'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['o']
+            && $b ~~ BulletPoint['o'];
+}
+
+multi sub infix:<eqv>(
+    BulletPoint['+'] $a,
+    BulletPoint['+'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['+']
+            && $b ~~ BulletPoint['+'];
+}
+
+multi sub infix:<eqv>(
+    BulletPoint['='] $a,
+    BulletPoint['='] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['=']
+            && $b ~~ BulletPoint['='];
+}
+
+multi sub infix:<eqv>(
+    BulletPoint['!'] $a,
+    BulletPoint['!'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['!']
+            && $b ~~ BulletPoint['!'];
+}
+
+multi sub infix:<eqv>(
+    BulletPoint['~'] $a,
+    BulletPoint['~'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['~']
+            && $b ~~ BulletPoint['~'];
+}
+
+multi sub infix:<eqv>(
+    BulletPoint['>'] $a,
+    BulletPoint['>'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['>']
+            && $b ~~ BulletPoint['>'];
+}
+
+multi sub infix:<eqv>(
+    BulletPoint['<-'] $a,
+    BulletPoint['<-'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['<-']
+            && $b ~~ BulletPoint['<-'];
+}
+
+multi sub infix:<eqv>(
+    BulletPoint['<='] $a,
+    BulletPoint['<='] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['<=']
+            && $b ~~ BulletPoint['<='];
+}
+
+multi sub infix:<eqv>(
+    BulletPoint['->'] $a,
+    BulletPoint['->'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['->']
+            && $b ~~ BulletPoint['->'];
+}
+
+multi sub infix:<eqv>(
+    BulletPoint['=>'] $a,
+    BulletPoint['=>'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ BulletPoint['=>']
+            && $b ~~ BulletPoint['=>'];
+}
+
+multi sub infix:<eqv>(
+    BulletPoint $,
+    BulletPoint $
+) is export returns Bool:D
+{
+    False;
+}
+
+# --- --- end BulletPoint }}}
+
+multi sub infix:<eqv>(
+    ListItem['Unordered'] $a,
+    ListItem['Unordered'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.bullet-point eqv $b.bullet-point
+            && $a.text eqv $b.text;
+}
+
+# --- end ListItem['Unordered'] }}}
+
+multi sub infix:<eqv>(ListItem $, ListItem $) is export returns Bool:D
+{
+    False;
+}
+
+# end list-item }}}
+# sectional-inline {{{
+
+multi sub infix:<eqv>(
+    SectionalInline['Name'] $a,
+    SectionalInline['Name'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same = $a.name eqv $b.name;
+}
+
+multi sub infix:<eqv>(
+    SectionalInline['File'] $a,
+    SectionalInline['File'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same = $a.file eqv $b.file;
+}
+
+multi sub infix:<eqv>(
+    SectionalInline['Reference'] $a,
+    SectionalInline['Reference'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same = $a.reference-inline eqv $b.reference-inline;
+}
+
+multi sub infix:<eqv>(
+    SectionalInline['Name', 'File'] $a,
+    SectionalInline['Name', 'File'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.name eqv $b.name
+            && $a.file eqv $b.file;
+}
+
+multi sub infix:<eqv>(
+    SectionalInline['Name', 'Reference'] $a,
+    SectionalInline['Name', 'Reference'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.name eqv $b.name
+            && $a.reference-inline eqv $b.reference-inline;
+}
+
+multi sub infix:<eqv>(
+    SectionalInline $,
+    SectionalInline $
+) is export returns Bool:D
+{
+    False;
+}
+
+# end sectional-inline }}}
+
+# sub is-true {{{
+
+sub is-true(Bool:D $a, Bool:D $b) returns Bool:D
+{
+    my Bool:D $is-true = $a && $b;
+}
+
+# sub end is-true }}}
+
+# vim: set filetype=perl6 foldmethod=marker foldlevel=0:

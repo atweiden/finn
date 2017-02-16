@@ -3,84 +3,11 @@ use lib 'lib';
 use Finn::Parser::Actions;
 use Finn::Parser::Grammar;
 use Finn::Parser::ParseTree;
+use lib 't/lib';
+use FinnTest;
 use Test;
 
 plan 4;
-
-# sub cmp-ok-list-item-ordered {{{
-
-# --- ListItem::Number {{{
-
-# --- --- ListItem::Number::Terminator {{{
-
-multi sub infix:<eqv>(
-    ListItem::Number::Terminator['.'] $a,
-    ListItem::Number::Terminator['.'] $b
-) returns Bool:D
-{
-    my Bool:D $is-same =
-        $a ~~ ListItem::Number::Terminator['.']
-            && $b ~~ ListItem::Number::Terminator['.'];
-}
-
-multi sub infix:<eqv>(
-    ListItem::Number::Terminator[':'] $a,
-    ListItem::Number::Terminator[':'] $b
-) returns Bool:D
-{
-    my Bool:D $is-same =
-        $a ~~ ListItem::Number::Terminator[':']
-            && $b ~~ ListItem::Number::Terminator[':'];
-}
-
-multi sub infix:<eqv>(
-    ListItem::Number::Terminator[')'] $a,
-    ListItem::Number::Terminator[')'] $b
-) returns Bool:D
-{
-    my Bool:D $is-same =
-        $a ~~ ListItem::Number::Terminator[')']
-            && $b ~~ ListItem::Number::Terminator[')'];
-}
-
-multi sub infix:<eqv>(
-    ListItem::Number::Terminator $,
-    ListItem::Number::Terminator $
-) returns Bool:D
-{
-    False;
-}
-
-# --- --- end ListItem::Number::Terminator }}}
-
-multi sub infix:<eqv>(
-    ListItem::Number:D $a,
-    ListItem::Number:D $b
-) returns Bool:D
-{
-    my Bool:D $is-same =
-        $a.terminator eqv $b.terminator
-            && $a.value == $b.value;
-}
-
-# --- end ListItem::Number }}}
-
-multi sub cmp-ok-list-item-ordered(
-    ListItem['Ordered'] $a,
-    ListItem['Ordered'] $b
-) returns Bool:D
-{
-    my Bool:D $is-same =
-        $a.number eqv $b.number
-            && $a.text eqv $b.text;
-}
-
-multi sub cmp-ok-list-item-ordered(ListItem $, ListItem $) returns Bool:D
-{
-    False;
-}
-
-# end sub cmp-ok-list-item-ordered }}}
 
 subtest
 {
@@ -168,6 +95,11 @@ subtest
         &cmp-ok-list-item-ordered,
         ListItem['Ordered'].new(:$number, :$text),
         q{ListItem['Ordered'] OK};
+}
+
+sub cmp-ok-list-item-ordered(ListItem:D $a, ListItem:D $b) returns Bool:D
+{
+    my Bool:D $is-same = $a eqv $b;
 }
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

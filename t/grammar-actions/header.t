@@ -3,23 +3,11 @@ use lib 'lib';
 use Finn::Parser::Actions;
 use Finn::Parser::Grammar;
 use Finn::Parser::ParseTree;
+use lib 't/lib';
+use FinnTest;
 use Test;
 
 plan 3;
-
-# sub cmp-ok-header {{{
-
-proto sub cmp-ok-header(Header[Int] $a, Header[Int] $b) returns Bool:D
-{
-    my Bool:D $is-same = $a.text eqv $b.text;
-}
-
-multi sub cmp-ok-header(Header[1] $a, Header[1] $b) returns Bool:D {*}
-multi sub cmp-ok-header(Header[2] $a, Header[2] $b) returns Bool:D {*}
-multi sub cmp-ok-header(Header[3] $a, Header[3] $b) returns Bool:D {*}
-multi sub cmp-ok-header(Header $, Header $)         returns Bool:D { False }
-
-# end sub cmp-ok-header }}}
 
 subtest
 {
@@ -112,6 +100,11 @@ subtest
         &cmp-ok-header,
         Header[3].new(:text('Header Three')),
         'Header[3] OK';
+}
+
+sub cmp-ok-header(Header:D $a, Header:D $b) returns Bool:D
+{
+    my Bool:D $is-same = $a eqv $b;
 }
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:
