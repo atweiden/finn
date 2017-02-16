@@ -1205,9 +1205,9 @@ proto token file-path-char {*}
 token file-path-char:common
 {
     # anything but linebreaks, whitespace, single-quotes, double-quotes,
-    # fwdslashes, backslashes, square brackets, curly braces and control
-    # characters (U+0000 to U+001F)
-    <+[\N] -[\h] -[\' \" / \\] -[\[ \] \{ \}] -[\x00..\x1F]>
+    # fwdslashes, backslashes, square brackets, curly braces, asterisks,
+    # and control characters (U+0000 to U+001F)
+    <+[\N] -[\h] -[\' \" / \\] -[\[ \] \{ \} \*] -[\x00..\x1F]>
 }
 
 token file-path-char:escape-sequence
