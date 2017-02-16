@@ -9,34 +9,39 @@ plan 2;
 
 # sub cmp-ok-file {{{
 
-multi sub cmp-ok-file(File['Absolute'] $a, File['Absolute'] $b) returns Bool:D
+proto sub cmp-ok-file(File:D $a, File:D $b) returns Bool:D
 {
-    my Bool:D $is-same = $a.path eqv $b.path;
+    my Bool:D $*is-same-path = $a.path eqv $b.path;
 }
+
+multi sub cmp-ok-file(
+    File['Absolute'] $a,
+    File['Absolute'] $b
+) returns Bool:D
+{*}
 
 multi sub cmp-ok-file(
     File['Absolute', 'Protocol'] $a,
     File['Absolute', 'Protocol'] $b
 ) returns Bool:D
 {
-    my Bool:D $is-same-path = $a.path eqv $b.path;
     my Bool:D $is-same-protocol = $a.protocol eqv $b.protocol;
-    my Bool:D $is-same = $is-same-path && $is-same-protocol;
+    my Bool:D $is-same = $*is-same-path && $is-same-protocol;
 }
 
-multi sub cmp-ok-file(File['Relative'] $a, File['Relative'] $b) returns Bool:D
-{
-    my Bool:D $is-same = $a.path eqv $b.path;
-}
+multi sub cmp-ok-file(
+    File['Relative'] $a,
+    File['Relative'] $b
+) returns Bool:D
+{*}
 
 multi sub cmp-ok-file(
     File['Relative', 'Protocol'] $a,
     File['Relative', 'Protocol'] $b
 ) returns Bool:D
 {
-    my Bool:D $is-same-path = $a.path eqv $b.path;
     my Bool:D $is-same-protocol = $a.protocol eqv $b.protocol;
-    my Bool:D $is-same = $is-same-path && $is-same-protocol;
+    my Bool:D $is-same = $*is-same-path && $is-same-protocol;
 }
 
 multi sub cmp-ok-file(File $, File $) returns Bool:D
