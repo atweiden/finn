@@ -503,6 +503,7 @@ subtest
           - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
             - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
     EOF
+    my Str:D $rule = 'list-block';
 
     # --- list-item-a {{{
 
@@ -570,7 +571,7 @@ subtest
         $list-item-e;
 
     cmp-ok
-        Finn::Parser::Grammar.parse($list-block, :rule<list-block>, :$actions).made,
+        Finn::Parser::Grammar.parse($list-block, :$rule, :$actions).made,
         &cmp-ok-list-block,
         ListBlock.new(:@list-item),
         'ListBlock OK';
@@ -590,6 +591,7 @@ subtest
             - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ
               1234567890
     EOF
+    my Str:D $rule = 'list-block';
 
     # --- list-item-a {{{
 
@@ -663,7 +665,7 @@ subtest
         $list-item-e;
 
     cmp-ok
-        Finn::Parser::Grammar.parse($list-block, :rule<list-block>, :$actions).made,
+        Finn::Parser::Grammar.parse($list-block, :$rule, :$actions).made,
         &cmp-ok-list-block,
         ListBlock.new(:@list-item),
         'ListBlock OK';
@@ -687,6 +689,7 @@ subtest
            <- abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ
               1234567890
     EOF
+    my Str:D $rule = 'list-block';
 
     # --- list-item-a {{{
 
@@ -832,7 +835,7 @@ subtest
         $list-item-j;
 
     cmp-ok
-        Finn::Parser::Grammar.parse($list-block, :rule<list-block>, :$actions).made,
+        Finn::Parser::Grammar.parse($list-block, :$rule, :$actions).made,
         &cmp-ok-list-block,
         ListBlock.new(:@list-item),
         'ListBlock OK';

@@ -11,9 +11,10 @@ subtest
 {
     my Finn::Parser::Actions $actions .= new;
     my Str:D $comment = '/* this is a comment */';
+    my Str:D $rule = 'comment';
     my Str:D $text = ' this is a comment ';
     is-deeply
-        Finn::Parser::Grammar.parse($comment, :rule<comment>, :$actions).made,
+        Finn::Parser::Grammar.parse($comment, :$rule, :$actions).made,
         Comment.new(:$text),
         'Comment OK';
 }
@@ -30,6 +31,7 @@ subtest
      *
      */
     EOF
+    my Str:D $rule = 'comment';
     my Str:D $text = q:to/EOF/;
 
      *
@@ -41,7 +43,7 @@ subtest
     $text ~= ' ';
 
     is-deeply
-        Finn::Parser::Grammar.parse($comment, :rule<comment>, :$actions).made,
+        Finn::Parser::Grammar.parse($comment, :$rule, :$actions).made,
         Comment.new(:$text),
         'Comment OK';
 }
@@ -57,6 +59,7 @@ subtest
        this is a block comment - line 3
      <!--                             --> */
     EOF
+    my Str:D $rule = 'comment';
     my Str:D $text = q:to/EOF/.trim-trailing;
 
      <!--                             -->
@@ -67,7 +70,7 @@ subtest
     EOF
     $text ~= ' ';
     is-deeply
-        Finn::Parser::Grammar.parse($comment, :rule<comment>, :$actions).made,
+        Finn::Parser::Grammar.parse($comment, :$rule, :$actions).made,
         Comment.new(:$text),
         'Comment OK';
 }

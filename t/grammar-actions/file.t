@@ -63,6 +63,7 @@ subtest 'absolute',
         file://~/a
         file://~/a/b/c/d/e/f
     >;
+    my Str:D $rule = 'file';
     my Str:D $protocol = 'file://';
     my File:D @file-made =
         File['Absolute'].new(:path(IO::Path.new('/'))),
@@ -80,7 +81,7 @@ subtest 'absolute',
     loop (my UInt:D $i = 0; $i < @file.elems; $i++)
     {
         cmp-ok
-            Finn::Parser::Grammar.parse(@file[$i], :rule<file>, :$actions).made,
+            Finn::Parser::Grammar.parse(@file[$i], :$rule, :$actions).made,
             &cmp-ok-file,
             @file-made[$i],
             'File OK';
@@ -96,6 +97,7 @@ subtest 'relative',
         file://a
         file://a/b/c/d/e/f
     >;
+    my Str:D $rule = 'file';
     my Str:D $protocol = 'file://';
     # leading C<./> necessary because Actions prepends C<$.file> to path
     my File:D @file-made =
@@ -106,7 +108,7 @@ subtest 'relative',
     loop (my UInt:D $i = 0; $i < @file.elems; $i++)
     {
         cmp-ok
-            Finn::Parser::Grammar.parse(@file[$i], :rule<file>, :$actions).made,
+            Finn::Parser::Grammar.parse(@file[$i], :$rule, :$actions).made,
             &cmp-ok-file,
             @file-made[$i],
             'File OK';

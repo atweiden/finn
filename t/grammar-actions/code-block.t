@@ -19,6 +19,7 @@ subtest
     [!] Construction complete.
     ```
     EOF
+    my Str:D $rule = 'code-block';
     my CodeBlockDelimiter['Backticks'] $delimiter .= new;
     my Str:D $text = q:to/EOF/.trim-leading;
     Todos
@@ -28,7 +29,7 @@ subtest
     [!] Construction complete.
     EOF
     is-deeply
-        Finn::Parser::Grammar.parse($code-block, :rule<code-block>, :$actions).made,
+        Finn::Parser::Grammar.parse($code-block, :$rule, :$actions).made,
         CodeBlock.new(:$delimiter, :$text),
         'CodeBlock OK';
 }
@@ -41,13 +42,14 @@ subtest
     $ cat TODO.md
     ```
     EOF
+    my Str:D $rule = 'code-block';
     my CodeBlockDelimiter['Backticks'] $delimiter .= new;
     my Str:D $language = 'sh';
     my Str:D $text = q:to/EOF/.trim-leading;
     $ cat TODO.md
     EOF
     is-deeply
-        Finn::Parser::Grammar.parse($code-block, :rule<code-block>, :$actions).made,
+        Finn::Parser::Grammar.parse($code-block, :$rule, :$actions).made,
         CodeBlock.new(:$delimiter, :$language, :$text),
         'CodeBlock OK';
 }
@@ -97,6 +99,7 @@ subtest
     Welsh      | Meow
     ```
     EOF
+    my Str:D $rule = 'code-block';
     my CodeBlockDelimiter['Backticks'] $delimiter .= new;
     my Str:D $language = 'markdown';
     my Str:D $text = q:to/EOF/.trim-leading;
@@ -140,7 +143,7 @@ subtest
     Welsh      | Meow
     EOF
     is-deeply
-        Finn::Parser::Grammar.parse($code-block, :rule<code-block>, :$actions).made,
+        Finn::Parser::Grammar.parse($code-block, :$rule, :$actions).made,
         CodeBlock.new(:$delimiter, :$language, :$text),
         'CodeBlock OK';
 }
