@@ -13,7 +13,7 @@ plan 4;
 
 # --- --- ListItem::Number::Terminator {{{
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     ListItem::Number::Terminator['.'] $a,
     ListItem::Number::Terminator['.'] $b
 ) returns Bool:D
@@ -23,7 +23,7 @@ multi sub infix:<cmp>(
             && $b ~~ ListItem::Number::Terminator['.'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     ListItem::Number::Terminator[':'] $a,
     ListItem::Number::Terminator[':'] $b
 ) returns Bool:D
@@ -33,7 +33,7 @@ multi sub infix:<cmp>(
             && $b ~~ ListItem::Number::Terminator[':'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     ListItem::Number::Terminator[')'] $a,
     ListItem::Number::Terminator[')'] $b
 ) returns Bool:D
@@ -43,7 +43,7 @@ multi sub infix:<cmp>(
             && $b ~~ ListItem::Number::Terminator[')'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     ListItem::Number::Terminator $,
     ListItem::Number::Terminator $
 ) returns Bool:D
@@ -53,13 +53,13 @@ multi sub infix:<cmp>(
 
 # --- --- end ListItem::Number::Terminator }}}
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     ListItem::Number:D $a,
     ListItem::Number:D $b
 ) returns Bool:D
 {
     my Bool:D $is-same =
-        $a.terminator cmp $b.terminator
+        $a.terminator eqv $b.terminator
             && $a.value == $b.value;
 }
 
@@ -71,7 +71,7 @@ multi sub cmp-ok-list-item-ordered(
 ) returns Bool:D
 {
     my Bool:D $is-same =
-        $a.number cmp $b.number
+        $a.number eqv $b.number
             && $a.text eqv $b.text;
 }
 

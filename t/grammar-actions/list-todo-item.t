@@ -13,7 +13,7 @@ plan 4;
 
 # --- --- CheckboxCheckedChar {{{
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     CheckboxCheckedChar['x'] $a,
     CheckboxCheckedChar['x'] $b
 ) returns Bool:D
@@ -23,7 +23,7 @@ multi sub infix:<cmp>(
             && $b ~~ CheckboxCheckedChar['x'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     CheckboxCheckedChar['o'] $a,
     CheckboxCheckedChar['o'] $b
 ) returns Bool:D
@@ -33,7 +33,7 @@ multi sub infix:<cmp>(
             && $b ~~ CheckboxCheckedChar['o'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     CheckboxCheckedChar['v'] $a,
     CheckboxCheckedChar['v'] $b
 ) returns Bool:D
@@ -43,7 +43,7 @@ multi sub infix:<cmp>(
             && $b ~~ CheckboxCheckedChar['v'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     CheckboxCheckedChar $,
     CheckboxCheckedChar $
 ) returns Bool:D
@@ -53,12 +53,12 @@ multi sub infix:<cmp>(
 
 # --- --- end CheckboxCheckedChar }}}
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     Checkbox['Checked'] $a,
     Checkbox['Checked'] $b
 ) returns Bool:D
 {
-    my Bool:D $is-same = $a.char cmp $b.char;
+    my Bool:D $is-same = $a.char eqv $b.char;
 }
 
 # --- end Checkbox['Checked'] }}}
@@ -66,7 +66,7 @@ multi sub infix:<cmp>(
 
 # --- --- CheckboxEtcChar {{{
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     CheckboxEtcChar['+'] $a,
     CheckboxEtcChar['+'] $b
 ) returns Bool:D
@@ -76,7 +76,7 @@ multi sub infix:<cmp>(
             && $b ~~ CheckboxEtcChar['+'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     CheckboxEtcChar['='] $a,
     CheckboxEtcChar['='] $b
 ) returns Bool:D
@@ -86,7 +86,7 @@ multi sub infix:<cmp>(
             && $b ~~ CheckboxEtcChar['='];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     CheckboxEtcChar['-'] $a,
     CheckboxEtcChar['-'] $b
 ) returns Bool:D
@@ -96,7 +96,7 @@ multi sub infix:<cmp>(
             && $b ~~ CheckboxEtcChar['-'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     CheckboxEtcChar $,
     CheckboxEtcChar $
 ) returns Bool:D
@@ -106,12 +106,12 @@ multi sub infix:<cmp>(
 
 # --- --- end CheckboxEtcChar }}}
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     Checkbox['Etc'] $a,
     Checkbox['Etc'] $b
 ) returns Bool:D
 {
-    my Bool:D $is-same = $a.char cmp $b.char;
+    my Bool:D $is-same = $a.char eqv $b.char;
 }
 
 # --- end Checkbox['Etc'] }}}
@@ -119,7 +119,7 @@ multi sub infix:<cmp>(
 
 # --- --- CheckboxExceptionChar {{{
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     CheckboxExceptionChar['*'] $a,
     CheckboxExceptionChar['*'] $b
 ) returns Bool:D
@@ -129,7 +129,7 @@ multi sub infix:<cmp>(
             && $b ~~ CheckboxExceptionChar['*'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     CheckboxExceptionChar['!'] $a,
     CheckboxExceptionChar['!'] $b
 ) returns Bool:D
@@ -139,7 +139,7 @@ multi sub infix:<cmp>(
             && $b ~~ CheckboxExceptionChar['!'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     CheckboxExceptionChar $,
     CheckboxExceptionChar $
 ) returns Bool:D
@@ -149,18 +149,18 @@ multi sub infix:<cmp>(
 
 # --- --- end CheckboxExceptionChar }}}
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     Checkbox['Exception'] $a,
     Checkbox['Exception'] $b
 ) returns Bool:D
 {
-    my Bool:D $is-same = $a.char cmp $b.char;
+    my Bool:D $is-same = $a.char eqv $b.char;
 }
 
 # --- end Checkbox['Exception'] }}}
 # --- Checkbox['Unchecked'] {{{
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     Checkbox['Unchecked'] $a where *.so,
     Checkbox['Unchecked'] $b where *.so
 ) returns Bool:D
@@ -170,7 +170,7 @@ multi sub infix:<cmp>(
 
 # --- end Checkbox['Unchecked'] }}}
 
-multi sub infix:<cmp>(Checkbox $, Checkbox $) returns Bool:D
+multi sub infix:<eqv>(Checkbox $, Checkbox $) returns Bool:D
 {
     False;
 }
@@ -181,7 +181,7 @@ multi sub cmp-ok-list-item-todo(
 ) returns Bool:D
 {
     my Bool:D $is-same =
-        $a.checkbox cmp $b.checkbox
+        $a.checkbox eqv $b.checkbox
             && $a.text eqv $b.text;
 }
 

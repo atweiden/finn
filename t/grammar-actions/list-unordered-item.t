@@ -11,7 +11,7 @@ plan 4;
 
 # --- BulletPoint {{{
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['-'] $a,
     BulletPoint['-'] $b
 ) returns Bool:D
@@ -21,7 +21,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['-'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['@'] $a,
     BulletPoint['@'] $b
 ) returns Bool:D
@@ -31,7 +31,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['@'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['#'] $a,
     BulletPoint['#'] $b
 ) returns Bool:D
@@ -41,7 +41,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['#'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['$'] $a,
     BulletPoint['$'] $b
 ) returns Bool:D
@@ -51,7 +51,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['$'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['*'] $a,
     BulletPoint['*'] $b
 ) returns Bool:D
@@ -61,7 +61,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['*'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint[':'] $a,
     BulletPoint[':'] $b
 ) returns Bool:D
@@ -71,7 +71,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint[':'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['x'] $a,
     BulletPoint['x'] $b
 ) returns Bool:D
@@ -81,7 +81,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['x'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['o'] $a,
     BulletPoint['o'] $b
 ) returns Bool:D
@@ -91,7 +91,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['o'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['+'] $a,
     BulletPoint['+'] $b
 ) returns Bool:D
@@ -101,7 +101,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['+'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['='] $a,
     BulletPoint['='] $b
 ) returns Bool:D
@@ -111,7 +111,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['='];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['!'] $a,
     BulletPoint['!'] $b
 ) returns Bool:D
@@ -121,7 +121,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['!'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['~'] $a,
     BulletPoint['~'] $b
 ) returns Bool:D
@@ -131,7 +131,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['~'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['>'] $a,
     BulletPoint['>'] $b
 ) returns Bool:D
@@ -141,7 +141,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['>'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['<-'] $a,
     BulletPoint['<-'] $b
 ) returns Bool:D
@@ -151,7 +151,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['<-'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['<='] $a,
     BulletPoint['<='] $b
 ) returns Bool:D
@@ -161,7 +161,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['<='];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['->'] $a,
     BulletPoint['->'] $b
 ) returns Bool:D
@@ -171,7 +171,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['->'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['=>'] $a,
     BulletPoint['=>'] $b
 ) returns Bool:D
@@ -181,7 +181,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['=>'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint $,
     BulletPoint $
 ) returns Bool:D
@@ -197,7 +197,7 @@ multi sub cmp-ok-list-item-unordered(
 ) returns Bool:D
 {
     my Bool:D $is-same =
-        $a.bullet-point cmp $b.bullet-point
+        $a.bullet-point eqv $b.bullet-point
             && $a.text eqv $b.text;
 }
 

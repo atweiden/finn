@@ -23,7 +23,7 @@ sub is-true(Bool:D $a, Bool:D $b) returns Bool:D
 
 # --- --- --- ListItem::Number::Terminator {{{
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     ListItem::Number::Terminator['.'] $a,
     ListItem::Number::Terminator['.'] $b
 ) returns Bool:D
@@ -33,7 +33,7 @@ multi sub infix:<cmp>(
             && $b ~~ ListItem::Number::Terminator['.'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     ListItem::Number::Terminator[':'] $a,
     ListItem::Number::Terminator[':'] $b
 ) returns Bool:D
@@ -43,7 +43,7 @@ multi sub infix:<cmp>(
             && $b ~~ ListItem::Number::Terminator[':'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     ListItem::Number::Terminator[')'] $a,
     ListItem::Number::Terminator[')'] $b
 ) returns Bool:D
@@ -53,7 +53,7 @@ multi sub infix:<cmp>(
             && $b ~~ ListItem::Number::Terminator[')'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     ListItem::Number::Terminator $,
     ListItem::Number::Terminator $
 ) returns Bool:D
@@ -63,25 +63,25 @@ multi sub infix:<cmp>(
 
 # --- --- --- end ListItem::Number::Terminator }}}
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     ListItem::Number:D $a,
     ListItem::Number:D $b
 ) returns Bool:D
 {
     my Bool:D $is-same =
-        $a.terminator cmp $b.terminator
+        $a.terminator eqv $b.terminator
             && $a.value == $b.value;
 }
 
 # --- --- end ListItem::Number }}}
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     ListItem['Ordered'] $a,
     ListItem['Ordered'] $b
 ) returns Bool:D
 {
     my Bool:D $is-same =
-        $a.number cmp $b.number
+        $a.number eqv $b.number
             && $a.text eqv $b.text;
 }
 
@@ -92,7 +92,7 @@ multi sub infix:<cmp>(
 
 # --- --- --- CheckboxCheckedChar {{{
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     CheckboxCheckedChar['x'] $a,
     CheckboxCheckedChar['x'] $b
 ) returns Bool:D
@@ -102,7 +102,7 @@ multi sub infix:<cmp>(
             && $b ~~ CheckboxCheckedChar['x'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     CheckboxCheckedChar['o'] $a,
     CheckboxCheckedChar['o'] $b
 ) returns Bool:D
@@ -112,7 +112,7 @@ multi sub infix:<cmp>(
             && $b ~~ CheckboxCheckedChar['o'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     CheckboxCheckedChar['v'] $a,
     CheckboxCheckedChar['v'] $b
 ) returns Bool:D
@@ -122,7 +122,7 @@ multi sub infix:<cmp>(
             && $b ~~ CheckboxCheckedChar['v'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     CheckboxCheckedChar $,
     CheckboxCheckedChar $
 ) returns Bool:D
@@ -132,12 +132,12 @@ multi sub infix:<cmp>(
 
 # --- --- --- end CheckboxCheckedChar }}}
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     Checkbox['Checked'] $a,
     Checkbox['Checked'] $b
 ) returns Bool:D
 {
-    my Bool:D $is-same = $a.char cmp $b.char;
+    my Bool:D $is-same = $a.char eqv $b.char;
 }
 
 # --- --- end Checkbox['Checked'] }}}
@@ -145,7 +145,7 @@ multi sub infix:<cmp>(
 
 # --- --- --- CheckboxEtcChar {{{
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     CheckboxEtcChar['+'] $a,
     CheckboxEtcChar['+'] $b
 ) returns Bool:D
@@ -155,7 +155,7 @@ multi sub infix:<cmp>(
             && $b ~~ CheckboxEtcChar['+'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     CheckboxEtcChar['='] $a,
     CheckboxEtcChar['='] $b
 ) returns Bool:D
@@ -165,7 +165,7 @@ multi sub infix:<cmp>(
             && $b ~~ CheckboxEtcChar['='];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     CheckboxEtcChar['-'] $a,
     CheckboxEtcChar['-'] $b
 ) returns Bool:D
@@ -175,7 +175,7 @@ multi sub infix:<cmp>(
             && $b ~~ CheckboxEtcChar['-'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     CheckboxEtcChar $,
     CheckboxEtcChar $
 ) returns Bool:D
@@ -185,12 +185,12 @@ multi sub infix:<cmp>(
 
 # --- --- --- end CheckboxEtcChar }}}
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     Checkbox['Etc'] $a,
     Checkbox['Etc'] $b
 ) returns Bool:D
 {
-    my Bool:D $is-same = $a.char cmp $b.char;
+    my Bool:D $is-same = $a.char eqv $b.char;
 }
 
 # --- --- end Checkbox['Etc'] }}}
@@ -198,7 +198,7 @@ multi sub infix:<cmp>(
 
 # --- --- --- CheckboxExceptionChar {{{
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     CheckboxExceptionChar['*'] $a,
     CheckboxExceptionChar['*'] $b
 ) returns Bool:D
@@ -208,7 +208,7 @@ multi sub infix:<cmp>(
             && $b ~~ CheckboxExceptionChar['*'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     CheckboxExceptionChar['!'] $a,
     CheckboxExceptionChar['!'] $b
 ) returns Bool:D
@@ -218,7 +218,7 @@ multi sub infix:<cmp>(
             && $b ~~ CheckboxExceptionChar['!'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     CheckboxExceptionChar $,
     CheckboxExceptionChar $
 ) returns Bool:D
@@ -228,18 +228,18 @@ multi sub infix:<cmp>(
 
 # --- --- --- end CheckboxExceptionChar }}}
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     Checkbox['Exception'] $a,
     Checkbox['Exception'] $b
 ) returns Bool:D
 {
-    my Bool:D $is-same = $a.char cmp $b.char;
+    my Bool:D $is-same = $a.char eqv $b.char;
 }
 
 # --- --- end Checkbox['Exception'] }}}
 # --- --- Checkbox['Unchecked'] {{{
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     Checkbox['Unchecked'] $a where *.so,
     Checkbox['Unchecked'] $b where *.so
 ) returns Bool:D
@@ -249,15 +249,15 @@ multi sub infix:<cmp>(
 
 # --- --- end Checkbox['Unchecked'] }}}
 
-multi sub infix:<cmp>(Checkbox $, Checkbox $) returns Bool:D
+multi sub infix:<eqv>(Checkbox $, Checkbox $) returns Bool:D
 {
     False;
 }
 
-multi sub infix:<cmp>(ListItem['Todo'] $a, ListItem['Todo'] $b) returns Bool:D
+multi sub infix:<eqv>(ListItem['Todo'] $a, ListItem['Todo'] $b) returns Bool:D
 {
     my Bool:D $is-same =
-        $a.checkbox cmp $b.checkbox
+        $a.checkbox eqv $b.checkbox
             && $a.text eqv $b.text;
 }
 
@@ -266,7 +266,7 @@ multi sub infix:<cmp>(ListItem['Todo'] $a, ListItem['Todo'] $b) returns Bool:D
 
 # --- --- BulletPoint {{{
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['-'] $a,
     BulletPoint['-'] $b
 ) returns Bool:D
@@ -276,7 +276,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['-'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['@'] $a,
     BulletPoint['@'] $b
 ) returns Bool:D
@@ -286,7 +286,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['@'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['#'] $a,
     BulletPoint['#'] $b
 ) returns Bool:D
@@ -296,7 +296,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['#'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['$'] $a,
     BulletPoint['$'] $b
 ) returns Bool:D
@@ -306,7 +306,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['$'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['*'] $a,
     BulletPoint['*'] $b
 ) returns Bool:D
@@ -316,7 +316,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['*'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint[':'] $a,
     BulletPoint[':'] $b
 ) returns Bool:D
@@ -326,7 +326,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint[':'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['x'] $a,
     BulletPoint['x'] $b
 ) returns Bool:D
@@ -336,7 +336,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['x'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['o'] $a,
     BulletPoint['o'] $b
 ) returns Bool:D
@@ -346,7 +346,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['o'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['+'] $a,
     BulletPoint['+'] $b
 ) returns Bool:D
@@ -356,7 +356,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['+'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['='] $a,
     BulletPoint['='] $b
 ) returns Bool:D
@@ -366,7 +366,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['='];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['!'] $a,
     BulletPoint['!'] $b
 ) returns Bool:D
@@ -376,7 +376,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['!'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['~'] $a,
     BulletPoint['~'] $b
 ) returns Bool:D
@@ -386,7 +386,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['~'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['>'] $a,
     BulletPoint['>'] $b
 ) returns Bool:D
@@ -396,7 +396,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['>'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['<-'] $a,
     BulletPoint['<-'] $b
 ) returns Bool:D
@@ -406,7 +406,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['<-'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['<='] $a,
     BulletPoint['<='] $b
 ) returns Bool:D
@@ -416,7 +416,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['<='];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['->'] $a,
     BulletPoint['->'] $b
 ) returns Bool:D
@@ -426,7 +426,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['->'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint['=>'] $a,
     BulletPoint['=>'] $b
 ) returns Bool:D
@@ -436,7 +436,7 @@ multi sub infix:<cmp>(
             && $b ~~ BulletPoint['=>'];
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     BulletPoint $,
     BulletPoint $
 ) returns Bool:D
@@ -446,24 +446,24 @@ multi sub infix:<cmp>(
 
 # --- --- end BulletPoint }}}
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     ListItem['Unordered'] $a,
     ListItem['Unordered'] $b
 ) returns Bool:D
 {
     my Bool:D $is-same =
-        $a.bullet-point cmp $b.bullet-point
+        $a.bullet-point eqv $b.bullet-point
             && $a.text eqv $b.text;
 }
 
 # --- end ListItem['Unordered'] }}}
 
-multi sub infix:<cmp>(ListItem $, ListItem $) returns Bool:D
+multi sub infix:<eqv>(ListItem $, ListItem $) returns Bool:D
 {
     False;
 }
 
-multi sub infix:<cmp>(
+multi sub infix:<eqv>(
     ListBlock:D $a,
     ListBlock:D $b where { .list-item.elems == $a.list-item.elems }
 ) returns Bool:D
@@ -474,19 +474,19 @@ multi sub infix:<cmp>(
         $i++
     )
     {
-        $a.list-item[$i] cmp $b.list-item[$i]
+        $a.list-item[$i] eqv $b.list-item[$i]
     }
     my Bool:D $is-same = [[&is-true]] @is-same;
 }
 
-multi sub infix:<cmp>(ListBlock $, ListBlock $) returns Bool:D
+multi sub infix:<eqv>(ListBlock $, ListBlock $) returns Bool:D
 {
     False;
 }
 
 sub cmp-ok-list-block(ListBlock:D $a, ListBlock:D $b) returns Bool:D
 {
-    $a cmp $b;
+    $a eqv $b;
 }
 
 # end sub cmp-ok-list-block }}}
