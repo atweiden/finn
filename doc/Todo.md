@@ -28,6 +28,10 @@ Finn::Parser::Grammar
   - code-inline
   - sectional-link
 
+### warn about faulty `\\` handling in IO::Path
+
+- file names that purposefully contain backslashes don't work
+
 
 Finn::Parser::ParseTree
 -----------------------
