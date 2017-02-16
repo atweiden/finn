@@ -119,19 +119,11 @@ multi sub infix:<eqv>(
 # list-block {{{
 
 multi sub infix:<eqv>(
-    ListBlock:D $a,
-    ListBlock:D $b where { .list-item.elems == $a.list-item.elems }
+    ListBlock:D $a where *.so,
+    ListBlock:D $b where *.so
 ) is export returns Bool:D
 {
-    my Bool:D @is-same = do loop (
-        my UInt:D $i = 0;
-        $i < $a.list-item.elems;
-        $i++
-    )
-    {
-        $a.list-item[$i] eqv $b.list-item[$i]
-    }
-    my Bool:D $is-same = [[&is-true]] @is-same;
+    my Bool:D $is-same = $a.list-item eqv $b.list-item;
 }
 
 multi sub infix:<eqv>(ListBlock $, ListBlock $) is export returns Bool:D
@@ -141,6 +133,26 @@ multi sub infix:<eqv>(ListBlock $, ListBlock $) is export returns Bool:D
 
 # end list-block }}}
 # list-item {{{
+
+multi sub infix:<eqv>(
+    ListItem:D @a,
+    ListItem:D @b where { .elems == @a.elems }
+) is export returns Bool:D
+{
+    my Bool:D @is-same = do loop (my UInt:D $i = 0; $i < @a.elems; $i++)
+    {
+        @a[$i] eqv @b[$i]
+    }
+    my Bool:D $is-same = [[&is-true]] @is-same;
+}
+
+multi sub infix:<eqv>(
+    ListItem @,
+    ListItem @
+) is export returns Bool:D
+{
+    False;
+}
 
 # --- ListItem['Ordered'] {{{
 
@@ -592,6 +604,26 @@ multi sub infix:<eqv>(ListItem $, ListItem $) is export returns Bool:D
 # sectional-inline {{{
 
 multi sub infix:<eqv>(
+    SectionalInline:D @a,
+    SectionalInline:D @b where { .elems == @a.elems }
+) is export returns Bool:D
+{
+    my Bool:D @is-same = do loop (my UInt:D $i = 0; $i < @a.elems; $i++)
+    {
+        @a[$i] eqv @b[$i]
+    }
+    my Bool:D $is-same = [[&is-true]] @is-same;
+}
+
+multi sub infix:<eqv>(
+    SectionalInline @,
+    SectionalInline @
+) is export returns Bool:D
+{
+    False;
+}
+
+multi sub infix:<eqv>(
     SectionalInline['Name'] $a,
     SectionalInline['Name'] $b
 ) is export returns Bool:D
@@ -644,6 +676,55 @@ multi sub infix:<eqv>(
 }
 
 # end sectional-inline }}}
+# sectional-inline-block {{{
+
+multi sub infix:<eqv>(
+    SectionalInlineBlock['BlankLine'] $a,
+    SectionalInlineBlock['BlankLine'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.blank-line eqv $b.blank-line
+            && $a.sectional-inline eqv $b.sectional-inline;
+}
+
+multi sub infix:<eqv>(
+    SectionalInlineBlock['CommentBlock'] $a,
+    SectionalInlineBlock['CommentBlock'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.comment-block eqv $b.comment-block
+            && $a.sectional-inline eqv $b.sectional-inline;
+}
+
+multi sub infix:<eqv>(
+    SectionalInlineBlock['HorizontalRule'] $a,
+    SectionalInlineBlock['HorizontalRule'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.horizontal-rule eqv $b.horizontal-rule
+            && $a.sectional-inline eqv $b.sectional-inline;
+}
+
+multi sub infix:<eqv>(
+    SectionalInlineBlock['Top'] $a,
+    SectionalInlineBlock['Top'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same = $a.sectional-inline eqv $b.sectional-inline;
+}
+
+multi sub infix:<eqv>(
+    SectionalInlineBlock $,
+    SectionalInlineBlock $
+) is export returns Bool:D
+{
+    False;
+}
+
+# end sectional-inline-block }}}
 
 # sub is-true {{{
 
