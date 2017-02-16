@@ -9,25 +9,15 @@ plan 3;
 
 # sub cmp-ok-header {{{
 
-multi sub cmp-ok-header(Header[1] $a, Header[1] $b) returns Bool:D
+proto sub cmp-ok-header(Header[Int] $a, Header[Int] $b) returns Bool:D
 {
     my Bool:D $is-same = $a.text eqv $b.text;
 }
 
-multi sub cmp-ok-header(Header[2] $a, Header[2] $b) returns Bool:D
-{
-    my Bool:D $is-same = $a.text eqv $b.text;
-}
-
-multi sub cmp-ok-header(Header[3] $a, Header[3] $b) returns Bool:D
-{
-    my Bool:D $is-same = $a.text eqv $b.text;
-}
-
-multi sub cmp-ok-header(Header $, Header $) returns Bool:D
-{
-    False;
-}
+multi sub cmp-ok-header(Header[1] $a, Header[1] $b) returns Bool:D {*}
+multi sub cmp-ok-header(Header[2] $a, Header[2] $b) returns Bool:D {*}
+multi sub cmp-ok-header(Header[3] $a, Header[3] $b) returns Bool:D {*}
+multi sub cmp-ok-header(Header $, Header $)         returns Bool:D { False }
 
 # end sub cmp-ok-header }}}
 
