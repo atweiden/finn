@@ -576,16 +576,15 @@ token sectional-block-name
 # --- end sectional-block-name }}}
 # --- sectional-block-content {{{
 
-# --- --- sectional-block-content-line {{{
+# --- --- sectional-block-content-text {{{
 
-proto token sectional-block-content-line-backticks {*}
-
-token sectional-block-content-line-backticks:sectional-inline
+token sectional-block-content-text-backticks
 {
-    <sectional-inline>
+    <sectional-block-content-text-line-backticks>
+    [ \n <sectional-block-content-text-line-backticks> ]*
 }
 
-token sectional-block-content-line-backticks:text
+token sectional-block-content-text-line-backticks
 {
     ^^
     <!before
@@ -596,14 +595,13 @@ token sectional-block-content-line-backticks:text
     $$
 }
 
-proto token sectional-block-content-line-dashes {*}
-
-token sectional-block-content-line-dashes:sectional-inline
+token sectional-block-content-text-dashes
 {
-    <sectional-inline>
+    <sectional-block-content-text-line-dashes>
+    [ \n <sectional-block-content-text-line-dashes> ]*
 }
 
-token sectional-block-content-line-dashes:text
+token sectional-block-content-text-line-dashes
 {
     ^^
     <!before
@@ -614,18 +612,38 @@ token sectional-block-content-line-dashes:text
     $$
 }
 
-# --- --- end sectional-block-content-line }}}
+# --- --- end sectional-block-content-text }}}
 
-token sectional-block-content-backticks
+token sectional-block-contents-backticks
 {
-    <sectional-block-content-line-backticks>
-    [ \n <sectional-block-content-line-backticks> ]*
+    <sectional-block-content-backticks>
+    [ \n <sectional-block-content-backticks> ]*
 }
 
-token sectional-block-content-dashes
+proto token sectional-block-content-backticks {*}
+token sectional-block-content-backticks:sectional-inline
 {
-    <sectional-block-content-line-dashes>
-    [ \n <sectional-block-content-line-dashes> ]*
+    <sectional-inline>
+}
+token sectional-block-content-backticks:text
+{
+    <sectional-block-content-text-backticks>
+}
+
+token sectional-block-contents-dashes
+{
+    <sectional-block-content-dashes>
+    [ \n <sectional-block-content-dashes> ]*
+}
+
+proto token sectional-block-content-dashes {*}
+token sectional-block-content-dashes:sectional-inline
+{
+    <sectional-inline>
+}
+token sectional-block-content-dashes:text
+{
+    <sectional-block-content-text-dashes>
 }
 
 # --- end sectional-block-content }}}
@@ -655,7 +673,7 @@ token sectional-block:backticks
     $$
     \n
 
-    [ <sectional-block-content-backticks> \n ]?
+    [ <sectional-block-contents-backticks> \n ]?
 
     <sectional-block-delimiter-closing-backticks>
 }
@@ -670,7 +688,7 @@ token sectional-block:dashes
     $$
     \n
 
-    [ <sectional-block-content-dashes> \n ]?
+    [ <sectional-block-contents-dashes> \n ]?
 
     <sectional-block-delimiter-closing-dashes>
 }

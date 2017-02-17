@@ -4,11 +4,10 @@ Todo
 Finn::Parser::Grammar
 ---------------------
 
-### improve `SectionalBlockContent['Text']` handling
+### store leading whitespace in `SectionalInline` attribute
 
-- construct `SectionalBlockContent['Text']` from contiguous lines of text
-  (non SectionalInlines), as opposed to constructing it one line of text
-  at a time
+- necessary for Finn document processing to yield correct amount
+  of leading indentation
 
 ### deeply parse other text
 
@@ -28,10 +27,6 @@ Finn::Parser::Grammar
   - code-inline
   - sectional-link
 
-### warn about faulty `\\` handling in IO::Path
-
-- file names that purposefully contain backslashes don't work
-
 
 Finn::Parser::ParseTree
 -----------------------
@@ -48,8 +43,8 @@ Finn::Parser::ParseTree
 ### Validate that BySectionalBlockName Sectional Inlines appear only within Sectional Blocks in `submethod TWEAK`
 
 - Intra-file Sectional Inlines come in only one flavor: *By Sectional
-  Block Name*. This type of Sectional Inline can only appear within a
-  Sectional Block.
+  Block Name*. This type of Sectional Inline can only appear within
+  a Sectional Block.
 
 
 Test
@@ -73,3 +68,11 @@ Syntax Documentation
   - double `*` horizontal-rule-hard with reference citations in between
     - as a parallel, specify reference-block needs to come at end
       of document
+
+
+Other
+-----
+
+### warn about faulty `\\` handling in IO::Path
+
+- file names that purposefully contain backslashes don't work
