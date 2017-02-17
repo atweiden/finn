@@ -10,9 +10,9 @@ subtest
     my Str:D $list-todo-item = q:to/EOF/.trim;
     [ ] Building…
     EOF
-
+    my Str:D $rule = 'list-todo-item';
     ok
-        Finn::Parser::Grammar.parse($list-todo-item, :rule<list-todo-item>),
+        Finn::Parser::Grammar.parse($list-todo-item, :$rule),
         'Parses list-todo-item';
 }
 
@@ -21,9 +21,9 @@ subtest
     my Str:D $list-todo-item = q:to/EOF/.trim;
     [x] Construction complete.
     EOF
-
+    my Str:D $rule = 'list-todo-item';
     ok
-        Finn::Parser::Grammar.parse($list-todo-item, :rule<list-todo-item>),
+        Finn::Parser::Grammar.parse($list-todo-item, :$rule),
         'Parses list-todo-item';
 }
 
@@ -32,9 +32,9 @@ subtest
     my Str:D $list-todo-item = q:to/EOF/.trim;
     [+] Achievement unlocked.
     EOF
-
+    my Str:D $rule = 'list-todo-item';
     ok
-        Finn::Parser::Grammar.parse($list-todo-item, :rule<list-todo-item>),
+        Finn::Parser::Grammar.parse($list-todo-item, :$rule),
         'Parses list-todo-item';
 }
 
@@ -43,9 +43,9 @@ subtest
     my Str:D $list-todo-item = q:to/EOF/.trim;
     [!] We are under attack.
     EOF
-
+    my Str:D $rule = 'list-todo-item';
     ok
-        Finn::Parser::Grammar.parse($list-todo-item, :rule<list-todo-item>),
+        Finn::Parser::Grammar.parse($list-todo-item, :$rule),
         'Parses list-todo-item';
 }
 

@@ -16,10 +16,8 @@ subtest
     [!] Construction complete.
     ```
     EOF
-
-    ok
-        Finn::Parser::Grammar.parse($code-block, :rule<code-block>),
-        'Parses code-block';
+    my Str:D $rule = 'code-block';
+    ok Finn::Parser::Grammar.parse($code-block, :$rule), 'Parses code-block';
 }
 
 subtest
@@ -29,10 +27,8 @@ subtest
     $ cat TODO.md
     ```
     EOF
-
-    ok
-        Finn::Parser::Grammar.parse($code-block, :rule<code-block>),
-        'Parses code-block';
+    my Str:D $rule = 'code-block';
+    ok Finn::Parser::Grammar.parse($code-block, :$rule), 'Parses code-block';
 }
 
 subtest
@@ -79,10 +75,8 @@ subtest
     Welsh      | Meow
     ```
     EOF
-
-    ok
-        Finn::Parser::Grammar.parse($code-block, :rule<code-block>),
-        'Parses code-block';
+    my Str:D $rule = 'code-block';
+    ok Finn::Parser::Grammar.parse($code-block, :$rule), 'Parses code-block';
 }
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

@@ -12,9 +12,9 @@ subtest
         TODO
         XXX
     >;
-
+    my Str:D $rule = 'callout';
     @callout.map({
-        ok Finn::Parser::Grammar.parse($_, :rule<callout>), 'Parses callout'
+        ok Finn::Parser::Grammar.parse($_, :$rule), 'Parses callout'
     });
 }
 

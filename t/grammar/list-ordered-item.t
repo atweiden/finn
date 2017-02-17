@@ -10,12 +10,10 @@ subtest
     my Str:D $list-ordered-item = q:to/EOF/.trim;
     1. One
     EOF
-
+    my Str:D $rule = 'list-ordered-item';
     ok
-        Finn::Parser::Grammar.parse(
-            $list-ordered-item,
-            :rule<list-ordered-item>
-        ), 'Parses list-ordered-item';
+        Finn::Parser::Grammar.parse($list-ordered-item, :$rule),
+        'Parses list-ordered-item';
 }
 
 subtest
@@ -23,12 +21,10 @@ subtest
     my Str:D $list-ordered-item = q:to/EOF/.trim;
     1: One
     EOF
-
+    my Str:D $rule = 'list-ordered-item';
     ok
-        Finn::Parser::Grammar.parse(
-            $list-ordered-item,
-            :rule<list-ordered-item>
-        ), 'Parses list-ordered-item';
+        Finn::Parser::Grammar.parse($list-ordered-item, :$rule),
+        'Parses list-ordered-item';
 }
 
 subtest
@@ -36,12 +32,10 @@ subtest
     my Str:D $list-ordered-item = q:to/EOF/.trim;
     1) One
     EOF
-
+    my Str:D $rule = 'list-ordered-item';
     ok
-        Finn::Parser::Grammar.parse(
-            $list-ordered-item,
-            :rule<list-ordered-item>
-        ), 'Parses list-ordered-item';
+        Finn::Parser::Grammar.parse($list-ordered-item, :$rule),
+        'Parses list-ordered-item';
 }
 
 subtest
@@ -54,12 +48,10 @@ subtest
        one one one one one one one one one one one one one one one one
        one one one one one one one one one one one one one one one one
     EOF
-
+    my Str:D $rule = 'list-ordered-item';
     ok
-        Finn::Parser::Grammar.parse(
-            $list-ordered-item,
-            :rule<list-ordered-item>
-        ), 'Parses list-ordered-item';
+        Finn::Parser::Grammar.parse($list-ordered-item, :$rule),
+        'Parses list-ordered-item';
 }
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

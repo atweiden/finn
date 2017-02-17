@@ -8,27 +8,27 @@ plan 4;
 subtest
 {
     my Str:D $underline = '_an underlined piece of text_';
-
+    my Str:D $rule = 'underline';
     ok
-        Finn::Parser::Grammar.parse($underline, :rule<underline>),
+        Finn::Parser::Grammar.parse($underline, :$rule),
         'Underlined text parses';
 }
 
 subtest
 {
     my Str:D $underline = '_a_';
-
+    my Str:D $rule = 'underline';
     ok
-        Finn::Parser::Grammar.parse($underline, :rule<underline>),
+        Finn::Parser::Grammar.parse($underline, :$rule),
         'Underlined text parses';
 }
 
 subtest
 {
     my Str:D $underline = '_\ \ \ a_';
-
+    my Str:D $rule = 'underline';
     ok
-        Finn::Parser::Grammar.parse($underline, :rule<underline>),
+        Finn::Parser::Grammar.parse($underline, :$rule),
         'Underlined text parses';
 }
 
@@ -39,9 +39,9 @@ subtest
     line two
     line three_
     EOF
-
+    my Str:D $rule = 'underline';
     ok
-        Finn::Parser::Grammar.parse($underline, :rule<underline>),
+        Finn::Parser::Grammar.parse($underline, :$rule),
         'Underlined text parses';
 }
 

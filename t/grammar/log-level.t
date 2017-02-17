@@ -13,11 +13,9 @@ subtest
         DEBUG
         TRACE
     >;
-
+    my Str:D $rule = 'log-level-ignore';
     @log-level-ignore.map({
-        ok
-            Finn::Parser::Grammar.parse($_, :rule<log-level-ignore>),
-            'Parses log-level-ignore'
+        ok Finn::Parser::Grammar.parse($_, :$rule), 'Parses log-level-ignore'
     });
 }
 
@@ -29,11 +27,9 @@ subtest
     my Str:D @log-level-info = qw<
         INFO
     >;
-
+    my Str:D $rule = 'log-level-info';
     @log-level-info.map({
-        ok
-            Finn::Parser::Grammar.parse($_, :rule<log-level-info>),
-            'Parses log-level-info'
+        ok Finn::Parser::Grammar.parse($_, :$rule), 'Parses log-level-info'
     });
 }
 
@@ -45,11 +41,9 @@ subtest
     my Str:D @log-level-warn = qw<
         WARN
     >;
-
+    my Str:D $rule = 'log-level-warn';
     @log-level-warn.map({
-        ok
-            Finn::Parser::Grammar.parse($_, :rule<log-level-warn>),
-            'Parses log-level-warn'
+        ok Finn::Parser::Grammar.parse($_, :$rule), 'Parses log-level-warn'
     });
 }
 
@@ -62,11 +56,9 @@ subtest
         ERROR
         FATAL
     >;
-
+    my Str:D $rule = 'log-level-error';
     @log-level-error.map({
-        ok
-            Finn::Parser::Grammar.parse($_, :rule<log-level-error>),
-            'Parses log-level-error';
+        ok Finn::Parser::Grammar.parse($_, :$rule), 'Parses log-level-error';
     })
 }
 

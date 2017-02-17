@@ -21,9 +21,9 @@ subtest 'absolute',
         file://~/a
         file://~/a/b/c/d/e/f
     >;
-
+    my Str:D $rule = 'file';
     @file.map({
-        ok Finn::Parser::Grammar.parse($_, :rule<file>), 'Parses absolute file'
+        ok Finn::Parser::Grammar.parse($_, :$rule), 'Parses absolute file'
     });
 }
 
@@ -35,9 +35,9 @@ subtest 'relative',
         file://a
         file://a/b/c/d/e/f
     >;
-
+    my Str:D $rule = 'file';
     @file.map({
-        ok Finn::Parser::Grammar.parse($_, :rule<file>), 'Parses relative file'
+        ok Finn::Parser::Grammar.parse($_, :$rule), 'Parses relative file'
     });
 }
 

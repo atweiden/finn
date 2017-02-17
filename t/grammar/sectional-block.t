@@ -12,12 +12,10 @@ subtest
     - A is for Anacortes.
     ```
     EOF
-
+    my Str:D $rule = 'sectional-block';
     ok
-        Finn::Parser::Grammar.parse(
-            $sectional-block,
-            :rule<sectional-block>
-        ), 'Parses sectional-block';
+        Finn::Parser::Grammar.parse($sectional-block, :$rule),
+        'Parses sectional-block';
 }
 
 subtest
@@ -27,12 +25,10 @@ subtest
     - A is for Anacortes.
     --
     EOF
-
+    my Str:D $rule = 'sectional-block';
     ok
-        Finn::Parser::Grammar.parse(
-            $sectional-block,
-            :rule<sectional-block>
-        ), 'Parses sectional-block';
+        Finn::Parser::Grammar.parse($sectional-block, :$rule),
+        'Parses sectional-block';
 }
 
 subtest
@@ -42,12 +38,10 @@ subtest
     - A is for Anacortes.
     ---------------------
     EOF
-
+    my Str:D $rule = 'sectional-block';
     ok
-        Finn::Parser::Grammar.parse(
-            $sectional-block,
-            :rule<sectional-block>
-        ), 'Parses sectional-block';
+        Finn::Parser::Grammar.parse($sectional-block, :$rule),
+        'Parses sectional-block';
 }
 
 subtest
@@ -57,12 +51,10 @@ subtest
     - A is for Anacortes.
     ---
     EOF
-
+    my Str:D $rule = 'sectional-block';
     ok
-        Finn::Parser::Grammar.parse(
-            $sectional-block,
-            :rule<sectional-block>
-        ), 'Parses sectional-block';
+        Finn::Parser::Grammar.parse($sectional-block, :$rule),
+        'Parses sectional-block';
 }
 
 subtest
@@ -72,12 +64,10 @@ subtest
     - A is for Anacortes.
     ---
     EOF
-
+    my Str:D $rule = 'sectional-block';
     ok
-        Finn::Parser::Grammar.parse(
-            $sectional-block,
-            :rule<sectional-block>
-        ), 'Parses sectional-block';
+        Finn::Parser::Grammar.parse($sectional-block, :$rule),
+        'Parses sectional-block';
 }
 
 subtest
@@ -87,12 +77,10 @@ subtest
     - A is for Anacortes.
     ---
     EOF
-
+    my Str:D $rule = 'sectional-block';
     ok
-        Finn::Parser::Grammar.parse(
-            $sectional-block,
-            :rule<sectional-block>
-        ), 'Parses sectional-block';
+        Finn::Parser::Grammar.parse($sectional-block, :$rule),
+        'Parses sectional-block';
 }
 
 subtest
@@ -102,12 +90,10 @@ subtest
     - A is for Anacortes.
     ```
     EOF
-
+    my Str:D $rule = 'sectional-block';
     ok
-        Finn::Parser::Grammar.parse(
-            $sectional-block,
-            :rule<sectional-block>
-        ), 'Parses sectional-block';
+        Finn::Parser::Grammar.parse($sectional-block, :$rule),
+        'Parses sectional-block';
 }
 
 subtest
@@ -120,12 +106,10 @@ subtest
     - D is for Davenport.
     ```
     EOF
-
+    my Str:D $rule = 'sectional-block';
     ok
-        Finn::Parser::Grammar.parse(
-            $sectional-block,
-            :rule<sectional-block>
-        ), 'Parses sectional-block';
+        Finn::Parser::Grammar.parse($sectional-block, :$rule),
+        'Parses sectional-block';
 }
 
 subtest
@@ -135,12 +119,10 @@ subtest
     About this library
     ```
     EOF
-
+    my Str:D $rule = 'sectional-block';
     ok
-        Finn::Parser::Grammar.parse(
-            $sectional-block,
-            :rule<sectional-block>
-        ), 'Parses sectional-block';
+        Finn::Parser::Grammar.parse($sectional-block, :$rule),
+        'Parses sectional-block';
 }
 
 subtest
@@ -150,12 +132,10 @@ subtest
     About this library
     ```
     EOF
-
+    my Str:D $rule = 'sectional-block';
     ok
-        Finn::Parser::Grammar.parse(
-            $sectional-block,
-            :rule<sectional-block>
-        ), 'Parses sectional-block';
+        Finn::Parser::Grammar.parse($sectional-block, :$rule),
+        'Parses sectional-block';
 }
 
 subtest
@@ -165,12 +145,10 @@ subtest
     About this library
     ```
     EOF
-
+    my Str:D $rule = 'sectional-block';
     ok
-        Finn::Parser::Grammar.parse(
-            $sectional-block,
-            :rule<sectional-block>
-        ), 'Parses sectional-block';
+        Finn::Parser::Grammar.parse($sectional-block, :$rule),
+        'Parses sectional-block';
 }
 
 subtest
@@ -184,12 +162,10 @@ subtest
     [!] Construction complete.
     ```
     EOF
-
+    my Str:D $rule = 'sectional-block';
     ok
-        Finn::Parser::Grammar.parse(
-            $sectional-block,
-            :rule<sectional-block>
-        ), 'Parses sectional-block';
+        Finn::Parser::Grammar.parse($sectional-block, :$rule),
+        'Parses sectional-block';
 }
 
 subtest
@@ -202,12 +178,10 @@ subtest
     § 'misc'
     ```
     EOF
-
+    my Str:D $rule = 'sectional-block';
     ok
-        Finn::Parser::Grammar.parse(
-            $sectional-block,
-            :rule<sectional-block>
-        ), 'Parses sectional-block';
+        Finn::Parser::Grammar.parse($sectional-block, :$rule),
+        'Parses sectional-block';
 }
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

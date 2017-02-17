@@ -14,11 +14,9 @@ subtest
         [99]
         [10990]
     >;
-
+    my Str:D $rule = 'reference-inline';
     @reference-inline.map({
-        ok
-            Finn::Parser::Grammar.parse($_, :rule<reference-inline>),
-            'Parses reference-inline'
+        ok Finn::Parser::Grammar.parse($_, :$rule), 'Parses reference-inline'
     });
 }
 

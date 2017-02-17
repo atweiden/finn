@@ -8,28 +8,22 @@ plan 3;
 subtest
 {
     my Str:D $bold = '**a bold piece of text**';
-
-    ok
-        Finn::Parser::Grammar.parse($bold, :rule<bold>),
-        'Bold text parses';
+    my Str:D $rule = 'bold';
+    ok Finn::Parser::Grammar.parse($bold, :$rule), 'Bold text parses';
 }
 
 subtest
 {
     my Str:D $bold = '**a**';
-
-    ok
-        Finn::Parser::Grammar.parse($bold, :rule<bold>),
-        'Bold text parses';
+    my Str:D $rule = 'bold';
+    ok Finn::Parser::Grammar.parse($bold, :$rule), 'Bold text parses';
 }
 
 subtest
 {
     my Str:D $bold = '**\ \ \ a**';
-
-    ok
-        Finn::Parser::Grammar.parse($bold, :rule<bold>),
-        'Bold text parses';
+    my Str:D $rule = 'bold';
+    ok Finn::Parser::Grammar.parse($bold, :$rule), 'Bold text parses';
 }
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

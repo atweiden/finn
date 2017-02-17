@@ -8,8 +8,8 @@ plan 3;
 subtest
 {
     my Str:D $comment = '/* this is a comment */';
-
-    ok Finn::Parser::Grammar.parse($comment, :rule<comment>), 'Parses comment';
+    my Str:D $rule = 'comment';
+    ok Finn::Parser::Grammar.parse($comment, :$rule), 'Parses comment';
 }
 
 subtest
@@ -23,8 +23,8 @@ subtest
      *
      */
     EOF
-
-    ok Finn::Parser::Grammar.parse($comment, :rule<comment>), 'Parses comment';
+    my Str:D $rule = 'comment';
+    ok Finn::Parser::Grammar.parse($comment, :$rule), 'Parses comment';
 }
 
 subtest
@@ -37,8 +37,8 @@ subtest
        this is a block comment - line 3
      <!--                             --> */
     EOF
-
-    ok Finn::Parser::Grammar.parse($comment, :rule<comment>), 'Parses comment';
+    my Str:D $rule = 'comment';
+    ok Finn::Parser::Grammar.parse($comment, :$rule), 'Parses comment';
 }
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

@@ -15,12 +15,10 @@ subtest
     § "Name Of Section To Embed" /a/b/c/d
     § "Name Of Section To Embed" file:///
     EOF
-
+    my Str:D $rule = 'sectional-inline-block';
     ok
-        Finn::Parser::Grammar.parse(
-            $sectional-inline-block,
-            :rule<sectional-inline-block>
-        ), 'Parses sectional-inline-block';
+        Finn::Parser::Grammar.parse($sectional-inline-block, :$rule),
+        'Parses sectional-inline-block';
 }
 
 subtest
@@ -35,12 +33,10 @@ subtest
      */
     § "Name Of Section To Embed" file:///a/b/c/d
     EOF
-
+    my Str:D $rule = 'sectional-inline-block';
     ok
-        Finn::Parser::Grammar.parse(
-            $sectional-inline-block,
-            :rule<sectional-inline-block>
-        ), 'Parses sectional-inline-block';
+        Finn::Parser::Grammar.parse($sectional-inline-block, :$rule),
+        'Parses sectional-inline-block';
 }
 
 subtest
@@ -51,12 +47,10 @@ subtest
     § "Name Of Section To Embed" [0]
     § 'Name Of Section To Embed' [1010101010101]
     EOF
-
+    my Str:D $rule = 'sectional-inline-block';
     ok
-        Finn::Parser::Grammar.parse(
-            $sectional-inline-block,
-            :rule<sectional-inline-block>
-        ), 'Parses sectional-inline-block';
+        Finn::Parser::Grammar.parse($sectional-inline-block, :$rule),
+        'Parses sectional-inline-block';
 }
 
 subtest
@@ -74,12 +68,10 @@ subtest
     § [0]
     § [1]
     EOF
-
+    my Str:D $rule = 'sectional-inline-block';
     ok
-        Finn::Parser::Grammar.parse(
-            $sectional-inline-block,
-            :rule<sectional-inline-block>
-        ), 'Parses sectional-inline-block';
+        Finn::Parser::Grammar.parse($sectional-inline-block, :$rule),
+        'Parses sectional-inline-block';
 }
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

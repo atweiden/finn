@@ -16,9 +16,9 @@ subtest
         Q{'\\'},
         Q{'		tabs come before and after this		'},
         Q{'/path/to/document'};
-
+    my Str:D $rule = 'string';
     @string.map({
-        ok Finn::Parser::Grammar.parse($_, :rule<string>), 'Parses string'
+        ok Finn::Parser::Grammar.parse($_, :$rule), 'Parses string'
     });
 }
 

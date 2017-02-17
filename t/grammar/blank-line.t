@@ -9,10 +9,8 @@ subtest
 {
     my Str:D $blank-line = q:to/EOF/;
     EOF
-
-    ok
-        Finn::Parser::Grammar.parse($blank-line, :rule<blank-line>),
-        'Blank line parses';
+    my Str:D $rule = 'blank-line';
+    ok Finn::Parser::Grammar.parse($blank-line, :$rule), 'Blank line parses';
 }
 
 subtest
@@ -20,10 +18,8 @@ subtest
     my Str:D $blank-line = q:to/EOF/.trim-trailing;
 
     EOF
-
-    ok
-        Finn::Parser::Grammar.parse($blank-line, :rule<blank-line>),
-        'Blank line parses';
+    my Str:D $rule = 'blank-line';
+    ok Finn::Parser::Grammar.parse($blank-line, :$rule), 'Blank line parses';
 }
 
 subtest
@@ -31,10 +27,8 @@ subtest
     my Str:D $blank-line = q:to/EOF/.trim-trailing;
             
     EOF
-
-    ok
-        Finn::Parser::Grammar.parse($blank-line, :rule<blank-line>),
-        'Blank line parses';
+    my Str:D $rule = 'blank-line';
+    ok Finn::Parser::Grammar.parse($blank-line, :$rule), 'Blank line parses';
 }
 
 subtest
@@ -42,10 +36,8 @@ subtest
     my Str:D $blank-line = q:to/EOF/.trim-trailing;
     	       
     EOF
-
-    ok
-        Finn::Parser::Grammar.parse($blank-line, :rule<blank-line>),
-        'Blank line parses';
+    my Str:D $rule = 'blank-line';
+    ok Finn::Parser::Grammar.parse($blank-line, :$rule), 'Blank line parses';
 }
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

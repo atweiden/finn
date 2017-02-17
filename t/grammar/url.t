@@ -12,10 +12,8 @@ subtest
         https://google.com
         https://abc.xyz/?q=Query&#123
     >;
-
-    @url.map({
-        ok Finn::Parser::Grammar.parse($_, :rule<url>), 'Parses url'
-    });
+    my Str:D $rule = 'url';
+    @url.map({ ok Finn::Parser::Grammar.parse($_, :$rule), 'Parses url' });
 }
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

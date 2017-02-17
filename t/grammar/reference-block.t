@@ -15,9 +15,9 @@ subtest
     [3]: https://facebook.com
     [4]: https://twitter.com
     EOF
-
+    my Str:D $rule = 'reference-block';
     ok
-        Finn::Parser::Grammar.parse($reference-block, :rule<reference-block>),
+        Finn::Parser::Grammar.parse($reference-block, :$rule),
         'Parses reference block';
 }
 
@@ -38,9 +38,9 @@ subtest
 
     [3000000000]: https://abc.xyz/?q=%s
     EOF
-
+    my Str:D $rule = 'reference-block';
     ok
-        Finn::Parser::Grammar.parse($reference-block, :rule<reference-block>),
+        Finn::Parser::Grammar.parse($reference-block, :$rule),
         'Parses reference block';
 }
 

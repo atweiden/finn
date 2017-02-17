@@ -16,10 +16,8 @@ subtest
           - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
             - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
     EOF
-
-    ok
-        Finn::Parser::Grammar.parse($list-block, :rule<list-block>),
-        'Parses list-block';
+    my Str:D $rule = 'list-block';
+    ok Finn::Parser::Grammar.parse($list-block, :$rule), 'Parses list-block';
 }
 
 subtest
@@ -35,10 +33,8 @@ subtest
             - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ
               1234567890
     EOF
-
-    ok
-        Finn::Parser::Grammar.parse($list-block, :rule<list-block>),
-        'Parses list-block';
+    my Str:D $rule = 'list-block';
+    ok Finn::Parser::Grammar.parse($list-block, :$rule), 'Parses list-block';
 }
 
 subtest
@@ -58,10 +54,8 @@ subtest
            <- abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ
               1234567890
     EOF
-
-    ok
-        Finn::Parser::Grammar.parse($list-block, :rule<list-block>),
-        'Parses list-block';
+    my Str:D $rule = 'list-block';
+    ok Finn::Parser::Grammar.parse($list-block, :$rule), 'Parses list-block';
 }
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:
