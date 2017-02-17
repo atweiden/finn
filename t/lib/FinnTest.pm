@@ -22,6 +22,155 @@ Contains subroutines for testing Finn.
 
 # end p6doc }}}
 
+# chunk {{{
+
+# --- Chunk['SectionalInlineBlock'] {{{
+
+multi sub infix:<eqv>(
+    Chunk['SectionalInlineBlock'] $a,
+    Chunk['SectionalInlineBlock'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.sectional-inline-block eqv $b.sectional-inline-block
+            && $a.bounds eqv $b.bounds
+                && $a.section == $b.section;
+}
+
+# --- end Chunk['SectionalInlineBlock'] }}}
+# --- Chunk['SectionalBlock'] {{{
+
+multi sub infix:<eqv>(
+    Chunk['SectionalBlock'] $a,
+    Chunk['SectionalBlock'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.sectional-block eqv $b.sectional-block
+            && $a.bounds eqv $b.bounds
+                && $a.section == $b.section;
+}
+
+# --- end Chunk['SectionalBlock'] }}}
+# --- Chunk['CodeBlock'] {{{
+
+multi sub infix:<eqv>(
+    Chunk['CodeBlock'] $a,
+    Chunk['CodeBlock'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.code-block eqv $b.code-block
+            && $a.bounds eqv $b.bounds
+                && $a.section == $b.section;
+}
+
+# --- end Chunk['CodeBlock'] }}}
+# --- Chunk['ReferenceBlock'] {{{
+
+multi sub infix:<eqv>(
+    Chunk['ReferenceBlock'] $a,
+    Chunk['ReferenceBlock'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.reference-block eqv $b.reference-block
+            && $a.bounds eqv $b.bounds
+                && $a.section == $b.section;
+}
+
+# --- end Chunk['ReferenceBlock'] }}}
+# --- Chunk['HeaderBlock'] {{{
+
+multi sub infix:<eqv>(
+    Chunk['HeaderBlock'] $a,
+    Chunk['HeaderBlock'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.header-block eqv $b.header-block
+            && $a.bounds eqv $b.bounds
+                && $a.section == $b.section;
+}
+
+# --- end Chunk['HeaderBlock'] }}}
+# --- Chunk['ListBlock'] {{{
+
+multi sub infix:<eqv>(
+    Chunk['ListBlock'] $a,
+    Chunk['ListBlock'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.list-block eqv $b.list-block
+            && $a.bounds eqv $b.bounds
+                && $a.section == $b.section;
+}
+
+# --- end Chunk['ListBlock'] }}}
+# --- Chunk['Paragraph'] {{{
+
+multi sub infix:<eqv>(
+    Chunk['Paragraph'] $a,
+    Chunk['Paragraph'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.paragraph eqv $b.paragraph
+            && $a.bounds eqv $b.bounds
+                && $a.section == $b.section;
+}
+
+# --- end Chunk['Paragraph'] }}}
+# --- Chunk['HorizontalRule'] {{{
+
+multi sub infix:<eqv>(
+    Chunk['HorizontalRule'] $a,
+    Chunk['HorizontalRule'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.horizontal-rule eqv $b.horizontal-rule
+            && $a.bounds eqv $b.bounds
+                && $a.section == $b.section;
+}
+
+# --- end Chunk['HorizontalRule'] }}}
+# --- Chunk['CommentBlock'] {{{
+
+multi sub infix:<eqv>(
+    Chunk['CommentBlock'] $a,
+    Chunk['CommentBlock'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.comment-block eqv $b.comment-block
+            && $a.bounds eqv $b.bounds
+                && $a.section == $b.section;
+}
+
+# --- end Chunk['CommentBlock'] }}}
+# --- Chunk['BlankLine'] {{{
+
+multi sub infix:<eqv>(
+    Chunk['BlankLine'] $a,
+    Chunk['BlankLine'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.blank-line eqv $b.blank-line
+            && $a.bounds eqv $b.bounds
+                && $a.section == $b.section;
+}
+
+# --- end Chunk['BlankLine'] }}}
+
+multi sub infix:<eqv>(Chunk $, Chunk $) returns Bool:D
+{
+    False;
+}
+
+# end chunk }}}
 # file {{{
 
 multi sub infix:<eqv>(
@@ -89,6 +238,55 @@ multi sub infix:<eqv>(Header $, Header $) is export returns Bool:D
 }
 
 # end header }}}
+# header-block {{{
+
+multi sub infix:<eqv>(
+    HeaderBlock['BlankLine'] $a,
+    HeaderBlock['BlankLine'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.blank-line eqv $b.blank-line
+            && $a.header eqv $b.header;
+}
+
+multi sub infix:<eqv>(
+    HeaderBlock['CommentBlock'] $a,
+    HeaderBlock['CommentBlock'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.comment-block eqv $b.comment-block
+            && $a.header eqv $b.header;
+}
+
+multi sub infix:<eqv>(
+    HeaderBlock['HorizontalRule'] $a,
+    HeaderBlock['HorizontalRule'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.horizontal-rule eqv $b.horizontal-rule
+            && $a.header eqv $b.header;
+}
+
+multi sub infix:<eqv>(
+    HeaderBlock['Top'] $a,
+    HeaderBlock['Top'] $b
+) returns Bool:D
+{
+    my Bool:D $is-same = $a.header eqv $b.header;
+}
+
+multi sub infix:<eqv>(
+    HeaderBlock $,
+    HeaderBlock $
+) is export returns Bool:D
+{
+    False;
+}
+
+# end header-block }}}
 # horizontal-rule {{{
 
 multi sub infix:<eqv>(
