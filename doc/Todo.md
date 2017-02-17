@@ -9,6 +9,10 @@ Finn::Parser::Grammar
 - necessary for Finn document processing to yield correct amount
   of leading indentation
 
+### improve sectional-link parsing
+
+- detect String and File
+
 ### deeply parse other text
 
 - grammar `token <text>` could parse itself for:
