@@ -465,8 +465,7 @@ using the additive or redefine operators (`+=`, `:=` respectively).
 
 To link to a Sectional Block from prose, surround the sectional block
 name with vertical bars `|`. This is designed to be reminiscent of
-Vimdoc hot-links. As with Sectional Inlines, Sectional Block Names must
-be quoted.
+Vimdoc hot-links.
 
 Example:
 
@@ -486,10 +485,10 @@ Then we print the name:
 $CFG.name.say;
 ---
 
-For the `$CFG` global, see |"Define Globals"|.
+For the `$CFG` global, see |Define Globals|.
 ```
 
-Example with exported Sectional Block:
+To link to an exported Sectional Block, append the file path. Example:
 
 ```sh
 $ cat finn/hello
@@ -507,7 +506,7 @@ Hola
 ```
 
 ```finn
-See the Chinese example at |'Chinese' /finn/hello|.
+See the Chinese example at |Chinese /finn/hello|.
 ```
 
 ## Reference Inlines
