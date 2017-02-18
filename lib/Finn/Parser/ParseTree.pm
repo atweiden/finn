@@ -267,22 +267,12 @@ role Paragraph
 # end role Paragraph }}}
 # role ReferenceBlock {{{
 
-role ReferenceInline {...}
-role ReferenceLine   {...}
+role ReferenceLineBlock {...}
 
 role ReferenceBlock
 {
     has HorizontalRule:D $.horizontal-rule is required;
-    has ReferenceLine:D @.reference-line is required;
-}
-
-role ReferenceLine
-{
-    # the Reference Block Reference Line Reference Inline
-    has ReferenceInline:D $.reference-inline is required;
-
-    # the Reference Block Reference Line Text
-    has Str:D $.reference-text is required;
+    has ReferenceLineBlock:D @.reference-line-block is required;
 }
 
 # end role ReferenceBlock }}}
@@ -295,6 +285,40 @@ role ReferenceInline
 }
 
 # end role ReferenceInline }}}
+# role ReferenceLineBlock {{{
+
+role ReferenceLine {...}
+
+# ReferenceLines come after BlankLines
+role ReferenceLineBlock['BlankLine']
+{
+    has BlankLine:D @.blank-line is required;
+    has ReferenceLine:D @.reference-line is required;
+}
+
+# ReferenceLines come after CommentBlock
+role ReferenceLineBlock['CommentBlock']
+{
+    has CommentBlock:D $.comment-block is required;
+    has ReferenceLine:D @.reference-line is required;
+}
+
+# ReferenceLines come at top of Finn document
+role ReferenceLineBlock['Top']
+{
+    has ReferenceLine:D @.reference-line is required;
+}
+
+role ReferenceLine
+{
+    # the Reference Block Reference Line Reference Inline
+    has ReferenceInline:D $.reference-inline is required;
+
+    # the Reference Block Reference Line Text
+    has Str:D $.reference-text is required;
+}
+
+# end role ReferenceLineBlock }}}
 # role SectionalBlock {{{
 
 role SectionalInline {...}
@@ -494,6 +518,14 @@ role Chunk['ReferenceBlock'] does Chunk::Meta
 }
 
 # --- end role Chunk['ReferenceBlock'] }}}
+# --- role Chunk['ReferenceLineBlock'] {{{
+
+role Chunk['ReferenceLineBlock'] does Chunk::Meta
+{
+    has ReferenceLineBlock:D $.reference-line-block is required;
+}
+
+# --- end role Chunk['ReferenceLineBlock'] }}}
 # --- role Chunk['HeaderBlock'] {{{
 
 role Chunk['HeaderBlock'] does Chunk::Meta

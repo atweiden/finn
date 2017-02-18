@@ -1778,7 +1778,10 @@ subtest 'finn-examples/hangman',
     my Chunk::Meta::Bounds:D $bounds-ж = gen-bounds();
     my UInt:D $section-ж = 0;
 
-    my HorizontalRule['Soft'] $horizontal-rule-ж .= new;
+    my HorizontalRule['Hard'] $horizontal-rule-ж .= new;
+
+    my Str:D $blank-line-text-ж = '';
+    my BlankLine $blank-line-ж .= new(:text($blank-line-text-ж));
 
     my UInt:D $number-ж = 1;
     my ReferenceInline $reference-inline-ж .= new(:number($number-ж));
@@ -1791,9 +1794,16 @@ subtest 'finn-examples/hangman',
 
     my ReferenceLine:D @reference-line-ж = $reference-line-ж;
 
+    my ReferenceLineBlock['BlankLine'] $reference-line-block-ж .= new(
+        :blank-line($blank-line-ж),
+        :reference-line(@reference-line-ж)
+    );
+
+    my ReferenceLineBlock:D @reference-line-block-ж = $reference-line-block-ж;
+
     my ReferenceBlock $reference-block-ж .= new(
         :horizontal-rule($horizontal-rule-ж),
-        :reference-line(@reference-line-ж)
+        :reference-line-block(@reference-line-block-ж)
     );
 
     my Chunk['ReferenceBlock'] $chunk-ж .= new(

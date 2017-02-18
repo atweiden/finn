@@ -77,6 +77,7 @@ proto token chunk                  {*}
 token chunk:sectional-inline-block { <sectional-inline-block> }
 token chunk:sectional-block        { <sectional-block> }
 token chunk:code-block             { <code-block> }
+token chunk:reference-line-block   { <reference-line-block> }
 token chunk:reference-block        { <reference-block> }
 token chunk:header-block           { <header-block> }
 token chunk:list-block             { <list-block> }
@@ -113,6 +114,11 @@ token blank-line
     ^^ \h* $$
 }
 
+token blank-lines
+{
+    <blank-line> [ \n <blank-line> ]*
+}
+
 # end blank-line }}}
 # comment {{{
 
@@ -133,9 +139,7 @@ token comment-text
 
 token comment
 {
-    <comment-delimiter-opening>
-    <comment-text>
-    <comment-delimiter-closing>
+    <comment-delimiter-opening> <comment-text> <comment-delimiter-closing>
 }
 
 token comment-block
@@ -158,6 +162,7 @@ token header-text
     <!before
         | <comment>
         | <code-block>
+        | <reference-line>
         | <sectional-block>
         | <sectional-inline-block>
         | <horizontal-rule>
@@ -259,11 +264,14 @@ token checkbox:exception { <checkbox-exception> }
 token checkbox:unchecked { <checkbox-unchecked> }
 
 # --- --- end checkbox }}}
+# --- --- list-todo-item-text {{{
 
 token list-todo-item-text
 {
     \N+
 }
+
+# --- --- end list-todo-item-text }}}
 
 token list-todo-item
 {
@@ -295,6 +303,7 @@ token bullet-point:sym«->» { <sym> }
 token bullet-point:sym«=>» { <sym> }
 
 # --- --- end bullet-point }}}
+# --- --- list-unordered-item-text {{{
 
 token list-unordered-item-text-first-line
 {
@@ -306,6 +315,7 @@ token list-unordered-item-text-continuation
     <!before
         | <comment-block>
         | <code-block>
+        | <reference-line>
         | <sectional-block>
         | <horizontal-rule>
         | <list-item>
@@ -320,6 +330,8 @@ token list-unordered-item-text
     # optional additional lines of continued text
     [ $$ <.gap> ^^ <list-unordered-item-text-continuation> ]*
 }
+
+# --- --- end list-unordered-item-text }}}
 
 token list-unordered-item
 {
@@ -348,6 +360,7 @@ token list-ordered-item-number
 }
 
 # --- --- end list-ordered-item-number }}}
+# --- --- list-ordered-item-text {{{
 
 token list-ordered-item-text-first-line
 {
@@ -359,6 +372,7 @@ token list-ordered-item-text-continuation
     <!before
         | <comment-block>
         | <code-block>
+        | <reference-line>
         | <sectional-block>
         | <horizontal-rule>
         | <list-item>
@@ -373,6 +387,8 @@ token list-ordered-item-text
     # optional additional lines of continued text
     [ $$ <.gap> ^^ <list-ordered-item-text-continuation> ]*
 }
+
+# --- --- end list-ordered-item-text }}}
 
 token list-ordered-item
 {
@@ -395,25 +411,83 @@ token list-block
 # end list-block }}}
 # reference-block {{{
 
-token reference-block-reference-line-text
+token reference-block
+{
+    <horizontal-rule-hard> \n
+    <reference-line-blocks>
+}
+
+# end reference-block }}}
+# reference-line-block {{{
+
+# --- reference-line {{{
+
+# --- --- reference-line-text {{{
+
+token reference-line-text-first-line
 {
     \N+
 }
 
-token reference-block-reference-line
+token reference-line-text-continuation
 {
-    ^^ <reference-inline> ':' \h <reference-block-reference-line-text> $$
+    <!before
+        | <comment-block>
+        | <code-block>
+        | <reference-line>
+        | <sectional-block>
+        | <horizontal-rule>
+        | <list-item>
+    >
+    \N+
 }
 
-token reference-block
+token reference-line-text
 {
-    <horizontal-rule-hard>
-    <.gap>+
-    <reference-block-reference-line>
-    [ <.gap>+ <reference-block-reference-line> ]*
+    <reference-line-text-first-line>
+
+    # optional additional lines of continued text
+    [ $$ <.gap> ^^ <reference-line-text-continuation> ]*
 }
 
-# end reference-block }}}
+# --- --- end reference-line-text }}}
+
+token reference-line
+{
+    ^^ \h* <reference-inline> ':' \h <reference-line-text> $$
+}
+
+token reference-lines
+{
+    <reference-line> [ \n <reference-line> ]*
+}
+
+# --- end reference-line }}}
+
+# reference-lines must follow blank-lines or comment-block
+proto token reference-line-block {*}
+
+token reference-line-block:top
+{
+    ^ <reference-lines>
+}
+
+token reference-line-block:after-blank-lines
+{
+    <blank-lines> \n <reference-lines>
+}
+
+token reference-line-block:after-comment-block
+{
+    <comment-block> \n <reference-lines>
+}
+
+token reference-line-blocks
+{
+    <reference-line-block> [ \n <reference-line-block> ]*
+}
+
+# end reference-line-block }}}
 # code-block {{{
 
 # --- code-block-delimiter-opening {{{
@@ -783,6 +857,7 @@ token paragraph-line
     <!before
         | <comment-block>
         | <code-block>
+        | <reference-line>
         | <sectional-block>
         | <horizontal-rule>
         | <list-item>

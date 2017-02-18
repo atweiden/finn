@@ -29,7 +29,7 @@ Contains subroutines for testing Finn.
 multi sub infix:<eqv>(
     Chunk['SectionalInlineBlock'] $a,
     Chunk['SectionalInlineBlock'] $b
-) returns Bool:D
+) is export returns Bool:D
 {
     my Bool:D $is-same =
         $a.sectional-inline-block eqv $b.sectional-inline-block
@@ -43,7 +43,7 @@ multi sub infix:<eqv>(
 multi sub infix:<eqv>(
     Chunk['SectionalBlock'] $a,
     Chunk['SectionalBlock'] $b
-) returns Bool:D
+) is export returns Bool:D
 {
     my Bool:D $is-same =
         $a.sectional-block eqv $b.sectional-block
@@ -57,7 +57,7 @@ multi sub infix:<eqv>(
 multi sub infix:<eqv>(
     Chunk['CodeBlock'] $a,
     Chunk['CodeBlock'] $b
-) returns Bool:D
+) is export returns Bool:D
 {
     my Bool:D $is-same =
         $a.code-block eqv $b.code-block
@@ -71,7 +71,7 @@ multi sub infix:<eqv>(
 multi sub infix:<eqv>(
     Chunk['ReferenceBlock'] $a,
     Chunk['ReferenceBlock'] $b
-) returns Bool:D
+) is export returns Bool:D
 {
     my Bool:D $is-same =
         $a.reference-block eqv $b.reference-block
@@ -85,7 +85,7 @@ multi sub infix:<eqv>(
 multi sub infix:<eqv>(
     Chunk['HeaderBlock'] $a,
     Chunk['HeaderBlock'] $b
-) returns Bool:D
+) is export returns Bool:D
 {
     my Bool:D $is-same =
         $a.header-block eqv $b.header-block
@@ -99,7 +99,7 @@ multi sub infix:<eqv>(
 multi sub infix:<eqv>(
     Chunk['ListBlock'] $a,
     Chunk['ListBlock'] $b
-) returns Bool:D
+) is export returns Bool:D
 {
     my Bool:D $is-same =
         $a.list-block eqv $b.list-block
@@ -113,7 +113,7 @@ multi sub infix:<eqv>(
 multi sub infix:<eqv>(
     Chunk['Paragraph'] $a,
     Chunk['Paragraph'] $b
-) returns Bool:D
+) is export returns Bool:D
 {
     my Bool:D $is-same =
         $a.paragraph eqv $b.paragraph
@@ -127,7 +127,7 @@ multi sub infix:<eqv>(
 multi sub infix:<eqv>(
     Chunk['HorizontalRule'] $a,
     Chunk['HorizontalRule'] $b
-) returns Bool:D
+) is export returns Bool:D
 {
     my Bool:D $is-same =
         $a.horizontal-rule eqv $b.horizontal-rule
@@ -141,7 +141,7 @@ multi sub infix:<eqv>(
 multi sub infix:<eqv>(
     Chunk['CommentBlock'] $a,
     Chunk['CommentBlock'] $b
-) returns Bool:D
+) is export returns Bool:D
 {
     my Bool:D $is-same =
         $a.comment-block eqv $b.comment-block
@@ -155,7 +155,7 @@ multi sub infix:<eqv>(
 multi sub infix:<eqv>(
     Chunk['BlankLine'] $a,
     Chunk['BlankLine'] $b
-) returns Bool:D
+) is export returns Bool:D
 {
     my Bool:D $is-same =
         $a.blank-line eqv $b.blank-line
@@ -165,7 +165,7 @@ multi sub infix:<eqv>(
 
 # --- end Chunk['BlankLine'] }}}
 
-multi sub infix:<eqv>(Chunk $, Chunk $) returns Bool:D
+multi sub infix:<eqv>(Chunk $, Chunk $) is export returns Bool:D
 {
     False;
 }
@@ -243,7 +243,7 @@ multi sub infix:<eqv>(Header $, Header $) is export returns Bool:D
 multi sub infix:<eqv>(
     HeaderBlock['BlankLine'] $a,
     HeaderBlock['BlankLine'] $b
-) returns Bool:D
+) is export returns Bool:D
 {
     my Bool:D $is-same =
         $a.blank-line eqv $b.blank-line
@@ -253,7 +253,7 @@ multi sub infix:<eqv>(
 multi sub infix:<eqv>(
     HeaderBlock['CommentBlock'] $a,
     HeaderBlock['CommentBlock'] $b
-) returns Bool:D
+) is export returns Bool:D
 {
     my Bool:D $is-same =
         $a.comment-block eqv $b.comment-block
@@ -263,7 +263,7 @@ multi sub infix:<eqv>(
 multi sub infix:<eqv>(
     HeaderBlock['HorizontalRule'] $a,
     HeaderBlock['HorizontalRule'] $b
-) returns Bool:D
+) is export returns Bool:D
 {
     my Bool:D $is-same =
         $a.horizontal-rule eqv $b.horizontal-rule
@@ -273,7 +273,7 @@ multi sub infix:<eqv>(
 multi sub infix:<eqv>(
     HeaderBlock['Top'] $a,
     HeaderBlock['Top'] $b
-) returns Bool:D
+) is export returns Bool:D
 {
     my Bool:D $is-same = $a.header eqv $b.header;
 }
@@ -799,6 +799,45 @@ multi sub infix:<eqv>(ListItem $, ListItem $) is export returns Bool:D
 }
 
 # end list-item }}}
+# reference-line-block {{{
+
+multi sub infix:<eqv>(
+    ReferenceLineBlock['BlankLine'] $a,
+    ReferenceLineBlock['BlankLine'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.blank-line eqv $b.blank-line
+            && $a.reference-line eqv $b.reference-line;
+}
+
+multi sub infix:<eqv>(
+    ReferenceLineBlock['CommentBlock'] $a,
+    ReferenceLineBlock['CommentBlock'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.comment-block eqv $b.comment-block
+            && $a.reference-line eqv $b.reference-line;
+}
+
+multi sub infix:<eqv>(
+    ReferenceLineBlock['Top'] $a,
+    ReferenceLineBlock['Top'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same = $a.reference-line eqv $b.reference-line;
+}
+
+multi sub infix:<eqv>(
+    ReferenceLineBlock $,
+    ReferenceLineBlock $
+) is export returns Bool:D
+{
+    False;
+}
+
+# end reference-line-block }}}
 # sectional-inline {{{
 
 multi sub infix:<eqv>(

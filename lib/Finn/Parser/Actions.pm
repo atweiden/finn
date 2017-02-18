@@ -94,6 +94,19 @@ method chunk:code-block ($/)
     make Chunk['CodeBlock'].new(:$bounds, :$section, :$code-block);
 }
 
+method chunk:reference-line-block ($/)
+{
+    my Chunk::Meta::Bounds:D $bounds = gen-bounds();
+    my UInt:D $section = 0;
+    my ReferenceLineBlock:D $reference-line-block =
+        $<reference-line-block>.made;
+    make Chunk['ReferenceLineBlock'].new(
+        :$bounds,
+        :$section,
+        :$reference-line-block
+    );
+}
+
 method chunk:reference-block ($/)
 {
     my Chunk::Meta::Bounds:D $bounds = gen-bounds();
@@ -549,27 +562,91 @@ multi method code-block:dashes ($/)
 # end code-block }}}
 # reference-block {{{
 
-method reference-block-reference-line-text($/)
+method reference-block($/)
+{
+    my HorizontalRule['Hard'] $horizontal-rule = $<horizontal-rule-hard>.made;
+    my ReferenceLineBlock:D @reference-line-block =
+        $<reference-line-blocks>.made;
+    make ReferenceBlock.new(:$horizontal-rule, :@reference-line-block);
+}
+
+# end reference-block }}}
+# reference-line-block {{{
+
+# --- reference-line {{{
+
+# --- --- reference-line-text {{{
+
+method reference-line-text-first-line($/)
 {
     make ~$/;
 }
 
-method reference-block-reference-line($/)
+method reference-line-text-continuation($/)
+{
+    make ~$/;
+}
+
+multi method reference-line-text(
+    $/ where @<reference-line-text-continuation>.so
+)
+{
+    make (
+        $<reference-line-text-first-line>.made,
+        @<reference-line-text-continuation>».made.join("\n")
+    ).join("\n");
+}
+
+multi method reference-line-text($/)
+{
+    make $<reference-line-text-first-line>.made;
+}
+
+# --- --- end reference-line-text }}}
+
+method reference-line($/)
 {
     my ReferenceInline:D $reference-inline = $<reference-inline>.made;
-    my Str:D $reference-text = $<reference-block-reference-line-text>.made;
+    my Str:D $reference-text = $<reference-line-text>.made;
     make ReferenceLine.new(:$reference-inline, :$reference-text);
 }
 
-method reference-block($/)
+method reference-lines($/)
 {
-    my HorizontalRule['Hard'] $horizontal-rule = $<horizontal-rule-hard>.made;
-    my ReferenceLine:D @reference-line =
-        @<reference-block-reference-line>».made;
-    make ReferenceBlock.new(:$horizontal-rule, :@reference-line);
+    make @<reference-line>».made;
 }
 
-# end reference-block }}}
+# --- end reference-line }}}
+
+method reference-line-block:top ($/)
+{
+    my ReferenceLine:D @reference-line = $<reference-lines>.made;
+    make ReferenceLineBlock['Top'].new(:@reference-line);
+}
+
+method reference-line-block:after-blank-lines ($/)
+{
+    my BlankLine:D @blank-line = $<blank-lines>.made;
+    my ReferenceLine:D @reference-line = $<reference-lines>.made;
+    make ReferenceLineBlock['BlankLine'].new(:@blank-line, :@reference-line);
+}
+
+method reference-line-block:after-comment-block ($/)
+{
+    my CommentBlock:D $comment-block = $<comment-block>.made;
+    my ReferenceLine:D @reference-line = $<reference-lines>.made;
+    make ReferenceLineBlock['CommentBlock'].new(
+        :$comment-block,
+        :@reference-line
+    );
+}
+
+method reference-line-blocks($/)
+{
+    make @<reference-line-block>».made;
+}
+
+# end reference-line-block }}}
 # header-block {{{
 
 method header-text($/)
@@ -790,11 +867,14 @@ method checkbox:unchecked ($/)
 }
 
 # --- --- end checkbox }}}
+# --- --- list-todo-item-text {{{
 
 method list-todo-item-text($/)
 {
     make ~$/;
 }
+
+# --- --- end list-todo-item-text }}}
 
 method list-todo-item($/)
 {
@@ -956,6 +1036,11 @@ method blank-line($/)
 {
     my Str:D $text = ~$/;
     make BlankLine.new(:$text);
+}
+
+method blank-lines($/)
+{
+    make @<blank-line>».made;
 }
 
 # end blank-line }}}

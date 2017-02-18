@@ -66,13 +66,6 @@ Syntax Documentation
 
 - document the `~` horizontal-rule-soft relationship with chapters
 
-### explore idea of cutaway blocks
-
-- cutaway-block-reference
-  - double `*` horizontal-rule-hard with reference citations in between
-    - as a parallel, specify reference-block needs to come at end
-      of document
-
 
 Other
 -----
