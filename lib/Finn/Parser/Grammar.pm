@@ -54,7 +54,6 @@ In general, I<block elements> may contain certain I<inline elements>.
 =item sectional-block
 =item code-block
 =item reference-line-block
-=item reference-block
 =item header-block
 =item list-block
 =item paragraph
@@ -79,7 +78,6 @@ token chunk:sectional-inline-block { <sectional-inline-block> }
 token chunk:sectional-block        { <sectional-block> }
 token chunk:code-block             { <code-block> }
 token chunk:reference-line-block   { <reference-line-block> }
-token chunk:reference-block        { <reference-block> }
 token chunk:header-block           { <header-block> }
 token chunk:list-block             { <list-block> }
 token chunk:paragraph              { <paragraph> }
@@ -410,15 +408,6 @@ token list-block
 }
 
 # end list-block }}}
-# reference-block {{{
-
-token reference-block
-{
-    <horizontal-rule-hard> \n
-    <reference-line-blocks>
-}
-
-# end reference-block }}}
 # reference-line-block {{{
 
 # --- reference-line {{{
@@ -465,7 +454,7 @@ token reference-lines
 
 # --- end reference-line }}}
 
-# reference-lines must follow blank-lines or comment-block
+# reference-lines must follow blank-lines, comment-block, horizontal-rule
 proto token reference-line-block {*}
 
 token reference-line-block:top
@@ -481,6 +470,11 @@ token reference-line-block:after-blank-lines
 token reference-line-block:after-comment-block
 {
     <comment-block> \n <reference-lines>
+}
+
+token reference-line-block:after-horizontal-rule
+{
+    <horizontal-rule> \n <reference-lines>
 }
 
 token reference-line-blocks

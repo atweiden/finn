@@ -265,17 +265,6 @@ role Paragraph
 }
 
 # end role Paragraph }}}
-# role ReferenceBlock {{{
-
-role ReferenceLineBlock {...}
-
-role ReferenceBlock
-{
-    has HorizontalRule:D $.horizontal-rule is required;
-    has ReferenceLineBlock:D @.reference-line-block is required;
-}
-
-# end role ReferenceBlock }}}
 # role ReferenceInline {{{
 
 role ReferenceInline
@@ -303,6 +292,13 @@ role ReferenceLineBlock['CommentBlock']
     has ReferenceLine:D @.reference-line is required;
 }
 
+# ReferenceLines come after HorizontalRule
+role ReferenceLineBlock['HorizontalRule']
+{
+    has HorizontalRule:D $.horizontal-rule is required;
+    has ReferenceLine:D @.reference-line is required;
+}
+
 # ReferenceLines come at top of Finn document
 role ReferenceLineBlock['Top']
 {
@@ -311,10 +307,7 @@ role ReferenceLineBlock['Top']
 
 role ReferenceLine
 {
-    # the Reference Block Reference Line Reference Inline
     has ReferenceInline:D $.reference-inline is required;
-
-    # the Reference Block Reference Line Text
     has Str:D $.reference-text is required;
 }
 
@@ -510,14 +503,6 @@ role Chunk['CodeBlock'] does Chunk::Meta
 }
 
 # --- end role Chunk['CodeBlock'] }}}
-# --- role Chunk['ReferenceBlock'] {{{
-
-role Chunk['ReferenceBlock'] does Chunk::Meta
-{
-    has ReferenceBlock:D $.reference-block is required;
-}
-
-# --- end role Chunk['ReferenceBlock'] }}}
 # --- role Chunk['ReferenceLineBlock'] {{{
 
 role Chunk['ReferenceLineBlock'] does Chunk::Meta

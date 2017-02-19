@@ -25,8 +25,9 @@ directives* found in Haml and other HTML templating languages.
 The second key difference is that Sectional Blocks can be added to
 and modified by name after being declared, much like variables in a
 programming language. Sectional Blocks are by default privately scoped
-to the file in which they're declared, but they can be exported and
-then referenced outside of the file in which they're declared.
+to the Finn source document in which they're declared, but they can be
+exported and then referenced outside of the document in which they're
+declared.
 
 The third key difference is that Sectional Blocks, if specially named,
 generate files on-disk from Sectional Block Content.
@@ -57,11 +58,11 @@ In the above Sectional Blocks, `Name` is the Sectional Block
 Name. `content` is the Sectional Block Content.
 
 The above Sectional Blocks are privately scoped, i.e. they can't be
-modified or referenced from any other Finn source file. They are limited
-in scope to the Finn source file that they appear in.
+modified or referenced from any other Finn source document. They are
+limited in scope to the Finn source document that they appear in.
 
-To create an exported Sectional Block that can be referenced by copy
-from other Finn source files, append an asterisk (`*`) to the Sectional
+To create an exported Sectional Block that can be referenced by copy from
+other Finn source document, append an asterisk (`*`) to the Sectional
 Block Name, like this:
 
 ```finn
@@ -158,8 +159,8 @@ Name*, and *By File Path*.
 
 In this flavor of Inter-file Sectional Inline, an exported Sectional
 Block (its Sectional Block Name having an asterisk `*` appended to it)
-from a different Finn source file is referenced by its Sectional Block
-Name. Given:
+from a different Finn source document is referenced by its Sectional
+Block Name. Given:
 
     $ cat finn/cities-in-ca/a-through-c.finn
     ``` Cities Beginning with the Letter A*
@@ -227,7 +228,7 @@ Or, equivalently:
 ```
 
 Compiler error, `Secret Sauce` Sectional Block not exported from Finn
-source file:
+source document:
 
 ```finn
 § "Secret Sauce" /finn/share/recipes.finn
@@ -236,7 +237,7 @@ source file:
 This type of Sectional Inline can appear inside and outside of Sectional
 Blocks. However, if it appears outside of a Sectional Block, it must:
 
-- appear at the very top of the Finn source file, or
+- appear at the very top of the Finn source document, or
 - appear following a blank line, horizontal rule or comment block, or
 - appear as part of a consecutive series of Sectional Inlines separated
   by newline
@@ -264,7 +265,7 @@ Or, equivalently:
 This type of Sectional Inline can appear inside and outside of Sectional
 Blocks. However, if it appears outside of a Sectional Block, it must:
 
-- appear at the very top of the Finn source file, or
+- appear at the very top of the Finn source document, or
 - appear following a blank line, horizontal rule or comment block, or
 - appear as part of a consecutive series of Sectional Inlines separated
   by newline
@@ -320,16 +321,18 @@ named `Cities in Washington` would be as follows:
 - D is for Davenport.
 ```
 
-Exported Sectional Blocks can only be appended to within the same file
-in which they are originally declared. From other files, it is possible
-to reference exported Sectional Blocks by copy in a new Sectional Block,
-and that new Sectional Block can then be appended to.
+Exported Sectional Blocks can only be appended to within the same Finn
+source document in which they are originally declared. From other Finn
+source documents, it is possible to reference exported Sectional Blocks
+by copy in a new Sectional Block, and that new Sectional Block can then
+be appended to.
 
 #### Appending Content To Exported Sectional Blocks
 
 When adding content to an exported Sectional Block with the additive
-operator (`+=`) from within the same file that the exported Sectional
-Block is first declared, the export symbol (`*`) is optional. Example:
+operator (`+=`) from within the same Finn source document that the
+exported Sectional Block is first declared, the export symbol (`*`)
+is optional. Example:
 
 ```finn
 --- Florence*
@@ -379,10 +382,11 @@ Example:
 In the above example, the `Materials` Sectional Block would contain the
 text `- Glass`.
 
-Exported Sectional Blocks can only be redefined within the same file in
-which they are originally declared. From other files, it is possible to
-reference exported Sectional Blocks by copy in a new Sectional Block,
-and that new Sectional Block can then be redefined.
+Exported Sectional Blocks can only be redefined within the same Finn
+source document in which they are originally declared. From other Finn
+source documents, it is possible to reference exported Sectional Blocks
+by copy in a new Sectional Block, and that new Sectional Block can then
+be redefined.
 
 
 ## Writing Sectional Blocks To A File By Path
@@ -426,8 +430,8 @@ Washington
 
 Functionally, treating the leading `/` in the file path as the
 `$PROJECT_ROOT` is of paramount importance for DWIM, as it enables you
-to create nested directory trees full of Finn source files that may each
-write to an arbitrary file path under the project root.
+to create nested directory trees full of Finn source documents that may
+each write to an arbitrary file path under the project root.
 
 If you wish to escape this paradigm of the leading `/` signifiying
 `$PROJECT_ROOT`, prepend the file path with `file://`. The following
@@ -457,7 +461,7 @@ readme
 ```
 
 Sectional Blocks with a file path destination are globally scoped, and
-can be added to or redefined from any Finn source file being compiled
+can be added to or redefined from any Finn source document being compiled
 using the additive or redefine operators (`+=`, `:=` respectively).
 
 
@@ -545,19 +549,18 @@ numbers are not allowed. Leading zeroes are not allowed. Thousand
 separators are not allowed.
 
 
-## Reference Blocks
+## Reference Line Blocks
 
-Reference Blocks consist of a `horizontal-rule-hard`, followed by
-Reference Block Lines which are lines containing a Reference Inline
-(`[1]`), followed by a colon (`:`), followed by exactly one horizontal
-whitespace, followed by text. There can be an unlimited number of these
-lines in a Reference Block. Lines can be given one after the other and/or
-separated by blank lines or comment lines.
+Reference Line Blocks consist of lines containing a Reference Inline
+(e.g. `[1]`), followed by a colon (`:`), followed by exactly one
+horizontal whitespace, followed by text. There can be an unlimited number
+of these lines in a Reference Line Block. Reference Lines can be given
+one after the other. Reference Line text can wrap around with newlines
+similar to unordered List Item text.
 
 Examples follow:
 
 ```finn
-******************************************************************************
 
 [1]: https://foobar.info
 ```
@@ -568,44 +571,25 @@ Examples follow:
 ```
 
 ```finn
-******************************************************************************
-
-
+/* foobar.info is a popular .info website */
 [1000]: https://foobar.info
-
-a paragraph line. new sectional-block below:
-
-******************************************************************************
-[9999]: So sayeth we.
-
-
-******************************************************************************
-/* twice */
-[10000]: So sayeth we.
-[10001]: So sayeth we.
-
-/*
- * thrice
- * thrice
- * thrice
- */
-
-[10002]: So sayeth we.
-[10003]: So sayeth we.
-[10004]: So sayeth we.
+        https://www.foobar.info
+        http://www.foobar.info
 ```
 
-Reference Blocks may appear anywhere in a Finn source document, and
-can appear multiple times in the same file. The convention, however,
-is to have a single Reference Block at the very bottom of a Finn source
-document as needed.
+Reference Line Blocks may appear anywhere in a Finn source document,
+and can appear multiple times in the same document. The convention,
+however, is to have a single Reference Line Block at the very bottom
+of a Finn source document, separated from the rest of the document text
+with a Horizontal Rule and Blank Line.
 
-Reference Blocks are always privately scoped to the file in which they
-appear. Reference blocks in one Finn source file cannot be added to,
-redefined or referenced from any other Finn source file.
+Reference Line Blocks are always privately scoped to the Finn source
+document in which they appear. Reference Line Blocks in one Finn source
+document cannot be added to, redefined or referenced from any other Finn
+source document.
 
 If duplicate Reference Inline Numbers are encountered in a Finn source
-file, the last seen Reference Inline Number will take precedence.
+document, the last seen Reference Inline Number will take precedence.
 
 
 [vim-journal]: https://github.com/junegunn/vim-journal

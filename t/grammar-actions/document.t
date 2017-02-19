@@ -1650,21 +1650,21 @@ subtest 'finn-examples/hangman',
     );
 
     # --- end chunk-ƶ }}}
-    # --- chunk-ά {{{
+    # --- chunk-α {{{
 
-    my Chunk::Meta::Bounds:D $bounds-ά = gen-bounds();
-    my UInt:D $section-ά = 0;
+    my Chunk::Meta::Bounds:D $bounds-α = gen-bounds();
+    my UInt:D $section-α = 0;
 
-    my Str:D $blank-line-text-ά = '';
-    my BlankLine $blank-line-ά .= new(:text($blank-line-text-ά));
+    my Str:D $blank-line-text-α = '';
+    my BlankLine $blank-line-α .= new(:text($blank-line-text-α));
 
-    my Chunk['BlankLine'] $chunk-ά .= new(
-        :bounds($bounds-ά),
-        :section($section-ά),
-        :blank-line($blank-line-ά)
+    my Chunk['BlankLine'] $chunk-α .= new(
+        :bounds($bounds-α),
+        :section($section-α),
+        :blank-line($blank-line-α)
     );
 
-    # --- end chunk-ά }}}
+    # --- end chunk-α }}}
     # --- chunk-Ώ {{{
 
     my Chunk::Meta::Bounds:D $bounds-Ώ = gen-bounds();
@@ -1773,12 +1773,24 @@ subtest 'finn-examples/hangman',
     );
 
     # --- end chunk-Θ }}}
+    # --- chunk-Δ {{{
+
+    my Chunk::Meta::Bounds:D $bounds-Δ = gen-bounds();
+    my UInt:D $section-Δ = 0;
+
+    my HorizontalRule['Hard'] $horizontal-rule-Δ .= new;
+
+    my Chunk['HorizontalRule'] $chunk-Δ .= new(
+        :bounds($bounds-Δ),
+        :section($section-Δ),
+        :horizontal-rule($horizontal-rule-Δ)
+    );
+
+    # --- end chunk-Δ }}}
     # --- chunk-ж {{{
 
     my Chunk::Meta::Bounds:D $bounds-ж = gen-bounds();
     my UInt:D $section-ж = 0;
-
-    my HorizontalRule['Hard'] $horizontal-rule-ж .= new;
 
     my Str:D $blank-line-text-ж = '';
     my BlankLine $blank-line-ж .= new(:text($blank-line-text-ж));
@@ -1799,17 +1811,10 @@ subtest 'finn-examples/hangman',
         :reference-line(@reference-line-ж)
     );
 
-    my ReferenceLineBlock:D @reference-line-block-ж = $reference-line-block-ж;
-
-    my ReferenceBlock $reference-block-ж .= new(
-        :horizontal-rule($horizontal-rule-ж),
-        :reference-line-block(@reference-line-block-ж)
-    );
-
-    my Chunk['ReferenceBlock'] $chunk-ж .= new(
+    my Chunk['ReferenceLineBlock'] $chunk-ж .= new(
         :bounds($bounds-ж),
         :section($section-ж),
-        :reference-block($reference-block-ж)
+        :reference-line-block($reference-line-block-ж)
     );
 
     # --- end chunk-ж }}}
@@ -1867,18 +1872,19 @@ subtest 'finn-examples/hangman',
         $chunk-ẍ,
         $chunk-ý,
         $chunk-ƶ,
-        $chunk-ά,
+        $chunk-α,
         $chunk-Ώ,
         $chunk-Ψ,
         $chunk-Θ,
+        $chunk-Δ,
         $chunk-ж;
 
     # end @chunk }}}
     # @chunk tests {{{
 
     cmp-ok $parse-tree.document.chunk[$_], &cmp-ok-chunk, @chunk[$_], 'Chunk OK'
-        for (0..56);
-    ok $parse-tree.document.chunk[57].not;
+        for (0..57);
+    ok $parse-tree.document.chunk[58].not;
 
     # end @chunk tests }}}
 

@@ -3,7 +3,7 @@ use lib 'lib';
 use Finn::Parser::Grammar;
 use Test;
 
-plan 4;
+plan 5;
 
 subtest 'reference-line-block:top',
 {
@@ -39,6 +39,18 @@ subtest 'reference-line-block:after-comment-block',
     /*
      * a comment block
      */
+    [0]: 0
+    EOF
+    my Str:D $rule = 'reference-line-block';
+    ok
+        Finn::Parser::Grammar.parse($reference-line-block, :$rule),
+        'Parses reference-line-block';
+}
+
+subtest 'reference-line-block:after-horizontal-rule',
+{
+    my Str:D $reference-line-block = q:to/EOF/.trim-trailing;
+    ******************************************************************************
     [0]: 0
     EOF
     my Str:D $rule = 'reference-line-block';

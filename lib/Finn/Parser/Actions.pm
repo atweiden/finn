@@ -33,10 +33,10 @@ documents in turn. Initial concept code doesn't do any optimization,
 and may parse the same external source document many times.
 
 Since C<sectional-inline>s may contain C<reference-inline>s
-linking to external documents in place of file paths, and since the
-C<reference-block>(s) containing external document file path mappings
-for these C<reference-inline>s encountered may appear anywhere in a
-Finn source document, C<sectional-inline>s can't be blindly followed
+linking to external documents in place of file paths, and since
+the C<reference-line-block>(s) containing external document file path
+mappings for these C<reference-inline>s encountered may appear anywhere
+in a Finn source document, C<sectional-inline>s can't be blindly followed
 when first seen. The entire Finn source document has to finish parsing
 before C<sectional-inline>s can be followed.
 =end pod
@@ -105,14 +105,6 @@ method chunk:reference-line-block ($/)
         :$section,
         :$reference-line-block
     );
-}
-
-method chunk:reference-block ($/)
-{
-    my Chunk::Meta::Bounds:D $bounds = gen-bounds();
-    my UInt:D $section = 0;
-    my ReferenceBlock:D $reference-block = $<reference-block>.made;
-    make Chunk['ReferenceBlock'].new(:$bounds, :$section, :$reference-block);
 }
 
 method chunk:header-block ($/)
@@ -560,17 +552,6 @@ multi method code-block:dashes ($/)
 }
 
 # end code-block }}}
-# reference-block {{{
-
-method reference-block($/)
-{
-    my HorizontalRule['Hard'] $horizontal-rule = $<horizontal-rule-hard>.made;
-    my ReferenceLineBlock:D @reference-line-block =
-        $<reference-line-blocks>.made;
-    make ReferenceBlock.new(:$horizontal-rule, :@reference-line-block);
-}
-
-# end reference-block }}}
 # reference-line-block {{{
 
 # --- reference-line {{{
@@ -637,6 +618,16 @@ method reference-line-block:after-comment-block ($/)
     my ReferenceLine:D @reference-line = $<reference-lines>.made;
     make ReferenceLineBlock['CommentBlock'].new(
         :$comment-block,
+        :@reference-line
+    );
+}
+
+method reference-line-block:after-horizontal-rule ($/)
+{
+    my HorizontalRule:D $horizontal-rule = $<horizontal-rule>.made;
+    my ReferenceLine:D @reference-line = $<reference-lines>.made;
+    make ReferenceLineBlock['HorizontalRule'].new(
+        :$horizontal-rule,
         :@reference-line
     );
 }

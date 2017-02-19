@@ -7,7 +7,7 @@ use lib 't/lib';
 use FinnTest;
 use Test;
 
-plan 4;
+plan 5;
 
 subtest 'reference-line-block:top',
 {
@@ -133,6 +133,37 @@ subtest 'reference-line-block:after-comment-block',
         &cmp-ok-reference-line-block,
         ReferenceLineBlock['CommentBlock'].new(
             :comment-block($comment-block-a),
+            :@reference-line
+        ),
+        'ReferenceLineBlock OK';
+}
+
+subtest 'reference-line-block:after-horizontal-rule',
+{
+    my Finn::Parser::Actions $actions .= new;
+    my Str:D $reference-line-block = q:to/EOF/.trim-trailing;
+    ******************************************************************************
+    [0]: 0
+    EOF
+    my Str:D $rule = 'reference-line-block';
+
+    my HorizontalRule['Hard'] $horizontal-rule-a .= new;
+
+    my UInt:D $number-b = 0;
+    my ReferenceInline $reference-inline-b .= new(:number($number-b));
+    my Str:D $reference-text-b = '0';
+    my ReferenceLine:D $reference-line-b .= new(
+        :reference-inline($reference-inline-b),
+        :reference-text($reference-text-b)
+    );
+
+    my ReferenceLine:D @reference-line = $reference-line-b;
+
+    cmp-ok
+        Finn::Parser::Grammar.parse($reference-line-block, :$rule, :$actions).made,
+        &cmp-ok-reference-line-block,
+        ReferenceLineBlock['HorizontalRule'].new(
+            :horizontal-rule($horizontal-rule-a),
             :@reference-line
         ),
         'ReferenceLineBlock OK';

@@ -66,20 +66,20 @@ multi sub infix:<eqv>(
 }
 
 # --- end Chunk['CodeBlock'] }}}
-# --- Chunk['ReferenceBlock'] {{{
+# --- Chunk['ReferenceLineBlock'] {{{
 
 multi sub infix:<eqv>(
-    Chunk['ReferenceBlock'] $a,
-    Chunk['ReferenceBlock'] $b
+    Chunk['ReferenceLineBlock'] $a,
+    Chunk['ReferenceLineBlock'] $b
 ) is export returns Bool:D
 {
     my Bool:D $is-same =
-        $a.reference-block eqv $b.reference-block
+        $a.reference-line-block eqv $b.reference-line-block
             && $a.bounds eqv $b.bounds
                 && $a.section == $b.section;
 }
 
-# --- end Chunk['ReferenceBlock'] }}}
+# --- end Chunk['ReferenceLineBlock'] }}}
 # --- Chunk['HeaderBlock'] {{{
 
 multi sub infix:<eqv>(
@@ -818,6 +818,16 @@ multi sub infix:<eqv>(
 {
     my Bool:D $is-same =
         $a.comment-block eqv $b.comment-block
+            && $a.reference-line eqv $b.reference-line;
+}
+
+multi sub infix:<eqv>(
+    ReferenceLineBlock['HorizontalRule'] $a,
+    ReferenceLineBlock['HorizontalRule'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.horizontal-rule eqv $b.horizontal-rule
             && $a.reference-line eqv $b.reference-line;
 }
 

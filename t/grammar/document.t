@@ -316,9 +316,9 @@ subtest 'finn-examples/hangman',
         EOF
         '',
         '',
+        '*' x 78,
+        '',
         q:to/EOF/.trim-trailing;
-        ******************************************************************************
-
         [1]: https://github.com/zyedidia/Literate/blob/master/examples/hangman.lit
         EOF
 
@@ -391,8 +391,10 @@ subtest 'finn-examples/hangman',
     is-deeply ~$match<document><chunk>[53]<sectional-block>, @chunk[63];
     is-deeply ~$match<document><chunk>[54]<blank-line>, @chunk[64];
     is-deeply ~$match<document><chunk>[55]<blank-line>, @chunk[65];
-    is-deeply ~$match<document><chunk>[56]<reference-block>, @chunk[66];
-    ok $match<document><chunk>[57].isa(Any);
+    is-deeply ~$match<document><chunk>[56]<horizontal-rule>, @chunk[66];
+    is-deeply ~$match<document><chunk>[57]<reference-line-block><blank-lines>, @chunk[67];
+    is-deeply ~$match<document><chunk>[57]<reference-line-block><reference-lines>, @chunk[68];
+    ok $match<document><chunk>[58].isa(Any);
 
     # end @chunk tests }}}
 }
@@ -669,9 +671,9 @@ subtest 'finn-examples/hard',
         '',
         '',
         '',
+        '*' x 78,
+        '',
         Q:to/EOF/.trim-trailing;
-        ******************************************************************************
-
         [1]: https://[2[3[4]]].finn
         [9]: /\\/\/\/\/\/\/\/\/\/\/\/\/\\/
         [0]: 1234567890-=`1234567890`
@@ -766,8 +768,10 @@ subtest 'finn-examples/hard',
     is-deeply ~$match<document><chunk>[68]<blank-line>, @chunk[82];
     is-deeply ~$match<document><chunk>[69]<blank-line>, @chunk[83];
     is-deeply ~$match<document><chunk>[70]<blank-line>, @chunk[84];
-    is-deeply ~$match<document><chunk>[71]<reference-block>, @chunk[85];
-    ok $match<document><chunk>[72].isa(Any);
+    is-deeply ~$match<document><chunk>[71]<horizontal-rule>, @chunk[85];
+    is-deeply ~$match<document><chunk>[72]<reference-line-block><blank-lines>, @chunk[86];
+    is-deeply ~$match<document><chunk>[72]<reference-line-block><reference-lines>, @chunk[87];
+    ok $match<document><chunk>[73].isa(Any);
 
     # end @chunk tests }}}
 }
@@ -1061,9 +1065,9 @@ subtest 'finn-examples/sample',
         EOF
         '',
         '',
+        '*' x 78,
+        '',
         q:to/EOF/.trim-trailing;
-        ******************************************************************************
-
         [1]: https://github.com/atweiden/vim-finn
         [2]: https://github.com/junegunn/vim-journal
         [3]: http://en.wikipedia.org/wiki/Bullet_%28typography%29
@@ -1111,8 +1115,10 @@ subtest 'finn-examples/sample',
     is-deeply ~$match<document><chunk>[29]<code-block>, @chunk[35];
     is-deeply ~$match<document><chunk>[30]<blank-line>, @chunk[36];
     is-deeply ~$match<document><chunk>[31]<blank-line>, @chunk[37];
-    is-deeply ~$match<document><chunk>[32]<reference-block>, @chunk[38];
-    ok $match<document><chunk>[33].isa(Any);
+    is-deeply ~$match<document><chunk>[32]<horizontal-rule>, @chunk[38];
+    is-deeply ~$match<document><chunk>[33]<reference-line-block><blank-lines>, @chunk[39];
+    is-deeply ~$match<document><chunk>[33]<reference-line-block><reference-lines>, @chunk[40];
+    ok $match<document><chunk>[34].isa(Any);
 
     # end @chunk tests }}}
 }
