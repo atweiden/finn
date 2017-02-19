@@ -53,6 +53,7 @@ In general, I<block elements> may contain certain I<inline elements>.
 =item sectional-inline-block
 =item sectional-block
 =item code-block
+=item reference-line-block
 =item reference-block
 =item header-block
 =item list-block
