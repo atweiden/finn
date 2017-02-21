@@ -13,6 +13,19 @@ Finn::Parser::Grammar
 
 - detect String and File
 
+### improve multiline text handling
+
+- extraneous whitespace should be dropped similar to TOML basic multiline
+  strings with `line ending with \` in text (`ws-remover` grammar token)
+
+### improve `<.gap>` parsing
+
+- header-text, paragraph-text, list-item-text contain comments but the
+  comments should be dropped
+  - this is due to grammar making excessive use of `\N*` with no
+    ratcheting
+    - fix by parsing one word at a time similar to SectionalBlockName
+
 ### deeply parse other text
 
 - grammar `token <text>` could parse itself for:
