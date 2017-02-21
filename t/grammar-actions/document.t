@@ -7,7 +7,7 @@ use lib 't/lib';
 use FinnTest;
 use Test;
 
-plan 2;
+plan 3;
 
 subtest 'finn-examples/app',
 {
@@ -1895,382 +1895,2178 @@ subtest 'finn-examples/hangman',
     is-deeply $parse-tree, $t, 'ParseTree OK';
 }
 
-=begin pod
 subtest 'finn-examples/hard',
 {
     my Str:D $document = 't/data/hard/Story';
-    my Match:D $match = Finn::Parser::Grammar.parsefile($document);
-
-    ok $match, 'Parses Finn source document';
+    my Finn::Parser::Actions $actions .= new(:file($document));
+    my Finn::Parser::ParseTree:D $parse-tree =
+        Finn::Parser::Grammar.parsefile($document, :$actions).made;
 
     # @chunk {{{
 
-    my Str:D @chunk =
-        '/* vim: set filetype=finn foldmethod=marker foldlevel=0: */',
-        '',
-        q:to/EOF/.trim-trailing,
-        Hard Example
-        ============
-        EOF
-        q:to/EOF/.trim-trailing,
-        this should be parsed as a `paragraph` since no `blank-line`,
-        `comment-line` or `horizontal-rule` precedes it, and a line follows it
-        EOF
-        '',
-        q:to/EOF/.trim-trailing,
-        this should be parsed as a `header3`
-        EOF
-        '',
-        q:to/EOF/.trim-trailing,
-        this should also be parsed as a `header3` /* eol comment */
-        EOF
-        '',
-        q:to/EOF/.trim-trailing,
-        this should be a paragraph since it ends in a comma (`,`),
-        EOF
-        '',
-        q:to/EOF/.trim-trailing,
-        this should also be a paragraph since it ends in a comma (`,`), /* eol comment */
-        EOF
-        '',
-        q:to/EOF/.trim-trailing,
-        this should be a paragraph since it ends in a period (`.`).
-        EOF
-        '',
-        q:to/EOF/.trim-trailing,
-        this should also be a paragraph since it ends in a period (`.`). /* eol comment */
-        EOF
-        '',
-        q:to/EOF/.trim-trailing,
-        this too should be a paragraph since it ends in a period (`.`). /*
-        comment-text                                                     *
-        comment-text                                                     *
-        comment-text                                                     *
-        comment-text                                                     *
-        comment-text                                                     */
-        EOF
-        '',
-        q:to/EOF/.trim-trailing,
-        /* lists
-         * {{{
-         */
-        EOF
-        '',
-        '[9] (header3 with trailing whitespace)                 ',
-        q:to/EOF/.trim-trailing,
-        - nine
-          ! nine
-            o nine
-              <- nine
-                -> nine
-                  = nine
-                    => nine
-                      <= nine
-                        @ nine
-                          $ nine
-                            : nine
-        EOF
-        '',
-        q:to/EOF/.trim-trailing,
-        [0] (header2)
-        --------------------
-        EOF
-        q:to/EOF/.trim-trailing,
-        - zero
-          # zero
-            * zero
-              x zero
-                + zero
-                  ! zero
-                    ~ zero
-                      > zero
-                        - zero /* eol comment */
-                          - z /* inner word comment */ ero
-                            - /* leading comment */ zero
-        EOF
-        '',
-        q:to/EOF/.trim-trailing,
-        [909] (header1)
-        ============================
-        EOF
-        q:to/EOF/.trim-trailing,
-        - nine zero nine
-        EOF
-        q:to/EOF/.trim-trailing,
-          /* comment */
-        EOF
-        q:to/EOF/.trim-trailing,
-          - nine zero nine
-        EOF
-        q:to/EOF/.trim-trailing,
-            /*
-             * comment
-             * comment
-             * comment
-             */
-        EOF
-        q:to/EOF/.trim-trailing,
-            - nine zero nine /*
-              comment         *
-              comment         *
-              comment         */
-              - nine zero 「nine」
-                - nine zero «nine»
-                  - nine zero ⟅nine⟆
-                    - nine zero ᚛nine᚜
-                      - nine zero _nine_
-                        - **nine** zero |nine|
-                          - nine *zero* {nine}
-                            - nine zero ~nine~
-        EOF
-        '',
-        q:to/EOF/.trim-trailing,
-        /*
-         * }}}
-         end lists */
-        EOF
-        '',
-        q:to/EOF/.trim-trailing,
-        /**/ this should be parsed as a paragraph
-        EOF
-        '',
-        q:to/EOF/.trim-trailing,
-        Header2
-        -
-        EOF
-        '~' x 78,
-        '',
-        q:to/EOF/.trim-trailing,
-        Another Header2
-        -
-        EOF
-        q:to/EOF/.trim-trailing,
-        This is a paragraph since it is not preceded by a `blank-line`,
-        `comment-block` or `horizontal-rule`. We just saw a `header2`.
-        EOF
-        '',
-        '~' x 78,
-        q:to/EOF/.trim-trailing,
-        this should be parsed as a `header3` since a `horizontal-rule-soft` precedes it
-        EOF
-        '',
-        q:to/EOF/.trim-trailing,
-        **another header3 since a `blank-line` precedes it**
-        EOF
-        '',
-        '*' x 78,
-        q:to/EOF/.trim-trailing,
-        this should be parsed as a `header3` since a `horizontal-rule-hard` precedes it
-        EOF
-        '*' x 78,
-        q:to/EOF/.trim-trailing,
-        this should not be a `header3` since one line of text comes after it
-        {{{one line of text goes here}}}
-        EOF
-        '',
-        '~' x 78,
-        q:to/EOF/.trim-trailing,
-        this should not be a `header3` since one line of text comes after it
-        one line of text goes here
-        EOF
-        '',
-        q:to/EOF/.trim-trailing,
-        this should be a `header3`
-        EOF
-        q:to/EOF/.trim-trailing,
-        x because a `blank-line` comes before it
-        [*] because a list comes after it
-        1. the list continues \ / _$@$#%$^%Y&&^%%@$$#$T%Y^U&^' ' ~with~ *offset*
-           **gibberish** underlined up to here_. file://~/tmp/ /a\/b.txt
-           {} [] some symbols come on the next offset line
-          2. indented list-item
-        EOF
-        q:to/EOF/.trim-trailing,
-            ```perl6
-            # indented perl6 code-block
-            my Str:D $greeting = 'Hello';
-            ```
-        EOF
-        q:to/EOF/.trim-trailing,
-            /* ------------- *
-             * comment-block *
-             * comment-block *
-             * comment-block *
-             * ------------- */
-        EOF
-        q:to/EOF/.trim-trailing,
-            -> here comes another code-block /* eol comment goes here */
-        EOF
-        q:to/EOF/.trim-trailing,
-              --perl6
-              # indented perl6 code-block
-              my Str:D $greeting = 'Hello';
-              --
-        EOF
-        q:to/EOF/.trim-trailing,
-        --- The Simpsons Quotes
-        'Doh!
-        ---
-        EOF
-        q:to/EOF/.trim-trailing,
-        ``` The Simpsons Quotes +=
-        Dental Plan!
-        ```
-        EOF
-        q:to/EOF/.trim-trailing,
-        -- The Simpsons Quotes +=
-        Lisa needs braces!
-        -------------------------------
-        EOF
-        q:to/EOF/.trim-trailing,
-        -- The Simpsons Quotes +=
-        Bart! Why you little
-        --
-        EOF
-        '',
-        '~' x 2,
-        q:to/EOF/.trim-trailing,
-        this should be a `header3`
-        EOF
-        q:to/EOF/.trim-trailing,
-        [o] because a `horizontal-rule` comes before it
-        [o] because a list comes after it
-        EOF
-        '',
-        '*' x 2,
-        q:to/EOF/.trim-trailing,
-        this should be a `header3`
-        EOF
-        q:to/EOF/.trim-trailing,
-        [=] because a `horizontal-rule` comes before it
-        [=] because a list comes after it
-        EOF
-        '',
-        q:to/EOF/.trim-trailing,
-              INFO Robot
-        EOF
-        '',
-        q:to/EOF/.trim-trailing,
-                           FIXME
-        EOF
-        q:to/EOF/.trim-trailing,
-                            ```
-                            \_/
-                            |:|
-                            -|-
-                            / \
-                            ```
-        EOF
-        '',
-        q:to/EOF/.trim-trailing,
-              DEBUG System
-        EOF
-        '',
-        '',
-        '',
-        Q:to/EOF/.trim-trailing;
-        ******************************************************************************
+    # --- chunk-a {{{
 
-        [1]: https://[2[3[4]]].finn
-        [9]: /\\/\/\/\/\/\/\/\/\/\/\/\/\\/
-        [0]: 1234567890-=`1234567890`
-        [909]: a
-        EOF
+    my Chunk::Meta::Bounds:D $bounds-a = gen-bounds();
+    my UInt:D $section-a = 0;
+
+    my Str:D $text-a =
+        ' vim: set filetype=finn foldmethod=marker foldlevel=0: ';
+    my Comment:D $comment-a .= new(:text($text-a));
+
+    my CommentBlock:D $comment-block-a .= new(:comment($comment-a));
+
+    my Chunk['CommentBlock'] $chunk-a .= new(
+        :bounds($bounds-a),
+        :section($section-a),
+        :comment-block($comment-block-a)
+    );
+
+    # --- end chunk-a }}}
+    # --- chunk-b {{{
+
+    my Chunk::Meta::Bounds:D $bounds-b = gen-bounds();
+    my UInt:D $section-b = 0;
+
+    my Str:D $blank-line-text-b = '';
+    my BlankLine:D $blank-line-b .= new(:text($blank-line-text-b));
+
+    my Str:D $header-text-b = 'Hard Example';
+    my Header[1] $header-b .= new(:text($header-text-b));
+
+    my HeaderBlock['BlankLine'] $header-block-b .= new(
+        :blank-line($blank-line-b),
+        :header($header-b)
+    );
+
+    my Chunk['HeaderBlock'] $chunk-b .= new(
+        :bounds($bounds-b),
+        :section($section-b),
+        :header-block($header-block-b)
+    );
+
+    # --- end chunk-b }}}
+    # --- chunk-c {{{
+
+    my Chunk::Meta::Bounds:D $bounds-c = gen-bounds();
+    my UInt:D $section-c = 0;
+
+    my Str:D $paragraph-text-c = q:to/EOF/.trim-trailing;
+    this should be parsed as a `paragraph` since no `blank-line`,
+    `comment-line` or `horizontal-rule` precedes it, and a line follows it
+    EOF
+    my Paragraph $paragraph-c .= new(:text($paragraph-text-c));
+
+    my Chunk['Paragraph'] $chunk-c .= new(
+        :bounds($bounds-c),
+        :section($section-c),
+        :paragraph($paragraph-c)
+    );
+
+    # --- end chunk-c }}}
+    # --- chunk-d {{{
+
+    my Chunk::Meta::Bounds:D $bounds-d = gen-bounds();
+    my UInt:D $section-d = 0;
+
+    my Str:D $blank-line-text-d = '';
+    my BlankLine:D $blank-line-d .= new(:text($blank-line-text-d));
+
+    my Str:D $header-text-d = 'this should be parsed as a `header3`';
+    my Header[3] $header-d .= new(:text($header-text-d));
+
+    my HeaderBlock['BlankLine'] $header-block-d .= new(
+        :blank-line($blank-line-d),
+        :header($header-d)
+    );
+
+    my Chunk['HeaderBlock'] $chunk-d .= new(
+        :bounds($bounds-d),
+        :section($section-d),
+        :header-block($header-block-d)
+    );
+
+    # --- end chunk-d }}}
+    # --- chunk-e {{{
+
+    my Chunk::Meta::Bounds:D $bounds-e = gen-bounds();
+    my UInt:D $section-e = 0;
+
+    my Str:D $blank-line-text-e = '';
+    my BlankLine:D $blank-line-e .= new(:text($blank-line-text-e));
+
+    my Str:D $header-text-e =
+        'this should also be parsed as a `header3` /* eol comment */';
+    my Header[3] $header-e .= new(:text($header-text-e));
+
+    my HeaderBlock['BlankLine'] $header-block-e .= new(
+        :blank-line($blank-line-e),
+        :header($header-e)
+    );
+
+    my Chunk['HeaderBlock'] $chunk-e .= new(
+        :bounds($bounds-e),
+        :section($section-e),
+        :header-block($header-block-e)
+    );
+
+    # --- end chunk-e }}}
+    # --- chunk-f {{{
+
+    my Chunk::Meta::Bounds:D $bounds-f = gen-bounds();
+    my UInt:D $section-f = 0;
+
+    my Str:D $blank-line-text-f = '';
+    my BlankLine $blank-line-f .= new(:text($blank-line-text-f));
+
+    my Chunk['BlankLine'] $chunk-f .= new(
+        :bounds($bounds-f),
+        :section($section-f),
+        :blank-line($blank-line-f)
+    );
+
+    # --- end chunk-f }}}
+    # --- chunk-g {{{
+
+    my Chunk::Meta::Bounds:D $bounds-g = gen-bounds();
+    my UInt:D $section-g = 0;
+
+    my Str:D $paragraph-text-g = q:to/EOF/.trim-trailing;
+    this should be a paragraph since it ends in a comma (`,`),
+    EOF
+    my Paragraph $paragraph-g .= new(:text($paragraph-text-g));
+
+    my Chunk['Paragraph'] $chunk-g .= new(
+        :bounds($bounds-g),
+        :section($section-g),
+        :paragraph($paragraph-g)
+    );
+
+    # --- end chunk-g }}}
+    # --- chunk-h {{{
+
+    my Chunk::Meta::Bounds:D $bounds-h = gen-bounds();
+    my UInt:D $section-h = 0;
+
+    my Str:D $blank-line-text-h = '';
+    my BlankLine $blank-line-h .= new(:text($blank-line-text-h));
+
+    my Chunk['BlankLine'] $chunk-h .= new(
+        :bounds($bounds-h),
+        :section($section-h),
+        :blank-line($blank-line-h)
+    );
+
+    # --- end chunk-h }}}
+    # --- chunk-i {{{
+
+    my Chunk::Meta::Bounds:D $bounds-i = gen-bounds();
+    my UInt:D $section-i = 0;
+
+    my Str:D $paragraph-text-i = q:to/EOF/.trim-trailing;
+    this should also be a paragraph since it ends in a comma (`,`), /* eol comment */
+    EOF
+    my Paragraph $paragraph-i .= new(:text($paragraph-text-i));
+
+    my Chunk['Paragraph'] $chunk-i .= new(
+        :bounds($bounds-i),
+        :section($section-i),
+        :paragraph($paragraph-i)
+    );
+
+    # --- end chunk-i }}}
+    # --- chunk-j {{{
+
+    my Chunk::Meta::Bounds:D $bounds-j = gen-bounds();
+    my UInt:D $section-j = 0;
+
+    my Str:D $blank-line-text-j = '';
+    my BlankLine $blank-line-j .= new(:text($blank-line-text-j));
+
+    my Chunk['BlankLine'] $chunk-j .= new(
+        :bounds($bounds-j),
+        :section($section-j),
+        :blank-line($blank-line-j)
+    );
+
+    # --- end chunk-j }}}
+    # --- chunk-k {{{
+
+    my Chunk::Meta::Bounds:D $bounds-k = gen-bounds();
+    my UInt:D $section-k = 0;
+
+    my Str:D $paragraph-text-k = q:to/EOF/.trim-trailing;
+    this should be a paragraph since it ends in a period (`.`).
+    EOF
+    my Paragraph $paragraph-k .= new(:text($paragraph-text-k));
+
+    my Chunk['Paragraph'] $chunk-k .= new(
+        :bounds($bounds-k),
+        :section($section-k),
+        :paragraph($paragraph-k)
+    );
+
+    # --- end chunk-k }}}
+    # --- chunk-l {{{
+
+    my Chunk::Meta::Bounds:D $bounds-l = gen-bounds();
+    my UInt:D $section-l = 0;
+
+    my Str:D $blank-line-text-l = '';
+    my BlankLine $blank-line-l .= new(:text($blank-line-text-l));
+
+    my Chunk['BlankLine'] $chunk-l .= new(
+        :bounds($bounds-l),
+        :section($section-l),
+        :blank-line($blank-line-l)
+    );
+
+    # --- end chunk-l }}}
+    # --- chunk-m {{{
+
+    my Chunk::Meta::Bounds:D $bounds-m = gen-bounds();
+    my UInt:D $section-m = 0;
+
+    my Str:D $paragraph-text-m = q:to/EOF/.trim-trailing;
+    this should also be a paragraph since it ends in a period (`.`). /* eol comment */
+    EOF
+    my Paragraph $paragraph-m .= new(:text($paragraph-text-m));
+
+    my Chunk['Paragraph'] $chunk-m .= new(
+        :bounds($bounds-m),
+        :section($section-m),
+        :paragraph($paragraph-m)
+    );
+
+    # --- end chunk-m }}}
+    # --- chunk-n {{{
+
+    my Chunk::Meta::Bounds:D $bounds-n = gen-bounds();
+    my UInt:D $section-n = 0;
+
+    my Str:D $blank-line-text-n = '';
+    my BlankLine $blank-line-n .= new(:text($blank-line-text-n));
+
+    my Chunk['BlankLine'] $chunk-n .= new(
+        :bounds($bounds-n),
+        :section($section-n),
+        :blank-line($blank-line-n)
+    );
+
+    # --- end chunk-n }}}
+    # --- chunk-o {{{
+
+    my Chunk::Meta::Bounds:D $bounds-o = gen-bounds();
+    my UInt:D $section-o = 0;
+
+    my Str:D $paragraph-text-o = q:to/EOF/.trim-trailing;
+    this too should be a paragraph since it ends in a period (`.`). /*
+    comment-text                                                     *
+    comment-text                                                     *
+    comment-text                                                     *
+    comment-text                                                     *
+    comment-text                                                     */
+    EOF
+    my Paragraph $paragraph-o .= new(:text($paragraph-text-o));
+
+    my Chunk['Paragraph'] $chunk-o .= new(
+        :bounds($bounds-o),
+        :section($section-o),
+        :paragraph($paragraph-o)
+    );
+
+    # --- end chunk-o }}}
+    # --- chunk-p {{{
+
+    my Chunk::Meta::Bounds:D $bounds-p = gen-bounds();
+    my UInt:D $section-p = 0;
+
+    my Str:D $blank-line-text-p = '';
+    my BlankLine $blank-line-p .= new(:text($blank-line-text-p));
+
+    my Chunk['BlankLine'] $chunk-p .= new(
+        :bounds($bounds-p),
+        :section($section-p),
+        :blank-line($blank-line-p)
+    );
+
+    # --- end chunk-p }}}
+    # --- chunk-q {{{
+
+    my Chunk::Meta::Bounds:D $bounds-q = gen-bounds();
+    my UInt:D $section-q = 0;
+
+    my Str:D $text-q = q:to/EOF/.trim-trailing;
+     lists
+     * {{{
+    EOF
+    $text-q ~= "\n ";
+    my Comment:D $comment-q .= new(:text($text-q));
+
+    my CommentBlock:D $comment-block-q .= new(:comment($comment-q));
+
+    my Chunk['CommentBlock'] $chunk-q .= new(
+        :bounds($bounds-q),
+        :section($section-q),
+        :comment-block($comment-block-q)
+    );
+
+    # --- end chunk-q }}}
+    # --- chunk-r {{{
+
+    my Chunk::Meta::Bounds:D $bounds-r = gen-bounds();
+    my UInt:D $section-r = 0;
+
+    my Str:D $blank-line-text-r = '';
+    my BlankLine:D $blank-line-r .= new(:text($blank-line-text-r));
+
+    my Str:D $header-text-r =
+        '[9] (header3 with trailing whitespace)                 ';
+    my Header[3] $header-r .= new(:text($header-text-r));
+
+    my HeaderBlock['BlankLine'] $header-block-r .= new(
+        :blank-line($blank-line-r),
+        :header($header-r)
+    );
+
+    my Chunk['HeaderBlock'] $chunk-r .= new(
+        :bounds($bounds-r),
+        :section($section-r),
+        :header-block($header-block-r)
+    );
+
+    # --- end chunk-r }}}
+    # --- chunk-s {{{
+
+    # --- --- list-item {{{
+
+    # --- --- --- 01 {{{
+
+    my BulletPoint['-'] $bullet-point-s01 .= new;
+    my Str:D $text-s01 = 'nine';
+    my ListItem['Unordered'] $list-item-s01 .= new(
+        :bullet-point($bullet-point-s01),
+        :text($text-s01)
+    );
+
+    # --- --- --- end 01 }}}
+    # --- --- --- 02 {{{
+
+    my BulletPoint['!'] $bullet-point-s02 .= new;
+    my Str:D $text-s02 = 'nine';
+    my ListItem['Unordered'] $list-item-s02 .= new(
+        :bullet-point($bullet-point-s02),
+        :text($text-s02)
+    );
+
+    # --- --- --- end 02 }}}
+    # --- --- --- 03 {{{
+
+    my BulletPoint['o'] $bullet-point-s03 .= new;
+    my Str:D $text-s03 = 'nine';
+    my ListItem['Unordered'] $list-item-s03 .= new(
+        :bullet-point($bullet-point-s03),
+        :text($text-s03)
+    );
+
+    # --- --- --- end 03 }}}
+    # --- --- --- 04 {{{
+
+    my BulletPoint['<-'] $bullet-point-s04 .= new;
+    my Str:D $text-s04 = 'nine';
+    my ListItem['Unordered'] $list-item-s04 .= new(
+        :bullet-point($bullet-point-s04),
+        :text($text-s04)
+    );
+
+    # --- --- --- end 04 }}}
+    # --- --- --- 05 {{{
+
+    my BulletPoint['->'] $bullet-point-s05 .= new;
+    my Str:D $text-s05 = 'nine';
+    my ListItem['Unordered'] $list-item-s05 .= new(
+        :bullet-point($bullet-point-s05),
+        :text($text-s05)
+    );
+
+    # --- --- --- end 05 }}}
+    # --- --- --- 06 {{{
+
+    my BulletPoint['='] $bullet-point-s06 .= new;
+    my Str:D $text-s06 = 'nine';
+    my ListItem['Unordered'] $list-item-s06 .= new(
+        :bullet-point($bullet-point-s06),
+        :text($text-s06)
+    );
+
+    # --- --- --- end 06 }}}
+    # --- --- --- 07 {{{
+
+    my BulletPoint['=>'] $bullet-point-s07 .= new;
+    my Str:D $text-s07 = 'nine';
+    my ListItem['Unordered'] $list-item-s07 .= new(
+        :bullet-point($bullet-point-s07),
+        :text($text-s07)
+    );
+
+    # --- --- --- end 07 }}}
+    # --- --- --- 08 {{{
+
+    my BulletPoint['<='] $bullet-point-s08 .= new;
+    my Str:D $text-s08 = 'nine';
+    my ListItem['Unordered'] $list-item-s08 .= new(
+        :bullet-point($bullet-point-s08),
+        :text($text-s08)
+    );
+
+    # --- --- --- end 08 }}}
+    # --- --- --- 09 {{{
+
+    my BulletPoint['@'] $bullet-point-s09 .= new;
+    my Str:D $text-s09 = 'nine';
+    my ListItem['Unordered'] $list-item-s09 .= new(
+        :bullet-point($bullet-point-s09),
+        :text($text-s09)
+    );
+
+    # --- --- --- end 09 }}}
+    # --- --- --- 10 {{{
+
+    my BulletPoint['$'] $bullet-point-s10 .= new;
+    my Str:D $text-s10 = 'nine';
+    my ListItem['Unordered'] $list-item-s10 .= new(
+        :bullet-point($bullet-point-s10),
+        :text($text-s10)
+    );
+
+    # --- --- --- end 10 }}}
+    # --- --- --- 11 {{{
+
+    my BulletPoint[':'] $bullet-point-s11 .= new;
+    my Str:D $text-s11 = 'nine';
+    my ListItem['Unordered'] $list-item-s11 .= new(
+        :bullet-point($bullet-point-s11),
+        :text($text-s11)
+    );
+
+    # --- --- --- end 11 }}}
+
+    my ListItem:D @list-item-s =
+        $list-item-s01,
+        $list-item-s02,
+        $list-item-s03,
+        $list-item-s04,
+        $list-item-s05,
+        $list-item-s06,
+        $list-item-s07,
+        $list-item-s08,
+        $list-item-s09,
+        $list-item-s10,
+        $list-item-s11;
+
+    # --- --- end list-item }}}
+
+    my ListBlock $list-block-s .= new(:list-item(@list-item-s));
+
+    my Chunk::Meta::Bounds:D $bounds-s = gen-bounds();
+    my UInt:D $section-s = 0;
+
+    my Chunk['ListBlock'] $chunk-s .= new(
+        :bounds($bounds-s),
+        :section($section-s),
+        :list-block($list-block-s)
+    );
+
+    # --- end chunk-s }}}
+    # --- chunk-t {{{
+
+    my Chunk::Meta::Bounds:D $bounds-t = gen-bounds();
+    my UInt:D $section-t = 0;
+
+    my Str:D $blank-line-text-t = '';
+    my BlankLine:D $blank-line-t .= new(:text($blank-line-text-t));
+
+    my Str:D $header-text-t = '[0] (header2)';
+    my Header[2] $header-t .= new(:text($header-text-t));
+
+    my HeaderBlock['BlankLine'] $header-block-t .= new(
+        :blank-line($blank-line-t),
+        :header($header-t)
+    );
+
+    my Chunk['HeaderBlock'] $chunk-t .= new(
+        :bounds($bounds-t),
+        :section($section-t),
+        :header-block($header-block-t)
+    );
+
+    # --- end chunk-t }}}
+    # --- chunk-u {{{
+
+    # --- --- list-item {{{
+
+    # --- --- --- 01 {{{
+
+    my BulletPoint['-'] $bullet-point-u01 .= new;
+    my Str:D $text-u01 = 'zero';
+    my ListItem['Unordered'] $list-item-u01 .= new(
+        :bullet-point($bullet-point-u01),
+        :text($text-u01)
+    );
+
+    # --- --- --- end 01 }}}
+    # --- --- --- 02 {{{
+
+    my BulletPoint['#'] $bullet-point-u02 .= new;
+    my Str:D $text-u02 = 'zero';
+    my ListItem['Unordered'] $list-item-u02 .= new(
+        :bullet-point($bullet-point-u02),
+        :text($text-u02)
+    );
+
+    # --- --- --- end 02 }}}
+    # --- --- --- 03 {{{
+
+    my BulletPoint['*'] $bullet-point-u03 .= new;
+    my Str:D $text-u03 = 'zero';
+    my ListItem['Unordered'] $list-item-u03 .= new(
+        :bullet-point($bullet-point-u03),
+        :text($text-u03)
+    );
+
+    # --- --- --- end 03 }}}
+    # --- --- --- 04 {{{
+
+    my BulletPoint['x'] $bullet-point-u04 .= new;
+    my Str:D $text-u04 = 'zero';
+    my ListItem['Unordered'] $list-item-u04 .= new(
+        :bullet-point($bullet-point-u04),
+        :text($text-u04)
+    );
+
+    # --- --- --- end 04 }}}
+    # --- --- --- 05 {{{
+
+    my BulletPoint['+'] $bullet-point-u05 .= new;
+    my Str:D $text-u05 = 'zero';
+    my ListItem['Unordered'] $list-item-u05 .= new(
+        :bullet-point($bullet-point-u05),
+        :text($text-u05)
+    );
+
+    # --- --- --- end 05 }}}
+    # --- --- --- 06 {{{
+
+    my BulletPoint['!'] $bullet-point-u06 .= new;
+    my Str:D $text-u06 = 'zero';
+    my ListItem['Unordered'] $list-item-u06 .= new(
+        :bullet-point($bullet-point-u06),
+        :text($text-u06)
+    );
+
+    # --- --- --- end 06 }}}
+    # --- --- --- 07 {{{
+
+    my BulletPoint['~'] $bullet-point-u07 .= new;
+    my Str:D $text-u07 = 'zero';
+    my ListItem['Unordered'] $list-item-u07 .= new(
+        :bullet-point($bullet-point-u07),
+        :text($text-u07)
+    );
+
+    # --- --- --- end 07 }}}
+    # --- --- --- 08 {{{
+
+    my BulletPoint['>'] $bullet-point-u08 .= new;
+    my Str:D $text-u08 = 'zero';
+    my ListItem['Unordered'] $list-item-u08 .= new(
+        :bullet-point($bullet-point-u08),
+        :text($text-u08)
+    );
+
+    # --- --- --- end 08 }}}
+    # --- --- --- 09 {{{
+
+    my BulletPoint['-'] $bullet-point-u09 .= new;
+    my Str:D $text-u09 = 'zero /* eol comment */';
+    my ListItem['Unordered'] $list-item-u09 .= new(
+        :bullet-point($bullet-point-u09),
+        :text($text-u09)
+    );
+
+    # --- --- --- end 09 }}}
+    # --- --- --- 10 {{{
+
+    my BulletPoint['-'] $bullet-point-u10 .= new;
+    my Str:D $text-u10 = 'z /* inner word comment */ ero';
+    my ListItem['Unordered'] $list-item-u10 .= new(
+        :bullet-point($bullet-point-u10),
+        :text($text-u10)
+    );
+
+    # --- --- --- end 10 }}}
+    # --- --- --- 11 {{{
+
+    my BulletPoint['-'] $bullet-point-u11 .= new;
+    my Str:D $text-u11 = '/* leading comment */ zero';
+    my ListItem['Unordered'] $list-item-u11 .= new(
+        :bullet-point($bullet-point-u11),
+        :text($text-u11)
+    );
+
+    # --- --- --- end 11 }}}
+
+    my ListItem:D @list-item-u =
+        $list-item-u01,
+        $list-item-u02,
+        $list-item-u03,
+        $list-item-u04,
+        $list-item-u05,
+        $list-item-u06,
+        $list-item-u07,
+        $list-item-u08,
+        $list-item-u09,
+        $list-item-u10,
+        $list-item-u11;
+
+    # --- --- end list-item }}}
+
+    my ListBlock $list-block-u .= new(:list-item(@list-item-u));
+
+    my Chunk::Meta::Bounds:D $bounds-u = gen-bounds();
+    my UInt:D $section-u = 0;
+
+    my Chunk['ListBlock'] $chunk-u .= new(
+        :bounds($bounds-u),
+        :section($section-u),
+        :list-block($list-block-u)
+    );
+
+    # --- end chunk-u }}}
+    # --- chunk-v {{{
+
+    my Chunk::Meta::Bounds:D $bounds-v = gen-bounds();
+    my UInt:D $section-v = 0;
+
+    my Str:D $blank-line-text-v = '';
+    my BlankLine:D $blank-line-v .= new(:text($blank-line-text-v));
+
+    my Str:D $header-text-v = '[909] (header1)';
+    my Header[1] $header-v .= new(:text($header-text-v));
+
+    my HeaderBlock['BlankLine'] $header-block-v .= new(
+        :blank-line($blank-line-v),
+        :header($header-v)
+    );
+
+    my Chunk['HeaderBlock'] $chunk-v .= new(
+        :bounds($bounds-v),
+        :section($section-v),
+        :header-block($header-block-v)
+    );
+
+    # --- end chunk-v }}}
+    # --- chunk-w {{{
+
+    # --- --- list-item {{{
+
+    # --- --- --- 01 {{{
+
+    my BulletPoint['-'] $bullet-point-w01 .= new;
+    my Str:D $text-w01 = 'nine zero nine';
+    my ListItem['Unordered'] $list-item-w01 .= new(
+        :bullet-point($bullet-point-w01),
+        :text($text-w01)
+    );
+
+    # --- --- --- end 01 }}}
+
+    my ListItem:D @list-item-w = $list-item-w01;
+
+    # --- --- end list-item }}}
+
+    my ListBlock $list-block-w .= new(:list-item(@list-item-w));
+
+    my Chunk::Meta::Bounds:D $bounds-w = gen-bounds();
+    my UInt:D $section-w = 0;
+
+    my Chunk['ListBlock'] $chunk-w .= new(
+        :bounds($bounds-w),
+        :section($section-w),
+        :list-block($list-block-w)
+    );
+
+    # --- end chunk-w }}}
+    # --- chunk-x {{{
+
+    my Chunk::Meta::Bounds:D $bounds-x = gen-bounds();
+    my UInt:D $section-x = 0;
+
+    my Str:D $text-x = ' comment ';
+    my Comment:D $comment-x .= new(:text($text-x));
+
+    my CommentBlock:D $comment-block-x .= new(:comment($comment-x));
+
+    my Chunk['CommentBlock'] $chunk-x .= new(
+        :bounds($bounds-x),
+        :section($section-x),
+        :comment-block($comment-block-x)
+    );
+
+    # --- end chunk-x }}}
+    # --- chunk-y {{{
+
+    # --- --- list-item {{{
+
+    # --- --- --- 01 {{{
+
+    my BulletPoint['-'] $bullet-point-y01 .= new;
+    my Str:D $text-y01 = 'nine zero nine';
+    my ListItem['Unordered'] $list-item-y01 .= new(
+        :bullet-point($bullet-point-y01),
+        :text($text-y01)
+    );
+
+    # --- --- --- end 01 }}}
+
+    my ListItem:D @list-item-y = $list-item-y01;
+
+    # --- --- end list-item }}}
+
+    my ListBlock $list-block-y .= new(:list-item(@list-item-y));
+
+    my Chunk::Meta::Bounds:D $bounds-y = gen-bounds();
+    my UInt:D $section-y = 0;
+
+    my Chunk['ListBlock'] $chunk-y .= new(
+        :bounds($bounds-y),
+        :section($section-y),
+        :list-block($list-block-y)
+    );
+
+    # --- end chunk-y }}}
+    # --- chunk-z {{{
+
+    my Chunk::Meta::Bounds:D $bounds-z = gen-bounds();
+    my UInt:D $section-z = 0;
+
+    my Str:D $text-z = q:to/EOF/.trim-trailing;
+
+         * comment
+         * comment
+         * comment
+    EOF
+    $text-z ~= "\n     ";
+
+    my Comment:D $comment-z .= new(:text($text-z));
+
+    my CommentBlock:D $comment-block-z .= new(:comment($comment-z));
+
+    my Chunk['CommentBlock'] $chunk-z .= new(
+        :bounds($bounds-z),
+        :section($section-z),
+        :comment-block($comment-block-z)
+    );
+
+    # --- end chunk-z }}}
+    # --- chunk-ã {{{
+
+    # --- --- list-item {{{
+
+    # --- --- --- 01 {{{
+
+    my BulletPoint['-'] $bullet-point-ã01 .= new;
+    my Str:D $text-ã01 = q:to/EOF/.trim-trailing;
+    nine zero nine /*
+          comment         *
+          comment         *
+          comment         */
+    EOF
+
+    my ListItem['Unordered'] $list-item-ã01 .= new(
+        :bullet-point($bullet-point-ã01),
+        :text($text-ã01)
+    );
+
+    # --- --- --- end 01 }}}
+    # --- --- --- 02 {{{
+
+    my BulletPoint['-'] $bullet-point-ã02 .= new;
+    my Str:D $text-ã02 = 'nine zero 「nine」';
+
+    my ListItem['Unordered'] $list-item-ã02 .= new(
+        :bullet-point($bullet-point-ã02),
+        :text($text-ã02)
+    );
+
+    # --- --- --- end 02 }}}
+    # --- --- --- 03 {{{
+
+    my BulletPoint['-'] $bullet-point-ã03 .= new;
+    my Str:D $text-ã03 = 'nine zero «nine»';
+
+    my ListItem['Unordered'] $list-item-ã03 .= new(
+        :bullet-point($bullet-point-ã03),
+        :text($text-ã03)
+    );
+
+    # --- --- --- end 03 }}}
+    # --- --- --- 04 {{{
+
+    my BulletPoint['-'] $bullet-point-ã04 .= new;
+    my Str:D $text-ã04 = 'nine zero ⟅nine⟆';
+
+    my ListItem['Unordered'] $list-item-ã04 .= new(
+        :bullet-point($bullet-point-ã04),
+        :text($text-ã04)
+    );
+
+    # --- --- --- end 04 }}}
+    # --- --- --- 05 {{{
+
+    my BulletPoint['-'] $bullet-point-ã05 .= new;
+    my Str:D $text-ã05 = 'nine zero ᚛nine᚜';
+
+    my ListItem['Unordered'] $list-item-ã05 .= new(
+        :bullet-point($bullet-point-ã05),
+        :text($text-ã05)
+    );
+
+    # --- --- --- end 05 }}}
+    # --- --- --- 06 {{{
+
+    my BulletPoint['-'] $bullet-point-ã06 .= new;
+    my Str:D $text-ã06 = 'nine zero _nine_';
+
+    my ListItem['Unordered'] $list-item-ã06 .= new(
+        :bullet-point($bullet-point-ã06),
+        :text($text-ã06)
+    );
+
+    # --- --- --- end 06 }}}
+    # --- --- --- 07 {{{
+
+    my BulletPoint['-'] $bullet-point-ã07 .= new;
+    my Str:D $text-ã07 = '**nine** zero |nine|';
+
+    my ListItem['Unordered'] $list-item-ã07 .= new(
+        :bullet-point($bullet-point-ã07),
+        :text($text-ã07)
+    );
+
+    # --- --- --- end 07 }}}
+    # --- --- --- 08 {{{
+
+    my BulletPoint['-'] $bullet-point-ã08 .= new;
+    my Str:D $text-ã08 = 'nine *zero* {nine}';
+
+    my ListItem['Unordered'] $list-item-ã08 .= new(
+        :bullet-point($bullet-point-ã08),
+        :text($text-ã08)
+    );
+
+    # --- --- --- end 08 }}}
+    # --- --- --- 09 {{{
+
+    my BulletPoint['-'] $bullet-point-ã09 .= new;
+    my Str:D $text-ã09 = 'nine zero ~nine~';
+
+    my ListItem['Unordered'] $list-item-ã09 .= new(
+        :bullet-point($bullet-point-ã09),
+        :text($text-ã09)
+    );
+
+    # --- --- --- end 09 }}}
+
+    my ListItem:D @list-item-ã =
+        $list-item-ã01,
+        $list-item-ã02,
+        $list-item-ã03,
+        $list-item-ã04,
+        $list-item-ã05,
+        $list-item-ã06,
+        $list-item-ã07,
+        $list-item-ã08,
+        $list-item-ã09;
+
+    # --- --- end list-item }}}
+
+    my ListBlock $list-block-ã .= new(:list-item(@list-item-ã));
+
+    my Chunk::Meta::Bounds:D $bounds-ã = gen-bounds();
+    my UInt:D $section-ã = 0;
+
+    my Chunk['ListBlock'] $chunk-ã .= new(
+        :bounds($bounds-ã),
+        :section($section-ã),
+        :list-block($list-block-ã)
+    );
+
+    # --- end chunk-ã }}}
+    # --- chunk-ḇ {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ḇ = gen-bounds();
+    my UInt:D $section-ḇ = 0;
+
+    my Str:D $blank-line-text-ḇ = '';
+    my BlankLine $blank-line-ḇ .= new(:text($blank-line-text-ḇ));
+
+    my Chunk['BlankLine'] $chunk-ḇ .= new(
+        :bounds($bounds-ḇ),
+        :section($section-ḇ),
+        :blank-line($blank-line-ḇ)
+    );
+
+    # --- end chunk-ḇ }}}
+    # --- chunk-ç {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ç = gen-bounds();
+    my UInt:D $section-ç = 0;
+
+    my Str:D $text-ç = q:to/EOF/.trim-trailing;
+
+     * }}}
+     end lists
+    EOF
+    $text-ç ~= ' ';
+
+    my Comment:D $comment-ç .= new(:text($text-ç));
+
+    my CommentBlock:D $comment-block-ç .= new(:comment($comment-ç));
+
+    my Chunk['CommentBlock'] $chunk-ç .= new(
+        :bounds($bounds-ç),
+        :section($section-ç),
+        :comment-block($comment-block-ç)
+    );
+
+    # --- end chunk-ç }}}
+    # --- chunk-ď {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ď = gen-bounds();
+    my UInt:D $section-ď = 0;
+
+    my Str:D $blank-line-text-ď = '';
+    my BlankLine $blank-line-ď .= new(:text($blank-line-text-ď));
+
+    my Chunk['BlankLine'] $chunk-ď .= new(
+        :bounds($bounds-ď),
+        :section($section-ď),
+        :blank-line($blank-line-ď)
+    );
+
+    # --- end chunk-ď }}}
+    # --- chunk-è {{{
+
+    my Chunk::Meta::Bounds:D $bounds-è = gen-bounds();
+    my UInt:D $section-è = 0;
+
+    my Str:D $paragraph-text-è = q:to/EOF/.trim-trailing;
+    /**/ this should be parsed as a paragraph
+    EOF
+    my Paragraph $paragraph-è .= new(:text($paragraph-text-è));
+
+    my Chunk['Paragraph'] $chunk-è .= new(
+        :bounds($bounds-è),
+        :section($section-è),
+        :paragraph($paragraph-è)
+    );
+
+    # --- end chunk-è }}}
+    # --- chunk-ḟ {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ḟ = gen-bounds();
+    my UInt:D $section-ḟ = 0;
+
+    my Str:D $blank-line-text-ḟ = '';
+    my BlankLine:D $blank-line-ḟ .= new(:text($blank-line-text-ḟ));
+
+    my Str:D $header-text-ḟ = 'Header2';
+    my Header[2] $header-ḟ .= new(:text($header-text-ḟ));
+
+    my HeaderBlock['BlankLine'] $header-block-ḟ .= new(
+        :blank-line($blank-line-ḟ),
+        :header($header-ḟ)
+    );
+
+    my Chunk['HeaderBlock'] $chunk-ḟ .= new(
+        :bounds($bounds-ḟ),
+        :section($section-ḟ),
+        :header-block($header-block-ḟ)
+    );
+
+    # --- end chunk-ḟ }}}
+    # --- chunk-ğ {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ğ = gen-bounds();
+    my UInt:D $section-ğ = 0;
+
+    my HorizontalRule['Soft'] $horizontal-rule-ğ .= new;
+
+    my Chunk['HorizontalRule'] $chunk-ğ .= new(
+        :bounds($bounds-ğ),
+        :section($section-ğ),
+        :horizontal-rule($horizontal-rule-ğ)
+    );
+
+    # --- end chunk-ğ }}}
+    # --- chunk-ħ {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ħ = gen-bounds();
+    my UInt:D $section-ħ = 0;
+
+    my Str:D $blank-line-text-ħ = '';
+    my BlankLine:D $blank-line-ħ .= new(:text($blank-line-text-ħ));
+
+    my Str:D $header-text-ħ = 'Another Header2';
+    my Header[2] $header-ħ .= new(:text($header-text-ħ));
+
+    my HeaderBlock['BlankLine'] $header-block-ħ .= new(
+        :blank-line($blank-line-ħ),
+        :header($header-ħ)
+    );
+
+    my Chunk['HeaderBlock'] $chunk-ħ .= new(
+        :bounds($bounds-ħ),
+        :section($section-ħ),
+        :header-block($header-block-ħ)
+    );
+
+    # --- end chunk-ħ }}}
+    # --- chunk-ï {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ï = gen-bounds();
+    my UInt:D $section-ï = 0;
+
+    my Str:D $paragraph-text-ï = q:to/EOF/.trim-trailing;
+    This is a paragraph since it is not preceded by a `blank-line`,
+    `comment-block` or `horizontal-rule`. We just saw a `header2`.
+    EOF
+    my Paragraph $paragraph-ï .= new(:text($paragraph-text-ï));
+
+    my Chunk['Paragraph'] $chunk-ï .= new(
+        :bounds($bounds-ï),
+        :section($section-ï),
+        :paragraph($paragraph-ï)
+    );
+
+    # --- end chunk-ï }}}
+    # --- chunk-ĵ {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ĵ = gen-bounds();
+    my UInt:D $section-ĵ = 0;
+
+    my Str:D $blank-line-text-ĵ = '';
+    my BlankLine $blank-line-ĵ .= new(:text($blank-line-text-ĵ));
+
+    my Chunk['BlankLine'] $chunk-ĵ .= new(
+        :bounds($bounds-ĵ),
+        :section($section-ĵ),
+        :blank-line($blank-line-ĵ)
+    );
+
+    # --- end chunk-ĵ }}}
+    # --- chunk-ķ {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ķ = gen-bounds();
+    my UInt:D $section-ķ = 0;
+
+    my HorizontalRule['Soft'] $horizontal-rule-ķ .= new;
+
+    my Str:D $header-text-ķ = q:to/EOF/.trim-trailing;
+    this should be parsed as a `header3` since a `horizontal-rule-soft` precedes it
+    EOF
+    my Header[3] $header-ķ .= new(:text($header-text-ķ));
+
+    my HeaderBlock['HorizontalRule'] $header-block-ķ .= new(
+        :horizontal-rule($horizontal-rule-ķ),
+        :header($header-ķ)
+    );
+
+    my Chunk['HeaderBlock'] $chunk-ķ .= new(
+        :bounds($bounds-ķ),
+        :section($section-ķ),
+        :header-block($header-block-ķ)
+    );
+
+    # --- end chunk-ķ }}}
+    # --- chunk-ł {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ł = gen-bounds();
+    my UInt:D $section-ł = 0;
+
+    my Str:D $blank-line-text-ł = '';
+    my BlankLine:D $blank-line-ł .= new(:text($blank-line-text-ł));
+
+    my Str:D $header-text-ł = q:to/EOF/.trim-trailing;
+    **another header3 since a `blank-line` precedes it**
+    EOF
+    my Header[3] $header-ł .= new(:text($header-text-ł));
+
+    my HeaderBlock['BlankLine'] $header-block-ł .= new(
+        :blank-line($blank-line-ł),
+        :header($header-ł)
+    );
+
+    my Chunk['HeaderBlock'] $chunk-ł .= new(
+        :bounds($bounds-ł),
+        :section($section-ł),
+        :header-block($header-block-ł)
+    );
+
+    # --- end chunk-ł }}}
+    # --- chunk-ḿ {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ḿ = gen-bounds();
+    my UInt:D $section-ḿ = 0;
+
+    my Str:D $blank-line-text-ḿ = '';
+    my BlankLine $blank-line-ḿ .= new(:text($blank-line-text-ḿ));
+
+    my Chunk['BlankLine'] $chunk-ḿ .= new(
+        :bounds($bounds-ḿ),
+        :section($section-ḿ),
+        :blank-line($blank-line-ḿ)
+    );
+
+    # --- end chunk-ḿ }}}
+    # --- chunk-ñ {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ñ = gen-bounds();
+    my UInt:D $section-ñ = 0;
+
+    my HorizontalRule['Hard'] $horizontal-rule-ñ .= new;
+
+    my Str:D $header-text-ñ = q:to/EOF/.trim-trailing;
+    this should be parsed as a `header3` since a `horizontal-rule-hard` precedes it
+    EOF
+    my Header[3] $header-ñ .= new(:text($header-text-ñ));
+
+    my HeaderBlock['HorizontalRule'] $header-block-ñ .= new(
+        :horizontal-rule($horizontal-rule-ñ),
+        :header($header-ñ)
+    );
+
+    my Chunk['HeaderBlock'] $chunk-ñ .= new(
+        :bounds($bounds-ñ),
+        :section($section-ñ),
+        :header-block($header-block-ñ)
+    );
+
+    # --- end chunk-ñ }}}
+    # --- chunk-ò {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ò = gen-bounds();
+    my UInt:D $section-ò = 0;
+
+    my HorizontalRule['Hard'] $horizontal-rule-ò .= new;
+
+    my Chunk['HorizontalRule'] $chunk-ò .= new(
+        :bounds($bounds-ò),
+        :section($section-ò),
+        :horizontal-rule($horizontal-rule-ò)
+    );
+
+    # --- end chunk-ò }}}
+    # --- chunk-ṕ {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ṕ = gen-bounds();
+    my UInt:D $section-ṕ = 0;
+
+    my Str:D $paragraph-text-ṕ = q:to/EOF/.trim-trailing;
+    this should not be a `header3` since one line of text comes after it
+    {{{one line of text goes here}}}
+    EOF
+    my Paragraph $paragraph-ṕ .= new(:text($paragraph-text-ṕ));
+
+    my Chunk['Paragraph'] $chunk-ṕ .= new(
+        :bounds($bounds-ṕ),
+        :section($section-ṕ),
+        :paragraph($paragraph-ṕ)
+    );
+
+    # --- end chunk-ṕ }}}
+    # --- chunk-ק {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ק = gen-bounds();
+    my UInt:D $section-ק = 0;
+
+    my Str:D $blank-line-text-ק = '';
+    my BlankLine $blank-line-ק .= new(:text($blank-line-text-ק));
+
+    my Chunk['BlankLine'] $chunk-ק .= new(
+        :bounds($bounds-ק),
+        :section($section-ק),
+        :blank-line($blank-line-ק)
+    );
+
+    # --- end chunk-ק }}}
+    # --- chunk-ŗ {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ŗ = gen-bounds();
+    my UInt:D $section-ŗ = 0;
+
+    my HorizontalRule['Soft'] $horizontal-rule-ŗ .= new;
+
+    my Chunk['HorizontalRule'] $chunk-ŗ .= new(
+        :bounds($bounds-ŗ),
+        :section($section-ŗ),
+        :horizontal-rule($horizontal-rule-ŗ)
+    );
+
+    # --- end chunk-ŗ }}}
+    # --- chunk-ś {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ś = gen-bounds();
+    my UInt:D $section-ś = 0;
+
+    my Str:D $paragraph-text-ś = q:to/EOF/.trim-trailing;
+    this should not be a `header3` since one line of text comes after it
+    one line of text goes here
+    EOF
+    my Paragraph $paragraph-ś .= new(:text($paragraph-text-ś));
+
+    my Chunk['Paragraph'] $chunk-ś .= new(
+        :bounds($bounds-ś),
+        :section($section-ś),
+        :paragraph($paragraph-ś)
+    );
+
+    # --- end chunk-ś }}}
+    # --- chunk-ţ {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ţ = gen-bounds();
+    my UInt:D $section-ţ = 0;
+
+    my Str:D $blank-line-text-ţ = '';
+    my BlankLine:D $blank-line-ţ .= new(:text($blank-line-text-ţ));
+
+    my Str:D $header-text-ţ = q:to/EOF/.trim-trailing;
+    this should be a `header3`
+    EOF
+    my Header[3] $header-ţ .= new(:text($header-text-ţ));
+
+    my HeaderBlock['BlankLine'] $header-block-ţ .= new(
+        :blank-line($blank-line-ţ),
+        :header($header-ţ)
+    );
+
+    my Chunk['HeaderBlock'] $chunk-ţ .= new(
+        :bounds($bounds-ţ),
+        :section($section-ţ),
+        :header-block($header-block-ţ)
+    );
+
+    # --- end chunk-ţ }}}
+    # --- chunk-ú {{{
+
+    # --- --- list-item {{{
+
+    # --- --- --- 01 {{{
+
+    my BulletPoint['x'] $bullet-point-ú01 .= new;
+    my Str:D $text-ú01 = 'because a `blank-line` comes before it';
+
+    my ListItem['Unordered'] $list-item-ú01 .= new(
+        :bullet-point($bullet-point-ú01),
+        :text($text-ú01)
+    );
+
+    # --- --- --- end 01 }}}
+    # --- --- --- 02 {{{
+
+    my CheckboxExceptionChar['*'] $char-ú02 .= new;
+    my Checkbox['Exception'] $checkbox-ú02 .= new(:char($char-ú02));
+    my Str:D $text-ú02 = 'because a list comes after it';
+
+    my ListItem['Todo'] $list-item-ú02 .= new(
+        :checkbox($checkbox-ú02),
+        :text($text-ú02)
+    );
+
+    # --- --- --- end 02 }}}
+    # --- --- --- 03 {{{
+
+    my ListItem::Number::Terminator['.'] $terminator-ú03 .= new;
+    my UInt:D $value-ú03 = 1;
+    my Str:D $text-ú03 = q:to/EOF/.trim-trailing;
+    the list continues \ / _$@$#%$^%Y&&^%%@$$#$T%Y^U&^' ' ~with~ *offset*
+       **gibberish** underlined up to here_. file://~/tmp/ /a\/b.txt
+       {} [] some symbols come on the next offset line
+    EOF
+
+    my ListItem::Number $number-ú03 .= new(
+        :terminator($terminator-ú03),
+        :value($value-ú03)
+    );
+
+    my ListItem['Ordered'] $list-item-ú03 .= new(
+        :number($number-ú03),
+        :text($text-ú03)
+    );
+
+    # --- --- --- end 03 }}}
+    # --- --- --- 04 {{{
+
+    my ListItem::Number::Terminator['.'] $terminator-ú04 .= new;
+    my UInt:D $value-ú04 = 2;
+    my Str:D $text-ú04 = q:to/EOF/.trim-trailing;
+    indented list-item
+    EOF
+
+    my ListItem::Number $number-ú04 .= new(
+        :terminator($terminator-ú04),
+        :value($value-ú04)
+    );
+
+    my ListItem['Ordered'] $list-item-ú04 .= new(
+        :number($number-ú04),
+        :text($text-ú04)
+    );
+
+    # --- --- --- end 04 }}}
+
+    my ListItem:D @list-item-ú =
+        $list-item-ú01,
+        $list-item-ú02,
+        $list-item-ú03,
+        $list-item-ú04;
+
+    # --- --- end list-item }}}
+
+    my ListBlock $list-block-ú .= new(:list-item(@list-item-ú));
+
+    my Chunk::Meta::Bounds:D $bounds-ú = gen-bounds();
+    my UInt:D $section-ú = 0;
+
+    my Chunk['ListBlock'] $chunk-ú .= new(
+        :bounds($bounds-ú),
+        :section($section-ú),
+        :list-block($list-block-ú)
+    );
+
+    # --- end chunk-ú }}}
+    # --- chunk-ṽ {{{
+
+    my CodeBlockDelimiter['Backticks'] $delimiter-ṽ .= new;
+    my Str:D $language-ṽ = 'perl6';
+    my Str:D $text-ṽ = q:to/EOF/;
+        # indented perl6 code-block
+        my Str:D $greeting = 'Hello';
+    EOF
+
+    my CodeBlock $code-block-ṽ .= new(
+        :delimiter($delimiter-ṽ),
+        :language($language-ṽ),
+        :text($text-ṽ)
+    );
+
+    my Chunk::Meta::Bounds:D $bounds-ṽ = gen-bounds();
+    my UInt:D $section-ṽ = 0;
+
+    my Chunk['CodeBlock'] $chunk-ṽ .= new(
+        :bounds($bounds-ṽ),
+        :section($section-ṽ),
+        :code-block($code-block-ṽ)
+    );
+
+    # --- end chunk-ṽ }}}
+    # --- chunk-ŵ {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ŵ = gen-bounds();
+    my UInt:D $section-ŵ = 0;
+
+    my Str:D $text-ŵ = q:to/EOF/.trim-trailing;
+     ------------- *
+         * comment-block *
+         * comment-block *
+         * comment-block *
+         * -------------
+    EOF
+    $text-ŵ ~= ' ';
+
+    my Comment:D $comment-ŵ .= new(:text($text-ŵ));
+
+    my CommentBlock:D $comment-block-ŵ .= new(:comment($comment-ŵ));
+
+    my Chunk['CommentBlock'] $chunk-ŵ .= new(
+        :bounds($bounds-ŵ),
+        :section($section-ŵ),
+        :comment-block($comment-block-ŵ)
+    );
+
+    # --- end chunk-ŵ }}}
+    # --- chunk-ẍ {{{
+
+    # --- --- list-item {{{
+
+    # --- --- --- 01 {{{
+
+    my BulletPoint['->'] $bullet-point-ẍ01 .= new;
+    my Str:D $text-ẍ01 =
+        'here comes another code-block /* eol comment goes here */';
+
+    my ListItem['Unordered'] $list-item-ẍ01 .= new(
+        :bullet-point($bullet-point-ẍ01),
+        :text($text-ẍ01)
+    );
+
+    # --- --- --- end 01 }}}
+
+    my ListItem:D @list-item-ẍ = $list-item-ẍ01;
+
+    # --- --- end list-item }}}
+
+    my ListBlock $list-block-ẍ .= new(:list-item(@list-item-ẍ));
+
+    my Chunk::Meta::Bounds:D $bounds-ẍ = gen-bounds();
+    my UInt:D $section-ẍ = 0;
+
+    my Chunk['ListBlock'] $chunk-ẍ .= new(
+        :bounds($bounds-ẍ),
+        :section($section-ẍ),
+        :list-block($list-block-ẍ)
+    );
+
+    # --- end chunk-ẍ }}}
+    # --- chunk-ý {{{
+
+    my CodeBlockDelimiter['Backticks'] $delimiter-ý .= new;
+    my Str:D $language-ý = 'perl6';
+    my Str:D $text-ý = q:to/EOF/;
+          # indented perl6 code-block
+          my Str:D $greeting = 'Hello';
+    EOF
+
+    my CodeBlock $code-block-ý .= new(
+        :delimiter($delimiter-ý),
+        :language($language-ý),
+        :text($text-ý)
+    );
+
+    my Chunk::Meta::Bounds:D $bounds-ý = gen-bounds();
+    my UInt:D $section-ý = 0;
+
+    my Chunk['CodeBlock'] $chunk-ý .= new(
+        :bounds($bounds-ý),
+        :section($section-ý),
+        :code-block($code-block-ý)
+    );
+
+    # --- end chunk-ý }}}
+    # --- chunk-ƶ {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ƶ = gen-bounds();
+    my UInt:D $section-ƶ = 0;
+
+    # --- --- delimiter {{{
+
+    my SectionalBlockDelimiter['Dashes'] $delimiter-ƶ .= new;
+
+    # --- --- end delimiter }}}
+    # --- --- name {{{
+
+    my Str $word-ƶ = 'The Simpsons Quotes';
+    my SectionalBlockName::Identifier['Word'] $identifier-ƶ .= new(
+        :word($word-ƶ)
+    );
+    my SectionalBlockName $name-ƶ .= new(:identifier($identifier-ƶ));
+
+    # --- --- end name }}}
+    # --- --- content {{{
+
+    # --- --- --- 01 {{{
+
+    my Str:D $text-ƶ01 = q:to/EOF/.trim-trailing;
+    'Doh!
+    EOF
+    my SectionalBlockContent['Text'] $content-ƶ01 .= new(:text($text-ƶ01));
+
+    # --- --- --- end 01 }}}
+
+    my SectionalBlockContent:D @content-ƶ = $content-ƶ01;
+
+    # --- --- end content }}}
+
+    my SectionalBlock $sectional-block-ƶ .= new(
+        :delimiter($delimiter-ƶ),
+        :name($name-ƶ),
+        :content(@content-ƶ)
+    );
+
+    my Chunk['SectionalBlock'] $chunk-ƶ .= new(
+        :bounds($bounds-ƶ),
+        :section($section-ƶ),
+        :sectional-block($sectional-block-ƶ)
+    );
+
+    # --- end chunk-ƶ }}}
+    # --- chunk-α {{{
+
+    my Chunk::Meta::Bounds:D $bounds-α = gen-bounds();
+    my UInt:D $section-α = 0;
+
+    # --- --- delimiter {{{
+
+    my SectionalBlockDelimiter['Backticks'] $delimiter-α .= new;
+
+    # --- --- end delimiter }}}
+    # --- --- name {{{
+
+    my Str $word-α = 'The Simpsons Quotes';
+    my SectionalBlockName::Identifier['Word'] $identifier-α .= new(
+        :word($word-α)
+    );
+    my SectionalBlockName::Operator['Additive'] $operator-α .= new;
+    my SectionalBlockName $name-α .= new(
+        :identifier($identifier-α)
+        :operator($operator-α)
+    );
+
+    # --- --- end name }}}
+    # --- --- content {{{
+
+    # --- --- --- 01 {{{
+
+    my Str:D $text-α01 = q:to/EOF/.trim-trailing;
+    Dental Plan!
+    EOF
+    my SectionalBlockContent['Text'] $content-α01 .= new(:text($text-α01));
+
+    # --- --- --- end 01 }}}
+
+    my SectionalBlockContent:D @content-α = $content-α01;
+
+    # --- --- end content }}}
+
+    my SectionalBlock $sectional-block-α .= new(
+        :delimiter($delimiter-α),
+        :name($name-α),
+        :content(@content-α)
+    );
+
+    my Chunk['SectionalBlock'] $chunk-α .= new(
+        :bounds($bounds-α),
+        :section($section-α),
+        :sectional-block($sectional-block-α)
+    );
+
+    # --- end chunk-α }}}
+    # --- chunk-Ώ {{{
+
+    my Chunk::Meta::Bounds:D $bounds-Ώ = gen-bounds();
+    my UInt:D $section-Ώ = 0;
+
+    # --- --- delimiter {{{
+
+    my SectionalBlockDelimiter['Dashes'] $delimiter-Ώ .= new;
+
+    # --- --- end delimiter }}}
+    # --- --- name {{{
+
+    my Str $word-Ώ = 'The Simpsons Quotes';
+    my SectionalBlockName::Identifier['Word'] $identifier-Ώ .= new(
+        :word($word-Ώ)
+    );
+    my SectionalBlockName::Operator['Additive'] $operator-Ώ .= new;
+    my SectionalBlockName $name-Ώ .= new(
+        :identifier($identifier-Ώ)
+        :operator($operator-Ώ)
+    );
+
+    # --- --- end name }}}
+    # --- --- content {{{
+
+    # --- --- --- 01 {{{
+
+    my Str:D $text-Ώ01 = q:to/EOF/.trim-trailing;
+    Lisa needs braces!
+    EOF
+    my SectionalBlockContent['Text'] $content-Ώ01 .= new(:text($text-Ώ01));
+
+    # --- --- --- end 01 }}}
+
+    my SectionalBlockContent:D @content-Ώ = $content-Ώ01;
+
+    # --- --- end content }}}
+
+    my SectionalBlock $sectional-block-Ώ .= new(
+        :delimiter($delimiter-Ώ),
+        :name($name-Ώ),
+        :content(@content-Ώ)
+    );
+
+    my Chunk['SectionalBlock'] $chunk-Ώ .= new(
+        :bounds($bounds-Ώ),
+        :section($section-Ώ),
+        :sectional-block($sectional-block-Ώ)
+    );
+
+    # --- end chunk-Ώ }}}
+    # --- chunk-Ψ {{{
+
+    my Chunk::Meta::Bounds:D $bounds-Ψ = gen-bounds();
+    my UInt:D $section-Ψ = 0;
+
+    # --- --- delimiter {{{
+
+    my SectionalBlockDelimiter['Dashes'] $delimiter-Ψ .= new;
+
+    # --- --- end delimiter }}}
+    # --- --- name {{{
+
+    my Str $word-Ψ = 'The Simpsons Quotes';
+    my SectionalBlockName::Identifier['Word'] $identifier-Ψ .= new(
+        :word($word-Ψ)
+    );
+    my SectionalBlockName::Operator['Additive'] $operator-Ψ .= new;
+    my SectionalBlockName $name-Ψ .= new(
+        :identifier($identifier-Ψ)
+        :operator($operator-Ψ)
+    );
+
+    # --- --- end name }}}
+    # --- --- content {{{
+
+    # --- --- --- 01 {{{
+
+    my Str:D $text-Ψ01 = q:to/EOF/.trim-trailing;
+    Bart! Why you little
+    EOF
+    my SectionalBlockContent['Text'] $content-Ψ01 .= new(:text($text-Ψ01));
+
+    # --- --- --- end 01 }}}
+
+    my SectionalBlockContent:D @content-Ψ = $content-Ψ01;
+
+    # --- --- end content }}}
+
+    my SectionalBlock $sectional-block-Ψ .= new(
+        :delimiter($delimiter-Ψ),
+        :name($name-Ψ),
+        :content(@content-Ψ)
+    );
+
+    my Chunk['SectionalBlock'] $chunk-Ψ .= new(
+        :bounds($bounds-Ψ),
+        :section($section-Ψ),
+        :sectional-block($sectional-block-Ψ)
+    );
+
+    # --- end chunk-Ψ }}}
+    # --- chunk-Θ {{{
+
+    my Chunk::Meta::Bounds:D $bounds-Θ = gen-bounds();
+    my UInt:D $section-Θ = 0;
+
+    my Str:D $blank-line-text-Θ = '';
+    my BlankLine $blank-line-Θ .= new(:text($blank-line-text-Θ));
+
+    my Chunk['BlankLine'] $chunk-Θ .= new(
+        :bounds($bounds-Θ),
+        :section($section-Θ),
+        :blank-line($blank-line-Θ)
+    );
+
+    # --- end chunk-Θ }}}
+    # --- chunk-Δ {{{
+
+    my Chunk::Meta::Bounds:D $bounds-Δ = gen-bounds();
+    my UInt:D $section-Δ = 0;
+
+    my HorizontalRule['Soft'] $horizontal-rule-Δ .= new;
+
+    my Str:D $header-text-Δ = q:to/EOF/.trim-trailing;
+    this should be a `header3`
+    EOF
+    my Header[3] $header-Δ .= new(:text($header-text-Δ));
+
+    my HeaderBlock['HorizontalRule'] $header-block-Δ .= new(
+        :horizontal-rule($horizontal-rule-Δ),
+        :header($header-Δ)
+    );
+
+    my Chunk['HeaderBlock'] $chunk-Δ .= new(
+        :bounds($bounds-Δ),
+        :section($section-Δ),
+        :header-block($header-block-Δ)
+    );
+
+    # --- end chunk-Δ }}}
+    # --- chunk-ж {{{
+
+    # --- --- list-item {{{
+
+    # --- --- --- 01 {{{
+
+    my CheckboxCheckedChar['o'] $char-ж01 .= new;
+    my Checkbox['Checked'] $checkbox-ж01 .= new(:char($char-ж01));
+    my Str:D $text-ж01 = 'because a `horizontal-rule` comes before it';
+
+    my ListItem['Todo'] $list-item-ж01 .= new(
+        :checkbox($checkbox-ж01),
+        :text($text-ж01)
+    );
+
+    # --- --- --- end 01 }}}
+    # --- --- --- 02 {{{
+
+    my CheckboxCheckedChar['o'] $char-ж02 .= new;
+    my Checkbox['Checked'] $checkbox-ж02 .= new(:char($char-ж02));
+    my Str:D $text-ж02 = 'because a list comes after it';
+
+    my ListItem['Todo'] $list-item-ж02 .= new(
+        :checkbox($checkbox-ж02),
+        :text($text-ж02)
+    );
+
+    # --- --- --- end 02 }}}
+
+    my ListItem:D @list-item-ж = $list-item-ж01, $list-item-ж02;
+
+    # --- --- end list-item }}}
+
+    my ListBlock $list-block-ж .= new(:list-item(@list-item-ж));
+
+    my Chunk::Meta::Bounds:D $bounds-ж = gen-bounds();
+    my UInt:D $section-ж = 0;
+
+    my Chunk['ListBlock'] $chunk-ж .= new(
+        :bounds($bounds-ж),
+        :section($section-ж),
+        :list-block($list-block-ж)
+    );
+
+    # --- end chunk-ж }}}
+    # --- chunk-א {{{
+
+    my Chunk::Meta::Bounds:D $bounds-א = gen-bounds();
+    my UInt:D $section-א = 0;
+
+    my Str:D $blank-line-text-א = '';
+    my BlankLine $blank-line-א .= new(:text($blank-line-text-א));
+
+    my Chunk['BlankLine'] $chunk-א .= new(
+        :bounds($bounds-א),
+        :section($section-א),
+        :blank-line($blank-line-א)
+    );
+
+    # --- end chunk-א }}}
+    # --- chunk-ב {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ב = gen-bounds();
+    my UInt:D $section-ב = 0;
+
+    my HorizontalRule['Hard'] $horizontal-rule-ב .= new;
+
+    my Str:D $header-text-ב = q:to/EOF/.trim-trailing;
+    this should be a `header3`
+    EOF
+    my Header[3] $header-ב .= new(:text($header-text-ב));
+
+    my HeaderBlock['HorizontalRule'] $header-block-ב .= new(
+        :horizontal-rule($horizontal-rule-ב),
+        :header($header-ב)
+    );
+
+    my Chunk['HeaderBlock'] $chunk-ב .= new(
+        :bounds($bounds-ב),
+        :section($section-ב),
+        :header-block($header-block-ב)
+    );
+
+    # --- end chunk-ב }}}
+    # --- chunk-ג {{{
+
+    # --- --- list-item {{{
+
+    # --- --- --- 01 {{{
+
+    my CheckboxEtcChar['='] $char-ג01 .= new;
+    my Checkbox['Etc'] $checkbox-ג01 .= new(:char($char-ג01));
+    my Str:D $text-ג01 = 'because a `horizontal-rule` comes before it';
+
+    my ListItem['Todo'] $list-item-ג01 .= new(
+        :checkbox($checkbox-ג01),
+        :text($text-ג01)
+    );
+
+    # --- --- --- end 01 }}}
+    # --- --- --- 02 {{{
+
+    my CheckboxEtcChar['='] $char-ג02 .= new;
+    my Checkbox['Etc'] $checkbox-ג02 .= new(:char($char-ג02));
+    my Str:D $text-ג02 = 'because a list comes after it';
+
+    my ListItem['Todo'] $list-item-ג02 .= new(
+        :checkbox($checkbox-ג02),
+        :text($text-ג02)
+    );
+
+    # --- --- --- end 02 }}}
+
+    my ListItem:D @list-item-ג = $list-item-ג01, $list-item-ג02;
+
+    # --- --- end list-item }}}
+
+    my ListBlock $list-block-ג .= new(:list-item(@list-item-ג));
+
+    my Chunk::Meta::Bounds:D $bounds-ג = gen-bounds();
+    my UInt:D $section-ג = 0;
+
+    my Chunk['ListBlock'] $chunk-ג .= new(
+        :bounds($bounds-ג),
+        :section($section-ג),
+        :list-block($list-block-ג)
+    );
+
+    # --- end chunk-ג }}}
+    # --- chunk-ד {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ד = gen-bounds();
+    my UInt:D $section-ד = 0;
+
+    my Str:D $blank-line-text-ד = '';
+    my BlankLine $blank-line-ד .= new(:text($blank-line-text-ד));
+
+    my Chunk['BlankLine'] $chunk-ד .= new(
+        :bounds($bounds-ד),
+        :section($section-ד),
+        :blank-line($blank-line-ד)
+    );
+
+    # --- end chunk-ד }}}
+    # --- chunk-ה {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ה = gen-bounds();
+    my UInt:D $section-ה = 0;
+
+    my Str:D $paragraph-text-ה = q:to/EOF/.trim-trailing;
+          INFO Robot
+    EOF
+    my Paragraph $paragraph-ה .= new(:text($paragraph-text-ה));
+
+    my Chunk['Paragraph'] $chunk-ה .= new(
+        :bounds($bounds-ה),
+        :section($section-ה),
+        :paragraph($paragraph-ה)
+    );
+
+    # --- end chunk-ה }}}
+    # --- chunk-ו {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ו = gen-bounds();
+    my UInt:D $section-ו = 0;
+
+    my Str:D $blank-line-text-ו = '';
+    my BlankLine $blank-line-ו .= new(:text($blank-line-text-ו));
+
+    my Chunk['BlankLine'] $chunk-ו .= new(
+        :bounds($bounds-ו),
+        :section($section-ו),
+        :blank-line($blank-line-ו)
+    );
+
+    # --- end chunk-ו }}}
+    # --- chunk-ז {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ז = gen-bounds();
+    my UInt:D $section-ז = 0;
+
+    my Str:D $paragraph-text-ז = q:to/EOF/.trim-trailing;
+                       FIXME
+    EOF
+
+    my Paragraph $paragraph-ז .= new(:text($paragraph-text-ז));
+
+    my Chunk['Paragraph'] $chunk-ז .= new(
+        :bounds($bounds-ז),
+        :section($section-ז),
+        :paragraph($paragraph-ז)
+    );
+
+    # --- end chunk-ז }}}
+    # --- chunk-ח {{{
+
+    my CodeBlockDelimiter['Backticks'] $delimiter-ח .= new;
+    my Str:D $text-ח = q:to/EOF/;
+                        \_/
+                        |:|
+                        -|-
+                        / \
+    EOF
+
+    my CodeBlock $code-block-ח .= new(
+        :delimiter($delimiter-ח),
+        :text($text-ח)
+    );
+
+    my Chunk::Meta::Bounds:D $bounds-ח = gen-bounds();
+    my UInt:D $section-ח = 0;
+
+    my Chunk['CodeBlock'] $chunk-ח .= new(
+        :bounds($bounds-ח),
+        :section($section-ח),
+        :code-block($code-block-ח)
+    );
+
+    # --- end chunk-ח }}}
+    # --- chunk-ט {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ט = gen-bounds();
+    my UInt:D $section-ט = 0;
+
+    my Str:D $blank-line-text-ט = '';
+    my BlankLine $blank-line-ט .= new(:text($blank-line-text-ט));
+
+    my Chunk['BlankLine'] $chunk-ט .= new(
+        :bounds($bounds-ט),
+        :section($section-ט),
+        :blank-line($blank-line-ט)
+    );
+
+    # --- end chunk-ט }}}
+    # --- chunk-י {{{
+
+    my Chunk::Meta::Bounds:D $bounds-י = gen-bounds();
+    my UInt:D $section-י = 0;
+
+    my Str:D $paragraph-text-י = q:to/EOF/.trim-trailing;
+          DEBUG System
+    EOF
+
+    my Paragraph $paragraph-י .= new(:text($paragraph-text-י));
+
+    my Chunk['Paragraph'] $chunk-י .= new(
+        :bounds($bounds-י),
+        :section($section-י),
+        :paragraph($paragraph-י)
+    );
+
+    # --- end chunk-י }}}
+    # --- chunk-ך {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ך = gen-bounds();
+    my UInt:D $section-ך = 0;
+
+    my Str:D $blank-line-text-ך = '';
+    my BlankLine $blank-line-ך .= new(:text($blank-line-text-ך));
+
+    my Chunk['BlankLine'] $chunk-ך .= new(
+        :bounds($bounds-ך),
+        :section($section-ך),
+        :blank-line($blank-line-ך)
+    );
+
+    # --- end chunk-ך }}}
+    # --- chunk-כ {{{
+
+    my Chunk::Meta::Bounds:D $bounds-כ = gen-bounds();
+    my UInt:D $section-כ = 0;
+
+    my Str:D $blank-line-text-כ = '';
+    my BlankLine $blank-line-כ .= new(:text($blank-line-text-כ));
+
+    my Chunk['BlankLine'] $chunk-כ .= new(
+        :bounds($bounds-כ),
+        :section($section-כ),
+        :blank-line($blank-line-כ)
+    );
+
+    # --- end chunk-כ }}}
+    # --- chunk-ל {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ל = gen-bounds();
+    my UInt:D $section-ל = 0;
+
+    my Str:D $blank-line-text-ל = '';
+    my BlankLine $blank-line-ל .= new(:text($blank-line-text-ל));
+
+    my Chunk['BlankLine'] $chunk-ל .= new(
+        :bounds($bounds-ל),
+        :section($section-ל),
+        :blank-line($blank-line-ל)
+    );
+
+    # --- end chunk-ל }}}
+    # --- chunk-ם {{{
+
+    my Chunk::Meta::Bounds:D $bounds-ם = gen-bounds();
+    my UInt:D $section-ם = 0;
+
+    my HorizontalRule['Hard'] $horizontal-rule-ם .= new;
+
+    my Chunk['HorizontalRule'] $chunk-ם .= new(
+        :bounds($bounds-ם),
+        :section($section-ם),
+        :horizontal-rule($horizontal-rule-ם)
+    );
+
+    # --- end chunk-ם }}}
+    # --- chunk-מ {{{
+
+    my Chunk::Meta::Bounds:D $bounds-מ = gen-bounds();
+    my UInt:D $section-מ = 0;
+
+    my Str:D $blank-line-text-מ = '';
+    my BlankLine $blank-line-מ .= new(:text($blank-line-text-מ));
+
+    # --- --- 01 {{{
+
+    my UInt:D $number-מ01 = 1;
+    my ReferenceInline $reference-inline-מ01 .= new(:number($number-מ01));
+    my Str:D $reference-text-מ01 = 'https://[2[3[4]]].finn';
+    my ReferenceLine $reference-line-מ01 .= new(
+        :reference-inline($reference-inline-מ01),
+        :reference-text($reference-text-מ01)
+    );
+
+    # --- --- end 01 }}}
+    # --- --- 02 {{{
+
+    my UInt:D $number-מ02 = 9;
+    my ReferenceInline $reference-inline-מ02 .= new(:number($number-מ02));
+    my Str:D $reference-text-מ02 = Q{/\\/\/\/\/\/\/\/\/\/\/\/\/\\/};
+    my ReferenceLine $reference-line-מ02 .= new(
+        :reference-inline($reference-inline-מ02),
+        :reference-text($reference-text-מ02)
+    );
+
+    # --- --- end 02 }}}
+    # --- --- 03 {{{
+
+    my UInt:D $number-מ03 = 0;
+    my ReferenceInline $reference-inline-מ03 .= new(:number($number-מ03));
+    my Str:D $reference-text-מ03 = '1234567890-=`1234567890`';
+    my ReferenceLine $reference-line-מ03 .= new(
+        :reference-inline($reference-inline-מ03),
+        :reference-text($reference-text-מ03)
+    );
+
+    # --- --- end 03 }}}
+    # --- --- 04 {{{
+
+    my UInt:D $number-מ04 = 909;
+    my ReferenceInline $reference-inline-מ04 .= new(:number($number-מ04));
+    my Str:D $reference-text-מ04 = 'a';
+    my ReferenceLine $reference-line-מ04 .= new(
+        :reference-inline($reference-inline-מ04),
+        :reference-text($reference-text-מ04)
+    );
+
+    # --- --- end 04 }}}
+
+    my ReferenceLine:D @reference-line-מ =
+        $reference-line-מ01,
+        $reference-line-מ02,
+        $reference-line-מ03,
+        $reference-line-מ04;
+
+    my ReferenceLineBlock['BlankLine'] $reference-line-block-מ .= new(
+        :blank-line($blank-line-מ),
+        :reference-line(@reference-line-מ)
+    );
+
+    my Chunk['ReferenceLineBlock'] $chunk-מ .= new(
+        :bounds($bounds-מ),
+        :section($section-מ),
+        :reference-line-block($reference-line-block-מ)
+    );
+
+    # --- end chunk-מ }}}
+
+    my Chunk:D @chunk =
+        $chunk-a,
+        $chunk-b,
+        $chunk-c,
+        $chunk-d,
+        $chunk-e,
+        $chunk-f,
+        $chunk-g,
+        $chunk-h,
+        $chunk-i,
+        $chunk-j,
+        $chunk-k,
+        $chunk-l,
+        $chunk-m,
+        $chunk-n,
+        $chunk-o,
+        $chunk-p,
+        $chunk-q,
+        $chunk-r,
+        $chunk-s,
+        $chunk-t,
+        $chunk-u,
+        $chunk-v,
+        $chunk-w,
+        $chunk-x,
+        $chunk-y,
+        $chunk-z,
+        $chunk-ã,
+        $chunk-ḇ,
+        $chunk-ç,
+        $chunk-ď,
+        $chunk-è,
+        $chunk-ḟ,
+        $chunk-ğ,
+        $chunk-ħ,
+        $chunk-ï,
+        $chunk-ĵ,
+        $chunk-ķ,
+        $chunk-ł,
+        $chunk-ḿ,
+        $chunk-ñ,
+        $chunk-ò,
+        $chunk-ṕ,
+        $chunk-ק,
+        $chunk-ŗ,
+        $chunk-ś,
+        $chunk-ţ,
+        $chunk-ú,
+        $chunk-ṽ,
+        $chunk-ŵ,
+        $chunk-ẍ,
+        $chunk-ý,
+        $chunk-ƶ,
+        $chunk-α,
+        $chunk-Ώ,
+        $chunk-Ψ,
+        $chunk-Θ,
+        $chunk-Δ,
+        $chunk-ж,
+        $chunk-א,
+        $chunk-ב,
+        $chunk-ג,
+        $chunk-ד,
+        $chunk-ה,
+        $chunk-ו,
+        $chunk-ז,
+        $chunk-ח,
+        $chunk-ט,
+        $chunk-י,
+        $chunk-ך,
+        $chunk-כ,
+        $chunk-ל,
+        $chunk-ם,
+        $chunk-מ;
 
     # end @chunk }}}
     # @chunk tests {{{
 
-    is-deeply ~$match<document><chunk>[0]<comment-block>, @chunk[0];
-    is-deeply ~$match<document><chunk>[1]<header-block><blank-line>, @chunk[1];
-    is-deeply ~$match<document><chunk>[1]<header-block><header>, @chunk[2];
-    is-deeply ~$match<document><chunk>[2]<paragraph>, @chunk[3];
-    is-deeply ~$match<document><chunk>[3]<header-block><blank-line>, @chunk[4];
-    is-deeply ~$match<document><chunk>[3]<header-block><header>, @chunk[5];
-    is-deeply ~$match<document><chunk>[4]<header-block><blank-line>, @chunk[6];
-    is-deeply ~$match<document><chunk>[4]<header-block><header>, @chunk[7];
-    is-deeply ~$match<document><chunk>[5]<blank-line>, @chunk[8];
-    is-deeply ~$match<document><chunk>[6]<paragraph>, @chunk[9];
-    is-deeply ~$match<document><chunk>[7]<blank-line>, @chunk[10];
-    is-deeply ~$match<document><chunk>[8]<paragraph>, @chunk[11];
-    is-deeply ~$match<document><chunk>[9]<blank-line>, @chunk[12];
-    is-deeply ~$match<document><chunk>[10]<paragraph>, @chunk[13];
-    is-deeply ~$match<document><chunk>[11]<blank-line>, @chunk[14];
-    is-deeply ~$match<document><chunk>[12]<paragraph>, @chunk[15];
-    is-deeply ~$match<document><chunk>[13]<blank-line>, @chunk[16];
-    is-deeply ~$match<document><chunk>[14]<paragraph>, @chunk[17];
-    is-deeply ~$match<document><chunk>[15]<blank-line>, @chunk[18];
-    is-deeply ~$match<document><chunk>[16]<comment-block>, @chunk[19];
-    is-deeply ~$match<document><chunk>[17]<header-block><blank-line>, @chunk[20];
-    is-deeply ~$match<document><chunk>[17]<header-block><header>, @chunk[21];
-    is-deeply ~$match<document><chunk>[18]<list-block>, @chunk[22];
-    is-deeply ~$match<document><chunk>[19]<header-block><blank-line>, @chunk[23];
-    is-deeply ~$match<document><chunk>[19]<header-block><header>, @chunk[24];
-    is-deeply ~$match<document><chunk>[20]<list-block>, @chunk[25];
-    is-deeply ~$match<document><chunk>[21]<header-block><blank-line>, @chunk[26];
-    is-deeply ~$match<document><chunk>[21]<header-block><header>, @chunk[27];
-    is-deeply ~$match<document><chunk>[22]<list-block>, @chunk[28];
-    is-deeply ~$match<document><chunk>[23]<comment-block>, @chunk[29];
-    is-deeply ~$match<document><chunk>[24]<list-block>, @chunk[30];
-    is-deeply ~$match<document><chunk>[25]<comment-block>, @chunk[31];
-    is-deeply ~$match<document><chunk>[26]<list-block>, @chunk[32];
-    is-deeply ~$match<document><chunk>[27]<blank-line>, @chunk[33];
-    is-deeply ~$match<document><chunk>[28]<comment-block>, @chunk[34];
-    is-deeply ~$match<document><chunk>[29]<blank-line>, @chunk[35];
-    is-deeply ~$match<document><chunk>[30]<paragraph>, @chunk[36];
-    is-deeply ~$match<document><chunk>[31]<header-block><blank-line>, @chunk[37];
-    is-deeply ~$match<document><chunk>[31]<header-block><header>, @chunk[38];
-    is-deeply ~$match<document><chunk>[32]<horizontal-rule>, @chunk[39];
-    is-deeply ~$match<document><chunk>[33]<header-block><blank-line>, @chunk[40];
-    is-deeply ~$match<document><chunk>[33]<header-block><header>, @chunk[41];
-    is-deeply ~$match<document><chunk>[34]<paragraph>, @chunk[42];
-    is-deeply ~$match<document><chunk>[35]<blank-line>, @chunk[43];
-    is-deeply ~$match<document><chunk>[36]<header-block><horizontal-rule>, @chunk[44];
-    is-deeply ~$match<document><chunk>[36]<header-block><header>, @chunk[45];
-    is-deeply ~$match<document><chunk>[37]<header-block><blank-line>, @chunk[46];
-    is-deeply ~$match<document><chunk>[37]<header-block><header>, @chunk[47];
-    is-deeply ~$match<document><chunk>[38]<blank-line>, @chunk[48];
-    is-deeply ~$match<document><chunk>[39]<header-block><horizontal-rule>, @chunk[49];
-    is-deeply ~$match<document><chunk>[39]<header-block><header>, @chunk[50];
-    is-deeply ~$match<document><chunk>[40]<horizontal-rule>, @chunk[51];
-    is-deeply ~$match<document><chunk>[41]<paragraph>, @chunk[52];
-    is-deeply ~$match<document><chunk>[42]<blank-line>, @chunk[53];
-    is-deeply ~$match<document><chunk>[43]<horizontal-rule>, @chunk[54];
-    is-deeply ~$match<document><chunk>[44]<paragraph>, @chunk[55];
-    is-deeply ~$match<document><chunk>[45]<header-block><blank-line>, @chunk[56];
-    is-deeply ~$match<document><chunk>[45]<header-block><header>, @chunk[57];
-    is-deeply ~$match<document><chunk>[46]<list-block>, @chunk[58];
-    is-deeply ~$match<document><chunk>[47]<code-block>, @chunk[59];
-    is-deeply ~$match<document><chunk>[48]<comment-block>, @chunk[60];
-    is-deeply ~$match<document><chunk>[49]<list-block>, @chunk[61];
-    is-deeply ~$match<document><chunk>[50]<code-block>, @chunk[62];
-    is-deeply ~$match<document><chunk>[51]<sectional-block>, @chunk[63];
-    is-deeply ~$match<document><chunk>[52]<sectional-block>, @chunk[64];
-    is-deeply ~$match<document><chunk>[53]<sectional-block>, @chunk[65];
-    is-deeply ~$match<document><chunk>[54]<sectional-block>, @chunk[66];
-    is-deeply ~$match<document><chunk>[55]<blank-line>, @chunk[67];
-    is-deeply ~$match<document><chunk>[56]<header-block><horizontal-rule>, @chunk[68];
-    is-deeply ~$match<document><chunk>[56]<header-block><header>, @chunk[69];
-    is-deeply ~$match<document><chunk>[57]<list-block>, @chunk[70];
-    is-deeply ~$match<document><chunk>[58]<blank-line>, @chunk[71];
-    is-deeply ~$match<document><chunk>[59]<header-block><horizontal-rule>, @chunk[72];
-    is-deeply ~$match<document><chunk>[59]<header-block><header>, @chunk[73];
-    is-deeply ~$match<document><chunk>[60]<list-block>, @chunk[74];
-    is-deeply ~$match<document><chunk>[61]<blank-line>, @chunk[75];
-    is-deeply ~$match<document><chunk>[62]<paragraph>, @chunk[76];
-    is-deeply ~$match<document><chunk>[63]<blank-line>, @chunk[77];
-    is-deeply ~$match<document><chunk>[64]<paragraph>, @chunk[78];
-    is-deeply ~$match<document><chunk>[65]<code-block>, @chunk[79];
-    is-deeply ~$match<document><chunk>[66]<blank-line>, @chunk[80];
-    is-deeply ~$match<document><chunk>[67]<paragraph>, @chunk[81];
-    is-deeply ~$match<document><chunk>[68]<blank-line>, @chunk[82];
-    is-deeply ~$match<document><chunk>[69]<blank-line>, @chunk[83];
-    is-deeply ~$match<document><chunk>[70]<blank-line>, @chunk[84];
-    is-deeply ~$match<document><chunk>[71]<reference-block>, @chunk[85];
-    ok $match<document><chunk>[72].isa(Any);
+    cmp-ok $parse-tree.document.chunk[$_], &cmp-ok-chunk, @chunk[$_], 'Chunk OK'
+        for (0..72);
+    ok $parse-tree.document.chunk[73].not;
 
     # end @chunk tests }}}
+
+    my Document $d .= new(:@chunk);
+    is-deeply $parse-tree.document, $d, 'Document OK';
+
+    my Finn::Parser::ParseTree $t .= new(:document($d));
+    is-deeply $parse-tree, $t, 'ParseTree OK';
 }
 
+=begin pod
 subtest 'finn-examples/hello',
 {
     my Str:D $document = 't/data/hello/Story';
