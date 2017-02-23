@@ -1,8 +1,39 @@
 Todo
 ====
 
-Finn::Parser::Grammar
----------------------
+Finn::Parser
+------------
+
+### implement finn-mode and text-mode include directive processing
+
+```finn
+§ process/in/finn/mode
+¶ process/in/text/mode
+```
+
+- in **Finn mode**, parser processes text:
+  - as Finn source document:
+    - `SectionInline['File']`
+    - `SectionInline['Reference']`
+    - and returns `Document`
+  - as Finn SectionalBlock:
+    - `SectionInline['Name']`
+    - `SectionInline['Name', 'File']`
+    - `SectionInline['Name', 'Reference']`
+    - and returns `Array[SectionalBlockContent]`
+- in **Text mode**, parser does not process text:
+  - and returns `Str`
+
+### check for circular include directives
+
+- circular include directives
+  - one obstacle preventing assured stringification
+    of SectionalBlockContent is in a case where
+    `SectionalBlockContent['SectionalInline'] $a` links to another
+    SectionalBlock whose `SectionalBlockContent['SectionalInline'] $b`
+    links back to the SectionalBlock containing `$a`.
+  - another case is where a `¶` *Text-mode*  SectionalInline grabs text
+    that tries to embed the document it is requested from
 
 ### store leading whitespace in `SectionalInline` attribute
 
@@ -78,6 +109,39 @@ Syntax Documentation
 ### document the horizontal-rule-soft relationship with chapters
 
 - document the `~` horizontal-rule-soft relationship with chapters
+
+### improve include directive syntax documentation
+
+- inside a Sectional Block (`SectionalBlockContent`), only these types
+  of Sectional Inlines are allowed:
+  - those whose contents resolve to a `SectionalBlock` (which can be
+    stringified):
+    - `§ 'name'`
+      - `SectionalInline['Name']`
+    - `§ 'name' path/to/file`
+      - `SectionalInline['Name', 'File']`
+    - `§ 'name' [1]`
+      - `SectionalInline['Name', 'Reference']`
+  - those whose contents directly resolve to a `Str`:
+    - `¶ 'name'`
+      - `SectionalInline['Name']`
+    - `¶ path/to/file`
+      - `SectionalInline['File']`
+    - `¶ [1]`
+      - `SectionalInline['Reference']`
+    - `¶ 'name' path/to/file`
+      - `SectionalInline['Name', 'File']`
+    - `¶ 'name' [1]`
+      - `SectionalInline['Name', 'Reference']`
+
+- at Document top level, all types of Sectional Inlines are allowed
+  (see: SectionalInlineBlock)
+
+- at Document top level, when `§ path/to/document` is encountered in
+  SectionalInlineBlock, Finn instantiates from it a `Document`, and all `Chunk`s
+  inside that `Document` will be marked children of the parent `Document`
+  (see: TXN::Parser's handling of include directives with `[0, 0]`
+  entry number)
 
 
 Other

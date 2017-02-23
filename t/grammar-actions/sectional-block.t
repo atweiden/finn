@@ -517,8 +517,12 @@ subtest
     EOF
     my SectionalBlockContent['Text'] $content-a .= new(:text($text-a));
 
+    my Mode:D $mode-b = FINN;
     my Str:D $name-b = 'misc';
-    my SectionalInline['Name'] $sectional-inline-b .= new(:name($name-b));
+    my SectionalInline['Name'] $sectional-inline-b .= new(
+        :mode($mode-b),
+        :name($name-b)
+    );
     my SectionalBlockContent['SectionalInline'] $content-b .= new(
         :sectional-inline($sectional-inline-b)
     );

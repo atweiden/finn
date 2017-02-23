@@ -381,6 +381,10 @@ role SectionalBlock
 # end role SectionalBlock }}}
 # role SectionalInline {{{
 
+# process SectionalInline request in finn-mode or text-mode
+enum Mode <FINN TEXT>;
+
+role SectionalInline::Mode      {...}
 role SectionalInline::Name      {...}
 role SectionalInline::File      {...}
 role SectionalInline::Reference {...}
@@ -388,18 +392,26 @@ role SectionalInline::Reference {...}
 # C<role SectionalInline['Name']> is a Haml-style include directive
 # telling us to process C<self.name> as Sectional Block and embed
 # in-place
-# XXX: it can only appear inside of a Sectional Block
-role SectionalInline['Name'] does SectionalInline::Name {*}
+role SectionalInline['Name']
+    does SectionalInline::Mode
+    does SectionalInline::Name
+{*}
 
 # C<role SectionalInline['File']> is a Haml-style include directive
 # telling us to process the entirety of the linked Finn source file
 # and embed in-place
-role SectionalInline['File'] does SectionalInline::File {*}
+role SectionalInline['File']
+    does SectionalInline::Mode
+    does SectionalInline::File
+{*}
 
 # C<role SectionalInline['Reference']> is a Haml-style include
 # directive telling us to process the entirety of the linked Finn
 # source file given by Reference Inline and embed in-place
-role SectionalInline['Reference'] does SectionalInline::Reference {*}
+role SectionalInline['Reference']
+    does SectionalInline::Mode
+    does SectionalInline::Reference
+{*}
 
 # C<role SectionalInline['Name', 'File']> is a Haml-style include
 # directive with added specificity from C<sectional-block-name>
@@ -408,6 +420,7 @@ role SectionalInline['Reference'] does SectionalInline::Reference {*}
 # tells us to process C<self.name> from C<self.file> as Sectional Block
 # and embed in-place
 role SectionalInline['Name', 'File']
+    does SectionalInline::Mode
     does SectionalInline::Name
     does SectionalInline::File
 {*}
@@ -417,9 +430,15 @@ role SectionalInline['Name', 'File']
 # Sectional Block Name is searched for in the File resolved from
 # Reference Inline
 role SectionalInline['Name', 'Reference']
+    does SectionalInline::Mode
     does SectionalInline::Name
     does SectionalInline::Reference
 {*}
+
+role SectionalInline::Mode
+{
+    has Mode:D $.mode is required;
+}
 
 role SectionalInline::Name
 {

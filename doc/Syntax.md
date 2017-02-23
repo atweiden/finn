@@ -106,27 +106,34 @@ my Str $greeting = 'Hello, World';
 
 ## Sectional Inlines
 
-*Sectional Inlines* begin with a Section Sign (`§`). The Section Sign
-must appear at the start of a line, although it may be offset by leading
-whitespace. If it is offset by whitespace, the content being embedded
-will be indented by an equal amount of leading soft or hard tabs.
+*Sectional Inlines* begin with a Section Sign (`§`) or Paragraph Sign
+(`¶`). The Sign must appear at the start of a line, although it may be
+offset by leading whitespace. If it is offset by whitespace, any content
+to be embedded will be indented by an equal amount of leading whitespace.
 
-The Section Sign must be followed by exactly one horizontal
-whitespace. Sectional Inlines come in two flavors:
+The Sign must be followed by exactly one horizontal whitespace. Sectional
+Inlines come in two flavors:
 
 1. Intra-file
 2. Inter-file
 
 Depending on the flavor of Sectional Inline, the horizontal whitespace
-following the Section sign must be followed by either a quoted Sectional
-Block Name, a quoted Sectional Block Name plus a file path, or just a
-file path. An *Inline Reference* can take the place of the file path.
+following the Sign must be followed by either a quoted Sectional Block
+Name, a quoted Sectional Block Name plus a file path, or just a file
+path. An *Inline Reference* can take the place of the file path.
 
 ### Intra-file Sectional Inlines
 
 Intra-file Sectional Inlines come in only one flavor: *By Sectional
-Block Name*. This type of Sectional Inline can only appear within a
-Sectional Block.
+Block Name*.
+
+This type of Sectional Inline can appear inside and outside of Sectional
+Blocks. However, if it appears outside of a Sectional Block, it must:
+
+- appear at the very top of the Finn source document, or
+- appear following a blank line, horizontal rule or comment block, or
+- appear as part of a consecutive series of Sectional Inlines separated
+  by newline
 
 #### Intra-file By Sectional Block Name
 
@@ -175,7 +182,7 @@ Block Name. Given:
     - C is for Crescent City.
     ```
 
-The following Finn source code will render `- A is for Anaheim.`:
+The following Sectional Inline will render `- A is for Anaheim.`:
 
 ```finn
 § "Cities Beginning with the Letter A" /finn/cities-in-ca/a-through-f.finn
@@ -262,13 +269,53 @@ Or, equivalently:
 [1]: /finn/cities-in-ca/a-through-f.finn
 ```
 
-This type of Sectional Inline can appear inside and outside of Sectional
-Blocks. However, if it appears outside of a Sectional Block, it must:
+This type of Sectional Inline can only appear outside of Sectional Blocks:
 
-- appear at the very top of the Finn source document, or
-- appear following a blank line, horizontal rule or comment block, or
-- appear as part of a consecutive series of Sectional Inlines separated
-  by newline
+- at the very top of the Finn source document, or
+- following a blank line, horizontal rule or comment block, or
+- as part of a consecutive series of Sectional Inlines separated by
+  newline
+
+### Finn-mode vs Text-mode Sectional Inlines
+
+In each Sectional Inline example so far, the Section Sign (`§`) has been
+used. The `§` indicates the Sectional Inline has requested a resource to
+be processed in *Finn-mode*. In *Finn-mode* the requested resource will
+be treated as if it is a Finn source document (if a file is requested
+by path/reference) or Sectional Block (if a Sectional Block is requested
+by name).
+
+*Text-mode* Sectional Inlines come in handy when you want to simply
+embed the contents of a file, as in the following example:
+
+```finn
+The History of the Alligator
+============================
+
+¶ /wiki/alligator.txt
+```
+
+```cat wiki/alligator.txt
+Alligator History
+```
+
+Another possible use case of *Text-mode* Sectional Inlines is for a high
+[whipitupitude] approach to literate programming:
+
+```
+$ cat finn/lib/Alligator.pm6
+use v6;
+unit class Alligator;
+method bite() returns Str:D { 'ouch' }
+```
+
+```finn
+Background information on `Alligator.pm6` goes here.
+
+--- /lib/Alligator.pm6
+¶ /finn/lib/Alligator.pm6
+---
+```
 
 
 ## Sectional Block Operators
@@ -593,3 +640,4 @@ document, the last seen Reference Inline Number will take precedence.
 
 
 [vim-journal]: https://github.com/junegunn/vim-journal
+[whipitupitude]: http://www.shlomifish.org/humour/fortunes/show.cgi?id=larry-wall-big-divide

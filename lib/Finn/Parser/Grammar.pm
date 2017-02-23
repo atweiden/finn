@@ -767,10 +767,8 @@ token sectional-block:dashes
 
 # --- sectional-inline {{{
 
-token section-sign
-{
-    '§'
-}
+token section-sign-finn-mode { '§' }
+token section-sign-text-mode { '¶' }
 
 proto token sectional-inline-text {*}
 
@@ -801,9 +799,16 @@ token sectional-inline-text:name-only
     <sectional-inline-name=string>
 }
 
-token sectional-inline
+proto token sectional-inline {*}
+
+token sectional-inline:finn-mode
 {
-    ^^ \h* <section-sign> \h <sectional-inline-text> $$
+    ^^ \h* <section-sign-finn-mode> \h <sectional-inline-text> $$
+}
+
+token sectional-inline:text-mode
+{
+    ^^ \h* <section-sign-text-mode> \h <sectional-inline-text> $$
 }
 
 # --- end sectional-inline }}}

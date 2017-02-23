@@ -875,7 +875,9 @@ multi sub infix:<eqv>(
     SectionalInline['Name'] $b
 ) is export returns Bool:D
 {
-    my Bool:D $is-same = $a.name eqv $b.name;
+    my Bool:D $is-same =
+        $a.mode eqv $b.mode
+            && $a.name eqv $b.name;
 }
 
 multi sub infix:<eqv>(
@@ -883,7 +885,9 @@ multi sub infix:<eqv>(
     SectionalInline['File'] $b
 ) is export returns Bool:D
 {
-    my Bool:D $is-same = $a.file eqv $b.file;
+    my Bool:D $is-same =
+        $a.mode eqv $b.mode
+            && $a.file eqv $b.file;
 }
 
 multi sub infix:<eqv>(
@@ -891,7 +895,9 @@ multi sub infix:<eqv>(
     SectionalInline['Reference'] $b
 ) is export returns Bool:D
 {
-    my Bool:D $is-same = $a.reference-inline eqv $b.reference-inline;
+    my Bool:D $is-same =
+        $a.mode eqv $b.mode
+            && $a.reference-inline eqv $b.reference-inline;
 }
 
 multi sub infix:<eqv>(
@@ -900,8 +906,9 @@ multi sub infix:<eqv>(
 ) is export returns Bool:D
 {
     my Bool:D $is-same =
-        $a.name eqv $b.name
-            && $a.file eqv $b.file;
+        $a.mode eqv $b.mode
+            && $a.name eqv $b.name
+                && $a.file eqv $b.file;
 }
 
 multi sub infix:<eqv>(
@@ -910,8 +917,9 @@ multi sub infix:<eqv>(
 ) is export returns Bool:D
 {
     my Bool:D $is-same =
-        $a.name eqv $b.name
-            && $a.reference-inline eqv $b.reference-inline;
+        $a.mode eqv $b.mode
+            && $a.name eqv $b.name
+                && $a.reference-inline eqv $b.reference-inline;
 }
 
 multi sub infix:<eqv>(

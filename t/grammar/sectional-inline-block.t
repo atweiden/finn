@@ -67,6 +67,7 @@ subtest
     § file://~/finn/share/vimfmt
     § [0]
     § [1]
+    ¶ [2]
     EOF
     my Str:D $rule = 'sectional-inline-block';
     ok

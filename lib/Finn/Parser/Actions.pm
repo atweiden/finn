@@ -191,38 +191,158 @@ method sectional-inline-text:name-and-file ($/)
 {
     my Str:D $name = $<sectional-inline-name>.made;
     my File:D $file = $<sectional-inline-file>.made;
-    make SectionalInline['Name', 'File'].new(:$name, :$file);
+    make %(:$name, :$file);
 }
 
 method sectional-inline-text:name-and-reference ($/)
 {
     my Str:D $name = $<sectional-inline-name>.made;
     my ReferenceInline:D $reference-inline = $<sectional-inline-reference>.made;
-    make SectionalInline['Name', 'Reference'].new(:$name, :$reference-inline);
+    make %(:$name, :$reference-inline);
 }
 
 method sectional-inline-text:file-only ($/)
 {
     my File:D $file = $<sectional-inline-file>.made;
-    make SectionalInline['File'].new(:$file);
+    make %(:$file);
 }
 
 method sectional-inline-text:reference-only ($/)
 {
     my ReferenceInline:D $reference-inline = $<sectional-inline-reference>.made;
-    make SectionalInline['Reference'].new(:$reference-inline);
+    make %(:$reference-inline);
 }
 
 method sectional-inline-text:name-only ($/)
 {
     my Str:D $name = $<sectional-inline-name>.made;
-    make SectionalInline['Name'].new(:$name);
+    make %(:$name);
 }
 
-method sectional-inline($/)
+# --- --- finn-mode {{{
+
+multi method sectional-inline:finn-mode (
+    $/ where {
+        $<sectional-inline-text>.made<name>.so
+            && $<sectional-inline-text>.made<file>.so
+    }
+)
 {
-    make $<sectional-inline-text>.made;
+    my Mode:D $mode = FINN;
+    my Str:D $name = $<sectional-inline-text>.made<name>;
+    my File:D $file = $<sectional-inline-text>.made<file>;
+    make SectionalInline['Name', 'File'].new(:$mode, :$name, :$file);
 }
+
+multi method sectional-inline:finn-mode (
+    $/ where {
+        $<sectional-inline-text>.made<name>.so
+            && $<sectional-inline-text>.made<reference-inline>.so
+    }
+)
+{
+    my Mode:D $mode = FINN;
+    my Str:D $name = $<sectional-inline-text>.made<name>;
+    my ReferenceInline:D $reference-inline =
+        $<sectional-inline-text>.made<reference-inline>;
+    make SectionalInline['Name', 'Reference'].new(
+        :$mode,
+        :$name,
+        :$reference-inline
+    );
+}
+
+multi method sectional-inline:finn-mode (
+    $/ where $<sectional-inline-text>.made<file>.so
+)
+{
+    my Mode:D $mode = FINN;
+    my File:D $file = $<sectional-inline-text>.made<file>;
+    make SectionalInline['File'].new(:$mode, :$file);
+}
+
+multi method sectional-inline:finn-mode (
+    $/ where $<sectional-inline-text>.made<reference-inline>.so
+)
+{
+    my Mode:D $mode = FINN;
+    my ReferenceInline:D $reference-inline =
+        $<sectional-inline-text>.made<reference-inline>;
+    make SectionalInline['Reference'].new(:$mode, :$reference-inline);
+}
+
+multi method sectional-inline:finn-mode (
+    $/ where $<sectional-inline-text>.made<name>.so
+)
+{
+    my Mode:D $mode = FINN;
+    my Str:D $name = $<sectional-inline-text>.made<name>;
+    make SectionalInline['Name'].new(:$mode, :$name);
+}
+
+# --- --- end finn-mode }}}
+# --- --- text-mode {{{
+
+multi method sectional-inline:text-mode (
+    $/ where {
+        $<sectional-inline-text>.made<name>.so
+            && $<sectional-inline-text>.made<file>.so
+    }
+)
+{
+    my Mode:D $mode = TEXT;
+    my Str:D $name = $<sectional-inline-text>.made<name>;
+    my File:D $file = $<sectional-inline-text>.made<file>;
+    make SectionalInline['Name', 'File'].new(:$mode, :$name, :$file);
+}
+
+multi method sectional-inline:text-mode (
+    $/ where {
+        $<sectional-inline-text>.made<name>.so
+            && $<sectional-inline-text>.made<reference-inline>.so
+    }
+)
+{
+    my Mode:D $mode = TEXT;
+    my Str:D $name = $<sectional-inline-text>.made<name>;
+    my ReferenceInline:D $reference-inline =
+        $<sectional-inline-text>.made<reference-inline>;
+    make SectionalInline['Name', 'Reference'].new(
+        :$mode,
+        :$name,
+        :$reference-inline
+    );
+}
+
+multi method sectional-inline:text-mode (
+    $/ where $<sectional-inline-text>.made<file>.so
+)
+{
+    my Mode:D $mode = TEXT;
+    my File:D $file = $<sectional-inline-text>.made<file>;
+    make SectionalInline['File'].new(:$mode, :$file);
+}
+
+multi method sectional-inline:text-mode (
+    $/ where $<sectional-inline-text>.made<reference-inline>.so
+)
+{
+    my Mode:D $mode = TEXT;
+    my ReferenceInline:D $reference-inline =
+        $<sectional-inline-text>.made<reference-inline>;
+    make SectionalInline['Reference'].new(:$mode, :$reference-inline);
+}
+
+multi method sectional-inline:text-mode (
+    $/ where $<sectional-inline-text>.made<name>.so
+)
+{
+    my Mode:D $mode = TEXT;
+    my Str:D $name = $<sectional-inline-text>.made<name>;
+    make SectionalInline['Name'].new(:$mode, :$name);
+}
+
+# --- --- end text-mode }}}
 
 # --- end sectional-inline }}}
 

@@ -3,7 +3,7 @@ use lib 'lib';
 use Finn::Parser::Grammar;
 use Test;
 
-plan 34;
+plan 35;
 
 subtest
 {
@@ -304,6 +304,15 @@ subtest
 subtest
 {
     my Str:D $sectional-inline = '§ "a" file://a';
+    my Str:D $rule = 'sectional-inline';
+    ok
+        Finn::Parser::Grammar.parse($sectional-inline, :$rule),
+        'Parses sectional-inline';
+}
+
+subtest
+{
+    my Str:D $sectional-inline = '¶ "a" file://a';
     my Str:D $rule = 'sectional-inline';
     ok
         Finn::Parser::Grammar.parse($sectional-inline, :$rule),

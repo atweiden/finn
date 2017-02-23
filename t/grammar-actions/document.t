@@ -185,9 +185,13 @@ subtest 'finn-examples/app',
     my Str:D $blank-line-text-j = '';
     my BlankLine $blank-line-j .= new(:text($blank-line-text-j));
 
+    my Mode:D $mode-j = FINN;
     my IO::Path $path-j .= new('/finn/README.md.finn');
     my File['Absolute'] $file-j .= new(:path($path-j));
-    my SectionalInline['File'] $sectional-inline-j .= new(:file($file-j));
+    my SectionalInline['File'] $sectional-inline-j .= new(
+        :mode($mode-j),
+        :file($file-j)
+    );
 
     my SectionalInline:D @sectional-inline-j = $sectional-inline-j;
 
@@ -240,9 +244,13 @@ subtest 'finn-examples/app',
     my Str:D $blank-line-text-m = '';
     my BlankLine $blank-line-m .= new(:text($blank-line-text-m));
 
+    my Mode:D $mode-m = FINN;
     my IO::Path $path-m .= new('/finn/UNLICENSE.finn');
     my File['Absolute'] $file-m .= new(:path($path-m));
-    my SectionalInline['File'] $sectional-inline-m .= new(:file($file-m));
+    my SectionalInline['File'] $sectional-inline-m .= new(
+        :mode($mode-m),
+        :file($file-m)
+    );
 
     my SectionalInline:D @sectional-inline-m = $sectional-inline-m;
 
@@ -295,9 +303,13 @@ subtest 'finn-examples/app',
     my Str:D $blank-line-text-p = '';
     my BlankLine $blank-line-p .= new(:text($blank-line-text-p));
 
+    my Mode:D $mode-p = FINN;
     my IO::Path $path-p .= new('/finn/lib/App.pm.finn');
     my File['Absolute'] $file-p .= new(:path($path-p));
-    my SectionalInline['File'] $sectional-inline-p .= new(:file($file-p));
+    my SectionalInline['File'] $sectional-inline-p .= new(
+        :mode($mode-p),
+        :file($file-p)
+    );
 
     my SectionalInline:D @sectional-inline-p = $sectional-inline-p;
 
@@ -558,8 +570,10 @@ subtest 'finn-examples/hangman',
     # --- --- --- end 01 }}}
     # --- --- --- 02 {{{
 
+    my Mode:D $sectional-inline-mode-h02 = FINN;
     my Str:D $sectional-inline-name-h02 = 'Setup';
     my SectionalInline['Name'] $sectional-inline-h02 .= new(
+        :mode($sectional-inline-mode-h02),
         :name($sectional-inline-name-h02)
     );
     my SectionalBlockContent['SectionalInline'] $content-h02 .= new(
@@ -579,8 +593,10 @@ subtest 'finn-examples/hangman',
     # --- --- --- end 03 }}}
     # --- --- --- 04 {{{
 
+    my Mode:D $sectional-inline-mode-h04 = FINN;
     my Str:D $sectional-inline-name-h04 = 'User input';
     my SectionalInline['Name'] $sectional-inline-h04 .= new(
+        :mode($sectional-inline-mode-h04),
         :name($sectional-inline-name-h04)
     );
     my SectionalBlockContent['SectionalInline'] $content-h04 .= new(
@@ -590,8 +606,10 @@ subtest 'finn-examples/hangman',
     # --- --- --- end 04 }}}
     # --- --- --- 05 {{{
 
+    my Mode:D $sectional-inline-mode-h05 = FINN;
     my Str:D $sectional-inline-name-h05 = 'Check input';
     my SectionalInline['Name'] $sectional-inline-h05 .= new(
+        :mode($sectional-inline-mode-h05),
         :name($sectional-inline-name-h05)
     );
     my SectionalBlockContent['SectionalInline'] $content-h05 .= new(
@@ -601,8 +619,10 @@ subtest 'finn-examples/hangman',
     # --- --- --- end 05 }}}
     # --- --- --- 06 {{{
 
+    my Mode:D $sectional-inline-mode-h06 = FINN;
     my Str:D $sectional-inline-name-h06 = 'Check win';
     my SectionalInline['Name'] $sectional-inline-h06 .= new(
+        :mode($sectional-inline-mode-h06),
         :name($sectional-inline-name-h06)
     );
     my SectionalBlockContent['SectionalInline'] $content-h06 .= new(
@@ -618,8 +638,10 @@ subtest 'finn-examples/hangman',
     # --- --- --- end 07 }}}
     # --- --- --- 08 {{{
 
+    my Mode:D $sectional-inline-mode-h08 = FINN;
     my Str:D $sectional-inline-name-h08 = 'End';
     my SectionalInline['Name'] $sectional-inline-h08 .= new(
+        :mode($sectional-inline-mode-h08),
         :name($sectional-inline-name-h08)
     );
     my SectionalBlockContent['SectionalInline'] $content-h08 .= new(
@@ -994,8 +1016,10 @@ subtest 'finn-examples/hangman',
 
     # --- --- --- 01 {{{
 
+    my Mode:D $sectional-inline-mode-x01 = FINN;
     my Str:D $sectional-inline-name-x01 = 'print dashes array';
     my SectionalInline['Name'] $sectional-inline-x01 .= new(
+        :mode($sectional-inline-mode-x01),
         :name($sectional-inline-name-x01)
     );
     my SectionalBlockContent['SectionalInline'] $content-x01 .= new(
@@ -4244,8 +4268,10 @@ subtest 'finn-examples/hello',
 
     # --- --- --- 01 {{{
 
+    my Mode:D $sectional-inline-mode-i01 = FINN;
     my Str:D $sectional-inline-name-i01 = 'Import modules';
     my SectionalInline['Name'] $sectional-inline-i01 .= new(
+        :mode($sectional-inline-mode-i01),
         :name($sectional-inline-name-i01)
     );
     my SectionalBlockContent['SectionalInline'] $content-i01 .= new(
@@ -4255,8 +4281,10 @@ subtest 'finn-examples/hello',
     # --- --- --- end 01 }}}
     # --- --- --- 02 {{{
 
+    my Mode:D $sectional-inline-mode-i02 = FINN;
     my Str:D $sectional-inline-name-i02 = 'Print a string';
     my SectionalInline['Name'] $sectional-inline-i02 .= new(
+        :mode($sectional-inline-mode-i02),
         :name($sectional-inline-name-i02)
     );
     my SectionalBlockContent['SectionalInline'] $content-i02 .= new(
@@ -4669,10 +4697,14 @@ subtest 'finn-examples/novel',
     my Str:D $blank-line-text-e = '';
     my BlankLine $blank-line-e .= new(:text($blank-line-text-e));
 
+    my Mode:D $mode-e = FINN;
     # t/data/novel is prepended in Actions
     my IO::Path $path-e .= new('t/data/novel/chapter-01/intro.finn');
     my File['Relative'] $file-e .= new(:path($path-e));
-    my SectionalInline['File'] $sectional-inline-e .= new(:file($file-e));
+    my SectionalInline['File'] $sectional-inline-e .= new(
+        :mode($mode-e),
+        :file($file-e)
+    );
 
     my SectionalInline:D @sectional-inline-e = $sectional-inline-e;
 
@@ -4725,10 +4757,14 @@ subtest 'finn-examples/novel',
     my Str:D $blank-line-text-h = '';
     my BlankLine $blank-line-h .= new(:text($blank-line-text-h));
 
+    my Mode:D $mode-h = FINN;
     # t/data/novel is prepended in Actions
     my IO::Path $path-h .= new('t/data/novel/chapter-02/intro.finn');
     my File['Relative'] $file-h .= new(:path($path-h));
-    my SectionalInline['File'] $sectional-inline-h .= new(:file($file-h));
+    my SectionalInline['File'] $sectional-inline-h .= new(
+        :mode($mode-h),
+        :file($file-h)
+    );
 
     my SectionalInline:D @sectional-inline-h = $sectional-inline-h;
 
@@ -4781,10 +4817,14 @@ subtest 'finn-examples/novel',
     my Str:D $blank-line-text-k = '';
     my BlankLine $blank-line-k .= new(:text($blank-line-text-k));
 
+    my Mode:D $mode-k = FINN;
     # t/data/novel is prepended in Actions
     my IO::Path $path-k .= new('t/data/novel/chapter-03/intro.finn');
     my File['Relative'] $file-k .= new(:path($path-k));
-    my SectionalInline['File'] $sectional-inline-k .= new(:file($file-k));
+    my SectionalInline['File'] $sectional-inline-k .= new(
+        :mode($mode-k),
+        :file($file-k)
+    );
 
     my SectionalInline:D @sectional-inline-k = $sectional-inline-k;
 
