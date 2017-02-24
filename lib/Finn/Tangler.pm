@@ -26,7 +26,7 @@ of source code file strings indexed by associated target file path.
 
 # method tangle {{{
 
-method tangle(?::CLASS:D:) returns Hash[List:D,Str:D]
+method tangle(?::CLASS:D: --> Hash[List:D,Str:D])
 {
     # get C<List> of all Sectional Blocks from C<Finn::Parser::ParseTree>
     # --- {{{

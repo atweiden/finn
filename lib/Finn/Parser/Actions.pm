@@ -52,6 +52,9 @@ before C<include-line>s can be followed.
 # the file currently being parsed
 has Str:D $.file = '.';
 
+# the project root directory
+has Str:D $.project-root = $!file.IO.resolve.dirname;
+
 # increments on each section (0+)
 has UInt:D $.section = 0;
 
@@ -231,26 +234,30 @@ multi method include-line:finn ($/ where @<leading-ws>.so)
 {
     my LeadingWS:D @leading-ws = @<leading-ws>».made;
     my IncludeLine::Request:D $request = $<include-line-request>.made;
-    make IncludeLine['Finn'].new(:@leading-ws, :$request);
+    my IncludeLine::Response:D $response = self.gen-response($request, :finn);
+    make IncludeLine['Finn'].new(:@leading-ws, :$request, :$response);
 }
 
 multi method include-line:finn ($/)
 {
     my IncludeLine::Request:D $request = $<include-line-request>.made;
-    make IncludeLine['Finn'].new(:$request);
+    my IncludeLine::Response:D $response = self.gen-response($request, :finn);
+    make IncludeLine['Finn'].new(:$request, :$response);
 }
 
 multi method include-line:text ($/ where @<leading-ws>.so)
 {
     my LeadingWS:D @leading-ws = @<leading-ws>».made;
     my IncludeLine::Request:D $request = $<include-line-request>.made;
-    make IncludeLine['Text'].new(:@leading-ws, :$request);
+    my IncludeLine::Response:D $response = self.gen-response($request, :text);
+    make IncludeLine['Text'].new(:@leading-ws, :$request, :$response);
 }
 
 multi method include-line:text ($/)
 {
     my IncludeLine::Request:D $request = $<include-line-request>.made;
-    make IncludeLine['Text'].new(:$request);
+    my IncludeLine::Response:D $response = self.gen-response($request, :text);
+    make IncludeLine['Text'].new(:$request, :$response);
 }
 
 # --- end include-line }}}
@@ -1607,12 +1614,521 @@ method reference-inline($/)
 # end reference-inline }}}
 
 =begin pod
-=head Helper Functions
+=head Helper Methods
 =end pod
 
+# method gen-absolute-path-closure {{{
+
+# resolve link text
+method gen-absolute-path-closure(
+    ::?CLASS:D:
+    Str:D &reference,
+    Bool:D :reference($)! where *.so
+    --> Sub:D
+)
+{
+    my &resolve = sub (
+        ReferenceLineBlock:D @reference-line-block
+        --> IO::Path:D
+    )
+    {
+        my Str:D $path-text = &reference(@reference-line-block);
+        my Finn::Parser::Actions $actions .=
+            new(:$.file, :$.project-root, :$.section);
+        my Str:D $rule = 'file';
+        my File:D $file =
+            Finn::Parser::Grammar.parse($path-text, :$actions, :$rule).made;
+        my IO::Path:D $absolute-path-from-file =
+            self.resolve-path-from-file($file);
+    }
+}
+
+# end method gen-absolute-path-closure }}}
+# method gen-document-closure {{{
+
+multi method gen-document-closure(
+    ::?CLASS:D:
+    IO::Path:D &absolute-path,
+    Bool:D :reference($)! where *.so,
+    Bool:D :finn($)! where *.so
+    --> Sub:D
+)
+{
+    my &resolve = sub (
+        ReferenceLineBlock:D @reference-line-block
+        --> Document:D
+    )
+    {
+        my IO::Path:D $absolute-path = &absolute-path(@reference-line-block);
+        my Finn::Parser::Actions $actions .=
+            new(:file(~$absolute-path), :$.project-root, :$.section);
+        my Str:D $rule = 'document';
+        my Document:D $document = Finn::Parser::Grammar.parsefile(
+            ~$absolute-path,
+            :$actions,
+            :$rule
+        ).made;
+    }
+}
+
+multi method gen-document-closure(
+    ::?CLASS:D:
+    IO::Path:D &absolute-path,
+    Bool:D :reference($)! where *.so,
+    Bool:D :text($)! where *.so
+    --> Sub:D
+)
+{
+    my &resolve = sub (
+        ReferenceLineBlock:D @reference-line-block
+        --> Str:D
+    )
+    {
+        my IO::Path:D $absolute-path = &absolute-path(@reference-line-block);
+        my Str:D $text = $absolute-path.slurp;
+    }
+}
+
+multi method gen-document-closure(
+    ::?CLASS:D:
+    IO::Path:D $absolute-path,
+    Bool:D :file($)! where *.so,
+    Bool:D :finn($)! where *.so
+    --> Sub:D
+)
+{
+    my &resolve = sub (--> Document:D)
+    {
+        my Finn::Parser::Actions $actions .=
+            new(:file(~$absolute-path), :$.project-root, :$.section);
+        my Str:D $rule = 'document';
+        my Document:D $document = Finn::Parser::Grammar.parsefile(
+            ~$absolute-path,
+            :$actions,
+            :$rule
+        ).made;
+    }
+}
+
+multi method gen-document-closure(
+    ::?CLASS:D:
+    IO::Path:D $absolute-path,
+    Bool:D :file($)! where *.so,
+    Bool:D :text($)! where *.so
+    --> Sub:D
+)
+{
+    my &resolve = sub (--> Str:D)
+    {
+        my Str:D $text = $absolute-path.slurp;
+    }
+}
+
+# end method gen-document-closure }}}
+# method gen-reference-closure {{{
+
+# find link text referenced from request
+method gen-reference-closure(
+    ::?CLASS:D:
+    UInt:D $number,
+    Bool:D :reference($)! where *.so
+    --> Sub:D
+)
+{
+    my &resolve = sub (
+        ReferenceLineBlock:D @reference-line-block
+        --> Str:D
+    )
+    {
+        my ReferenceLine:D $reference-line = @reference-line-block.flatmap({
+            .reference-line.grep({ .reference-inline.number == $number })
+        }).tail;
+        my Str:D $reference-text = $reference-line.reference-text;
+    }
+}
+
+# end method gen-reference-closure }}}
+# method gen-response {{{
+
+multi method gen-response(
+    ::?CLASS:D:
+    IncludeLine::Request['Name'] $request,
+    Bool:D :finn($)! where *.so
+    --> IncludeLine::Response['Name']
+)
+{
+    my Str:D $name = $request.name;
+    my &resolve = self.gen-sectional-block-closure(:$name, :finn);
+    my IncludeLine::Response['Name'] $response .= new(:&resolve);
+}
+
+multi method gen-response(
+    ::?CLASS:D:
+    IncludeLine::Request['Name'] $request,
+    Bool:D :text($)! where *.so
+    --> IncludeLine::Response['Name']
+)
+{
+    my Str:D $name = $request.name;
+    my &resolve = self.gen-sectional-block-closure(:$name, :text);
+    my IncludeLine::Response['Name'] $response .= new(:&resolve);
+}
+
+multi method gen-response(
+    ::?CLASS:D:
+    IncludeLine::Request['File'] $request,
+    Bool:D :finn($)! where *.so
+    --> IncludeLine::Response['File']
+)
+{
+    my File:D $file = $request.file;
+    my IO::Path:D $absolute-path-from-file = self.resolve-path-from-file($file);
+    my &resolve =
+        self.gen-document-closure($absolute-path-from-file, :file, :finn);
+    my IncludeLine::Response['File'] $response .= new(:&resolve);
+}
+
+multi method gen-response(
+    ::?CLASS:D:
+    IncludeLine::Request['File'] $request,
+    Bool:D :text($)! where *.so
+    --> IncludeLine::Response['File']
+)
+{
+    my File:D $file = $request.file;
+    my IO::Path:D $absolute-path-from-file = self.resolve-path-from-file($file);
+    my &resolve =
+        self.gen-document-closure($absolute-path-from-file, :file, :text);
+    my IncludeLine::Response['File'] $response .= new(:&resolve);
+}
+
+multi method gen-response(
+    ::?CLASS:D:
+    IncludeLine::Request['Reference'] $request,
+    Bool:D :finn($)! where *.so
+    --> IncludeLine::Response['Reference']
+)
+{
+    my UInt:D $number = $request.reference-inline.number;
+    my &reference = self.gen-reference-closure($number, :reference);
+    my &absolute-path = self.gen-absolute-path-closure(&reference, :reference);
+    my &resolve = self.gen-document-closure(&absolute-path, :reference, :finn);
+    my IncludeLine::Response['Reference'] $response .= new(:&resolve);
+}
+
+multi method gen-response(
+    ::?CLASS:D:
+    IncludeLine::Request['Reference'] $request,
+    Bool:D :text($)! where *.so
+    --> IncludeLine::Response['Reference']
+)
+{
+    my UInt:D $number = $request.reference-inline.number;
+    my &reference = self.gen-reference-closure($number, :reference);
+    my &absolute-path = self.gen-absolute-path-closure(&reference, :reference);
+    my &resolve = self.gen-document-closure(&absolute-path, :reference, :text);
+    my IncludeLine::Response['Reference'] $response .= new(:&resolve);
+}
+
+multi method gen-response(
+    ::?CLASS:D:
+    IncludeLine::Request['Name', 'File'] $request,
+    Bool:D :finn($)! where *.so
+    --> IncludeLine::Response['Name', 'File']
+)
+{
+    my Str:D $name = $request.name;
+    my File:D $file = $request.file;
+    my IO::Path:D $absolute-path-from-file = self.resolve-path-from-file($file);
+    my &document =
+        self.gen-document-closure($absolute-path-from-file, :file, :finn);
+    my &resolve =
+        self.gen-sectional-block-closure(&document, :$name, :file, :finn);
+    my IncludeLine::Response['Name', 'File'] $response .= new(:&resolve);
+}
+
+multi method gen-response(
+    ::?CLASS:D:
+    IncludeLine::Request['Name', 'File'] $request,
+    Bool:D :text($)! where *.so
+    --> IncludeLine::Response['Name', 'File']
+)
+{
+    my Str:D $name = $request.name;
+    my File:D $file = $request.file;
+    my IO::Path:D $absolute-path-from-file = self.resolve-path-from-file($file);
+    my &document =
+        self.gen-document-closure($absolute-path-from-file, :file, :finn);
+    my &resolve =
+        self.gen-sectional-block-closure(&document, :$name, :file, :text);
+    my IncludeLine::Response['Name', 'File'] $response .= new(:&resolve);
+}
+
+multi method gen-response(
+    ::?CLASS:D:
+    IncludeLine::Request['Name', 'Reference'] $request,
+    Bool:D :finn($)! where *.so
+    --> IncludeLine::Response['Name', 'Reference']
+)
+{
+    my Str:D $name = $request.name;
+    my UInt:D $number = $request.reference-inline.number;
+    my &reference = self.gen-reference-closure($number, :reference);
+    my &absolute-path = self.gen-absolute-path-closure(&reference, :reference);
+    my &document = self.gen-document-closure(&absolute-path, :reference, :finn);
+    my &resolve =
+        self.gen-sectional-block-closure(&document, :$name, :reference, :finn);
+    my IncludeLine::Response['Name', 'Reference'] $response .= new(:&resolve);
+}
+
+multi method gen-response(
+    ::?CLASS:D:
+    IncludeLine::Request['Name', 'Reference'] $request,
+    Bool:D :text($)! where *.so
+    --> IncludeLine::Response['Name', 'Reference']
+)
+{
+    my Str:D $name = $request.name;
+    my UInt:D $number = $request.reference-inline.number;
+    my &reference = self.gen-reference-closure($number, :reference);
+    my &absolute-path = self.gen-absolute-path-closure(&reference, :reference);
+    my &document = self.gen-document-closure(&absolute-path, :reference, :finn);
+    my &resolve =
+        self.gen-sectional-block-closure(&document, :$name, :reference, :text);
+    my IncludeLine::Response['Name', 'Reference'] $response .= new(:&resolve);
+}
+
+# end method gen-response }}}
+# method gen-sectional-block-closure {{{
+
+multi method gen-sectional-block-closure(
+    ::?CLASS:D:
+    &document,
+    Str:D :$name! where *.so,
+    Bool:D :reference($)! where *.so,
+    Bool:D :finn($)! where *.so
+    --> Sub:D
+)
+{
+    my &resolve = sub (
+        ReferenceLineBlock:D @reference-line-block
+        --> SectionalBlock:D
+    )
+    {
+        my Document:D $document = &document(@reference-line-block);
+        my SectionalBlock:D @sectional-block =
+            $document.sectional-block(:$name);
+        my SectionalBlock:D $sectional-block =
+            self.resolve-sectional-block(@sectional-block, :finn);
+    }
+}
+
+multi method gen-sectional-block-closure(
+    ::?CLASS:D:
+    &document,
+    Str:D :$name! where *.so,
+    Bool:D :reference($)! where *.so,
+    Bool:D :text($)! where *.so
+    --> Sub:D
+)
+{
+    my &resolve = sub (
+        ReferenceLineBlock:D @reference-line-block
+        --> Str:D
+    )
+    {
+        my Document:D $document = &document(@reference-line-block);
+        my SectionalBlock:D @sectional-block =
+            $document.sectional-block(:$name);
+        my Str:D $sectional-block =
+            self.resolve-sectional-block(@sectional-block, :text);
+    }
+}
+
+multi method gen-sectional-block-closure(
+    ::?CLASS:D:
+    &document,
+    Str:D :$name! where *.so,
+    Bool:D :file($)! where *.so,
+    Bool:D :finn($)! where *.so
+    --> Sub:D
+)
+{
+    my &resolve = sub (--> SectionalBlock:D)
+    {
+        my Document:D $document = &document();
+        my SectionalBlock:D @sectional-block =
+            $document.sectional-block(:$name);
+        my SectionalBlock:D $sectional-block =
+            self.resolve-sectional-block(@sectional-block, :finn);
+    }
+}
+
+multi method gen-sectional-block-closure(
+    ::?CLASS:D:
+    &document,
+    Str:D :$name! where *.so,
+    Bool:D :file($)! where *.so,
+    Bool:D :text($)! where *.so
+    --> Sub:D
+)
+{
+    my &resolve = sub (--> Str:D)
+    {
+        my Document:D $document = &document();
+        my SectionalBlock:D @sectional-block =
+            $document.sectional-block(:$name);
+        my Str:D $sectional-block =
+            self.resolve-sectional-block(@sectional-block, :text);
+    }
+}
+
+multi method gen-sectional-block-closure(
+    ::?CLASS:D:
+    Str:D :$name where *.so,
+    Bool:D :finn($)! where *.so
+    --> Sub:D
+)
+{
+    my &resolve = self.resolve-sectional-block(:$name, :finn);
+}
+
+multi method gen-sectional-block-closure(
+    ::?CLASS:D:
+    Str:D :$name where *.so,
+    Bool:D :text($)! where *.so
+    --> Sub:D
+)
+{
+    my &resolve = self.resolve-sectional-block(:$name, :text);
+}
+
+# end method gen-sectional-block-closure }}}
+# method resolve-path-from-file {{{
+
+# append relative to project root
+multi method resolve-path-from-file(
+    File['Absolute'] $file
+    --> IO::Path:D
+)
+{
+    my IO::Path:D $resolve = ($.project-root ~ $file.path.resolve).IO.resolve;
+}
+
+# absolute path
+multi method resolve-path-from-file(
+    File['Absolute', 'Protocol'] $file
+    --> IO::Path:D
+)
+{
+    my IO::Path:D $resolve = $file.path.resolve;
+}
+
+# relative path
+multi method resolve-path-from-file(
+    File['Relative'] $file
+    --> IO::Path:D
+)
+{
+    my IO::Path:D $resolve = $file.path.resolve;
+}
+
+# relative path
+multi method resolve-path-from-file(
+    File['Relative', 'Protocol'] $file
+    --> IO::Path:D
+)
+{
+    my IO::Path:D $resolve = $file.path.resolve;
+}
+
+# end method resolve-path-from-file }}}
+# method resolve-sectional-block {{{
+
+sub infix:<∑>(SectionalBlock:D, SectionalBlock:D --> SectionalBlock:D) {...}
+
+multi method resolve-sectional-block(
+    ::?CLASS:D:
+    Str:D :$name! where *.so,
+    Bool:D :finn($)! where *.so
+    --> Sub:D
+)
+{
+    my &resolve = sub (Document:D $document --> SectionalBlock:D)
+    {
+        my SectionalBlock:D @sectional-block =
+            $document.sectional-block(:$name);
+        my SectionalBlock:D $sectional-block =
+            self.resolve-sectional-block(@sectional-block, :finn);
+    }
+}
+
+multi method resolve-sectional-block(
+    ::?CLASS:D:
+    Str:D :$name! where *.so,
+    Bool:D :text($)! where *.so
+    --> Sub:D
+)
+{
+    my &resolve = sub (Document:D $document --> Str:D)
+    {
+        my SectionalBlock:D @sectional-block =
+            $document.sectional-block(:$name);
+        my Str:D $sectional-block =
+            self.resolve-sectional-block(@sectional-block, :text);
+    }
+}
+
+multi method resolve-sectional-block(
+    ::?CLASS:D:
+    SectionalBlock:D @sectional-block,
+    Bool:D :finn($)! where *.so
+    --> SectionalBlock:D
+)
+{
+    my SectionalBlock:D $sectional-block = [∑] @sectional-block;
+}
+
+multi method resolve-sectional-block(
+    ::?CLASS:D:
+    SectionalBlock:D @sectional-block,
+    Bool:D :text($)! where *.so
+    --> Str:D
+)
+{
+    my SectionalBlock:D $sectional-block =
+        self.resolve-sectional-block(@sectional-block, :finn);
+    my Str:D $sectional-block-content = $sectional-block.Str;
+}
+
+# end method resolve-sectional-block }}}
+
+=begin pod
+=head Helper Subroutines
+=end pod
+
+# sub infix:<∑> {{{
+
+# merge SectionalBlocks with matching name
+sub infix:<∑>(
+    SectionalBlock:D $a,
+    SectionalBlock:D $b where {
+        .name.identifier.word eq $a.name.identifier.word
+    }
+    --> SectionalBlock:D
+)
+{
+    my SectionalBlock:D $sectional-block = merge($a, $b);
+}
+
+# end sub infix:<∑> }}}
 # sub comb {{{
 
-sub comb(LeadingWS:D @actual is copy, LeadingWS:D @padding) returns Array
+sub comb(
+    LeadingWS:D @actual is copy,
+    LeadingWS:D @padding
+    --> Array:D
+)
 {
     die unless @actual.elems >= @padding.elems;
     @actual.splice(0, @padding.elems);
@@ -1622,7 +2138,7 @@ sub comb(LeadingWS:D @actual is copy, LeadingWS:D @padding) returns Array
 # end sub comb }}}
 # sub gen-bounds {{{
 
-sub gen-bounds() returns Chunk::Meta::Bounds:D
+sub gen-bounds(--> Chunk::Meta::Bounds:D)
 {
     # XXX fix dummy data
     my Chunk::Meta::Bounds::Begins:D $begins =
@@ -1634,6 +2150,64 @@ sub gen-bounds() returns Chunk::Meta::Bounds:D
 }
 
 # end sub gen-bounds }}}
+# sub merge {{{
+
+multi sub merge(
+    SectionalBlock:D $a,
+    SectionalBlock:D $b where {
+        .operator ~~ SectionalBlockName::Operator['Additive']
+    }
+    --> SectionalBlock:D
+)
+{
+    my SectionalBlockDelimiter:D $delimiter = $a.delimiter;
+
+    my %name;
+    my Str:D $word = $a.name.identifier.word;
+    my SectionalBlockName::Identifier['Word'] $identifier .= new(:$word);
+    %name<identifier> = $identifier;
+    my SectionalBlockName::Identifier::Export $export .= new if $a.name.export;
+    %name<export> = $export if $export;
+    my SectionalBlockName $name .= new(|%name);
+
+    my SectionalBlockContent:D @content = |$a.content, |$b.content;
+
+    my SectionalBlock $sectional-block .= new(:$delimiter, :$name, :@content);
+}
+
+multi sub merge(
+    SectionalBlock:D $a,
+    SectionalBlock:D $b where {
+        .operator ~~ SectionalBlockName::Operator['Redefine']
+    }
+    --> SectionalBlock:D
+)
+{
+    my SectionalBlockDelimiter:D $delimiter = $a.delimiter;
+
+    my %name;
+    my Str:D $word = $a.name.identifier.word;
+    my SectionalBlockName::Identifier['Word'] $identifier .= new(:$word);
+    %name<identifier> = $identifier;
+    my SectionalBlockName::Identifier::Export $export .= new if $a.name.export;
+    %name<export> = $export if $export;
+    my SectionalBlockName $name .= new(|%name);
+
+    my SectionalBlockContent:D @content = |$b.content;
+
+    my SectionalBlock $sectional-block .= new(:$delimiter, :$name, :@content);
+}
+
+multi sub merge(
+    SectionalBlock $,
+    SectionalBlock $
+    --> SectionalBlock:D
+)
+{
+    die;
+}
+
+# end sub merge }}}
 # sub trim {{{
 
 # XXX trim only handles tabs and spaces consistent with closing delimiter
@@ -1643,7 +2217,8 @@ sub gen-bounds() returns Chunk::Meta::Bounds:D
 multi sub trim(
     LeadingWS:D @leading-ws,
     SectionalBlockContent:D @content
-) returns Array:D
+    --> Array:D
+)
 {
     my SectionalBlockContent:D @c = (trim(@leading-ws, $_) for @content).Array;
 }
@@ -1651,7 +2226,8 @@ multi sub trim(
 multi sub trim(
     LeadingWS:D @leading-ws,
     SectionalBlockContent['IncludeLine'] $content is copy
-) returns SectionalBlockContent['IncludeLine']
+    --> SectionalBlockContent['IncludeLine']
+)
 {
     my LeadingWS:D @actual = $content.include-line.leading-ws;
     my LeadingWS:D @padding = @leading-ws;
@@ -1663,7 +2239,8 @@ multi sub trim(
 multi sub trim(
     LeadingWS:D @leading-ws,
     SectionalBlockContent['Text'] $content is copy
-) returns SectionalBlockContent['Text']
+    --> SectionalBlockContent['Text']
+)
 {
     my Str:D $text = trim(@leading-ws, $content.text);
     $content.set-text($text);
@@ -1673,12 +2250,12 @@ multi sub trim(
 # --- end SectionalBlockContent }}}
 # --- text {{{
 
-multi sub trim(LeadingWS:D @leading-ws, Str:D $text) returns Str:D
+multi sub trim(LeadingWS:D @leading-ws, Str:D $text --> Str:D)
 {
     my Str:D $s = (trim-leading(@leading-ws, $_) for $text.lines).join("\n");
 }
 
-sub trim-leading(LeadingWS:D @leading-ws, Str:D $text) returns Str:D
+sub trim-leading(LeadingWS:D @leading-ws, Str:D $text --> Str:D)
 {
     my Str:D $actual = $text.comb(/^\h*/).first;
     my Str:D $padding = @leading-ws».Str.join;

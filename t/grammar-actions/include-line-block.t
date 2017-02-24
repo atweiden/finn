@@ -32,7 +32,14 @@ subtest
         :name($name-a),
         :reference-inline($reference-inline-a)
     );
-    my IncludeLine['Finn'] $include-line-a .= new(:request($request-a));
+    my &resolve-a;
+    my IncludeLine::Response['Name', 'Reference'] $response-a .= new(
+        :resolve(&resolve-a)
+    );
+    my IncludeLine['Finn'] $include-line-a .= new(
+        :request($request-a),
+        :response($response-a)
+    );
 
     # --- end include-line-a }}}
     # --- include-line-b {{{
@@ -40,7 +47,12 @@ subtest
     my IO::Path $path-b .= new('/');
     my File['Absolute'] $file-b .= new(:path($path-b));
     my IncludeLine::Request['File'] $request-b .= new(:file($file-b));
-    my IncludeLine['Finn'] $include-line-b .= new(:request($request-b));
+    my &resolve-b;
+    my IncludeLine::Response['File'] $response-b .= new(:resolve(&resolve-b));
+    my IncludeLine['Finn'] $include-line-b .= new(
+        :request($request-b),
+        :response($response-b)
+    );
 
     # --- end include-line-b }}}
     # --- include-line-c {{{
@@ -52,7 +64,14 @@ subtest
         :name($name-c),
         :file($file-c)
     );
-    my IncludeLine['Finn'] $include-line-c .= new(:request($request-c));
+    my &resolve-c;
+    my IncludeLine::Response['Name', 'File'] $response-c .= new(
+        :resolve(&resolve-c)
+    );
+    my IncludeLine['Finn'] $include-line-c .= new(
+        :request($request-c),
+        :response($response-c)
+    );
 
     # --- end include-line-c }}}
     # --- include-line-d {{{
@@ -64,7 +83,14 @@ subtest
         :name($name-d),
         :file($file-d)
     );
-    my IncludeLine['Finn'] $include-line-d .= new(:request($request-d));
+    my &resolve-d;
+    my IncludeLine::Response['Name', 'File'] $response-d .= new(
+        :resolve(&resolve-d)
+    );
+    my IncludeLine['Finn'] $include-line-d .= new(
+        :request($request-d),
+        :response($response-d)
+    );
 
     # --- end include-line-d }}}
     # --- include-line-e {{{
@@ -80,7 +106,14 @@ subtest
         :name($name-e),
         :file($file-e)
     );
-    my IncludeLine['Finn'] $include-line-e .= new(:request($request-e));
+    my &resolve-e;
+    my IncludeLine::Response['Name', 'File'] $response-e .= new(
+        :resolve(&resolve-e)
+    );
+    my IncludeLine['Finn'] $include-line-e .= new(
+        :request($request-e),
+        :response($response-e)
+    );
 
     # --- end include-line-e }}}
 
@@ -135,7 +168,14 @@ subtest
         :name($name-a),
         :file($file-a)
     );
-    my IncludeLine['Finn'] $include-line-a .= new(:request($request-a));
+    my &resolve-a;
+    my IncludeLine::Response['Name', 'File'] $response-a .= new(
+        :resolve(&resolve-a)
+    );
+    my IncludeLine['Finn'] $include-line-a .= new(
+        :request($request-a),
+        :response($response-a)
+    );
 
     # --- end include-line-a }}}
 
@@ -176,7 +216,14 @@ subtest
         :name($name-a),
         :file($file-a)
     );
-    my IncludeLine['Finn'] $include-line-a .= new(:request($request-a));
+    my &resolve-a;
+    my IncludeLine::Response['Name', 'File'] $response-a .= new(
+        :resolve(&resolve-a)
+    );
+    my IncludeLine['Finn'] $include-line-a .= new(
+        :request($request-a),
+        :response($response-a)
+    );
 
     # --- end include-line-a }}}
     # --- include-line-b {{{
@@ -188,7 +235,14 @@ subtest
         :name($name-b),
         :reference-inline($reference-inline-b)
     );
-    my IncludeLine['Finn'] $include-line-b .= new(:request($request-b));
+    my &resolve-b;
+    my IncludeLine::Response['Name', 'Reference'] $response-b .= new(
+        :resolve(&resolve-b)
+    );
+    my IncludeLine['Finn'] $include-line-b .= new(
+        :request($request-b),
+        :response($response-b)
+    );
 
     # --- end include-line-b }}}
     # --- include-line-c {{{
@@ -200,7 +254,14 @@ subtest
         :name($name-c),
         :reference-inline($reference-inline-c)
     );
-    my IncludeLine['Finn'] $include-line-c .= new(:request($request-c));
+    my &resolve-c;
+    my IncludeLine::Response['Name', 'Reference'] $response-c .= new(
+        :resolve(&resolve-c)
+    );
+    my IncludeLine['Finn'] $include-line-c .= new(
+        :request($request-c),
+        :response($response-c)
+    );
 
     # --- end include-line-c }}}
 
@@ -242,7 +303,12 @@ subtest
     my IO::Path $path-a .= new('~/finn/share/vimfmt');
     my File['Absolute'] $file-a .= new(:path($path-a));
     my IncludeLine::Request['File'] $request-a .= new(:file($file-a));
-    my IncludeLine['Finn'] $include-line-a .= new(:request($request-a));
+    my &resolve-a;
+    my IncludeLine::Response['File'] $response-a .= new(:resolve(&resolve-a));
+    my IncludeLine['Finn'] $include-line-a .= new(
+        :request($request-a),
+        :response($response-a)
+    );
 
     # --- end include-line-a }}}
     # --- include-line-b {{{
@@ -254,7 +320,14 @@ subtest
         :name($name-b),
         :file($file-b)
     );
-    my IncludeLine['Finn'] $include-line-b .= new(:request($request-b));
+    my &resolve-b;
+    my IncludeLine::Response['Name', 'File'] $response-b .= new(
+        :resolve(&resolve-b)
+    );
+    my IncludeLine['Finn'] $include-line-b .= new(
+        :request($request-b),
+        :response($response-b)
+    );
 
     # --- end include-line-b }}}
     # --- include-line-c {{{
@@ -266,7 +339,14 @@ subtest
         :name($name-c),
         :file($file-c)
     );
-    my IncludeLine['Finn'] $include-line-c .= new(:request($request-c));
+    my &resolve-c;
+    my IncludeLine::Response['Name', 'File'] $response-c .= new(
+        :resolve(&resolve-c)
+    );
+    my IncludeLine['Finn'] $include-line-c .= new(
+        :request($request-c),
+        :response($response-c)
+    );
 
     # --- end include-line-c }}}
     # --- include-line-d {{{
@@ -276,7 +356,14 @@ subtest
     my IncludeLine::Request['Reference'] $request-d .= new(
         :reference-inline($reference-inline-d)
     );
-    my IncludeLine['Finn'] $include-line-d .= new(:request($request-d));
+    my &resolve-d;
+    my IncludeLine::Response['Reference'] $response-d .= new(
+        :resolve(&resolve-d)
+    );
+    my IncludeLine['Finn'] $include-line-d .= new(
+        :request($request-d),
+        :response($response-d)
+    );
 
     # --- end include-line-d }}}
     # --- include-line-e {{{
@@ -288,7 +375,12 @@ subtest
         :protocol($protocol-e)
     );
     my IncludeLine::Request['File'] $request-e .= new(:file($file-e));
-    my IncludeLine['Finn'] $include-line-e .= new(:request($request-e));
+    my &resolve-e;
+    my IncludeLine::Response['File'] $response-e .= new(:resolve(&resolve-e));
+    my IncludeLine['Finn'] $include-line-e .= new(
+        :request($request-e),
+        :response($response-e)
+    );
 
     # --- end include-line-e }}}
     # --- include-line-f {{{
@@ -300,7 +392,12 @@ subtest
         :protocol($protocol-f)
     );
     my IncludeLine::Request['File'] $request-f .= new(:file($file-f));
-    my IncludeLine['Finn'] $include-line-f .= new(:request($request-f));
+    my &resolve-f;
+    my IncludeLine::Response['File'] $response-f .= new(:resolve(&resolve-f));
+    my IncludeLine['Finn'] $include-line-f .= new(
+        :request($request-f),
+        :response($response-f)
+    );
 
     # --- end include-line-f }}}
     # --- include-line-g {{{
@@ -312,7 +409,12 @@ subtest
         :protocol($protocol-g)
     );
     my IncludeLine::Request['File'] $request-g .= new(:file($file-g));
-    my IncludeLine['Finn'] $include-line-g .= new(:request($request-g));
+    my &resolve-g;
+    my IncludeLine::Response['File'] $response-g .= new(:resolve(&resolve-g));
+    my IncludeLine['Finn'] $include-line-g .= new(
+        :request($request-g),
+        :response($response-g)
+    );
 
     # --- end include-line-g }}}
     # --- include-line-h {{{
@@ -324,7 +426,12 @@ subtest
         :protocol($protocol-h)
     );
     my IncludeLine::Request['File'] $request-h .= new(:file($file-h));
-    my IncludeLine['Finn'] $include-line-h .= new(:request($request-h));
+    my &resolve-h;
+    my IncludeLine::Response['File'] $response-h .= new(:resolve(&resolve-h));
+    my IncludeLine['Finn'] $include-line-h .= new(
+        :request($request-h),
+        :response($response-h)
+    );
 
     # --- end include-line-h }}}
     # --- include-line-i {{{
@@ -334,7 +441,14 @@ subtest
     my IncludeLine::Request['Reference'] $request-i .= new(
         :reference-inline($reference-inline-i)
     );
-    my IncludeLine['Finn'] $include-line-i .= new(:request($request-i));
+    my &resolve-i;
+    my IncludeLine::Response['Reference'] $response-i .= new(
+        :resolve(&resolve-i)
+    );
+    my IncludeLine['Finn'] $include-line-i .= new(
+        :request($request-i),
+        :response($response-i)
+    );
 
     # --- end include-line-i }}}
     # --- include-line-j {{{
@@ -344,7 +458,14 @@ subtest
     my IncludeLine::Request['Reference'] $request-j .= new(
         :reference-inline($reference-inline-j)
     );
-    my IncludeLine['Finn'] $include-line-j .= new(:request($request-j));
+    my &resolve-j;
+    my IncludeLine::Response['Reference'] $response-j .= new(
+        :resolve(&resolve-j)
+    );
+    my IncludeLine['Finn'] $include-line-j .= new(
+        :request($request-j),
+        :response($response-j)
+    );
 
     # --- end include-line-j }}}
     # --- include-line-k {{{
@@ -354,7 +475,14 @@ subtest
     my IncludeLine::Request['Reference'] $request-k .= new(
         :reference-inline($reference-inline-k)
     );
-    my IncludeLine['Text'] $include-line-k .= new(:request($request-k));
+    my &resolve-k;
+    my IncludeLine::Response['Reference'] $response-k .= new(
+        :resolve(&resolve-k)
+    );
+    my IncludeLine['Text'] $include-line-k .= new(
+        :request($request-k),
+        :response($response-k)
+    );
 
     # --- end include-line-k }}}
 

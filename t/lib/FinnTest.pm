@@ -24,6 +24,34 @@ Contains subroutines for testing Finn.
 
 # chunk {{{
 
+multi sub infix:<eqv>(
+    Chunk:D @a where .elems > 0,
+    Chunk:D @b where { .elems == @a.elems }
+) is export returns Bool:D
+{
+    my Bool:D @is-same = do loop (my UInt:D $i = 0; $i < @a.elems; $i++)
+    {
+        @a[$i] eqv @b[$i]
+    }
+    my Bool:D $is-same = [[&is-true]] @is-same;
+}
+
+multi sub infix:<eqv>(
+    Chunk:D @a,
+    Chunk:D @b where { .elems == @a.elems }
+) is export returns Bool:D
+{
+    True;
+}
+
+multi sub infix:<eqv>(
+    Chunk @,
+    Chunk @
+) is export returns Bool:D
+{
+    False;
+}
+
 # --- Chunk['IncludeLineBlock'] {{{
 
 multi sub infix:<eqv>(
@@ -171,6 +199,33 @@ multi sub infix:<eqv>(Chunk $, Chunk $) is export returns Bool:D
 }
 
 # end chunk }}}
+# document {{{
+
+multi sub infix:<eqv>(
+    Document:D $a where *.so,
+    Document:D $b where *.so
+) is export returns Bool:D
+{
+    my Bool:D $is-same = $a.chunk eqv $b.chunk;
+}
+
+multi sub infix:<eqv>(
+    Document:U $,
+    Document:U $
+) is default is export returns Bool:D
+{
+    True;
+}
+
+multi sub infix:<eqv>(
+    Document $,
+    Document $
+) is export returns Bool:D
+{
+    False;
+}
+
+# end document }}}
 # file {{{
 
 multi sub infix:<eqv>(
@@ -1031,6 +1086,33 @@ multi sub infix:<eqv>(ListItem $, ListItem $) is export returns Bool:D
 }
 
 # end list-item }}}
+# parse-tree {{{
+
+multi sub infix:<eqv>(
+    Finn::Parser::ParseTree:D $a where *.so,
+    Finn::Parser::ParseTree:D $b where *.so
+) is export returns Bool:D
+{
+    my Bool:D $is-same = $a.document eqv $b.document;
+}
+
+multi sub infix:<eqv>(
+    Finn::Parser::ParseTree:U $,
+    Finn::Parser::ParseTree:U $
+) is default is export returns Bool:D
+{
+    True;
+}
+
+multi sub infix:<eqv>(
+    Finn::Parser::ParseTree $,
+    Finn::Parser::ParseTree $
+) is export returns Bool:D
+{
+    False;
+}
+
+# end parse-tree }}}
 # reference-line-block {{{
 
 multi sub infix:<eqv>(
@@ -1080,6 +1162,231 @@ multi sub infix:<eqv>(
 }
 
 # end reference-line-block }}}
+# sectional-block {{{
+
+multi sub infix:<eqv>(
+    LeadingWS:D @a where .elems > 0,
+    LeadingWS:D @b where { .elems == @a.elems }
+) is export returns Bool:D
+{
+    my Bool:D @is-same = do loop (my UInt:D $i = 0; $i < @a.elems; $i++)
+    {
+        @a[$i] eqv @b[$i]
+    }
+    my Bool:D $is-same = [[&is-true]] @is-same;
+}
+
+multi sub infix:<eqv>(
+    LeadingWS:D @a,
+    LeadingWS:D @b where { .elems == @a.elems }
+) is export returns Bool:D
+{
+    True;
+}
+
+multi sub infix:<eqv>(
+    LeadingWS @,
+    LeadingWS @
+) is export returns Bool:D
+{
+    False;
+}
+
+multi sub infix:<eqv>(
+    LeadingWS['Space'] $ where *.so,
+    LeadingWS['Space'] $ where *.so
+) is export returns Bool:D
+{
+    True;
+}
+
+multi sub infix:<eqv>(
+    LeadingWS['Tab'] $ where *.so,
+    LeadingWS['Tab'] $ where *.so
+) is export returns Bool:D
+{
+    True;
+}
+
+multi sub infix:<eqv>(
+    LeadingWS $,
+    LeadingWS $
+) is export returns Bool:D
+{
+    False;
+}
+
+multi sub infix:<eqv>(
+    SectionalBlockDelimiter['Backticks'] $a,
+    SectionalBlockDelimiter['Backticks'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same = $a.leading-ws eqv $b.leading-ws;
+}
+
+multi sub infix:<eqv>(
+    SectionalBlockDelimiter['Dashes'] $a,
+    SectionalBlockDelimiter['Dashes'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same = $a.leading-ws eqv $b.leading-ws;
+}
+
+multi sub infix:<eqv>(
+    SectionalBlockName::Identifier['File'] $a,
+    SectionalBlockName::Identifier['File'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same = $a.file eqv $b.file;
+}
+
+multi sub infix:<eqv>(
+    SectionalBlockName::Identifier['Word'] $a,
+    SectionalBlockName::Identifier['Word'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same = $a.word eqv $b.word;
+}
+
+multi sub infix:<eqv>(
+    SectionalBlockName::Identifier $,
+    SectionalBlockName::Identifier $
+) is export returns Bool:D
+{
+    False;
+}
+
+multi sub infix:<eqv>(
+    SectionalBlockName::Identifier::Export:D $ where *.so,
+    SectionalBlockName::Identifier::Export:D $ where *.so
+) is export returns Bool:D
+{
+    True;
+}
+
+multi sub infix:<eqv>(
+    SectionalBlockName::Identifier::Export:U $,
+    SectionalBlockName::Identifier::Export:U $
+) is default is export returns Bool:D
+{
+    True;
+}
+
+multi sub infix:<eqv>(
+    SectionalBlockName::Identifier::Export $,
+    SectionalBlockName::Identifier::Export $
+) is export returns Bool:D
+{
+    False;
+}
+
+multi sub infix:<eqv>(
+    SectionalBlockName::Operator['Additive'] $,
+    SectionalBlockName::Operator['Additive'] $
+) is export returns Bool:D
+{
+    True;
+}
+
+multi sub infix:<eqv>(
+    SectionalBlockName::Operator['Redefine'] $,
+    SectionalBlockName::Operator['Redefine'] $
+) is export returns Bool:D
+{
+    True;
+}
+
+multi sub infix:<eqv>(
+    SectionalBlockName::Operator:U $,
+    SectionalBlockName::Operator:U $
+) is default is export returns Bool:D
+{
+    True;
+}
+
+multi sub infix:<eqv>(
+    SectionalBlockName::Operator $,
+    SectionalBlockName::Operator $
+) is export returns Bool:D
+{
+    False;
+}
+
+multi sub infix:<eqv>(
+    SectionalBlockContent:D @a where .elems > 0,
+    SectionalBlockContent:D @b where { .elems == @a.elems }
+) is export returns Bool:D
+{
+    my Bool:D @is-same = do loop (my UInt:D $i = 0; $i < @a.elems; $i++)
+    {
+        @a[$i] eqv @b[$i]
+    }
+    my Bool:D $is-same = [[&is-true]] @is-same;
+}
+
+multi sub infix:<eqv>(
+    SectionalBlockContent:D @a,
+    SectionalBlockContent:D @b where { .elems == @a.elems }
+) is export returns Bool:D
+{
+    True;
+}
+
+multi sub infix:<eqv>(
+    SectionalBlockContent @,
+    SectionalBlockContent @
+) is export returns Bool:D
+{
+    False;
+}
+
+multi sub infix:<eqv>(
+    SectionalBlockContent['IncludeLine'] $a,
+    SectionalBlockContent['IncludeLine'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same = $a.include-line eqv $b.include-line;
+}
+
+multi sub infix:<eqv>(
+    SectionalBlockContent['Text'] $a,
+    SectionalBlockContent['Text'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same = $a.text eqv $b.text;
+}
+
+multi sub infix:<eqv>(
+    SectionalBlockContent $,
+    SectionalBlockContent $
+) is export returns Bool:D
+{
+    False;
+}
+
+multi sub infix:<eqv>(
+    SectionalBlockName:D $a,
+    SectionalBlockName:D $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.identifier eqv $b.identifier
+            && $a.export eqv $b.export
+                && $a.operator eqv $b.operator;
+}
+
+multi sub infix:<eqv>(
+    SectionalBlock:D $a,
+    SectionalBlock:D $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.delimiter eqv $b.delimiter
+            && $a.name eqv $b.name
+                && $a.content eqv $b.content;
+}
+
+# end sectional-block }}}
 
 # sub is-true {{{
 

@@ -91,10 +91,37 @@ role File::Protocol
     has Str:D $.protocol is required;
 }
 
-role File['Absolute']             does File::Path                     {*}
-role File['Absolute', 'Protocol'] does File::Path does File::Protocol {*}
-role File['Relative']             does File::Path                     {*}
-role File['Relative', 'Protocol'] does File::Path does File::Protocol {*}
+role File['Absolute'] does File::Path
+{
+    method Str(::?CLASS:D: --> Str:D)
+    {
+        my Str:D $s = ~$.path;
+    }
+}
+
+role File['Absolute', 'Protocol'] does File::Path does File::Protocol
+{
+    method Str(::?CLASS:D: --> Str:D)
+    {
+        my Str:D $s = $.protocol ~ $.path;
+    }
+}
+
+role File['Relative'] does File::Path
+{
+    method Str(::?CLASS:D: --> Str:D)
+    {
+        my Str:D $s = ~$.path;
+    }
+}
+
+role File['Relative', 'Protocol'] does File::Path does File::Protocol
+{
+    method Str(::?CLASS:D: --> Str:D)
+    {
+        my Str:D $s = $.protocol ~ $.path;
+    }
+}
 
 # end role File }}}
 # role Header {{{
@@ -145,16 +172,29 @@ role HorizontalRule['Soft'] {*}
 # end role HorizontalRule }}}
 # role IncludeLine {{{
 
-role IncludeLine::Request {...}
+role IncludeLine::Request  {...}
+role IncludeLine::Response {...}
 
 role IncludeLine['Finn'] does MaybeLeadingWS
 {
     has IncludeLine::Request:D $.request is required;
+    has IncludeLine::Response:D $.response is required;
+
+    method Str(::?CLASS:D: --> Str:D)
+    {
+        my Str:D $request = $.request.Str(:finn);
+    }
 }
 
 role IncludeLine['Text'] does MaybeLeadingWS
 {
     has IncludeLine::Request:D $.request is required;
+    has IncludeLine::Response:D $.response is required;
+
+    method Str(::?CLASS:D: --> Str:D)
+    {
+        my Str:D $request = $.request.Str(:text);
+    }
 }
 
 # --- role IncludeLine::Request {{{
@@ -166,17 +206,50 @@ role ReferenceInline                 {...}
 
 # C<role IncludeLine::Request['Name']> is a Haml-style include directive
 # telling us to process C<self.name> as Sectional Block and embed in-place
-role IncludeLine::Request['Name'] does IncludeLine::Request::Name {*}
+role IncludeLine::Request['Name'] does IncludeLine::Request::Name
+{
+    multi method Str(::?CLASS:D: Bool:D :finn($)! where *.so --> Str:D)
+    {
+        my Str:D $request = '§ ' ~ $.name.perl;
+    }
+
+    multi method Str(::?CLASS:D: Bool:D :text($)! where *.so --> Str:D)
+    {
+        my Str:D $request = '¶ ' ~ $.name.perl;
+    }
+}
 
 # C<role IncludeLine::Request['File']> is a Haml-style include directive
 # telling us to process the entirety of the requested Finn source file
 # and embed in-place
-role IncludeLine::Request['File'] does IncludeLine::Request::File {*}
+role IncludeLine::Request['File'] does IncludeLine::Request::File
+{
+    multi method Str(::?CLASS:D: Bool:D :finn($)! where *.so --> Str:D)
+    {
+        my Str:D $request = '§ ' ~ $.file.Str;
+    }
+
+    multi method Str(::?CLASS:D: Bool:D :text($)! where *.so --> Str:D)
+    {
+        my Str:D $request = '¶ ' ~ $.file.Str;
+    }
+}
 
 # C<role IncludeLine::Request['Reference']> is a Haml-style include
 # directive telling us to process the entirety of the requested Finn
 # source file given by Reference Inline and embed in-place
-role IncludeLine::Request['Reference'] does IncludeLine::Request::Reference {*}
+role IncludeLine::Request['Reference'] does IncludeLine::Request::Reference
+{
+    multi method Str(::?CLASS:D: Bool:D :finn($)! where *.so --> Str:D)
+    {
+        my Str:D $request = '§ ' ~ $.reference-inline.Str;
+    }
+
+    multi method Str(::?CLASS:D: Bool:D :text($)! where *.so --> Str:D)
+    {
+        my Str:D $request = '¶ ' ~ $.reference-inline.Str;
+    }
+}
 
 # C<role IncludeLine::Request['Name', 'File']> is a Haml-style include
 # directive with added specificity from C<sectional-block-name> qualifier,
@@ -187,7 +260,17 @@ role IncludeLine::Request['Reference'] does IncludeLine::Request::Reference {*}
 role IncludeLine::Request['Name', 'File']
     does IncludeLine::Request::Name
     does IncludeLine::Request::File
-{*}
+{
+    multi method Str(::?CLASS:D: Bool:D :finn($)! where *.so --> Str:D)
+    {
+        my Str:D $request = '§ ' ~ $.name.perl ~ ' ' ~ $.file.Str;
+    }
+
+    multi method Str(::?CLASS:D: Bool:D :text($)! where *.so --> Str:D)
+    {
+        my Str:D $request = '¶ ' ~ $.name.perl ~ ' ' ~ $.file.Str;
+    }
+}
 
 # C<role IncludeLine::Request['Name', 'Reference']> is the same as C<role
 # IncludeLine::Request['Name', 'File']> except the C<self.name> Sectional
@@ -195,7 +278,17 @@ role IncludeLine::Request['Name', 'File']
 role IncludeLine::Request['Name', 'Reference']
     does IncludeLine::Request::Name
     does IncludeLine::Request::Reference
-{*}
+{
+    multi method Str(::?CLASS:D: Bool:D :finn($)! where *.so --> Str:D)
+    {
+        my Str:D $request = '§ ' ~ $.name.perl ~ ' ' ~ $.reference-inline.Str;
+    }
+
+    multi method Str(::?CLASS:D: Bool:D :text($)! where *.so --> Str:D)
+    {
+        my Str:D $request = '¶ ' ~ $.name.perl ~ ' ' ~ $.reference-inline.Str;
+    }
+}
 
 role IncludeLine::Request::Name
 {
@@ -216,6 +309,25 @@ role IncludeLine::Request::Reference
 }
 
 # --- end role IncludeLine::Request }}}
+# --- role IncludeLine::Response {{{
+
+class Document                      {...}
+role SectionalBlock                 {...}
+role IncludeLine::Response::Resolve {...}
+
+role IncludeLine::Response['Name']              does IncludeLine::Response::Resolve {*}
+role IncludeLine::Response['File']              does IncludeLine::Response::Resolve {*}
+role IncludeLine::Response['Reference']         does IncludeLine::Response::Resolve {*}
+role IncludeLine::Response['Name', 'File']      does IncludeLine::Response::Resolve {*}
+role IncludeLine::Response['Name', 'Reference'] does IncludeLine::Response::Resolve {*}
+
+# XXX Callable type checking presently not fully implemented
+role IncludeLine::Response::Resolve
+{
+    has &.resolve is required;
+}
+
+# --- end role IncludeLine::Response }}}
 
 # end role IncludeLine }}}
 # role IncludeLineBlock {{{
@@ -252,12 +364,12 @@ role IncludeLineBlock['Top']
 
 role LeadingWS['Space']
 {
-    method Str(::?CLASS:D:) returns Str:D { ' ' }
+    method Str(::?CLASS:D: --> Str:D) { ' ' }
 }
 
 role LeadingWS['Tab']
 {
-    method Str(::?CLASS:D:) returns Str:D { "\t" }
+    method Str(::?CLASS:D: --> Str:D) { "\t" }
 }
 
 role MaybeLeadingWS
@@ -400,6 +512,11 @@ role ReferenceInline
 {
     # the Reference Inline Number
     has UInt:D $.number is required;
+
+    method Str(::?CLASS:D: --> Str:D)
+    {
+        my Str:D $reference-inline = '[' ~ $.number ~ ']';
+    }
 }
 
 # end role ReferenceInline }}}
@@ -486,15 +603,26 @@ role SectionalBlockName
 role SectionalBlockContent['IncludeLine']
 {
     has IncludeLine:D $.include-line is required;
+
+    method Str(::?CLASS:D: --> Str:D)
+    {
+        my Str:D $include-line = $.include-line.Str;
+    }
 }
 
 # otherwise Sectional Block Content is considered text (source code)
 role SectionalBlockContent['Text']
 {
     has Str:D $.text is required;
+
     method set-text(::?CLASS:D: Str:D $text)
     {
         $!text = $text;
+    }
+
+    method Str(::?CLASS:D: --> Str:D)
+    {
+        my Str:D $text = $.text;
     }
 }
 
@@ -507,6 +635,11 @@ role SectionalBlock
     has SectionalBlockDelimiter:D $.delimiter is required;
     has SectionalBlockName:D $.name is required;
     has SectionalBlockContent:D @.content;
+
+    method Str(::?CLASS:D: --> Str:D)
+    {
+        my Str:D $content = @.content.map(*.Str).join("\n");
+    }
 }
 
 # end role SectionalBlock }}}
@@ -620,7 +753,7 @@ role Chunk::Meta::Bounds::Boundary
 }
 
 class Chunk::Meta::Bounds::Begins does Chunk::Meta::Bounds::Boundary {*}
-class Chunk::Meta::Bounds::Ends does Chunk::Meta::Bounds::Boundary {*}
+class Chunk::Meta::Bounds::Ends   does Chunk::Meta::Bounds::Boundary {*}
 class Chunk::Meta::Bounds
 {
     has Chunk::Meta::Bounds::Begins:D $.begins is required;
@@ -640,6 +773,38 @@ class Chunk::Meta::Bounds
 class Document
 {
     has Chunk:D @.chunk is required;
+
+    method reference-line-block(
+        ::?CLASS:D:
+        --> Array[ReferenceLineBlock:D]
+    )
+    {
+        my ReferenceLineBlock:D @reference-line-block =
+            @.chunk.grep(Chunk['ReferenceLineBlock'])
+                   .map(*.reference-line-block);
+    }
+
+    multi method sectional-block(
+        ::?CLASS:D:
+        Str:D :$name!
+        --> Array[SectionalBlock:D]
+    )
+    {
+        my SectionalBlock:D @sectional-block =
+            self.sectional-block.grep(*.sectional-block-name.identifier)
+                                .grep(SectionalBlockName::Identifier['Word'])
+                                .grep({ .word eq $name });
+    }
+
+    multi method sectional-block(
+        ::?CLASS:D:
+        --> Array[SectionalBlock:D]
+    )
+    {
+        my SectionalBlock:D @sectional-block =
+            @.chunk.grep(Chunk['SectionalBlock'])
+                   .map(*.sectional-block);
+    }
 }
 
 # end class Document }}}
