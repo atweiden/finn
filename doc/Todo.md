@@ -11,14 +11,16 @@ Finn::Parser
 
 ### check for circular include directives
 
+**obstacles preventing assured stringification of SectionalBlockContent**
+
 - circular include directives
-  - one obstacle preventing assured stringification
-    of SectionalBlockContent is in a case where
-    `SectionalBlockContent['IncludeLine'] $a` links to another
+  - `SectionalBlockContent['IncludeLine'] $a` requests another
     SectionalBlock whose `SectionalBlockContent['IncludeLine'] $b`
-    links back to the SectionalBlock containing `$a`.
-  - another case is where a `¶` *Text-mode*  IncludeLine grabs text
-    that tries to embed the document it is requested from
+    requests the SectionalBlock containing `$a`
+    - `IncludeLine $a` (`IncludeLine::Request['File']`) requests text
+      that tries to include the Document containing `$a`
+  - `SectionalBlockContent['IncludeLine'] $a` requests the SectionalBlock
+    it is a part of
 
 ### improve multiline text handling
 
@@ -91,22 +93,30 @@ Syntax Documentation
   - those whose contents resolve to a `SectionalBlock` (which can be
     stringified):
     - `§ 'name'`
-      - `IncludeLine['Name']`
+      - `IncludeLine['Finn']`
+        - `IncludeLine::Request['Name']`
     - `§ 'name' path/to/file`
-      - `IncludeLine['Name', 'File']`
+      - `IncludeLine['Finn']`
+        - `IncludeLine::Request['Name', 'File']`
     - `§ 'name' [1]`
-      - `IncludeLine['Name', 'Reference']`
+      - `IncludeLine['Finn']`
+        - `IncludeLine::Request['Name', 'Reference']`
   - those whose contents directly resolve to a `Str`:
     - `¶ 'name'`
-      - `IncludeLine['Name']`
+      - `IncludeLine['Text']`
+        - `IncludeLine::Request['Name']`
     - `¶ path/to/file`
-      - `IncludeLine['File']`
+      - `IncludeLine['Text']`
+        - `IncludeLine::Request['File']`
     - `¶ [1]`
-      - `IncludeLine['Reference']`
+      - `IncludeLine['Text']`
+        - `IncludeLine::Request['Reference']`
     - `¶ 'name' path/to/file`
-      - `IncludeLine['Name', 'File']`
+      - `IncludeLine['Text']`
+        - `IncludeLine::Request['Name', 'File']`
     - `¶ 'name' [1]`
-      - `IncludeLine['Name', 'Reference']`
+      - `IncludeLine['Text']`
+        - `IncludeLine::Request['Name', 'Reference']`
 
 - at Document top level, all types of Includes are allowed (see:
   IncludeLineBlock)
@@ -124,13 +134,13 @@ Syntax Documentation
 
 - in **Finn mode**, parser processes text:
   - as Finn source document:
-    - `SectionInline['File']`
-    - `SectionInline['Reference']`
+    - `IncludeLine::Request['File']`
+    - `IncludeLine::Request['Reference']`
     - and returns `Document`
   - as Finn SectionalBlock:
-    - `SectionInline['Name']`
-    - `SectionInline['Name', 'File']`
-    - `SectionInline['Name', 'Reference']`
+    - `IncludeLine::Request['Name']`
+    - `IncludeLine::Request['Name', 'File']`
+    - `IncludeLine::Request['Name', 'Reference']`
     - and returns `Array[SectionalBlockContent]`
 - in **Text mode**, parser does not process text:
   - and returns `Str`
