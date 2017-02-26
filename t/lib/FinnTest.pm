@@ -24,20 +24,20 @@ Contains subroutines for testing Finn.
 
 # chunk {{{
 
-# --- Chunk['SectionalInlineBlock'] {{{
+# --- Chunk['IncludeLineBlock'] {{{
 
 multi sub infix:<eqv>(
-    Chunk['SectionalInlineBlock'] $a,
-    Chunk['SectionalInlineBlock'] $b
+    Chunk['IncludeLineBlock'] $a,
+    Chunk['IncludeLineBlock'] $b
 ) is export returns Bool:D
 {
     my Bool:D $is-same =
-        $a.sectional-inline-block eqv $b.sectional-inline-block
+        $a.include-line-block eqv $b.include-line-block
             && $a.bounds eqv $b.bounds
                 && $a.section == $b.section;
 }
 
-# --- end Chunk['SectionalInlineBlock'] }}}
+# --- end Chunk['IncludeLineBlock'] }}}
 # --- Chunk['SectionalBlock'] {{{
 
 multi sub infix:<eqv>(
@@ -314,6 +314,158 @@ multi sub infix:<eqv>(
 }
 
 # horizontal-rule }}}
+# include-line {{{
+
+multi sub infix:<eqv>(
+    IncludeLine:D @a,
+    IncludeLine:D @b where { .elems == @a.elems }
+) is export returns Bool:D
+{
+    my Bool:D @is-same = do loop (my UInt:D $i = 0; $i < @a.elems; $i++)
+    {
+        @a[$i] eqv @b[$i]
+    }
+    my Bool:D $is-same = [[&is-true]] @is-same;
+}
+
+multi sub infix:<eqv>(
+    IncludeLine @,
+    IncludeLine @
+) is export returns Bool:D
+{
+    False;
+}
+
+multi sub infix:<eqv>(
+    IncludeLine['Finn'] $a,
+    IncludeLine['Finn'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same = $a.request eqv $b.request;
+}
+
+multi sub infix:<eqv>(
+    IncludeLine['Text'] $a,
+    IncludeLine['Text'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same = $a.request eqv $b.request;
+}
+
+multi sub infix:<eqv>(
+    IncludeLine $,
+    IncludeLine $
+) is export returns Bool:D
+{
+    False;
+}
+
+# --- IncludeLine::Request {{{
+
+multi sub infix:<eqv>(
+    IncludeLine::Request['Name'] $a,
+    IncludeLine::Request['Name'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same = $a.name eqv $b.name;
+}
+
+multi sub infix:<eqv>(
+    IncludeLine::Request['File'] $a,
+    IncludeLine::Request['File'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same = $a.file eqv $b.file;
+}
+
+multi sub infix:<eqv>(
+    IncludeLine::Request['Reference'] $a,
+    IncludeLine::Request['Reference'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same = $a.reference-inline eqv $b.reference-inline;
+}
+
+multi sub infix:<eqv>(
+    IncludeLine::Request['Name', 'File'] $a,
+    IncludeLine::Request['Name', 'File'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.name eqv $b.name
+            && $a.file eqv $b.file;
+}
+
+multi sub infix:<eqv>(
+    IncludeLine::Request['Name', 'Reference'] $a,
+    IncludeLine::Request['Name', 'Reference'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.name eqv $b.name
+            && $a.reference-inline eqv $b.reference-inline;
+}
+
+multi sub infix:<eqv>(
+    IncludeLine::Request $,
+    IncludeLine::Request $
+) is export returns Bool:D
+{
+    False;
+}
+
+# --- end IncludeLine::Request }}}
+
+# end include-line }}}
+# include-line-block {{{
+
+multi sub infix:<eqv>(
+    IncludeLineBlock['BlankLine'] $a,
+    IncludeLineBlock['BlankLine'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.blank-line eqv $b.blank-line
+            && $a.include-line eqv $b.include-line;
+}
+
+multi sub infix:<eqv>(
+    IncludeLineBlock['CommentBlock'] $a,
+    IncludeLineBlock['CommentBlock'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.comment-block eqv $b.comment-block
+            && $a.include-line eqv $b.include-line;
+}
+
+multi sub infix:<eqv>(
+    IncludeLineBlock['HorizontalRule'] $a,
+    IncludeLineBlock['HorizontalRule'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a.horizontal-rule eqv $b.horizontal-rule
+            && $a.include-line eqv $b.include-line;
+}
+
+multi sub infix:<eqv>(
+    IncludeLineBlock['Top'] $a,
+    IncludeLineBlock['Top'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same = $a.include-line eqv $b.include-line;
+}
+
+multi sub infix:<eqv>(
+    IncludeLineBlock $,
+    IncludeLineBlock $
+) is export returns Bool:D
+{
+    False;
+}
+
+# end include-line-block }}}
 # list-block {{{
 
 multi sub infix:<eqv>(
@@ -848,138 +1000,6 @@ multi sub infix:<eqv>(
 }
 
 # end reference-line-block }}}
-# sectional-inline {{{
-
-multi sub infix:<eqv>(
-    SectionalInline:D @a,
-    SectionalInline:D @b where { .elems == @a.elems }
-) is export returns Bool:D
-{
-    my Bool:D @is-same = do loop (my UInt:D $i = 0; $i < @a.elems; $i++)
-    {
-        @a[$i] eqv @b[$i]
-    }
-    my Bool:D $is-same = [[&is-true]] @is-same;
-}
-
-multi sub infix:<eqv>(
-    SectionalInline @,
-    SectionalInline @
-) is export returns Bool:D
-{
-    False;
-}
-
-multi sub infix:<eqv>(
-    SectionalInline['Name'] $a,
-    SectionalInline['Name'] $b
-) is export returns Bool:D
-{
-    my Bool:D $is-same =
-        $a.mode eqv $b.mode
-            && $a.name eqv $b.name;
-}
-
-multi sub infix:<eqv>(
-    SectionalInline['File'] $a,
-    SectionalInline['File'] $b
-) is export returns Bool:D
-{
-    my Bool:D $is-same =
-        $a.mode eqv $b.mode
-            && $a.file eqv $b.file;
-}
-
-multi sub infix:<eqv>(
-    SectionalInline['Reference'] $a,
-    SectionalInline['Reference'] $b
-) is export returns Bool:D
-{
-    my Bool:D $is-same =
-        $a.mode eqv $b.mode
-            && $a.reference-inline eqv $b.reference-inline;
-}
-
-multi sub infix:<eqv>(
-    SectionalInline['Name', 'File'] $a,
-    SectionalInline['Name', 'File'] $b
-) is export returns Bool:D
-{
-    my Bool:D $is-same =
-        $a.mode eqv $b.mode
-            && $a.name eqv $b.name
-                && $a.file eqv $b.file;
-}
-
-multi sub infix:<eqv>(
-    SectionalInline['Name', 'Reference'] $a,
-    SectionalInline['Name', 'Reference'] $b
-) is export returns Bool:D
-{
-    my Bool:D $is-same =
-        $a.mode eqv $b.mode
-            && $a.name eqv $b.name
-                && $a.reference-inline eqv $b.reference-inline;
-}
-
-multi sub infix:<eqv>(
-    SectionalInline $,
-    SectionalInline $
-) is export returns Bool:D
-{
-    False;
-}
-
-# end sectional-inline }}}
-# sectional-inline-block {{{
-
-multi sub infix:<eqv>(
-    SectionalInlineBlock['BlankLine'] $a,
-    SectionalInlineBlock['BlankLine'] $b
-) is export returns Bool:D
-{
-    my Bool:D $is-same =
-        $a.blank-line eqv $b.blank-line
-            && $a.sectional-inline eqv $b.sectional-inline;
-}
-
-multi sub infix:<eqv>(
-    SectionalInlineBlock['CommentBlock'] $a,
-    SectionalInlineBlock['CommentBlock'] $b
-) is export returns Bool:D
-{
-    my Bool:D $is-same =
-        $a.comment-block eqv $b.comment-block
-            && $a.sectional-inline eqv $b.sectional-inline;
-}
-
-multi sub infix:<eqv>(
-    SectionalInlineBlock['HorizontalRule'] $a,
-    SectionalInlineBlock['HorizontalRule'] $b
-) is export returns Bool:D
-{
-    my Bool:D $is-same =
-        $a.horizontal-rule eqv $b.horizontal-rule
-            && $a.sectional-inline eqv $b.sectional-inline;
-}
-
-multi sub infix:<eqv>(
-    SectionalInlineBlock['Top'] $a,
-    SectionalInlineBlock['Top'] $b
-) is export returns Bool:D
-{
-    my Bool:D $is-same = $a.sectional-inline eqv $b.sectional-inline;
-}
-
-multi sub infix:<eqv>(
-    SectionalInlineBlock $,
-    SectionalInlineBlock $
-) is export returns Bool:D
-{
-    False;
-}
-
-# end sectional-inline-block }}}
 
 # sub is-true {{{
 

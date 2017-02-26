@@ -7,7 +7,7 @@ plan 4;
 
 subtest
 {
-    my Str:D $sectional-inline-block = q:to/EOF/.trim-trailing;
+    my Str:D $include-line-block = q:to/EOF/.trim-trailing;
 
     § 'Name Of Section To Embed' [1]
     § /
@@ -15,15 +15,15 @@ subtest
     § "Name Of Section To Embed" /a/b/c/d
     § "Name Of Section To Embed" file:///
     EOF
-    my Str:D $rule = 'sectional-inline-block';
+    my Str:D $rule = 'include-line-block';
     ok
-        Finn::Parser::Grammar.parse($sectional-inline-block, :$rule),
-        'Parses sectional-inline-block';
+        Finn::Parser::Grammar.parse($include-line-block, :$rule),
+        'Parses include-line-block';
 }
 
 subtest
 {
-    my Str:D $sectional-inline-block = q:to/EOF/.trim-trailing;
+    my Str:D $include-line-block = q:to/EOF/.trim-trailing;
     /*
      *
      * comment
@@ -33,29 +33,29 @@ subtest
      */
     § "Name Of Section To Embed" file:///a/b/c/d
     EOF
-    my Str:D $rule = 'sectional-inline-block';
+    my Str:D $rule = 'include-line-block';
     ok
-        Finn::Parser::Grammar.parse($sectional-inline-block, :$rule),
-        'Parses sectional-inline-block';
+        Finn::Parser::Grammar.parse($include-line-block, :$rule),
+        'Parses include-line-block';
 }
 
 subtest
 {
-    my Str:D $sectional-inline-block = q:to/EOF/.trim-trailing;
+    my Str:D $include-line-block = q:to/EOF/.trim-trailing;
     /* a comment block */
     § 'Name Of Section To Embed' file://~/a/b/c/d
     § "Name Of Section To Embed" [0]
     § 'Name Of Section To Embed' [1010101010101]
     EOF
-    my Str:D $rule = 'sectional-inline-block';
+    my Str:D $rule = 'include-line-block';
     ok
-        Finn::Parser::Grammar.parse($sectional-inline-block, :$rule),
-        'Parses sectional-inline-block';
+        Finn::Parser::Grammar.parse($include-line-block, :$rule),
+        'Parses include-line-block';
 }
 
 subtest
 {
-    my Str:D $sectional-inline-block = q:to/EOF/.trim-trailing;
+    my Str:D $include-line-block = q:to/EOF/.trim-trailing;
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     § ~/finn/share/vimfmt
     § 'Name Of Section To Embed' ~
@@ -69,10 +69,10 @@ subtest
     § [1]
     ¶ [2]
     EOF
-    my Str:D $rule = 'sectional-inline-block';
+    my Str:D $rule = 'include-line-block';
     ok
-        Finn::Parser::Grammar.parse($sectional-inline-block, :$rule),
-        'Parses sectional-inline-block';
+        Finn::Parser::Grammar.parse($include-line-block, :$rule),
+        'Parses include-line-block';
 }
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

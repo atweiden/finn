@@ -44,11 +44,11 @@ method tangle(?::CLASS:D:) returns Hash[List:D,Str:D]
     # Block Content, and the beginning and ending of the Sectional Block
     # in origin file:line:column terms
     #
-    # if a Sectional Inline is encountered in the Sectional Block
-    # Content, the C<SectionalBlockLine> is a special class with
-    # C<List> of C<SectionalBlockLine>s instantiated from the linked
-    # Sectional Block Content, and the beginning and ending of the
-    # linked Sectional Block in origin file:line:column terms
+    # if an Include is encountered in the Sectional Block Content,
+    # the C<SectionalBlockLine> is a special class with C<List> of
+    # C<SectionalBlockLine>s instantiated from the linked Sectional Block
+    # Content, and the beginning and ending of the linked Sectional
+    # Block in origin file:line:column terms
     # --- {{{
 
     # --- }}}

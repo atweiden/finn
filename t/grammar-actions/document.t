@@ -185,25 +185,22 @@ subtest 'finn-examples/app',
     my Str:D $blank-line-text-j = '';
     my BlankLine $blank-line-j .= new(:text($blank-line-text-j));
 
-    my Mode:D $mode-j = FINN;
     my IO::Path $path-j .= new('/finn/README.md.finn');
     my File['Absolute'] $file-j .= new(:path($path-j));
-    my SectionalInline['File'] $sectional-inline-j .= new(
-        :mode($mode-j),
-        :file($file-j)
-    );
+    my IncludeLine::Request['File'] $request-j .= new(:file($file-j));
+    my IncludeLine['Finn'] $include-line-j .= new(:request($request-j));
 
-    my SectionalInline:D @sectional-inline-j = $sectional-inline-j;
+    my IncludeLine:D @include-line-j = $include-line-j;
 
-    my SectionalInlineBlock['BlankLine'] $sectional-inline-block-j .= new(
+    my IncludeLineBlock['BlankLine'] $include-line-block-j .= new(
         :blank-line($blank-line-j),
-        :sectional-inline(@sectional-inline-j)
+        :include-line(@include-line-j)
     );
 
-    my Chunk['SectionalInlineBlock'] $chunk-j .= new(
+    my Chunk['IncludeLineBlock'] $chunk-j .= new(
         :bounds($bounds-j),
         :section($section-j),
-        :sectional-inline-block($sectional-inline-block-j)
+        :include-line-block($include-line-block-j)
     );
 
     # --- end chunk-j }}}
@@ -244,25 +241,22 @@ subtest 'finn-examples/app',
     my Str:D $blank-line-text-m = '';
     my BlankLine $blank-line-m .= new(:text($blank-line-text-m));
 
-    my Mode:D $mode-m = FINN;
     my IO::Path $path-m .= new('/finn/UNLICENSE.finn');
     my File['Absolute'] $file-m .= new(:path($path-m));
-    my SectionalInline['File'] $sectional-inline-m .= new(
-        :mode($mode-m),
-        :file($file-m)
-    );
+    my IncludeLine::Request['File'] $request-m .= new(:file($file-m));
+    my IncludeLine['Finn'] $include-line-m .= new(:request($request-m));
 
-    my SectionalInline:D @sectional-inline-m = $sectional-inline-m;
+    my IncludeLine:D @include-line-m = $include-line-m;
 
-    my SectionalInlineBlock['BlankLine'] $sectional-inline-block-m .= new(
+    my IncludeLineBlock['BlankLine'] $include-line-block-m .= new(
         :blank-line($blank-line-m),
-        :sectional-inline(@sectional-inline-m)
+        :include-line(@include-line-m)
     );
 
-    my Chunk['SectionalInlineBlock'] $chunk-m .= new(
+    my Chunk['IncludeLineBlock'] $chunk-m .= new(
         :bounds($bounds-m),
         :section($section-m),
-        :sectional-inline-block($sectional-inline-block-m)
+        :include-line-block($include-line-block-m)
     );
 
     # --- end chunk-m }}}
@@ -303,25 +297,22 @@ subtest 'finn-examples/app',
     my Str:D $blank-line-text-p = '';
     my BlankLine $blank-line-p .= new(:text($blank-line-text-p));
 
-    my Mode:D $mode-p = FINN;
     my IO::Path $path-p .= new('/finn/lib/App.pm.finn');
     my File['Absolute'] $file-p .= new(:path($path-p));
-    my SectionalInline['File'] $sectional-inline-p .= new(
-        :mode($mode-p),
-        :file($file-p)
-    );
+    my IncludeLine::Request['File'] $request-p .= new(:file($file-p));
+    my IncludeLine['Finn'] $include-line-p .= new(:request($request-p));
 
-    my SectionalInline:D @sectional-inline-p = $sectional-inline-p;
+    my IncludeLine:D @include-line-p = $include-line-p;
 
-    my SectionalInlineBlock['BlankLine'] $sectional-inline-block-p .= new(
+    my IncludeLineBlock['BlankLine'] $include-line-block-p .= new(
         :blank-line($blank-line-p),
-        :sectional-inline(@sectional-inline-p)
+        :include-line(@include-line-p)
     );
 
-    my Chunk['SectionalInlineBlock'] $chunk-p .= new(
+    my Chunk['IncludeLineBlock'] $chunk-p .= new(
         :bounds($bounds-p),
         :section($section-p),
-        :sectional-inline-block($sectional-inline-block-p)
+        :include-line-block($include-line-block-p)
     );
 
     # --- end chunk-p }}}
@@ -570,14 +561,13 @@ subtest 'finn-examples/hangman',
     # --- --- --- end 01 }}}
     # --- --- --- 02 {{{
 
-    my Mode:D $sectional-inline-mode-h02 = FINN;
-    my Str:D $sectional-inline-name-h02 = 'Setup';
-    my SectionalInline['Name'] $sectional-inline-h02 .= new(
-        :mode($sectional-inline-mode-h02),
-        :name($sectional-inline-name-h02)
+    my Str:D $include-line-name-h02 = 'Setup';
+    my IncludeLine::Request['Name'] $request-h02 .= new(
+        :name($include-line-name-h02)
     );
-    my SectionalBlockContent['SectionalInline'] $content-h02 .= new(
-        :sectional-inline($sectional-inline-h02)
+    my IncludeLine['Finn'] $include-line-h02 .= new(:request($request-h02));
+    my SectionalBlockContent['IncludeLine'] $content-h02 .= new(
+        :include-line($include-line-h02)
     );
 
     # --- --- --- end 02 }}}
@@ -593,40 +583,37 @@ subtest 'finn-examples/hangman',
     # --- --- --- end 03 }}}
     # --- --- --- 04 {{{
 
-    my Mode:D $sectional-inline-mode-h04 = FINN;
-    my Str:D $sectional-inline-name-h04 = 'User input';
-    my SectionalInline['Name'] $sectional-inline-h04 .= new(
-        :mode($sectional-inline-mode-h04),
-        :name($sectional-inline-name-h04)
+    my Str:D $include-line-name-h04 = 'User input';
+    my IncludeLine::Request['Name'] $request-h04 .= new(
+        :name($include-line-name-h04)
     );
-    my SectionalBlockContent['SectionalInline'] $content-h04 .= new(
-        :sectional-inline($sectional-inline-h04)
+    my IncludeLine['Finn'] $include-line-h04 .= new(:request($request-h04));
+    my SectionalBlockContent['IncludeLine'] $content-h04 .= new(
+        :include-line($include-line-h04)
     );
 
     # --- --- --- end 04 }}}
     # --- --- --- 05 {{{
 
-    my Mode:D $sectional-inline-mode-h05 = FINN;
-    my Str:D $sectional-inline-name-h05 = 'Check input';
-    my SectionalInline['Name'] $sectional-inline-h05 .= new(
-        :mode($sectional-inline-mode-h05),
-        :name($sectional-inline-name-h05)
+    my Str:D $include-line-name-h05 = 'Check input';
+    my IncludeLine::Request['Name'] $request-h05 .= new(
+        :name($include-line-name-h05)
     );
-    my SectionalBlockContent['SectionalInline'] $content-h05 .= new(
-        :sectional-inline($sectional-inline-h05)
+    my IncludeLine['Finn'] $include-line-h05 .= new(:request($request-h05));
+    my SectionalBlockContent['IncludeLine'] $content-h05 .= new(
+        :include-line($include-line-h05)
     );
 
     # --- --- --- end 05 }}}
     # --- --- --- 06 {{{
 
-    my Mode:D $sectional-inline-mode-h06 = FINN;
-    my Str:D $sectional-inline-name-h06 = 'Check win';
-    my SectionalInline['Name'] $sectional-inline-h06 .= new(
-        :mode($sectional-inline-mode-h06),
-        :name($sectional-inline-name-h06)
+    my Str:D $include-line-name-h06 = 'Check win';
+    my IncludeLine::Request['Name'] $request-h06 .= new(
+        :name($include-line-name-h06)
     );
-    my SectionalBlockContent['SectionalInline'] $content-h06 .= new(
-        :sectional-inline($sectional-inline-h06)
+    my IncludeLine['Finn'] $include-line-h06 .= new(:request($request-h06));
+    my SectionalBlockContent['IncludeLine'] $content-h06 .= new(
+        :include-line($include-line-h06)
     );
 
     # --- --- --- end 06 }}}
@@ -638,14 +625,13 @@ subtest 'finn-examples/hangman',
     # --- --- --- end 07 }}}
     # --- --- --- 08 {{{
 
-    my Mode:D $sectional-inline-mode-h08 = FINN;
-    my Str:D $sectional-inline-name-h08 = 'End';
-    my SectionalInline['Name'] $sectional-inline-h08 .= new(
-        :mode($sectional-inline-mode-h08),
-        :name($sectional-inline-name-h08)
+    my Str:D $include-line-name-h08 = 'End';
+    my IncludeLine::Request['Name'] $request-h08 .= new(
+        :name($include-line-name-h08)
     );
-    my SectionalBlockContent['SectionalInline'] $content-h08 .= new(
-        :sectional-inline($sectional-inline-h08)
+    my IncludeLine['Finn'] $include-line-h08 .= new(:request($request-h08));
+    my SectionalBlockContent['IncludeLine'] $content-h08 .= new(
+        :include-line($include-line-h08)
     );
 
     # --- --- --- end 08 }}}
@@ -1016,14 +1002,13 @@ subtest 'finn-examples/hangman',
 
     # --- --- --- 01 {{{
 
-    my Mode:D $sectional-inline-mode-x01 = FINN;
-    my Str:D $sectional-inline-name-x01 = 'print dashes array';
-    my SectionalInline['Name'] $sectional-inline-x01 .= new(
-        :mode($sectional-inline-mode-x01),
-        :name($sectional-inline-name-x01)
+    my Str:D $include-line-name-x01 = 'print dashes array';
+    my IncludeLine::Request['Name'] $request-x01 .= new(
+        :name($include-line-name-x01)
     );
-    my SectionalBlockContent['SectionalInline'] $content-x01 .= new(
-        :sectional-inline($sectional-inline-x01)
+    my IncludeLine['Finn'] $include-line-x01 .= new(:request($request-x01));
+    my SectionalBlockContent['IncludeLine'] $content-x01 .= new(
+        :include-line($include-line-x01)
     );
 
     # --- --- --- end 01 }}}
@@ -4268,27 +4253,25 @@ subtest 'finn-examples/hello',
 
     # --- --- --- 01 {{{
 
-    my Mode:D $sectional-inline-mode-i01 = FINN;
-    my Str:D $sectional-inline-name-i01 = 'Import modules';
-    my SectionalInline['Name'] $sectional-inline-i01 .= new(
-        :mode($sectional-inline-mode-i01),
-        :name($sectional-inline-name-i01)
+    my Str:D $include-line-name-i01 = 'Import modules';
+    my IncludeLine::Request['Name'] $request-i01 .= new(
+        :name($include-line-name-i01)
     );
-    my SectionalBlockContent['SectionalInline'] $content-i01 .= new(
-        :sectional-inline($sectional-inline-i01)
+    my IncludeLine['Finn'] $include-line-i01 .= new(:request($request-i01));
+    my SectionalBlockContent['IncludeLine'] $content-i01 .= new(
+        :include-line($include-line-i01)
     );
 
     # --- --- --- end 01 }}}
     # --- --- --- 02 {{{
 
-    my Mode:D $sectional-inline-mode-i02 = FINN;
-    my Str:D $sectional-inline-name-i02 = 'Print a string';
-    my SectionalInline['Name'] $sectional-inline-i02 .= new(
-        :mode($sectional-inline-mode-i02),
-        :name($sectional-inline-name-i02)
+    my Str:D $include-line-name-i02 = 'Print a string';
+    my IncludeLine::Request['Name'] $request-i02 .= new(
+        :name($include-line-name-i02)
     );
-    my SectionalBlockContent['SectionalInline'] $content-i02 .= new(
-        :sectional-inline($sectional-inline-i02)
+    my IncludeLine['Finn'] $include-line-i02 .= new(:request($request-i02));
+    my SectionalBlockContent['IncludeLine'] $content-i02 .= new(
+        :include-line($include-line-i02)
     );
 
     # --- --- --- end 02 }}}
@@ -4697,26 +4680,23 @@ subtest 'finn-examples/novel',
     my Str:D $blank-line-text-e = '';
     my BlankLine $blank-line-e .= new(:text($blank-line-text-e));
 
-    my Mode:D $mode-e = FINN;
     # t/data/novel is prepended in Actions
     my IO::Path $path-e .= new('t/data/novel/chapter-01/intro.finn');
     my File['Relative'] $file-e .= new(:path($path-e));
-    my SectionalInline['File'] $sectional-inline-e .= new(
-        :mode($mode-e),
-        :file($file-e)
-    );
+    my IncludeLine::Request['File'] $request-e .= new(:file($file-e));
+    my IncludeLine['Finn'] $include-line-e .= new(:request($request-e));
 
-    my SectionalInline:D @sectional-inline-e = $sectional-inline-e;
+    my IncludeLine:D @include-line-e = $include-line-e;
 
-    my SectionalInlineBlock['BlankLine'] $sectional-inline-block-e .= new(
+    my IncludeLineBlock['BlankLine'] $include-line-block-e .= new(
         :blank-line($blank-line-e),
-        :sectional-inline(@sectional-inline-e)
+        :include-line(@include-line-e)
     );
 
-    my Chunk['SectionalInlineBlock'] $chunk-e .= new(
+    my Chunk['IncludeLineBlock'] $chunk-e .= new(
         :bounds($bounds-e),
         :section($section-e),
-        :sectional-inline-block($sectional-inline-block-e)
+        :include-line-block($include-line-block-e)
     );
 
     # --- end chunk-e }}}
@@ -4757,26 +4737,23 @@ subtest 'finn-examples/novel',
     my Str:D $blank-line-text-h = '';
     my BlankLine $blank-line-h .= new(:text($blank-line-text-h));
 
-    my Mode:D $mode-h = FINN;
     # t/data/novel is prepended in Actions
     my IO::Path $path-h .= new('t/data/novel/chapter-02/intro.finn');
     my File['Relative'] $file-h .= new(:path($path-h));
-    my SectionalInline['File'] $sectional-inline-h .= new(
-        :mode($mode-h),
-        :file($file-h)
-    );
+    my IncludeLine::Request['File'] $request-h .= new(:file($file-h));
+    my IncludeLine['Finn'] $include-line-h .= new(:request($request-h));
 
-    my SectionalInline:D @sectional-inline-h = $sectional-inline-h;
+    my IncludeLine:D @include-line-h = $include-line-h;
 
-    my SectionalInlineBlock['BlankLine'] $sectional-inline-block-h .= new(
+    my IncludeLineBlock['BlankLine'] $include-line-block-h .= new(
         :blank-line($blank-line-h),
-        :sectional-inline(@sectional-inline-h)
+        :include-line(@include-line-h)
     );
 
-    my Chunk['SectionalInlineBlock'] $chunk-h .= new(
+    my Chunk['IncludeLineBlock'] $chunk-h .= new(
         :bounds($bounds-h),
         :section($section-h),
-        :sectional-inline-block($sectional-inline-block-h)
+        :include-line-block($include-line-block-h)
     );
 
     # --- end chunk-h }}}
@@ -4817,26 +4794,23 @@ subtest 'finn-examples/novel',
     my Str:D $blank-line-text-k = '';
     my BlankLine $blank-line-k .= new(:text($blank-line-text-k));
 
-    my Mode:D $mode-k = FINN;
     # t/data/novel is prepended in Actions
     my IO::Path $path-k .= new('t/data/novel/chapter-03/intro.finn');
     my File['Relative'] $file-k .= new(:path($path-k));
-    my SectionalInline['File'] $sectional-inline-k .= new(
-        :mode($mode-k),
-        :file($file-k)
-    );
+    my IncludeLine::Request['File'] $request-k .= new(:file($file-k));
+    my IncludeLine['Finn'] $include-line-k .= new(:request($request-k));
 
-    my SectionalInline:D @sectional-inline-k = $sectional-inline-k;
+    my IncludeLine:D @include-line-k = $include-line-k;
 
-    my SectionalInlineBlock['BlankLine'] $sectional-inline-block-k .= new(
+    my IncludeLineBlock['BlankLine'] $include-line-block-k .= new(
         :blank-line($blank-line-k),
-        :sectional-inline(@sectional-inline-k)
+        :include-line(@include-line-k)
     );
 
-    my Chunk['SectionalInlineBlock'] $chunk-k .= new(
+    my Chunk['IncludeLineBlock'] $chunk-k .= new(
         :bounds($bounds-k),
         :section($section-k),
-        :sectional-inline-block($sectional-inline-block-k)
+        :include-line-block($include-line-block-k)
     );
 
     # --- end chunk-k }}}

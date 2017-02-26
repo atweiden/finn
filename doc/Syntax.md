@@ -8,8 +8,8 @@ The main addition to [vim-journal]'s syntax is the Sectional Block,
 which is a modified [vim-journal] code block that receives special
 treatment from the Finn compiler.
 
-Finn also adds Sectional Inlines and Sectional Links, which are similar
-to Haml *include directives* and Vimdoc hot-links (vim: `:h help-writing`)
+Finn also adds Includes and Sectional Links, which are similar to Haml
+*include directives* and Vimdoc hot-links (vim: `:h help-writing`)
 respectively.
 
 
@@ -18,8 +18,8 @@ respectively.
 Sectional Blocks are for all intents and purposes the same as regular
 code blocks, but with three key differences.
 
-The first key difference is that Sectional Blocks are parsed for Sectional
-Inlines. Sectional Inlines are essentially the Finn version of *include
+The first key difference is that Sectional Blocks are parsed for
+Includes. Includes are essentially the Finn version of *include
 directives* found in Haml and other HTML templating languages.
 
 The second key difference is that Sectional Blocks can be added to
@@ -104,43 +104,41 @@ my Str $greeting = 'Hello, World';
 ```
 
 
-## Sectional Inlines
+## Includes
 
-*Sectional Inlines* begin with a Section Sign (`§`) or Paragraph Sign
-(`¶`). The Sign must appear at the start of a line, although it may be
-offset by leading whitespace. If it is offset by whitespace, any content
-to be embedded will be indented by an equal amount of leading whitespace.
+*Includes* begin with a Section Sign (`§`) or Paragraph Sign (`¶`). The
+Sign must appear at the start of a line, although it may be offset by
+leading whitespace. If it is offset by whitespace, any content to be
+embedded will be indented by an equal amount of leading whitespace.
 
-The Sign must be followed by exactly one horizontal whitespace. Sectional
-Inlines come in two flavors:
+The Sign must be followed by exactly one horizontal whitespace. Includes
+come in two flavors:
 
 1. Intra-file
 2. Inter-file
 
-Depending on the flavor of Sectional Inline, the horizontal whitespace
-following the Sign must be followed by either a quoted Sectional Block
-Name, a quoted Sectional Block Name plus a file path, or just a file
-path. An *Inline Reference* can take the place of the file path.
+Depending on the flavor of Include, the horizontal whitespace following
+the Sign must be followed by either a quoted Sectional Block Name, a
+quoted Sectional Block Name plus a file path, or just a file path. An
+*Inline Reference* can take the place of the file path.
 
-### Intra-file Sectional Inlines
+### Intra-file Includes
 
-Intra-file Sectional Inlines come in only one flavor: *By Sectional
-Block Name*.
+Intra-file Includes come in only one flavor: *By Sectional Block Name*.
 
-This type of Sectional Inline can appear inside and outside of Sectional
+This type of Include can appear inside and outside of Sectional
 Blocks. However, if it appears outside of a Sectional Block, it must:
 
 - appear at the very top of the Finn source document, or
 - appear following a blank line, horizontal rule or comment block, or
-- appear as part of a consecutive series of Sectional Inlines separated
-  by newline
+- appear as part of a consecutive series of Includes separated by newline
 
 #### Intra-file By Sectional Block Name
 
-This flavor of Sectional Inline embeds a Sectional Block that appears
-within the same file of the Sectional Inline by referencing a target
-Sectional Block Name. This target Sectional Block may appear either
-above or below the Sectional Inline, so long as it's in the same file.
+This flavor of Include embeds a Sectional Block that appears within
+the same file of the Include by referencing a target Sectional Block
+Name. This target Sectional Block may appear either above or below the
+Include, so long as it's in the same file.
 
 Example:
 
@@ -157,17 +155,17 @@ Example:
 ---
 ```
 
-### Inter-file Sectional Inlines
+### Inter-file Includes
 
-Inter-file Sectional Inlines come in two flavors: *By Sectional Block
-Name*, and *By File Path*.
+Inter-file Includes come in two flavors: *By Sectional Block Name*,
+and *By File Path*.
 
 #### Inter-file By Sectional Block Name
 
-In this flavor of Inter-file Sectional Inline, an exported Sectional
-Block (its Sectional Block Name having an asterisk `*` appended to it)
-from a different Finn source document is referenced by its Sectional
-Block Name. Given:
+In this flavor of Inter-file Include, an exported Sectional Block
+(its Sectional Block Name having an asterisk `*` appended to it) from
+a different Finn source document is referenced by its Sectional Block
+Name. Given:
 
     $ cat finn/cities-in-ca/a-through-c.finn
     ``` Cities Beginning with the Letter A*
@@ -182,7 +180,7 @@ Block Name. Given:
     - C is for Crescent City.
     ```
 
-The following Sectional Inline will render `- A is for Anaheim.`:
+The following Include will render `- A is for Anaheim.`:
 
 ```finn
 § "Cities Beginning with the Letter A" /finn/cities-in-ca/a-through-f.finn
@@ -241,18 +239,17 @@ source document:
 § "Secret Sauce" /finn/share/recipes.finn
 ```
 
-This type of Sectional Inline can appear inside and outside of Sectional
+This type of Include can appear inside and outside of Sectional
 Blocks. However, if it appears outside of a Sectional Block, it must:
 
 - appear at the very top of the Finn source document, or
 - appear following a blank line, horizontal rule or comment block, or
-- appear as part of a consecutive series of Sectional Inlines separated
-  by newline
+- appear as part of a consecutive series of Includes separated by newline
 
 #### Inter-file By File Path
 
-In this flavor of Inter-file Sectional Inline, the contents of an
-entire file referenced by path are embedded.
+In this flavor of Inter-file Include, the contents of an entire file
+referenced by path are embedded.
 
 ```finn
 § /finn/cities-in-ca/a-through-f.finn
@@ -269,24 +266,22 @@ Or, equivalently:
 [1]: /finn/cities-in-ca/a-through-f.finn
 ```
 
-This type of Sectional Inline can only appear outside of Sectional Blocks:
+This type of Include can only appear outside of Sectional Blocks:
 
 - at the very top of the Finn source document, or
 - following a blank line, horizontal rule or comment block, or
-- as part of a consecutive series of Sectional Inlines separated by
-  newline
+- as part of a consecutive series of Include separated by newline
 
-### Finn-mode vs Text-mode Sectional Inlines
+### Finn-mode vs Text-mode Includes
 
-In each Sectional Inline example so far, the Section Sign (`§`) has been
-used. The `§` indicates the Sectional Inline has requested a resource to
-be processed in *Finn-mode*. In *Finn-mode* the requested resource will
-be treated as if it is a Finn source document (if a file is requested
-by path/reference) or Sectional Block (if a Sectional Block is requested
-by name).
+In each Include example so far, the Section Sign (`§`) has been used. The
+`§` indicates the Include has requested a resource to be processed in
+*Finn-mode*. In *Finn-mode* the requested resource will be treated as if
+it is a Finn source document (if a file is requested by path/reference)
+or Sectional Block (if a Sectional Block is requested by name).
 
-*Text-mode* Sectional Inlines come in handy when you want to simply
-embed the contents of a file, as in the following example:
+*Text-mode* Includes come in handy when you want to simply embed the
+contents of a file, as in the following example:
 
 ```finn
 The History of the Alligator
@@ -299,7 +294,7 @@ The History of the Alligator
 Alligator History
 ```
 
-Another possible use case of *Text-mode* Sectional Inlines is for a high
+Another possible use case of *Text-mode* Includes is for a high
 [whipitupitude] approach to literate programming:
 
 ```

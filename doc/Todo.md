@@ -4,45 +4,21 @@ Todo
 Finn::Parser
 ------------
 
-### implement finn-mode and text-mode include directive processing
+### store leading whitespace in `Include` attribute
 
-```finn
-§ process/in/finn/mode
-¶ process/in/text/mode
-```
-
-- in **Finn mode**, parser processes text:
-  - as Finn source document:
-    - `SectionInline['File']`
-    - `SectionInline['Reference']`
-    - and returns `Document`
-  - as Finn SectionalBlock:
-    - `SectionInline['Name']`
-    - `SectionInline['Name', 'File']`
-    - `SectionInline['Name', 'Reference']`
-    - and returns `Array[SectionalBlockContent]`
-- in **Text mode**, parser does not process text:
-  - and returns `Str`
+- necessary for Finn document processing to yield correct amount of
+  leading indentation
 
 ### check for circular include directives
 
 - circular include directives
   - one obstacle preventing assured stringification
     of SectionalBlockContent is in a case where
-    `SectionalBlockContent['SectionalInline'] $a` links to another
-    SectionalBlock whose `SectionalBlockContent['SectionalInline'] $b`
+    `SectionalBlockContent['IncludeLine'] $a` links to another
+    SectionalBlock whose `SectionalBlockContent['IncludeLine'] $b`
     links back to the SectionalBlock containing `$a`.
-  - another case is where a `¶` *Text-mode*  SectionalInline grabs text
+  - another case is where a `¶` *Text-mode*  IncludeLine grabs text
     that tries to embed the document it is requested from
-
-### store leading whitespace in `SectionalInline` attribute
-
-- necessary for Finn document processing to yield correct amount
-  of leading indentation
-
-### improve sectional-link parsing
-
-- detect String and File
 
 ### improve multiline text handling
 
@@ -56,6 +32,10 @@ Finn::Parser
   - this is due to grammar making excessive use of `\N*` with no
     ratcheting
     - fix by parsing one word at a time similar to SectionalBlockName
+
+### improve sectional-link parsing
+
+- detect String and File
 
 ### deeply parse other text
 
@@ -88,12 +68,6 @@ Finn::Parser::ParseTree
      writing a submethod TWEAK is a good approach (available in v6.d /
      Rakudo 2016.11)”
 
-### Validate that BySectionalBlockName Sectional Inlines appear only within Sectional Blocks in `submethod TWEAK`
-
-- Intra-file Sectional Inlines come in only one flavor: *By Sectional
-  Block Name*. This type of Sectional Inline can only appear within
-  a Sectional Block.
-
 
 Test
 ----
@@ -113,35 +87,53 @@ Syntax Documentation
 ### improve include directive syntax documentation
 
 - inside a Sectional Block (`SectionalBlockContent`), only these types
-  of Sectional Inlines are allowed:
+  of Includes are allowed:
   - those whose contents resolve to a `SectionalBlock` (which can be
     stringified):
     - `§ 'name'`
-      - `SectionalInline['Name']`
+      - `IncludeLine['Name']`
     - `§ 'name' path/to/file`
-      - `SectionalInline['Name', 'File']`
+      - `IncludeLine['Name', 'File']`
     - `§ 'name' [1]`
-      - `SectionalInline['Name', 'Reference']`
+      - `IncludeLine['Name', 'Reference']`
   - those whose contents directly resolve to a `Str`:
     - `¶ 'name'`
-      - `SectionalInline['Name']`
+      - `IncludeLine['Name']`
     - `¶ path/to/file`
-      - `SectionalInline['File']`
+      - `IncludeLine['File']`
     - `¶ [1]`
-      - `SectionalInline['Reference']`
+      - `IncludeLine['Reference']`
     - `¶ 'name' path/to/file`
-      - `SectionalInline['Name', 'File']`
+      - `IncludeLine['Name', 'File']`
     - `¶ 'name' [1]`
-      - `SectionalInline['Name', 'Reference']`
+      - `IncludeLine['Name', 'Reference']`
 
-- at Document top level, all types of Sectional Inlines are allowed
-  (see: SectionalInlineBlock)
+- at Document top level, all types of Includes are allowed (see:
+  IncludeLineBlock)
 
-- at Document top level, when `§ path/to/document` is encountered in
-  SectionalInlineBlock, Finn instantiates from it a `Document`, and all `Chunk`s
-  inside that `Document` will be marked children of the parent `Document`
-  (see: TXN::Parser's handling of include directives with `[0, 0]`
-  entry number)
+- at Document top level, when `§ path/to/document` is encountered
+  in IncludeLineBlock, Finn instantiates from it a `Document`, and all
+  `Chunk`s inside that `Document` will be marked children of the parent
+  `Document` (see: TXN::Parser's handling of include directives with
+  `[0, 0]` entry number)
+
+```finn
+§ process/in/finn/mode
+¶ process/in/text/mode
+```
+
+- in **Finn mode**, parser processes text:
+  - as Finn source document:
+    - `SectionInline['File']`
+    - `SectionInline['Reference']`
+    - and returns `Document`
+  - as Finn SectionalBlock:
+    - `SectionInline['Name']`
+    - `SectionInline['Name', 'File']`
+    - `SectionInline['Name', 'Reference']`
+    - and returns `Array[SectionalBlockContent]`
+- in **Text mode**, parser does not process text:
+  - and returns `Str`
 
 
 Other

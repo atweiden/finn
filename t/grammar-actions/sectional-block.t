@@ -517,14 +517,11 @@ subtest
     EOF
     my SectionalBlockContent['Text'] $content-a .= new(:text($text-a));
 
-    my Mode:D $mode-b = FINN;
     my Str:D $name-b = 'misc';
-    my SectionalInline['Name'] $sectional-inline-b .= new(
-        :mode($mode-b),
-        :name($name-b)
-    );
-    my SectionalBlockContent['SectionalInline'] $content-b .= new(
-        :sectional-inline($sectional-inline-b)
+    my IncludeLine::Request['Name'] $request-b .= new(:name($name-b));
+    my IncludeLine['Finn'] $include-line-b .= new(:request($request-b));
+    my SectionalBlockContent['IncludeLine'] $content-b .= new(
+        :include-line($include-line-b)
     );
 
     # --- end content }}}

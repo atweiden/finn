@@ -50,7 +50,7 @@ underlined.
 In general, I<block elements> may contain certain I<inline elements>.
 
 =over
-=item sectional-inline-block
+=item include-line-block
 =item sectional-block
 =item code-block
 =item reference-line-block
@@ -73,17 +73,17 @@ In general, I<block elements> may contain certain I<inline elements>.
 
 # --- chunk {{{
 
-proto token chunk                  {*}
-token chunk:sectional-inline-block { <sectional-inline-block> }
-token chunk:sectional-block        { <sectional-block> }
-token chunk:code-block             { <code-block> }
-token chunk:reference-line-block   { <reference-line-block> }
-token chunk:header-block           { <header-block> }
-token chunk:list-block             { <list-block> }
-token chunk:paragraph              { <paragraph> }
-token chunk:horizontal-rule        { <horizontal-rule> }
-token chunk:comment-block          { <comment-block> }
-token chunk:blank-line             { <blank-line> }
+proto token chunk                {*}
+token chunk:include-line-block   { <include-line-block> }
+token chunk:sectional-block      { <sectional-block> }
+token chunk:code-block           { <code-block> }
+token chunk:reference-line-block { <reference-line-block> }
+token chunk:header-block         { <header-block> }
+token chunk:list-block           { <list-block> }
+token chunk:paragraph            { <paragraph> }
+token chunk:horizontal-rule      { <horizontal-rule> }
+token chunk:comment-block        { <comment-block> }
+token chunk:blank-line           { <blank-line> }
 
 # --- end chunk }}}
 
@@ -163,7 +163,7 @@ token header-text
         | <code-block>
         | <reference-line>
         | <sectional-block>
-        | <sectional-inline-block>
+        | <include-line-block>
         | <horizontal-rule>
         | <list-item>
     >
@@ -657,7 +657,7 @@ token sectional-block-content-text-line-backticks
 {
     ^^
     <!before
-        | <sectional-inline>
+        | <include-line>
         | <sectional-block-delimiter-closing-backticks>
     >
     \N*
@@ -674,7 +674,7 @@ token sectional-block-content-text-line-dashes
 {
     ^^
     <!before
-        | <sectional-inline>
+        | <include-line>
         | <sectional-block-delimiter-closing-dashes>
     >
     \N*
@@ -690,9 +690,9 @@ token sectional-block-contents-backticks
 }
 
 proto token sectional-block-content-backticks {*}
-token sectional-block-content-backticks:sectional-inline
+token sectional-block-content-backticks:include-line
 {
-    <sectional-inline>
+    <include-line>
 }
 token sectional-block-content-backticks:text
 {
@@ -706,9 +706,9 @@ token sectional-block-contents-dashes
 }
 
 proto token sectional-block-content-dashes {*}
-token sectional-block-content-dashes:sectional-inline
+token sectional-block-content-dashes:include-line
 {
-    <sectional-inline>
+    <include-line>
 }
 token sectional-block-content-dashes:text
 {
@@ -763,82 +763,91 @@ token sectional-block:dashes
 }
 
 # end sectional-block }}}
-# sectional-inline-block {{{
+# include-line-block {{{
 
-# --- sectional-inline {{{
+# --- include-line {{{
 
-token section-sign-finn-mode { '§' }
-token section-sign-text-mode { '¶' }
+# --- --- include-line-symbol {{{
 
-proto token sectional-inline-text {*}
+token include-line-symbol-finn { '§' }
+token include-line-symbol-text { '¶' }
 
-token sectional-inline-text:name-and-file
+# --- --- end include-line-symbol }}}
+# --- --- include-line-request {{{
+
+proto token include-line-request {*}
+
+token include-line-request:name-and-file
 {
-    <sectional-inline-name=string> \h <sectional-inline-file=file>
-}
-
-token sectional-inline-text:name-and-reference
-{
-    <sectional-inline-name=string>
+    <include-line-request-name=string>
     \h
-    <sectional-inline-reference=reference-inline>
+    <include-line-request-file=file>
 }
 
-token sectional-inline-text:file-only
+token include-line-request:name-and-reference
 {
-    <sectional-inline-file=file>
+    <include-line-request-name=string>
+    \h
+    <include-line-request-reference=reference-inline>
 }
 
-token sectional-inline-text:reference-only
+token include-line-request:file-only
 {
-    <sectional-inline-reference=reference-inline>
+    <include-line-request-file=file>
 }
 
-token sectional-inline-text:name-only
+token include-line-request:reference-only
 {
-    <sectional-inline-name=string>
+    <include-line-request-reference=reference-inline>
 }
 
-proto token sectional-inline {*}
-
-token sectional-inline:finn-mode
+token include-line-request:name-only
 {
-    ^^ \h* <section-sign-finn-mode> \h <sectional-inline-text> $$
+    <include-line-request-name=string>
 }
 
-token sectional-inline:text-mode
+# --- --- end include-line-request }}}
+
+proto token include-line {*}
+
+token include-line:finn
 {
-    ^^ \h* <section-sign-text-mode> \h <sectional-inline-text> $$
+    ^^ \h* <include-line-symbol-finn> \h <include-line-request> $$
 }
 
-# --- end sectional-inline }}}
+token include-line:text
+{
+    ^^ \h* <include-line-symbol-text> \h <include-line-request> $$
+}
 
-# C<<sectional-inline-block>> must be separated from other text blocks
+# --- end include-line }}}
+
+# C<<include-line-block>> must be separated from other text blocks
 # with a C<<blank-line>>, C<<comment-block>> or C<<horizontal-rule>>,
 # or it must appear at the very top of the document
-proto token sectional-inline-block {*}
+proto token include-line-block {*}
 
-token sectional-inline-block:top
+token include-line-block:top
 {
-    ^ <sectional-inline> [ <.gap> <sectional-inline> ]*
+    ^ <include-line> [ <.gap> <include-line> ]*
 }
 
-token sectional-inline-block:after-blank-line
+token include-line-block:after-blank-line
 {
-    <blank-line> [ <.gap> <sectional-inline> ]+
+    <blank-line> [ <.gap> <include-line> ]+
 }
 
-token sectional-inline-block:after-comment-block
+token include-line-block:after-comment-block
 {
-    <comment-block> [ <.gap> <sectional-inline> ]+
+    <comment-block> [ <.gap> <include-line> ]+
 }
 
-token sectional-inline-block:after-horizontal-rule
+token include-line-block:after-horizontal-rule
 {
-    <horizontal-rule> [ <.gap> <sectional-inline> ]+
+    <horizontal-rule> [ <.gap> <include-line> ]+
 }
 
-# end sectional-inline-block }}}
+# end include-line-block }}}
 # paragraph {{{
 
 # --- word {{{

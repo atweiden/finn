@@ -27,18 +27,18 @@ Works in tandem with C<Finn::Parser::Grammar> and
 C<Finn::Parser::ParseTree> to build a parse tree from Finn source
 documents.
 
-Follows C<sectional-inline>s and C<sectional-link>s which link to external
+Follows C<include-line>s and C<sectional-link>s which link to external
 files that are assumed to be Finn source documents. Parses external source
 documents in turn. Initial concept code doesn't do any optimization,
 and may parse the same external source document many times.
 
-Since C<sectional-inline>s may contain C<reference-inline>s
-linking to external documents in place of file paths, and since
-the C<reference-line-block>(s) containing external document file path
+Since C<include-line>s may contain C<reference-inline>s linking
+to external documents in place of file paths, and since the
+C<reference-line-block>(s) containing external document file path
 mappings for these C<reference-inline>s encountered may appear anywhere
-in a Finn source document, C<sectional-inline>s can't be blindly followed
+in a Finn source document, C<include-line>s can't be blindly followed
 when first seen. The entire Finn source document has to finish parsing
-before C<sectional-inline>s can be followed.
+before C<include-line>s can be followed.
 =end pod
 
 # end p6doc }}}
@@ -65,16 +65,15 @@ has UInt:D $.section = 0;
 
 # --- chunk {{{
 
-method chunk:sectional-inline-block ($/)
+method chunk:include-line-block ($/)
 {
     my Chunk::Meta::Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
-    my SectionalInlineBlock:D $sectional-inline-block =
-        $<sectional-inline-block>.made;
-    make Chunk['SectionalInlineBlock'].new(
+    my IncludeLineBlock:D $include-line-block = $<include-line-block>.made;
+    make Chunk['IncludeLineBlock'].new(
         :$bounds,
         :$section,
-        :$sectional-inline-block
+        :$include-line-block
     );
 }
 
@@ -183,206 +182,96 @@ multi method TOP($/)
 =head Block Elements
 =end pod
 
-# sectional-inline-block {{{
+# include-line-block {{{
 
-# --- sectional-inline {{{
+# --- include-line {{{
 
-method sectional-inline-text:name-and-file ($/)
+# --- --- include-line-request {{{
+
+method include-line-request:name-and-file ($/)
 {
-    my Str:D $name = $<sectional-inline-name>.made;
-    my File:D $file = $<sectional-inline-file>.made;
-    make %(:$name, :$file);
+    my Str:D $name = $<include-line-request-name>.made;
+    my File:D $file = $<include-line-request-file>.made;
+    make IncludeLine::Request['Name', 'File'].new(:$name, :$file);
 }
 
-method sectional-inline-text:name-and-reference ($/)
+method include-line-request:name-and-reference ($/)
 {
-    my Str:D $name = $<sectional-inline-name>.made;
-    my ReferenceInline:D $reference-inline = $<sectional-inline-reference>.made;
-    make %(:$name, :$reference-inline);
-}
-
-method sectional-inline-text:file-only ($/)
-{
-    my File:D $file = $<sectional-inline-file>.made;
-    make %(:$file);
-}
-
-method sectional-inline-text:reference-only ($/)
-{
-    my ReferenceInline:D $reference-inline = $<sectional-inline-reference>.made;
-    make %(:$reference-inline);
-}
-
-method sectional-inline-text:name-only ($/)
-{
-    my Str:D $name = $<sectional-inline-name>.made;
-    make %(:$name);
-}
-
-# --- --- finn-mode {{{
-
-multi method sectional-inline:finn-mode (
-    $/ where {
-        $<sectional-inline-text>.made<name>.so
-            && $<sectional-inline-text>.made<file>.so
-    }
-)
-{
-    my Mode:D $mode = FINN;
-    my Str:D $name = $<sectional-inline-text>.made<name>;
-    my File:D $file = $<sectional-inline-text>.made<file>;
-    make SectionalInline['Name', 'File'].new(:$mode, :$name, :$file);
-}
-
-multi method sectional-inline:finn-mode (
-    $/ where {
-        $<sectional-inline-text>.made<name>.so
-            && $<sectional-inline-text>.made<reference-inline>.so
-    }
-)
-{
-    my Mode:D $mode = FINN;
-    my Str:D $name = $<sectional-inline-text>.made<name>;
+    my Str:D $name = $<include-line-request-name>.made;
     my ReferenceInline:D $reference-inline =
-        $<sectional-inline-text>.made<reference-inline>;
-    make SectionalInline['Name', 'Reference'].new(
-        :$mode,
+        $<include-line-request-reference>.made;
+    make IncludeLine::Request['Name', 'Reference'].new(
         :$name,
         :$reference-inline
     );
 }
 
-multi method sectional-inline:finn-mode (
-    $/ where $<sectional-inline-text>.made<file>.so
-)
+method include-line-request:file-only ($/)
 {
-    my Mode:D $mode = FINN;
-    my File:D $file = $<sectional-inline-text>.made<file>;
-    make SectionalInline['File'].new(:$mode, :$file);
+    my File:D $file = $<include-line-request-file>.made;
+    make IncludeLine::Request['File'].new(:$file);
 }
 
-multi method sectional-inline:finn-mode (
-    $/ where $<sectional-inline-text>.made<reference-inline>.so
-)
+method include-line-request:reference-only ($/)
 {
-    my Mode:D $mode = FINN;
     my ReferenceInline:D $reference-inline =
-        $<sectional-inline-text>.made<reference-inline>;
-    make SectionalInline['Reference'].new(:$mode, :$reference-inline);
+        $<include-line-request-reference>.made;
+    make IncludeLine::Request['Reference'].new(:$reference-inline);
 }
 
-multi method sectional-inline:finn-mode (
-    $/ where $<sectional-inline-text>.made<name>.so
-)
+method include-line-request:name-only ($/)
 {
-    my Mode:D $mode = FINN;
-    my Str:D $name = $<sectional-inline-text>.made<name>;
-    make SectionalInline['Name'].new(:$mode, :$name);
+    my Str:D $name = $<include-line-request-name>.made;
+    make IncludeLine::Request['Name'].new(:$name);
 }
 
-# --- --- end finn-mode }}}
-# --- --- text-mode {{{
+# --- --- end include-line-request }}}
 
-multi method sectional-inline:text-mode (
-    $/ where {
-        $<sectional-inline-text>.made<name>.so
-            && $<sectional-inline-text>.made<file>.so
-    }
-)
+method include-line:finn ($/)
 {
-    my Mode:D $mode = TEXT;
-    my Str:D $name = $<sectional-inline-text>.made<name>;
-    my File:D $file = $<sectional-inline-text>.made<file>;
-    make SectionalInline['Name', 'File'].new(:$mode, :$name, :$file);
+    my IncludeLine::Request:D $request = $<include-line-request>.made;
+    make IncludeLine['Finn'].new(:$request);
 }
 
-multi method sectional-inline:text-mode (
-    $/ where {
-        $<sectional-inline-text>.made<name>.so
-            && $<sectional-inline-text>.made<reference-inline>.so
-    }
-)
+method include-line:text ($/)
 {
-    my Mode:D $mode = TEXT;
-    my Str:D $name = $<sectional-inline-text>.made<name>;
-    my ReferenceInline:D $reference-inline =
-        $<sectional-inline-text>.made<reference-inline>;
-    make SectionalInline['Name', 'Reference'].new(
-        :$mode,
-        :$name,
-        :$reference-inline
-    );
+    my IncludeLine::Request:D $request = $<include-line-request>.made;
+    make IncludeLine['Text'].new(:$request);
 }
 
-multi method sectional-inline:text-mode (
-    $/ where $<sectional-inline-text>.made<file>.so
-)
+# --- end include-line }}}
+
+method include-line-block:top ($/)
 {
-    my Mode:D $mode = TEXT;
-    my File:D $file = $<sectional-inline-text>.made<file>;
-    make SectionalInline['File'].new(:$mode, :$file);
+    my IncludeLine:D @include-line = @<include-line>».made;
+    make IncludeLineBlock['Top'].new(:@include-line);
 }
 
-multi method sectional-inline:text-mode (
-    $/ where $<sectional-inline-text>.made<reference-inline>.so
-)
-{
-    my Mode:D $mode = TEXT;
-    my ReferenceInline:D $reference-inline =
-        $<sectional-inline-text>.made<reference-inline>;
-    make SectionalInline['Reference'].new(:$mode, :$reference-inline);
-}
-
-multi method sectional-inline:text-mode (
-    $/ where $<sectional-inline-text>.made<name>.so
-)
-{
-    my Mode:D $mode = TEXT;
-    my Str:D $name = $<sectional-inline-text>.made<name>;
-    make SectionalInline['Name'].new(:$mode, :$name);
-}
-
-# --- --- end text-mode }}}
-
-# --- end sectional-inline }}}
-
-method sectional-inline-block:top ($/)
-{
-    my SectionalInline:D @sectional-inline = @<sectional-inline>».made;
-    make SectionalInlineBlock['Top'].new(:@sectional-inline);
-}
-
-multi method sectional-inline-block:after-blank-line ($/)
+multi method include-line-block:after-blank-line ($/)
 {
     my BlankLine:D $blank-line = $<blank-line>.made;
-    my SectionalInline:D @sectional-inline = @<sectional-inline>».made;
-    make SectionalInlineBlock['BlankLine'].new(
-        :$blank-line,
-        :@sectional-inline
-    );
+    my IncludeLine:D @include-line = @<include-line>».made;
+    make IncludeLineBlock['BlankLine'].new(:$blank-line, :@include-line);
 }
 
-multi method sectional-inline-block:after-comment-block ($/)
+multi method include-line-block:after-comment-block ($/)
 {
     my CommentBlock:D $comment-block = $<comment-block>.made;
-    my SectionalInline:D @sectional-inline = @<sectional-inline>».made;
-    make SectionalInlineBlock['CommentBlock'].new(
-        :$comment-block,
-        :@sectional-inline
-    );
+    my IncludeLine:D @include-line = @<include-line>».made;
+    make IncludeLineBlock['CommentBlock'].new(:$comment-block, :@include-line);
 }
 
-multi method sectional-inline-block:after-horizontal-rule ($/)
+multi method include-line-block:after-horizontal-rule ($/)
 {
     my HorizontalRule:D $horizontal-rule = $<horizontal-rule>.made;
-    my SectionalInline:D @sectional-inline = @<sectional-inline>».made;
-    make SectionalInlineBlock['HorizontalRule'].new(
+    my IncludeLine:D @include-line = @<include-line>».made;
+    make IncludeLineBlock['HorizontalRule'].new(
         :$horizontal-rule,
-        :@sectional-inline
+        :@include-line
     );
 }
 
-# end sectional-inline-block }}}
+# end include-line-block }}}
 # sectional-block {{{
 
 # --- sectional-block-name {{{
@@ -518,10 +407,10 @@ method sectional-block-contents-backticks($/)
     make @<sectional-block-content-backticks>».made;
 }
 
-method sectional-block-content-backticks:sectional-inline ($/)
+method sectional-block-content-backticks:include-line ($/)
 {
-    my SectionalInline:D $sectional-inline = $<sectional-inline>.made;
-    make SectionalBlockContent['SectionalInline'].new(:$sectional-inline);
+    my IncludeLine:D $include-line = $<include-line>.made;
+    make SectionalBlockContent['IncludeLine'].new(:$include-line);
 }
 method sectional-block-content-backticks:text ($/)
 {
@@ -534,10 +423,10 @@ method sectional-block-contents-dashes($/)
     make @<sectional-block-content-dashes>».made;
 }
 
-method sectional-block-content-dashes:sectional-inline ($/)
+method sectional-block-content-dashes:include-line ($/)
 {
-    my SectionalInline:D $sectional-inline = $<sectional-inline>.made;
-    make SectionalBlockContent['SectionalInline'].new(:$sectional-inline);
+    my IncludeLine:D $include-line = $<include-line>.made;
+    make SectionalBlockContent['IncludeLine'].new(:$include-line);
 }
 method sectional-block-content-dashes:text ($/)
 {

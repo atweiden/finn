@@ -141,6 +141,111 @@ role HorizontalRule['Hard'] {*}
 role HorizontalRule['Soft'] {*}
 
 # end role HorizontalRule }}}
+# role IncludeLine {{{
+
+role IncludeLine::Request {...}
+
+role IncludeLine['Finn']
+{
+    has IncludeLine::Request:D $.request is required;
+}
+
+role IncludeLine['Text']
+{
+    has IncludeLine::Request:D $.request is required;
+}
+
+# --- role IncludeLine::Request {{{
+
+role IncludeLine::Request::Name      {...}
+role IncludeLine::Request::File      {...}
+role IncludeLine::Request::Reference {...}
+role ReferenceInline                 {...}
+
+# C<role IncludeLine::Request['Name']> is a Haml-style include directive
+# telling us to process C<self.name> as Sectional Block and embed in-place
+role IncludeLine::Request['Name'] does IncludeLine::Request::Name {*}
+
+# C<role IncludeLine::Request['File']> is a Haml-style include directive
+# telling us to process the entirety of the requested Finn source file
+# and embed in-place
+role IncludeLine::Request['File'] does IncludeLine::Request::File {*}
+
+# C<role IncludeLine::Request['Reference']> is a Haml-style include
+# directive telling us to process the entirety of the requested Finn
+# source file given by Reference Inline and embed in-place
+role IncludeLine::Request['Reference'] does IncludeLine::Request::Reference {*}
+
+# C<role IncludeLine::Request['Name', 'File']> is a Haml-style include
+# directive with added specificity from C<sectional-block-name> qualifier,
+# which gets stored in C<self.name>
+#
+# tells us to process C<self.name> from C<self.file> as Sectional Block
+# and embed in-place
+role IncludeLine::Request['Name', 'File']
+    does IncludeLine::Request::Name
+    does IncludeLine::Request::File
+{*}
+
+# C<role IncludeLine::Request['Name', 'Reference']> is the same as C<role
+# IncludeLine::Request['Name', 'File']> except the C<self.name> Sectional
+# Block Name is searched for in the File resolved from Reference Inline
+role IncludeLine::Request['Name', 'Reference']
+    does IncludeLine::Request::Name
+    does IncludeLine::Request::Reference
+{*}
+
+role IncludeLine::Request::Name
+{
+    # the requested Sectional Block Name
+    has Str:D $.name is required;
+}
+
+role IncludeLine::Request::File
+{
+    # the requested Finn source file
+    has File:D $.file is required;
+}
+
+role IncludeLine::Request::Reference
+{
+    # the requested Reference Inline
+    has ReferenceInline:D $.reference-inline is required;
+}
+
+# --- end role IncludeLine::Request }}}
+
+# end role IncludeLine }}}
+# role IncludeLineBlock {{{
+
+# IncludeLine comes after BlankLine
+role IncludeLineBlock['BlankLine']
+{
+    has BlankLine:D $.blank-line is required;
+    has IncludeLine:D @.include-line is required;
+}
+
+# IncludeLine comes after CommentBlock
+role IncludeLineBlock['CommentBlock']
+{
+    has CommentBlock:D $.comment-block is required;
+    has IncludeLine:D @.include-line is required;
+}
+
+# IncludeLine comes after HorizontalRule
+role IncludeLineBlock['HorizontalRule']
+{
+    has HorizontalRule:D $.horizontal-rule is required;
+    has IncludeLine:D @.include-line is required;
+}
+
+# IncludeLine comes at top of Finn document
+role IncludeLineBlock['Top']
+{
+    has IncludeLine:D @.include-line is required;
+}
+
+# end role IncludeLineBlock }}}
 # role ListBlock {{{
 
 role ListItem {...}
@@ -314,8 +419,6 @@ role ReferenceLine
 # end role ReferenceLineBlock }}}
 # role SectionalBlock {{{
 
-role SectionalInline {...}
-
 # --- role SectionalBlockDelimiter {{{
 
 role SectionalBlockDelimiter['Backticks'] {*}
@@ -355,10 +458,10 @@ role SectionalBlockName
 # --- end role SectionalBlockName }}}
 # --- role SectionalBlockContent {{{
 
-# Sectional Block Content can feature Sectional Inlines
-role SectionalBlockContent['SectionalInline']
+# Sectional Block Content can feature Includes
+role SectionalBlockContent['IncludeLine']
 {
-    has SectionalInline:D $.sectional-inline is required;
+    has IncludeLine:D $.include-line is required;
 }
 
 # otherwise Sectional Block Content is considered text (source code)
@@ -379,116 +482,6 @@ role SectionalBlock
 }
 
 # end role SectionalBlock }}}
-# role SectionalInline {{{
-
-# process SectionalInline request in finn-mode or text-mode
-enum Mode <FINN TEXT>;
-
-role SectionalInline::Mode      {...}
-role SectionalInline::Name      {...}
-role SectionalInline::File      {...}
-role SectionalInline::Reference {...}
-
-# C<role SectionalInline['Name']> is a Haml-style include directive
-# telling us to process C<self.name> as Sectional Block and embed
-# in-place
-role SectionalInline['Name']
-    does SectionalInline::Mode
-    does SectionalInline::Name
-{*}
-
-# C<role SectionalInline['File']> is a Haml-style include directive
-# telling us to process the entirety of the linked Finn source file
-# and embed in-place
-role SectionalInline['File']
-    does SectionalInline::Mode
-    does SectionalInline::File
-{*}
-
-# C<role SectionalInline['Reference']> is a Haml-style include
-# directive telling us to process the entirety of the linked Finn
-# source file given by Reference Inline and embed in-place
-role SectionalInline['Reference']
-    does SectionalInline::Mode
-    does SectionalInline::Reference
-{*}
-
-# C<role SectionalInline['Name', 'File']> is a Haml-style include
-# directive with added specificity from C<sectional-block-name>
-# qualifier, which gets stored in C<self.name>
-#
-# tells us to process C<self.name> from C<self.file> as Sectional Block
-# and embed in-place
-role SectionalInline['Name', 'File']
-    does SectionalInline::Mode
-    does SectionalInline::Name
-    does SectionalInline::File
-{*}
-
-# C<role SectionalInline['Name', 'Reference']> is the same as
-# C<role SectionalInline['Name', 'File']> except the C<self.name>
-# Sectional Block Name is searched for in the File resolved from
-# Reference Inline
-role SectionalInline['Name', 'Reference']
-    does SectionalInline::Mode
-    does SectionalInline::Name
-    does SectionalInline::Reference
-{*}
-
-role SectionalInline::Mode
-{
-    has Mode:D $.mode is required;
-}
-
-role SectionalInline::Name
-{
-    # the linked Sectional Block Name
-    has Str:D $.name is required;
-}
-
-role SectionalInline::File
-{
-    # the linked Finn source file
-    has File:D $.file is required;
-}
-
-role SectionalInline::Reference
-{
-    # the linked Reference Inline
-    has ReferenceInline:D $.reference-inline is required;
-}
-
-# end role SectionalInline }}}
-# role SectionalInlineBlock {{{
-
-# SectionalInline comes after BlankLine
-role SectionalInlineBlock['BlankLine']
-{
-    has BlankLine:D $.blank-line is required;
-    has SectionalInline:D @.sectional-inline is required;
-}
-
-# SectionalInline comes after CommentBlock
-role SectionalInlineBlock['CommentBlock']
-{
-    has CommentBlock:D $.comment-block is required;
-    has SectionalInline:D @.sectional-inline is required;
-}
-
-# SectionalInline comes after HorizontalRule
-role SectionalInlineBlock['HorizontalRule']
-{
-    has HorizontalRule:D $.horizontal-rule is required;
-    has SectionalInline:D @.sectional-inline is required;
-}
-
-# SectionalInline comes at top of Finn document
-role SectionalInlineBlock['Top']
-{
-    has SectionalInline:D @.sectional-inline is required;
-}
-
-# end role SectionalInlineBlock }}}
 
 =begin pod
 =head Chunks
@@ -498,14 +491,14 @@ role SectionalInlineBlock['Top']
 
 role Chunk::Meta {...}
 
-# --- role Chunk['SectionalInlineBlock'] {{{
+# --- role Chunk['IncludeLineBlock'] {{{
 
-role Chunk['SectionalInlineBlock'] does Chunk::Meta
+role Chunk['IncludeLineBlock'] does Chunk::Meta
 {
-    has SectionalInlineBlock:D $.sectional-inline-block is required;
+    has IncludeLineBlock:D $.include-line-block is required;
 }
 
-# --- end role Chunk['SectionalInlineBlock'] }}}
+# --- end role Chunk['IncludeLineBlock'] }}}
 # --- role Chunk['SectionalBlock'] {{{
 
 role Chunk['SectionalBlock'] does Chunk::Meta
