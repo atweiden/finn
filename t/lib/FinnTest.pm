@@ -294,7 +294,9 @@ multi sub infix:<eqv>(
     HorizontalRule['Hard'] $b
 ) is export returns Bool:D
 {
-    $a ~~ HorizontalRule['Hard'] && $b ~~ HorizontalRule['Hard'];
+    my Bool:D $is-same =
+        $a ~~ HorizontalRule['Hard']
+            && $b ~~ HorizontalRule['Hard'];
 }
 
 multi sub infix:<eqv>(
@@ -302,7 +304,9 @@ multi sub infix:<eqv>(
     HorizontalRule['Soft'] $b
 ) is export returns Bool:D
 {
-    $a ~~ HorizontalRule['Soft'] && $b ~~ HorizontalRule['Soft'];
+    my Bool:D $is-same =
+        $a ~~ HorizontalRule['Soft']
+            && $b ~~ HorizontalRule['Soft'];
 }
 
 multi sub infix:<eqv>(
@@ -317,7 +321,7 @@ multi sub infix:<eqv>(
 # include-line {{{
 
 multi sub infix:<eqv>(
-    IncludeLine:D @a,
+    IncludeLine:D @a where .elems > 0,
     IncludeLine:D @b where { .elems == @a.elems }
 ) is export returns Bool:D
 {
@@ -326,6 +330,14 @@ multi sub infix:<eqv>(
         @a[$i] eqv @b[$i]
     }
     my Bool:D $is-same = [[&is-true]] @is-same;
+}
+
+multi sub infix:<eqv>(
+    IncludeLine:D @a,
+    IncludeLine:D @b where { .elems == @a.elems }
+) is export returns Bool:D
+{
+    True;
 }
 
 multi sub infix:<eqv>(
@@ -341,7 +353,9 @@ multi sub infix:<eqv>(
     IncludeLine['Finn'] $b
 ) is export returns Bool:D
 {
-    my Bool:D $is-same = $a.request eqv $b.request;
+    my Bool:D $is-same =
+        $a.request eqv $b.request
+            && $a.leading-ws eqv $b.leading-ws;
 }
 
 multi sub infix:<eqv>(
@@ -349,7 +363,9 @@ multi sub infix:<eqv>(
     IncludeLine['Text'] $b
 ) is export returns Bool:D
 {
-    my Bool:D $is-same = $a.request eqv $b.request;
+    my Bool:D $is-same =
+        $a.request eqv $b.request
+            && $a.leading-ws eqv $b.leading-ws;
 }
 
 multi sub infix:<eqv>(
@@ -466,6 +482,62 @@ multi sub infix:<eqv>(
 }
 
 # end include-line-block }}}
+# leading-ws {{{
+
+multi sub infix:<eqv>(
+    LeadingWS:D @a where .elems > 0,
+    LeadingWS:D @b where { .elems == @a.elems }
+) is export returns Bool:D
+{
+    my Bool:D @is-same = do loop (my UInt:D $i = 0; $i < @a.elems; $i++)
+    {
+        @a[$i] eqv @b[$i]
+    }
+    my Bool:D $is-same = [[&is-true]] @is-same;
+}
+
+multi sub infix:<eqv>(
+    LeadingWS:D @a where .elems == 0,
+    LeadingWS:D @b where { .elems == @a.elems }
+) is export returns Bool:D
+{
+    True;
+}
+
+multi sub infix:<eqv>(
+    LeadingWS @,
+    LeadingWS @
+) is export returns Bool:D
+{
+    False;
+}
+
+multi sub infix:<eqv>(
+    LeadingWS['Space'] $a,
+    LeadingWS['Space'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ LeadingWS['Space']
+            && $b ~~ LeadingWS['Space'];
+}
+
+multi sub infix:<eqv>(
+    LeadingWS['Tab'] $a,
+    LeadingWS['Tab'] $b
+) is export returns Bool:D
+{
+    my Bool:D $is-same =
+        $a ~~ LeadingWS['Tab']
+            && $b ~~ LeadingWS['Tab'];
+}
+
+multi sub infix:<eqv>(LeadingWS $, LeadingWS $) is export returns Bool:D
+{
+    False;
+}
+
+# end leading-ws }}}
 # list-block {{{
 
 multi sub infix:<eqv>(
@@ -485,7 +557,7 @@ multi sub infix:<eqv>(ListBlock $, ListBlock $) is export returns Bool:D
 # list-item {{{
 
 multi sub infix:<eqv>(
-    ListItem:D @a,
+    ListItem:D @a where .elems > 0,
     ListItem:D @b where { .elems == @a.elems }
 ) is export returns Bool:D
 {
@@ -494,6 +566,14 @@ multi sub infix:<eqv>(
         @a[$i] eqv @b[$i]
     }
     my Bool:D $is-same = [[&is-true]] @is-same;
+}
+
+multi sub infix:<eqv>(
+    ListItem:D @a,
+    ListItem:D @b where { .elems == @a.elems }
+) is export returns Bool:D
+{
+    True;
 }
 
 multi sub infix:<eqv>(

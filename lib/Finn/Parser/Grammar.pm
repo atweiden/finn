@@ -119,6 +119,13 @@ token blank-lines
 }
 
 # end blank-line }}}
+# leading-ws {{{
+
+proto token leading-ws {*}
+token leading-ws:space { <+[\h] -[\t]> }
+token leading-ws:tab   { \t }
+
+# end leading-ws }}}
 # comment {{{
 
 token comment-delimiter-opening
@@ -485,19 +492,19 @@ token reference-line-blocks
 # end reference-line-block }}}
 # code-block {{{
 
-# --- code-block-delimiter-opening {{{
+# --- delimiters {{{
 
-token code-block-delimiter-opening-backticks
+token backticks
 {
     '```'
 }
 
-token code-block-delimiter-opening-dashes
+token dashes
 {
     '-' '-'+
 }
 
-# --- end code-block-delimiter-opening }}}
+# --- end delimiters }}}
 # --- code-block-language {{{
 
 token code-block-language
@@ -521,14 +528,15 @@ token code-block-content-dashes
 # --- end code-block-content }}}
 # --- code-block-delimiter-closing {{{
 
+# code-block-delimiter-closing is meant primarily for code-block-content
 token code-block-delimiter-closing-backticks
 {
-    ^^ \h* <code-block-delimiter-opening-backticks> $$
+    ^^ <leading-ws>* <.backticks> $$
 }
 
 token code-block-delimiter-closing-dashes
 {
-    ^^ \h* <code-block-delimiter-opening-dashes> $$
+    ^^ <leading-ws>* <.dashes> $$
 }
 
 # --- end code-block-delimiter-closing }}}
@@ -537,48 +545,25 @@ proto token code-block {*}
 
 token code-block:backticks
 {
-    ^^
-    \h*
-    <code-block-delimiter-opening-backticks>
-    <code-block-language>?
-    $$
-    \n
+    ^^ <opening-ws=leading-ws>* <.backticks> <code-block-language>?  $$ \n
 
     <code-block-content-backticks>
 
-    <code-block-delimiter-closing-backticks>
+    ^^ <closing-ws=leading-ws>* <.backticks> $$
 }
 
 token code-block:dashes
 {
-    ^^
-    \h*
-    <code-block-delimiter-opening-dashes>
-    [ <code-block-language> '-'* ]?
-    $$
-    \n
+    ^^ <opening-ws=leading-ws>* <.dashes> [ <code-block-language> '-'* ]?  $$ \n
 
     <code-block-content-dashes>
 
-    <code-block-delimiter-closing-dashes>
+    ^^ <closing-ws=leading-ws>* <.dashes> $$
 }
 
 # end code-block }}}
 # sectional-block {{{
 
-# --- sectional-block-delimiter-opening {{{
-
-token sectional-block-delimiter-opening-backticks
-{
-    <.code-block-delimiter-opening-backticks>
-}
-
-token sectional-block-delimiter-opening-dashes
-{
-    <.code-block-delimiter-opening-dashes>
-}
-
-# --- end sectional-block-delimiter-opening }}}
 # --- sectional-block-name {{{
 
 token sectional-block-name-identifier-char
@@ -718,6 +703,8 @@ token sectional-block-content-dashes:text
 # --- end sectional-block-content }}}
 # --- sectional-block-delimiter-closing {{{
 
+# sectional-block-delimiter-closing meant primarily for
+# sectional-block-content-text-line
 token sectional-block-delimiter-closing-backticks
 {
     <.code-block-delimiter-closing-backticks>
@@ -734,32 +721,20 @@ proto token sectional-block {*}
 
 token sectional-block:backticks
 {
-    ^^
-    \h*
-    <sectional-block-delimiter-opening-backticks>
-    \h
-    <sectional-block-name>
-    $$
-    \n
+    ^^ <opening-ws=leading-ws>* <.backticks> \h <sectional-block-name> $$ \n
 
     [ <sectional-block-contents-backticks> \n ]?
 
-    <sectional-block-delimiter-closing-backticks>
+    ^^ <closing-ws=leading-ws>* <.backticks> $$
 }
 
 token sectional-block:dashes
 {
-    ^^
-    \h*
-    <sectional-block-delimiter-opening-dashes>
-    \h
-    <sectional-block-name>
-    $$
-    \n
+    ^^ <opening-ws=leading-ws>* <.dashes> \h <sectional-block-name> $$ \n
 
     [ <sectional-block-contents-dashes> \n ]?
 
-    <sectional-block-delimiter-closing-dashes>
+    ^^ <closing-ws=leading-ws>* <.dashes> $$
 }
 
 # end sectional-block }}}
@@ -812,12 +787,12 @@ proto token include-line {*}
 
 token include-line:finn
 {
-    ^^ \h* <include-line-symbol-finn> \h <include-line-request> $$
+    ^^ <leading-ws>* <include-line-symbol-finn> \h <include-line-request> $$
 }
 
 token include-line:text
 {
-    ^^ \h* <include-line-symbol-text> \h <include-line-request> $$
+    ^^ <leading-ws>* <include-line-symbol-text> \h <include-line-request> $$
 }
 
 # --- end include-line }}}

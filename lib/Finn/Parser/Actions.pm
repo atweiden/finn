@@ -227,13 +227,27 @@ method include-line-request:name-only ($/)
 
 # --- --- end include-line-request }}}
 
-method include-line:finn ($/)
+multi method include-line:finn ($/ where @<leading-ws>.so)
+{
+    my LeadingWS:D @leading-ws = @<leading-ws>».made;
+    my IncludeLine::Request:D $request = $<include-line-request>.made;
+    make IncludeLine['Finn'].new(:@leading-ws, :$request);
+}
+
+multi method include-line:finn ($/)
 {
     my IncludeLine::Request:D $request = $<include-line-request>.made;
     make IncludeLine['Finn'].new(:$request);
 }
 
-method include-line:text ($/)
+multi method include-line:text ($/ where @<leading-ws>.so)
+{
+    my LeadingWS:D @leading-ws = @<leading-ws>».made;
+    my IncludeLine::Request:D $request = $<include-line-request>.made;
+    make IncludeLine['Text'].new(:@leading-ws, :$request);
+}
+
+multi method include-line:text ($/)
 {
     my IncludeLine::Request:D $request = $<include-line-request>.made;
     make IncludeLine['Text'].new(:$request);
@@ -435,16 +449,40 @@ method sectional-block-content-dashes:text ($/)
 }
 
 # --- end sectional-block-content }}}
+# --- sectional-block:backticks {{{
+
+multi method sectional-block:backticks (
+    $/ where $<sectional-block-contents-backticks>.so
+        && @<closing-ws>.so
+)
+{
+    my LeadingWS:D @leading-ws = @<closing-ws>».made;
+    my SectionalBlockDelimiter['Backticks'] $delimiter .= new(:@leading-ws);
+    my SectionalBlockName:D $name = $<sectional-block-name>.made;
+    my SectionalBlockContent:D @content =
+        $<sectional-block-contents-backticks>.made;
+    make SectionalBlock.new(:@content, :$delimiter, :$name);
+}
 
 multi method sectional-block:backticks (
     $/ where $<sectional-block-contents-backticks>.so
 )
 {
-    my SectionalBlockContent:D @content =
-        $<sectional-block-contents-backticks>.made;
     my SectionalBlockDelimiter['Backticks'] $delimiter .= new;
     my SectionalBlockName:D $name = $<sectional-block-name>.made;
+    my SectionalBlockContent:D @content =
+        $<sectional-block-contents-backticks>.made;
     make SectionalBlock.new(:@content, :$delimiter, :$name);
+}
+
+multi method sectional-block:backticks (
+    $/ where @<closing-ws>.so
+)
+{
+    my LeadingWS:D @leading-ws = @<closing-ws>».made;
+    my SectionalBlockDelimiter['Backticks'] $delimiter .= new(:@leading-ws);
+    my SectionalBlockName:D $name = $<sectional-block-name>.made;
+    make SectionalBlock.new(:$delimiter, :$name);
 }
 
 multi method sectional-block:backticks ($/)
@@ -454,15 +492,41 @@ multi method sectional-block:backticks ($/)
     make SectionalBlock.new(:$delimiter, :$name);
 }
 
+# --- end sectional-block:backticks }}}
+# --- sectional-block:dashes {{{
+
+multi method sectional-block:dashes (
+    $/ where $<sectional-block-contents-dashes>.so
+        && @<closing-ws>.so
+)
+{
+    my LeadingWS:D @leading-ws = @<closing-ws>».made;
+    my SectionalBlockDelimiter['Dashes'] $delimiter .= new(:@leading-ws);
+    my SectionalBlockName:D $name = $<sectional-block-name>.made;
+    my SectionalBlockContent:D @content =
+        $<sectional-block-contents-dashes>.made;
+    make SectionalBlock.new(:@content, :$delimiter, :$name);
+}
+
 multi method sectional-block:dashes (
     $/ where $<sectional-block-contents-dashes>.so
 )
 {
-    my SectionalBlockContent:D @content =
-        $<sectional-block-contents-dashes>.made;
     my SectionalBlockDelimiter['Dashes'] $delimiter .= new;
     my SectionalBlockName:D $name = $<sectional-block-name>.made;
+    my SectionalBlockContent:D @content =
+        $<sectional-block-contents-dashes>.made;
     make SectionalBlock.new(:@content, :$delimiter, :$name);
+}
+
+multi method sectional-block:dashes (
+    $/ where @<closing-ws>.so
+)
+{
+    my LeadingWS:D @leading-ws = @<closing-ws>».made;
+    my SectionalBlockDelimiter['Dashes'] $delimiter .= new(:@leading-ws);
+    my SectionalBlockName:D $name = $<sectional-block-name>.made;
+    make SectionalBlock.new(:$delimiter, :$name);
 }
 
 multi method sectional-block:dashes ($/)
@@ -471,6 +535,8 @@ multi method sectional-block:dashes ($/)
     my SectionalBlockName:D $name = $<sectional-block-name>.made;
     make SectionalBlock.new(:$delimiter, :$name);
 }
+
+# --- end sectional-block:dashes }}}
 
 # end sectional-block }}}
 # code-block {{{
@@ -496,6 +562,20 @@ method code-block-content-dashes($/)
 }
 
 # --- end code-block-content }}}
+# --- code-block:backticks {{{
+
+multi method code-block:backticks (
+    $/ where $<code-block-language>.so
+        && $<code-block-content-backticks>.made.so
+            && @<closing-ws>.so
+)
+{
+    my LeadingWS:D @leading-ws = @<closing-ws>».made;
+    my CodeBlockDelimiter['Backticks'] $delimiter .= new(:@leading-ws);
+    my Str:D $language = $<code-block-language>.made;
+    my Str:D $text = $<code-block-content-backticks>.made;
+    make CodeBlock.new(:$delimiter, :$language, :$text);
+}
 
 multi method code-block:backticks (
     $/ where $<code-block-language>.so
@@ -508,11 +588,35 @@ multi method code-block:backticks (
     make CodeBlock.new(:$delimiter, :$language, :$text);
 }
 
-multi method code-block:backticks ($/ where $<code-block-language>.so)
+multi method code-block:backticks (
+    $/ where $<code-block-language>.so
+        && @<closing-ws>.so
+)
+{
+    my LeadingWS:D @leading-ws = @<closing-ws>».made;
+    my CodeBlockDelimiter['Backticks'] $delimiter .= new(:@leading-ws);
+    my Str:D $language = $<code-block-language>.made;
+    make CodeBlock.new(:$delimiter, :$language);
+}
+
+multi method code-block:backticks (
+    $/ where $<code-block-language>.so
+)
 {
     my CodeBlockDelimiter['Backticks'] $delimiter .= new;
     my Str:D $language = $<code-block-language>.made;
     make CodeBlock.new(:$delimiter, :$language);
+}
+
+multi method code-block:backticks (
+    $/ where $<code-block-content-backticks>.made.so
+        && @<closing-ws>.so
+)
+{
+    my LeadingWS:D @leading-ws = @<closing-ws>».made;
+    my CodeBlockDelimiter['Backticks'] $delimiter .= new(:@leading-ws);
+    my Str:D $text = $<code-block-content-backticks>.made;
+    make CodeBlock.new(:$delimiter, :$text);
 }
 
 multi method code-block:backticks (
@@ -524,14 +628,40 @@ multi method code-block:backticks (
     make CodeBlock.new(:$delimiter, :$text);
 }
 
+multi method code-block:backticks (
+    $/ where @<closing-ws>.so
+)
+{
+    my LeadingWS:D @leading-ws = @<closing-ws>».made;
+    my CodeBlockDelimiter['Backticks'] $delimiter .= new(:@leading-ws);
+    make CodeBlock.new(:$delimiter);
+}
+
 multi method code-block:backticks ($/)
 {
     my CodeBlockDelimiter['Backticks'] $delimiter .= new;
     make CodeBlock.new(:$delimiter);
 }
 
+# --- end code-block:backticks }}}
+# --- code-block:dashes {{{
+
 multi method code-block:dashes (
-    $/ where $<code-block-language>.so && $<code-block-content-dashes>.made.so
+    $/ where $<code-block-language>.so
+        && $<code-block-content-dashes>.made.so
+            && @<closing-ws>.so
+)
+{
+    my LeadingWS:D @leading-ws = @<closing-ws>».made;
+    my CodeBlockDelimiter['Dashes'] $delimiter .= new(:@leading-ws);
+    my Str:D $language = $<code-block-language>.made;
+    my Str:D $text = $<code-block-content-dashes>.made;
+    make CodeBlock.new(:$delimiter, :$language, :$text);
+}
+
+multi method code-block:dashes (
+    $/ where $<code-block-language>.so
+        && $<code-block-content-dashes>.made.so
 )
 {
     my CodeBlockDelimiter['Dashes'] $delimiter .= new;
@@ -540,18 +670,53 @@ multi method code-block:dashes (
     make CodeBlock.new(:$delimiter, :$language, :$text);
 }
 
-multi method code-block:dashes ($/ where $<code-block-language>.so)
+multi method code-block:dashes (
+    $/ where $<code-block-language>.so
+        && @<closing-ws>.so
+)
+{
+    my LeadingWS:D @leading-ws = @<closing-ws>».made;
+    my CodeBlockDelimiter['Dashes'] $delimiter .= new(:@leading-ws);
+    my Str:D $language = $<code-block-language>.made;
+    make CodeBlock.new(:$delimiter, :$language);
+}
+
+multi method code-block:dashes (
+    $/ where $<code-block-language>.so
+)
 {
     my CodeBlockDelimiter['Dashes'] $delimiter .= new;
     my Str:D $language = $<code-block-language>.made;
     make CodeBlock.new(:$delimiter, :$language);
 }
 
-multi method code-block:dashes ($/ where $<code-block-content-dashes>.made.so)
+multi method code-block:dashes (
+    $/ where $<code-block-content-dashes>.made.so
+        && @<closing-ws>.so
+)
+{
+    my LeadingWS:D @leading-ws = @<closing-ws>».made;
+    my CodeBlockDelimiter['Dashes'] $delimiter .= new(:@leading-ws);
+    my Str:D $text = $<code-block-content-dashes>.made;
+    make CodeBlock.new(:$delimiter, :$text);
+}
+
+multi method code-block:dashes (
+    $/ where $<code-block-content-dashes>.made.so
+)
 {
     my CodeBlockDelimiter['Dashes'] $delimiter .= new;
     my Str:D $text = $<code-block-content-dashes>.made;
     make CodeBlock.new(:$delimiter, :$text);
+}
+
+multi method code-block:dashes (
+    $/ where @<closing-ws>.so
+)
+{
+    my LeadingWS:D @leading-ws = @<closing-ws>».made;
+    my CodeBlockDelimiter['Dashes'] $delimiter .= new(:@leading-ws);
+    make CodeBlock.new(:$delimiter);
 }
 
 multi method code-block:dashes ($/)
@@ -559,6 +724,8 @@ multi method code-block:dashes ($/)
     my CodeBlockDelimiter['Dashes'] $delimiter .= new;
     make CodeBlock.new(:$delimiter);
 }
+
+# --- end code-block:dashes }}}
 
 # end code-block }}}
 # reference-line-block {{{
@@ -1049,6 +1216,19 @@ method blank-lines($/)
 =head Inline Elements
 =end pod
 
+# leading-ws {{{
+
+method leading-ws:space ($/)
+{
+    make LeadingWS['Space'].new;
+}
+
+method leading-ws:tab ($/)
+{
+    make LeadingWS['Tab'].new;
+}
+
+# end leading-ws }}}
 # string {{{
 
 # --- string-basic {{{

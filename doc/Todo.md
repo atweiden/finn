@@ -4,11 +4,6 @@ Todo
 Finn::Parser
 ------------
 
-### store leading whitespace in `Include` attribute
-
-- necessary for Finn document processing to yield correct amount of
-  leading indentation
-
 ### check for circular include directives
 
 **obstacles preventing assured stringification of SectionalBlockContent**

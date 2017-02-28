@@ -41,10 +41,12 @@ role BlankLine
 # end role BlankLine }}}
 # role CodeBlock {{{
 
+role MaybeLeadingWS {...}
+
 # --- role CodeBlockDelimiter {{{
 
-role CodeBlockDelimiter['Backticks'] {*}
-role CodeBlockDelimiter['Dashes'] {*}
+role CodeBlockDelimiter['Backticks'] does MaybeLeadingWS {*}
+role CodeBlockDelimiter['Dashes']    does MaybeLeadingWS {*}
 
 # --- end role CodeBlockDelimiter }}}
 
@@ -145,12 +147,12 @@ role HorizontalRule['Soft'] {*}
 
 role IncludeLine::Request {...}
 
-role IncludeLine['Finn']
+role IncludeLine['Finn'] does MaybeLeadingWS
 {
     has IncludeLine::Request:D $.request is required;
 }
 
-role IncludeLine['Text']
+role IncludeLine['Text'] does MaybeLeadingWS
 {
     has IncludeLine::Request:D $.request is required;
 }
@@ -246,6 +248,17 @@ role IncludeLineBlock['Top']
 }
 
 # end role IncludeLineBlock }}}
+# role LeadingWS {{{
+
+role LeadingWS['Space'] {*}
+role LeadingWS['Tab']   {*}
+
+role MaybeLeadingWS
+{
+    has LeadingWS:D @.leading-ws;
+}
+
+# end role LeadingWS }}}
 # role ListBlock {{{
 
 role ListItem {...}
@@ -421,8 +434,8 @@ role ReferenceLine
 
 # --- role SectionalBlockDelimiter {{{
 
-role SectionalBlockDelimiter['Backticks'] {*}
-role SectionalBlockDelimiter['Dashes'] {*}
+role SectionalBlockDelimiter['Backticks'] does MaybeLeadingWS {*}
+role SectionalBlockDelimiter['Dashes']    does MaybeLeadingWS {*}
 
 # --- end role SectionalBlockDelimiter }}}
 # --- role SectionalBlockName {{{

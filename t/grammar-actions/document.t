@@ -583,11 +583,15 @@ subtest 'finn-examples/hangman',
     # --- --- --- end 03 }}}
     # --- --- --- 04 {{{
 
+    my LeadingWS:D @leading-ws-h04 = LeadingWS['Space'].new xx 4;
     my Str:D $include-line-name-h04 = 'User input';
     my IncludeLine::Request['Name'] $request-h04 .= new(
         :name($include-line-name-h04)
     );
-    my IncludeLine['Finn'] $include-line-h04 .= new(:request($request-h04));
+    my IncludeLine['Finn'] $include-line-h04 .= new(
+        :leading-ws(@leading-ws-h04),
+        :request($request-h04)
+    );
     my SectionalBlockContent['IncludeLine'] $content-h04 .= new(
         :include-line($include-line-h04)
     );
@@ -595,11 +599,15 @@ subtest 'finn-examples/hangman',
     # --- --- --- end 04 }}}
     # --- --- --- 05 {{{
 
+    my LeadingWS:D @leading-ws-h05 = LeadingWS['Space'].new xx 4;
     my Str:D $include-line-name-h05 = 'Check input';
     my IncludeLine::Request['Name'] $request-h05 .= new(
         :name($include-line-name-h05)
     );
-    my IncludeLine['Finn'] $include-line-h05 .= new(:request($request-h05));
+    my IncludeLine['Finn'] $include-line-h05 .= new(
+        :leading-ws(@leading-ws-h05),
+        :request($request-h05)
+    );
     my SectionalBlockContent['IncludeLine'] $content-h05 .= new(
         :include-line($include-line-h05)
     );
@@ -607,11 +615,15 @@ subtest 'finn-examples/hangman',
     # --- --- --- end 05 }}}
     # --- --- --- 06 {{{
 
+    my LeadingWS:D @leading-ws-h06 = LeadingWS['Space'].new xx 4;
     my Str:D $include-line-name-h06 = 'Check win';
     my IncludeLine::Request['Name'] $request-h06 .= new(
         :name($include-line-name-h06)
     );
-    my IncludeLine['Finn'] $include-line-h06 .= new(:request($request-h06));
+    my IncludeLine['Finn'] $include-line-h06 .= new(
+        :leading-ws(@leading-ws-h06),
+        :request($request-h06)
+    );
     my SectionalBlockContent['IncludeLine'] $content-h06 .= new(
         :include-line($include-line-h06)
     );
@@ -3256,7 +3268,10 @@ subtest 'finn-examples/hard',
     # --- end chunk-ú }}}
     # --- chunk-ṽ {{{
 
-    my CodeBlockDelimiter['Backticks'] $delimiter-ṽ .= new;
+    my LeadingWS:D @leading-ws-ṽ = LeadingWS['Space'].new xx 4;
+    my CodeBlockDelimiter['Backticks'] $delimiter-ṽ .= new(
+        :leading-ws(@leading-ws-ṽ)
+    );
     my Str:D $language-ṽ = 'perl6';
     my Str:D $text-ṽ = q:to/EOF/;
         # indented perl6 code-block
@@ -3339,7 +3354,10 @@ subtest 'finn-examples/hard',
     # --- end chunk-ẍ }}}
     # --- chunk-ý {{{
 
-    my CodeBlockDelimiter['Backticks'] $delimiter-ý .= new;
+    my LeadingWS:D @leading-ws-ý = LeadingWS['Space'].new xx 6;
+    my CodeBlockDelimiter['Backticks'] $delimiter-ý .= new(
+        :leading-ws(@leading-ws-ý)
+    );
     my Str:D $language-ý = 'perl6';
     my Str:D $text-ý = q:to/EOF/;
           # indented perl6 code-block
@@ -3797,7 +3815,10 @@ subtest 'finn-examples/hard',
     # --- end chunk-ז }}}
     # --- chunk-ח {{{
 
-    my CodeBlockDelimiter['Backticks'] $delimiter-ח .= new;
+    my LeadingWS:D @leading-ws-ח = LeadingWS['Space'].new xx 20;
+    my CodeBlockDelimiter['Backticks'] $delimiter-ח .= new(
+        :leading-ws(@leading-ws-ח)
+    );
     my Str:D $text-ח = q:to/EOF/;
                         \_/
                         |:|
@@ -5739,7 +5760,10 @@ subtest 'finn-examples/sample',
     # --- end chunk-ç }}}
     # --- chunk-ď {{{
 
-    my CodeBlockDelimiter['Backticks'] $delimiter-ď .= new;
+    my LeadingWS:D @leading-ws-ď = LeadingWS['Space'].new xx 2;
+    my CodeBlockDelimiter['Backticks'] $delimiter-ď .= new(
+        :leading-ws(@leading-ws-ď)
+    );
     my Str:D $language-ď = 'ruby';
     my Str:D $text-ď = q:to/EOF/;
       class Foo
