@@ -4,6 +4,11 @@ Todo
 Finn::Parser
 ------------
 
+### fix Actions sub trim-leading
+
+- gives rise to inconsistent trailing newline handling in CodeBlock
+  and SectionalBlock
+
 ### check for circular include directives
 
 **obstacles preventing assured stringification of SectionalBlockContent**

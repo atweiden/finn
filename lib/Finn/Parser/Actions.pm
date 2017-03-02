@@ -459,8 +459,10 @@ multi method sectional-block:backticks (
     my LeadingWS:D @leading-ws = @<closing-ws>».made;
     my SectionalBlockDelimiter['Backticks'] $delimiter .= new(:@leading-ws);
     my SectionalBlockName:D $name = $<sectional-block-name>.made;
-    my SectionalBlockContent:D @content =
+    my SectionalBlockContent:D @content-raw =
         $<sectional-block-contents-backticks>.made;
+    my SectionalBlockContent:D @content =
+        trim-leading(@leading-ws, @content-raw);
     make SectionalBlock.new(:@content, :$delimiter, :$name);
 }
 
@@ -503,8 +505,10 @@ multi method sectional-block:dashes (
     my LeadingWS:D @leading-ws = @<closing-ws>».made;
     my SectionalBlockDelimiter['Dashes'] $delimiter .= new(:@leading-ws);
     my SectionalBlockName:D $name = $<sectional-block-name>.made;
-    my SectionalBlockContent:D @content =
+    my SectionalBlockContent:D @content-raw =
         $<sectional-block-contents-dashes>.made;
+    my SectionalBlockContent:D @content =
+        trim-leading(@leading-ws, @content-raw);
     make SectionalBlock.new(:@content, :$delimiter, :$name);
 }
 
@@ -573,7 +577,8 @@ multi method code-block:backticks (
     my LeadingWS:D @leading-ws = @<closing-ws>».made;
     my CodeBlockDelimiter['Backticks'] $delimiter .= new(:@leading-ws);
     my Str:D $language = $<code-block-language>.made;
-    my Str:D $text = $<code-block-content-backticks>.made;
+    my Str:D @lines = $<code-block-content-backticks>.made.lines;
+    my Str:D $text = trim-leading(@leading-ws, @lines);
     make CodeBlock.new(:$delimiter, :$language, :$text);
 }
 
@@ -615,7 +620,8 @@ multi method code-block:backticks (
 {
     my LeadingWS:D @leading-ws = @<closing-ws>».made;
     my CodeBlockDelimiter['Backticks'] $delimiter .= new(:@leading-ws);
-    my Str:D $text = $<code-block-content-backticks>.made;
+    my Str:D @lines = $<code-block-content-backticks>.made.lines;
+    my Str:D $text = trim-leading(@leading-ws, @lines);
     make CodeBlock.new(:$delimiter, :$text);
 }
 
@@ -655,7 +661,8 @@ multi method code-block:dashes (
     my LeadingWS:D @leading-ws = @<closing-ws>».made;
     my CodeBlockDelimiter['Dashes'] $delimiter .= new(:@leading-ws);
     my Str:D $language = $<code-block-language>.made;
-    my Str:D $text = $<code-block-content-dashes>.made;
+    my Str:D @lines = $<code-block-content-dashes>.made.lines;
+    my Str:D $text = trim-leading(@leading-ws, @lines);
     make CodeBlock.new(:$delimiter, :$language, :$text);
 }
 
@@ -697,7 +704,8 @@ multi method code-block:dashes (
 {
     my LeadingWS:D @leading-ws = @<closing-ws>».made;
     my CodeBlockDelimiter['Dashes'] $delimiter .= new(:@leading-ws);
-    my Str:D $text = $<code-block-content-dashes>.made;
+    my Str:D @lines = $<code-block-content-dashes>.made.lines;
+    my Str:D $text = trim-leading(@leading-ws, @lines);
     make CodeBlock.new(:$delimiter, :$text);
 }
 
@@ -1608,6 +1616,16 @@ method reference-inline($/)
 =head Helper Functions
 =end pod
 
+# sub comb {{{
+
+sub comb(LeadingWS:D @actual is copy, LeadingWS:D @padding) returns Array
+{
+    die unless @actual.elems >= @padding.elems;
+    @actual.splice(0, @padding.elems);
+    @actual;
+}
+
+# end sub comb }}}
 # sub gen-bounds {{{
 
 sub gen-bounds() returns Chunk::Meta::Bounds:D
@@ -1622,5 +1640,54 @@ sub gen-bounds() returns Chunk::Meta::Bounds:D
 }
 
 # end sub gen-bounds }}}
+# sub trim-leading {{{
+
+# XXX trim-leading doesn't handle inconsistent tabs and spaces
+multi sub trim-leading(
+    LeadingWS:D @leading-ws,
+    SectionalBlockContent:D @content
+) returns Array
+{
+    my SectionalBlockContent:D @c =
+        (trim-leading(@leading-ws, $_) for @content).Array;
+}
+
+multi sub trim-leading(
+    LeadingWS:D @leading-ws,
+    SectionalBlockContent['IncludeLine'] $content is copy
+) returns SectionalBlockContent['IncludeLine']
+{
+    my LeadingWS:D @actual = $content.include-line.leading-ws;
+    my LeadingWS:D @padding = @leading-ws;
+    my LeadingWS:D @comb = comb(@actual, @padding);
+    $content.include-line.set-leading-ws(@comb);
+    $content;
+}
+
+multi sub trim-leading(
+    LeadingWS:D @leading-ws,
+    SectionalBlockContent['Text'] $content is copy
+) returns SectionalBlockContent['Text']
+{
+    my Str:D @lines = $content.text.lines;
+    my Str:D $text = trim-leading(@leading-ws, @lines);
+    $content.set-text($text);
+    $content;
+}
+
+multi sub trim-leading(LeadingWS:D @leading-ws, Str:D @text) returns Str:D
+{
+    (trim-leading(@leading-ws, $_) for @text).join("\n");
+}
+
+multi sub trim-leading(LeadingWS:D @leading-ws, Str:D $text) returns Str:D
+{
+    my Str:D $actual-leading-ws = $text.comb(/^\h*/).first;
+    my Str:D $target-leading-ws = @leading-ws».Str.join;
+    die unless $actual-leading-ws.chars >= $target-leading-ws.chars;
+    $text.subst($target-leading-ws, '');
+}
+
+# end sub trim-leading }}}
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

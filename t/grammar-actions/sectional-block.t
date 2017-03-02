@@ -5,7 +5,7 @@ use Finn::Parser::Grammar;
 use Finn::Parser::ParseTree;
 use Test;
 
-plan 13;
+plan 15;
 
 subtest
 {
@@ -527,6 +527,270 @@ subtest
     # --- end content }}}
 
     my SectionalBlockContent:D @content = $content-a, $content-b;
+
+    is-deeply
+        Finn::Parser::Grammar.parse($sectional-block, :$rule, :$actions).made,
+        SectionalBlock.new(:$delimiter, :$name, :@content),
+        'SectionalBlock OK';
+}
+
+subtest 'sectional-block with indented include-lines',
+{
+    my Finn::Parser::Actions $actions .= new;
+    my Str:D $sectional-block = q:to/EOF/.trim;
+    ``` name
+      a
+      ¶ 'f.ex'
+    b
+    ¶ 'g.ex'
+      c
+      § 'h.ex'
+    d
+    § 'i.ex'
+    ```
+    EOF
+    my Str:D $rule = 'sectional-block';
+
+    # --- delimiter {{{
+
+    my SectionalBlockDelimiter['Backticks'] $delimiter .= new;
+
+    # --- end delimiter }}}
+    # --- name {{{
+
+    my Str:D $word = 'name';
+    my SectionalBlockName::Identifier['Word'] $identifier .= new(:$word);
+    my SectionalBlockName $name .= new(:$identifier);
+
+    # --- end name }}}
+    # --- content {{{
+
+    # --- --- a {{{
+
+    my Str:D $text-a = q:to/EOF/.trim-trailing;
+      a
+    EOF
+    my SectionalBlockContent['Text'] $content-a .= new(:text($text-a));
+
+    # --- --- end a }}}
+    # --- --- b {{{
+
+    my LeadingWS:D @leading-ws-b = LeadingWS['Space'].new xx 2;
+    my Str:D $name-b = 'f.ex';
+    my IncludeLine::Request['Name'] $request-b .= new(:name($name-b));
+    my IncludeLine['Text'] $include-line-b .= new(
+        :leading-ws(@leading-ws-b),
+        :request($request-b)
+    );
+    my SectionalBlockContent['IncludeLine'] $content-b .= new(
+        :include-line($include-line-b)
+    );
+
+    # --- --- end b }}}
+    # --- --- c {{{
+
+    my Str:D $text-c = q:to/EOF/.trim-trailing;
+    b
+    EOF
+    my SectionalBlockContent['Text'] $content-c .= new(:text($text-c));
+
+    # --- --- end c }}}
+    # --- --- d {{{
+
+    my Str:D $name-d = 'g.ex';
+    my IncludeLine::Request['Name'] $request-d .= new(:name($name-d));
+    my IncludeLine['Text'] $include-line-d .= new(:request($request-d));
+    my SectionalBlockContent['IncludeLine'] $content-d .= new(
+        :include-line($include-line-d)
+    );
+
+    # --- --- end d }}}
+    # --- --- e {{{
+
+    my Str:D $text-e = q:to/EOF/.trim-trailing;
+      c
+    EOF
+    my SectionalBlockContent['Text'] $content-e .= new(:text($text-e));
+
+    # --- --- end e }}}
+    # --- --- f {{{
+
+    my LeadingWS:D @leading-ws-f = LeadingWS['Space'].new xx 2;
+    my Str:D $name-f = 'h.ex';
+    my IncludeLine::Request['Name'] $request-f .= new(:name($name-f));
+    my IncludeLine['Finn'] $include-line-f .= new(
+        :leading-ws(@leading-ws-f),
+        :request($request-f)
+    );
+    my SectionalBlockContent['IncludeLine'] $content-f .= new(
+        :include-line($include-line-f)
+    );
+
+    # --- --- end f }}}
+    # --- --- g {{{
+
+    my Str:D $text-g = q:to/EOF/.trim-trailing;
+    d
+    EOF
+    my SectionalBlockContent['Text'] $content-g .= new(:text($text-g));
+
+    # --- --- end g }}}
+    # --- --- h {{{
+
+    my Str:D $name-h = 'i.ex';
+    my IncludeLine::Request['Name'] $request-h .= new(:name($name-h));
+    my IncludeLine['Finn'] $include-line-h .= new(:request($request-h));
+    my SectionalBlockContent['IncludeLine'] $content-h .= new(
+        :include-line($include-line-h)
+    );
+
+    # --- --- end h }}}
+
+    # --- end content }}}
+
+    my SectionalBlockContent:D @content =
+        $content-a,
+        $content-b,
+        $content-c,
+        $content-d,
+        $content-e,
+        $content-f,
+        $content-g,
+        $content-h;
+
+    is-deeply
+        Finn::Parser::Grammar.parse($sectional-block, :$rule, :$actions).made,
+        SectionalBlock.new(:$delimiter, :$name, :@content),
+        'SectionalBlock OK';
+}
+
+# same test as the one above, but SectionalBlock is indented four spaces
+subtest 'indented sectional-block with indented include-lines',
+{
+    my Finn::Parser::Actions $actions .= new;
+    my Str:D $sectional-block = q:to/EOF/.trim-trailing;
+        ``` name
+          a
+          ¶ 'f.ex'
+        b
+        ¶ 'g.ex'
+          c
+          § 'h.ex'
+        d
+        § 'i.ex'
+        ```
+    EOF
+    my Str:D $rule = 'sectional-block';
+
+    # --- delimiter {{{
+
+    my LeadingWS:D @delimiter-leading-ws = LeadingWS['Space'].new xx 4;
+    my SectionalBlockDelimiter['Backticks'] $delimiter .= new(
+        :leading-ws(@delimiter-leading-ws)
+    );
+
+    # --- end delimiter }}}
+    # --- name {{{
+
+    my Str:D $word = 'name';
+    my SectionalBlockName::Identifier['Word'] $identifier .= new(:$word);
+    my SectionalBlockName $name .= new(:$identifier);
+
+    # --- end name }}}
+    # --- content {{{
+
+    # --- --- a {{{
+
+    my Str:D $text-a = q:to/EOF/.trim-trailing;
+      a
+    EOF
+    my SectionalBlockContent['Text'] $content-a .= new(:text($text-a));
+
+    # --- --- end a }}}
+    # --- --- b {{{
+
+    my LeadingWS:D @leading-ws-b = LeadingWS['Space'].new xx 2;
+    my Str:D $name-b = 'f.ex';
+    my IncludeLine::Request['Name'] $request-b .= new(:name($name-b));
+    my IncludeLine['Text'] $include-line-b .= new(
+        :leading-ws(@leading-ws-b),
+        :request($request-b)
+    );
+    my SectionalBlockContent['IncludeLine'] $content-b .= new(
+        :include-line($include-line-b)
+    );
+
+    # --- --- end b }}}
+    # --- --- c {{{
+
+    my Str:D $text-c = q:to/EOF/.trim-trailing;
+    b
+    EOF
+    my SectionalBlockContent['Text'] $content-c .= new(:text($text-c));
+
+    # --- --- end c }}}
+    # --- --- d {{{
+
+    my Str:D $name-d = 'g.ex';
+    my IncludeLine::Request['Name'] $request-d .= new(:name($name-d));
+    my IncludeLine['Text'] $include-line-d .= new(:request($request-d));
+    my SectionalBlockContent['IncludeLine'] $content-d .= new(
+        :include-line($include-line-d)
+    );
+
+    # --- --- end d }}}
+    # --- --- e {{{
+
+    my Str:D $text-e = q:to/EOF/.trim-trailing;
+      c
+    EOF
+    my SectionalBlockContent['Text'] $content-e .= new(:text($text-e));
+
+    # --- --- end e }}}
+    # --- --- f {{{
+
+    my LeadingWS:D @leading-ws-f = LeadingWS['Space'].new xx 2;
+    my Str:D $name-f = 'h.ex';
+    my IncludeLine::Request['Name'] $request-f .= new(:name($name-f));
+    my IncludeLine['Finn'] $include-line-f .= new(
+        :leading-ws(@leading-ws-f),
+        :request($request-f)
+    );
+    my SectionalBlockContent['IncludeLine'] $content-f .= new(
+        :include-line($include-line-f)
+    );
+
+    # --- --- end f }}}
+    # --- --- g {{{
+
+    my Str:D $text-g = q:to/EOF/.trim-trailing;
+    d
+    EOF
+    my SectionalBlockContent['Text'] $content-g .= new(:text($text-g));
+
+    # --- --- end g }}}
+    # --- --- h {{{
+
+    my Str:D $name-h = 'i.ex';
+    my IncludeLine::Request['Name'] $request-h .= new(:name($name-h));
+    my IncludeLine['Finn'] $include-line-h .= new(:request($request-h));
+    my SectionalBlockContent['IncludeLine'] $content-h .= new(
+        :include-line($include-line-h)
+    );
+
+    # --- --- end h }}}
+
+    # --- end content }}}
+
+    my SectionalBlockContent:D @content =
+        $content-a,
+        $content-b,
+        $content-c,
+        $content-d,
+        $content-e,
+        $content-f,
+        $content-g,
+        $content-h;
 
     is-deeply
         Finn::Parser::Grammar.parse($sectional-block, :$rule, :$actions).made,

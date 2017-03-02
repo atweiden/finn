@@ -250,12 +250,23 @@ role IncludeLineBlock['Top']
 # end role IncludeLineBlock }}}
 # role LeadingWS {{{
 
-role LeadingWS['Space'] {*}
-role LeadingWS['Tab']   {*}
+role LeadingWS['Space']
+{
+    method Str(::?CLASS:D:) returns Str:D { ' ' }
+}
+
+role LeadingWS['Tab']
+{
+    method Str(::?CLASS:D:) returns Str:D { "\t" }
+}
 
 role MaybeLeadingWS
 {
     has LeadingWS:D @.leading-ws;
+    method set-leading-ws(::?CLASS:D: LeadingWS:D @leading-ws)
+    {
+        @!leading-ws = @leading-ws;
+    }
 }
 
 # end role LeadingWS }}}
@@ -481,6 +492,10 @@ role SectionalBlockContent['IncludeLine']
 role SectionalBlockContent['Text']
 {
     has Str:D $.text is required;
+    method set-text(::?CLASS:D: Str:D $text)
+    {
+        $!text = $text;
+    }
 }
 
 # --- end role SectionalBlockContent }}}

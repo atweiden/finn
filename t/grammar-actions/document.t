@@ -3273,9 +3273,9 @@ subtest 'finn-examples/hard',
         :leading-ws(@leading-ws-ṽ)
     );
     my Str:D $language-ṽ = 'perl6';
-    my Str:D $text-ṽ = q:to/EOF/;
-        # indented perl6 code-block
-        my Str:D $greeting = 'Hello';
+    my Str:D $text-ṽ = q:to/EOF/.trim-trailing;
+    # indented perl6 code-block
+    my Str:D $greeting = 'Hello';
     EOF
 
     my CodeBlock $code-block-ṽ .= new(
@@ -3359,9 +3359,9 @@ subtest 'finn-examples/hard',
         :leading-ws(@leading-ws-ý)
     );
     my Str:D $language-ý = 'perl6';
-    my Str:D $text-ý = q:to/EOF/;
-          # indented perl6 code-block
-          my Str:D $greeting = 'Hello';
+    my Str:D $text-ý = q:to/EOF/.trim-trailing;
+    # indented perl6 code-block
+    my Str:D $greeting = 'Hello';
     EOF
 
     my CodeBlock $code-block-ý .= new(
@@ -3819,11 +3819,11 @@ subtest 'finn-examples/hard',
     my CodeBlockDelimiter['Backticks'] $delimiter-ח .= new(
         :leading-ws(@leading-ws-ח)
     );
-    my Str:D $text-ח = q:to/EOF/;
-                        \_/
-                        |:|
-                        -|-
-                        / \
+    my Str:D $text-ח = q:to/EOF/.trim-trailing;
+    \_/
+    |:|
+    -|-
+    / \
     EOF
 
     my CodeBlock $code-block-ח .= new(
@@ -5765,12 +5765,12 @@ subtest 'finn-examples/sample',
         :leading-ws(@leading-ws-ď)
     );
     my Str:D $language-ď = 'ruby';
-    my Str:D $text-ď = q:to/EOF/;
-      class Foo
-        def foobar
-          puts :baz
-        end
+    my Str:D $text-ď = q:to/EOF/.trim-trailing;
+    class Foo
+      def foobar
+        puts :baz
       end
+    end
     EOF
 
     my CodeBlock $code-block-ď .= new(
