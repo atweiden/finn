@@ -1636,17 +1636,16 @@ sub gen-bounds() returns Chunk::Meta::Bounds:D
 # end sub gen-bounds }}}
 # sub trim {{{
 
-# XXX trim doesn't handle inconsistent tabs and spaces
+# XXX trim only handles tabs and spaces consistent with closing delimiter
 
 # --- SectionalBlockContent {{{
 
 multi sub trim(
     LeadingWS:D @leading-ws,
     SectionalBlockContent:D @content
-) returns Array
+) returns Array:D
 {
-    my SectionalBlockContent:D @c =
-        (trim(@leading-ws, $_) for @content).Array;
+    my SectionalBlockContent:D @c = (trim(@leading-ws, $_) for @content).Array;
 }
 
 multi sub trim(
@@ -1676,15 +1675,15 @@ multi sub trim(
 
 multi sub trim(LeadingWS:D @leading-ws, Str:D $text) returns Str:D
 {
-    (trim-leading(@leading-ws, $_) for $text.lines).join("\n");
+    my Str:D $s = (trim-leading(@leading-ws, $_) for $text.lines).join("\n");
 }
 
 sub trim-leading(LeadingWS:D @leading-ws, Str:D $text) returns Str:D
 {
-    my Str:D $actual-leading-ws = $text.comb(/^\h*/).first;
-    my Str:D $target-leading-ws = @leading-ws».Str.join;
-    die unless $actual-leading-ws.chars >= $target-leading-ws.chars;
-    $text.subst($target-leading-ws, '');
+    my Str:D $actual = $text.comb(/^\h*/).first;
+    my Str:D $padding = @leading-ws».Str.join;
+    die unless $actual.chars >= $padding.chars;
+    my Str:D $s = $text.subst($padding, '');
 }
 
 # --- end text }}}
