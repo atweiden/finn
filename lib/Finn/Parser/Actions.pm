@@ -577,8 +577,7 @@ multi method code-block:backticks (
     my LeadingWS:D @leading-ws = @<closing-ws>».made;
     my CodeBlockDelimiter['Backticks'] $delimiter .= new(:@leading-ws);
     my Str:D $language = $<code-block-language>.made;
-    my Str:D @lines = $<code-block-content-backticks>.made.lines;
-    my Str:D $text = trim(@leading-ws, @lines);
+    my Str:D $text = trim(@leading-ws, $<code-block-content-backticks>.made);
     make CodeBlock.new(:$delimiter, :$language, :$text);
 }
 
@@ -621,8 +620,7 @@ multi method code-block:backticks (
 {
     my LeadingWS:D @leading-ws = @<closing-ws>».made;
     my CodeBlockDelimiter['Backticks'] $delimiter .= new(:@leading-ws);
-    my Str:D @lines = $<code-block-content-backticks>.made.lines;
-    my Str:D $text = trim(@leading-ws, @lines);
+    my Str:D $text = trim(@leading-ws, $<code-block-content-backticks>.made);
     make CodeBlock.new(:$delimiter, :$text);
 }
 
@@ -631,8 +629,7 @@ multi method code-block:backticks (
 )
 {
     my CodeBlockDelimiter['Backticks'] $delimiter .= new;
-    my Str:D $text-raw = $<code-block-content-backticks>.made;
-    my Str:D $text = $text-raw.lines.join("\n");
+    my Str:D $text = $<code-block-content-backticks>.made.lines.join("\n");
     make CodeBlock.new(:$delimiter, :$text);
 }
 
@@ -663,8 +660,7 @@ multi method code-block:dashes (
     my LeadingWS:D @leading-ws = @<closing-ws>».made;
     my CodeBlockDelimiter['Dashes'] $delimiter .= new(:@leading-ws);
     my Str:D $language = $<code-block-language>.made;
-    my Str:D @lines = $<code-block-content-dashes>.made.lines;
-    my Str:D $text = trim(@leading-ws, @lines);
+    my Str:D $text = trim(@leading-ws, $<code-block-content-dashes>.made);
     make CodeBlock.new(:$delimiter, :$language, :$text);
 }
 
@@ -675,8 +671,7 @@ multi method code-block:dashes (
 {
     my CodeBlockDelimiter['Dashes'] $delimiter .= new;
     my Str:D $language = $<code-block-language>.made;
-    my Str:D $text-raw = $<code-block-content-dashes>.made;
-    my Str:D $text = $text-raw.lines.join("\n");
+    my Str:D $text = $<code-block-content-dashes>.made.lines.join("\n");
     make CodeBlock.new(:$delimiter, :$language, :$text);
 }
 
@@ -707,8 +702,7 @@ multi method code-block:dashes (
 {
     my LeadingWS:D @leading-ws = @<closing-ws>».made;
     my CodeBlockDelimiter['Dashes'] $delimiter .= new(:@leading-ws);
-    my Str:D @lines = $<code-block-content-dashes>.made.lines;
-    my Str:D $text = trim(@leading-ws, @lines);
+    my Str:D $text = trim(@leading-ws, $<code-block-content-dashes>.made);
     make CodeBlock.new(:$delimiter, :$text);
 }
 
@@ -717,8 +711,7 @@ multi method code-block:dashes (
 )
 {
     my CodeBlockDelimiter['Dashes'] $delimiter .= new;
-    my Str:D $text-raw = $<code-block-content-dashes>.made;
-    my Str:D $text = $text-raw.lines.join("\n");
+    my Str:D $text = $<code-block-content-dashes>.made.lines.join("\n");
     make CodeBlock.new(:$delimiter, :$text);
 }
 
@@ -1647,6 +1640,9 @@ sub gen-bounds() returns Chunk::Meta::Bounds:D
 # sub trim {{{
 
 # XXX trim doesn't handle inconsistent tabs and spaces
+
+# --- SectionalBlockContent {{{
+
 multi sub trim(
     LeadingWS:D @leading-ws,
     SectionalBlockContent:D @content
@@ -1673,15 +1669,17 @@ multi sub trim(
     SectionalBlockContent['Text'] $content is copy
 ) returns SectionalBlockContent['Text']
 {
-    my Str:D @lines = $content.text.lines;
-    my Str:D $text = trim(@leading-ws, @lines);
+    my Str:D $text = trim(@leading-ws, $content.text);
     $content.set-text($text);
     $content;
 }
 
-multi sub trim(LeadingWS:D @leading-ws, Str:D @text) returns Str:D
+# --- end SectionalBlockContent }}}
+# --- text {{{
+
+multi sub trim(LeadingWS:D @leading-ws, Str:D $text) returns Str:D
 {
-    (trim-leading(@leading-ws, $_) for @text).join("\n");
+    (trim-leading(@leading-ws, $_) for $text.lines).join("\n");
 }
 
 sub trim-leading(LeadingWS:D @leading-ws, Str:D $text) returns Str:D
@@ -1691,6 +1689,8 @@ sub trim-leading(LeadingWS:D @leading-ws, Str:D $text) returns Str:D
     die unless $actual-leading-ws.chars >= $target-leading-ws.chars;
     $text.subst($target-leading-ws, '');
 }
+
+# --- end text }}}
 
 # end sub trim }}}
 
