@@ -461,8 +461,7 @@ multi method sectional-block:backticks (
     my SectionalBlockName:D $name = $<sectional-block-name>.made;
     my SectionalBlockContent:D @content-raw =
         $<sectional-block-contents-backticks>.made;
-    my SectionalBlockContent:D @content =
-        trim(@leading-ws, @content-raw);
+    my SectionalBlockContent:D @content = trim(@leading-ws, @content-raw);
     make SectionalBlock.new(:@content, :$delimiter, :$name);
 }
 
@@ -507,8 +506,7 @@ multi method sectional-block:dashes (
     my SectionalBlockName:D $name = $<sectional-block-name>.made;
     my SectionalBlockContent:D @content-raw =
         $<sectional-block-contents-dashes>.made;
-    my SectionalBlockContent:D @content =
-        trim(@leading-ws, @content-raw);
+    my SectionalBlockContent:D @content = trim(@leading-ws, @content-raw);
     make SectionalBlock.new(:@content, :$delimiter, :$name);
 }
 
@@ -588,8 +586,7 @@ multi method code-block:backticks (
 {
     my CodeBlockDelimiter['Backticks'] $delimiter .= new;
     my Str:D $language = $<code-block-language>.made;
-    my Str:D $text-raw = $<code-block-content-backticks>.made;
-    my Str:D $text = $text-raw.lines.join("\n");
+    my Str:D $text = $<code-block-content-backticks>.made.lines.join("\n");
     make CodeBlock.new(:$delimiter, :$language, :$text);
 }
 
