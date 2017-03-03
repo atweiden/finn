@@ -21,7 +21,7 @@ subtest
     EOF
     my Str:D $rule = 'code-block';
     my CodeBlockDelimiter['Backticks'] $delimiter .= new;
-    my Str:D $text = q:to/EOF/.trim-leading;
+    my Str:D $text = q:to/EOF/.trim;
     Todos
     =====
 
@@ -45,7 +45,7 @@ subtest
     my Str:D $rule = 'code-block';
     my CodeBlockDelimiter['Backticks'] $delimiter .= new;
     my Str:D $language = 'sh';
-    my Str:D $text = q:to/EOF/.trim-leading;
+    my Str:D $text = q:to/EOF/.trim;
     $ cat TODO.md
     EOF
     is-deeply
@@ -102,7 +102,7 @@ subtest
     my Str:D $rule = 'code-block';
     my CodeBlockDelimiter['Backticks'] $delimiter .= new;
     my Str:D $language = 'markdown';
-    my Str:D $text = q:to/EOF/.trim-leading;
+    my Str:D $text = q:to/EOF/.trim;
     Language   | Ways to say meow
     --------   | ----------------
     Albanian   | mjaullin

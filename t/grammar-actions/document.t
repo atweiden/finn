@@ -3273,7 +3273,7 @@ subtest 'finn-examples/hard',
         :leading-ws(@leading-ws-ṽ)
     );
     my Str:D $language-ṽ = 'perl6';
-    my Str:D $text-ṽ = q:to/EOF/.trim-trailing;
+    my Str:D $text-ṽ = q:to/EOF/.trim;
     # indented perl6 code-block
     my Str:D $greeting = 'Hello';
     EOF
@@ -3359,7 +3359,7 @@ subtest 'finn-examples/hard',
         :leading-ws(@leading-ws-ý)
     );
     my Str:D $language-ý = 'perl6';
-    my Str:D $text-ý = q:to/EOF/.trim-trailing;
+    my Str:D $text-ý = q:to/EOF/.trim;
     # indented perl6 code-block
     my Str:D $greeting = 'Hello';
     EOF
@@ -3819,7 +3819,7 @@ subtest 'finn-examples/hard',
     my CodeBlockDelimiter['Backticks'] $delimiter-ח .= new(
         :leading-ws(@leading-ws-ח)
     );
-    my Str:D $text-ח = q:to/EOF/.trim-trailing;
+    my Str:D $text-ח = q:to/EOF/.trim;
     \_/
     |:|
     -|-
@@ -5690,7 +5690,7 @@ subtest 'finn-examples/sample',
 
     my CodeBlockDelimiter['Dashes'] $delimiter-z .= new;
     my Str:D $language-z = 'clojure';
-    my Str:D $text-z = q:to/EOF/;
+    my Str:D $text-z = q:to/EOF/.trim;
     (defn is-directory? [path]
       (.isDirectory (io/file (path-for path))))
     EOF
@@ -5765,7 +5765,7 @@ subtest 'finn-examples/sample',
         :leading-ws(@leading-ws-ď)
     );
     my Str:D $language-ď = 'ruby';
-    my Str:D $text-ď = q:to/EOF/.trim-trailing;
+    my Str:D $text-ď = q:to/EOF/.trim;
     class Foo
       def foobar
         puts :baz
