@@ -4,25 +4,9 @@ Todo
 Finn::Parser
 ------------
 
-### resolve
+### resolve closures
 
-- `.Str`
-  - `.resolve`
-  - `.resolve`
-
-needed because we need the root Document (Chunk['IncludeLineBlock'])
-to contain the full Document hierarchy. we can't just assume this is
-only needed when stringifying
-- `Document.new` in best case specifies `InlineLine['Finn'].resolve`
-  and `InlineLine['Text'].resolve`
-  - it's effectively a type check then
-unfortunately this can't be done cleanly in ParseTree since that would
-require circular module loading. It's not possible to have a `.resolve`
-method in ParseTree since that would require `Grammar.parse`.
-- maybe we need role `IncludeLine::Resolve['Finn']` and role
-  `IncludeLine::Resolve['Text']`
-
-so implement resolve in Actions
+- resolve closures in parser upon required data availability
 
 ### check for circular include directives
 
