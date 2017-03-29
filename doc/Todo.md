@@ -4,6 +4,11 @@ Todo
 Finn::Parser
 ------------
 
+### other
+
+- sub `merge` for `SectionalBlockName['File']` types
+  - likely requires making Finn::Parser::Utils::Equivalence
+
 ### resolve closures
 
 - resolve closures in parser upon required data availability

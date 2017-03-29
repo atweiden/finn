@@ -1623,7 +1623,7 @@ method reference-inline($/)
 method gen-absolute-path-closure(
     ::?CLASS:D:
     Str:D &reference,
-    Bool:D :reference($)! where *.so
+    Bool:D :pending-reference($)! where *.so
     --> Sub:D
 )
 {
@@ -1649,7 +1649,7 @@ method gen-absolute-path-closure(
 multi method gen-document-closure(
     ::?CLASS:D:
     IO::Path:D &absolute-path,
-    Bool:D :reference($)! where *.so,
+    Bool:D :pending-reference($)! where *.so,
     Bool:D :finn($)! where *.so
     --> Sub:D
 )
@@ -1674,7 +1674,7 @@ multi method gen-document-closure(
 multi method gen-document-closure(
     ::?CLASS:D:
     IO::Path:D &absolute-path,
-    Bool:D :reference($)! where *.so,
+    Bool:D :pending-reference($)! where *.so,
     Bool:D :text($)! where *.so
     --> Sub:D
 )
@@ -1692,7 +1692,7 @@ multi method gen-document-closure(
 multi method gen-document-closure(
     ::?CLASS:D:
     IO::Path:D $absolute-path,
-    Bool:D :file($)! where *.so,
+    Bool:D :pending-file($)! where *.so,
     Bool:D :finn($)! where *.so
     --> Sub:D
 )
@@ -1713,7 +1713,7 @@ multi method gen-document-closure(
 multi method gen-document-closure(
     ::?CLASS:D:
     IO::Path:D $absolute-path,
-    Bool:D :file($)! where *.so,
+    Bool:D :pending-file($)! where *.so,
     Bool:D :text($)! where *.so
     --> Sub:D
 )
@@ -1731,7 +1731,7 @@ multi method gen-document-closure(
 method gen-reference-closure(
     ::?CLASS:D:
     UInt:D $number,
-    Bool:D :reference($)! where *.so
+    Bool:D :pending-reference($)! where *.so
     --> Sub:D
 )
 {
@@ -1783,8 +1783,11 @@ multi method gen-response(
 {
     my File:D $file = $request.file;
     my IO::Path:D $absolute-path-from-file = self.resolve-path-from-file($file);
-    my &resolve =
-        self.gen-document-closure($absolute-path-from-file, :file, :finn);
+    my &resolve = self.gen-document-closure(
+        $absolute-path-from-file,
+        :pending-file,
+        :finn
+    );
     my IncludeLine::Response['File'] $response .= new(:&resolve);
 }
 
@@ -1797,8 +1800,11 @@ multi method gen-response(
 {
     my File:D $file = $request.file;
     my IO::Path:D $absolute-path-from-file = self.resolve-path-from-file($file);
-    my &resolve =
-        self.gen-document-closure($absolute-path-from-file, :file, :text);
+    my &resolve = self.gen-document-closure(
+        $absolute-path-from-file,
+        :pending-file,
+        :text
+    );
     my IncludeLine::Response['File'] $response .= new(:&resolve);
 }
 
@@ -1810,9 +1816,11 @@ multi method gen-response(
 )
 {
     my UInt:D $number = $request.reference-inline.number;
-    my &reference = self.gen-reference-closure($number, :reference);
-    my &absolute-path = self.gen-absolute-path-closure(&reference, :reference);
-    my &resolve = self.gen-document-closure(&absolute-path, :reference, :finn);
+    my &reference = self.gen-reference-closure($number, :pending-reference);
+    my &absolute-path =
+        self.gen-absolute-path-closure(&reference, :pending-reference);
+    my &resolve =
+        self.gen-document-closure(&absolute-path, :pending-reference, :finn);
     my IncludeLine::Response['Reference'] $response .= new(:&resolve);
 }
 
@@ -1824,9 +1832,11 @@ multi method gen-response(
 )
 {
     my UInt:D $number = $request.reference-inline.number;
-    my &reference = self.gen-reference-closure($number, :reference);
-    my &absolute-path = self.gen-absolute-path-closure(&reference, :reference);
-    my &resolve = self.gen-document-closure(&absolute-path, :reference, :text);
+    my &reference = self.gen-reference-closure($number, :pending-reference);
+    my &absolute-path =
+        self.gen-absolute-path-closure(&reference, :pending-reference);
+    my &resolve =
+        self.gen-document-closure(&absolute-path, :pending-reference, :text);
     my IncludeLine::Response['Reference'] $response .= new(:&resolve);
 }
 
@@ -1840,10 +1850,17 @@ multi method gen-response(
     my Str:D $name = $request.name;
     my File:D $file = $request.file;
     my IO::Path:D $absolute-path-from-file = self.resolve-path-from-file($file);
-    my &document =
-        self.gen-document-closure($absolute-path-from-file, :file, :finn);
-    my &resolve =
-        self.gen-sectional-block-closure(&document, :$name, :file, :finn);
+    my &document = self.gen-document-closure(
+        $absolute-path-from-file,
+        :pending-file,
+        :finn
+    );
+    my &resolve = self.gen-sectional-block-closure(
+        &document,
+        :$name,
+        :pending-file,
+        :finn
+    );
     my IncludeLine::Response['Name', 'File'] $response .= new(:&resolve);
 }
 
@@ -1857,10 +1874,17 @@ multi method gen-response(
     my Str:D $name = $request.name;
     my File:D $file = $request.file;
     my IO::Path:D $absolute-path-from-file = self.resolve-path-from-file($file);
-    my &document =
-        self.gen-document-closure($absolute-path-from-file, :file, :finn);
-    my &resolve =
-        self.gen-sectional-block-closure(&document, :$name, :file, :text);
+    my &document = self.gen-document-closure(
+        $absolute-path-from-file,
+        :pending-file,
+        :finn
+    );
+    my &resolve = self.gen-sectional-block-closure(
+        &document,
+        :$name,
+        :pending-file,
+        :text
+    );
     my IncludeLine::Response['Name', 'File'] $response .= new(:&resolve);
 }
 
@@ -1873,11 +1897,17 @@ multi method gen-response(
 {
     my Str:D $name = $request.name;
     my UInt:D $number = $request.reference-inline.number;
-    my &reference = self.gen-reference-closure($number, :reference);
-    my &absolute-path = self.gen-absolute-path-closure(&reference, :reference);
-    my &document = self.gen-document-closure(&absolute-path, :reference, :finn);
-    my &resolve =
-        self.gen-sectional-block-closure(&document, :$name, :reference, :finn);
+    my &reference = self.gen-reference-closure($number, :pending-reference);
+    my &absolute-path =
+        self.gen-absolute-path-closure(&reference, :pending-reference);
+    my &document =
+        self.gen-document-closure(&absolute-path, :pending-reference, :finn);
+    my &resolve = self.gen-sectional-block-closure(
+        &document,
+        :$name,
+        :pending-reference,
+        :finn
+    );
     my IncludeLine::Response['Name', 'Reference'] $response .= new(:&resolve);
 }
 
@@ -1890,11 +1920,17 @@ multi method gen-response(
 {
     my Str:D $name = $request.name;
     my UInt:D $number = $request.reference-inline.number;
-    my &reference = self.gen-reference-closure($number, :reference);
-    my &absolute-path = self.gen-absolute-path-closure(&reference, :reference);
-    my &document = self.gen-document-closure(&absolute-path, :reference, :finn);
-    my &resolve =
-        self.gen-sectional-block-closure(&document, :$name, :reference, :text);
+    my &reference = self.gen-reference-closure($number, :pending-reference);
+    my &absolute-path =
+        self.gen-absolute-path-closure(&reference, :pending-reference);
+    my &document =
+        self.gen-document-closure(&absolute-path, :pending-reference, :finn);
+    my &resolve = self.gen-sectional-block-closure(
+        &document,
+        :$name,
+        :pending-reference,
+        :text
+    );
     my IncludeLine::Response['Name', 'Reference'] $response .= new(:&resolve);
 }
 
@@ -1905,7 +1941,7 @@ multi method gen-sectional-block-closure(
     ::?CLASS:D:
     &document,
     Str:D :$name! where *.so,
-    Bool:D :reference($)! where *.so,
+    Bool:D :pending-reference($)! where *.so,
     Bool:D :finn($)! where *.so
     --> Sub:D
 )
@@ -1927,7 +1963,7 @@ multi method gen-sectional-block-closure(
     ::?CLASS:D:
     &document,
     Str:D :$name! where *.so,
-    Bool:D :reference($)! where *.so,
+    Bool:D :pending-reference($)! where *.so,
     Bool:D :text($)! where *.so
     --> Sub:D
 )
@@ -1949,7 +1985,7 @@ multi method gen-sectional-block-closure(
     ::?CLASS:D:
     &document,
     Str:D :$name! where *.so,
-    Bool:D :file($)! where *.so,
+    Bool:D :pending-file($)! where *.so,
     Bool:D :finn($)! where *.so
     --> Sub:D
 )
@@ -1968,7 +2004,7 @@ multi method gen-sectional-block-closure(
     ::?CLASS:D:
     &document,
     Str:D :$name! where *.so,
-    Bool:D :file($)! where *.so,
+    Bool:D :pending-file($)! where *.so,
     Bool:D :text($)! where *.so
     --> Sub:D
 )
