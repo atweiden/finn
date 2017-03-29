@@ -284,7 +284,8 @@ subtest 'reference-line continuations',
 sub cmp-ok-reference-line-block(
     ReferenceLineBlock:D $a,
     ReferenceLineBlock:D $b
-) returns Bool:D
+    --> Bool:D
+)
 {
     my Bool:D $is-same = $a eqv $b;
 }

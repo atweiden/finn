@@ -76,7 +76,7 @@ subtest
         q{ListItem['Todo'] OK};
 }
 
-sub cmp-ok-list-item-todo(ListItem:D $a, ListItem:D $b) returns Bool:D
+sub cmp-ok-list-item-todo(ListItem:D $a, ListItem:D $b --> Bool:D)
 {
     my Bool:D $is-same = $a eqv $b;
 }

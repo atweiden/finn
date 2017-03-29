@@ -359,7 +359,7 @@ subtest
         'ListBlock OK';
 }
 
-sub cmp-ok-list-block(ListBlock:D $a, ListBlock:D $b) returns Bool:D
+sub cmp-ok-list-block(ListBlock:D $a, ListBlock:D $b --> Bool:D)
 {
     $a eqv $b;
 }

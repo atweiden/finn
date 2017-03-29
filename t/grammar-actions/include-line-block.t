@@ -509,7 +509,8 @@ subtest
 sub cmp-ok-include-line-block(
     IncludeLineBlock:D $a,
     IncludeLineBlock:D $b
-) returns Bool:D
+    --> Bool:D
+)
 {
     my Bool:D $is-same = $a eqv $b;
 }

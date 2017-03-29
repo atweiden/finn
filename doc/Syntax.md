@@ -301,7 +301,7 @@ Another possible use case of *Text-mode* Includes is for a high
 $ cat finn/lib/Alligator.pm6
 use v6;
 unit class Alligator;
-method bite() returns Str:D { 'ouch' }
+method bite(--> Str:D) { 'ouch' }
 ```
 
 ```finn

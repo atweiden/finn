@@ -102,7 +102,7 @@ subtest
         'Header[3] OK';
 }
 
-sub cmp-ok-header(Header:D $a, Header:D $b) returns Bool:D
+sub cmp-ok-header(Header:D $a, Header:D $b --> Bool:D)
 {
     my Bool:D $is-same = $a eqv $b;
 }

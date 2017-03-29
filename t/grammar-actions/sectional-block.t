@@ -855,7 +855,8 @@ subtest 'indented sectional-block with indented include-lines',
 sub cmp-ok-sectional-block(
     SectionalBlock:D $a,
     SectionalBlock:D $b
-) returns Bool:D
+    --> Bool:D
+)
 {
     my Bool:D $is-same = $a eqv $b;
 }

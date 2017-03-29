@@ -6047,7 +6047,7 @@ subtest 'finn-examples/sample',
 
 # sub gen-bounds {{{
 
-sub gen-bounds() returns Chunk::Meta::Bounds:D
+sub gen-bounds(--> Chunk::Meta::Bounds:D)
 {
     # XXX fix dummy data
     my Chunk::Meta::Bounds::Begins:D $begins =
@@ -6063,7 +6063,8 @@ sub gen-bounds() returns Chunk::Meta::Bounds:D
 sub cmp-ok-chunk(
     Chunk:D $a,
     Chunk:D $b
-) returns Bool:D
+    --> Bool:D
+)
 {
     my Bool:D $is-same = $a eqv $b;
 }
@@ -6071,7 +6072,8 @@ sub cmp-ok-chunk(
 sub cmp-ok-document(
     Document:D $a,
     Document:D $b
-) returns Bool:D
+    --> Bool:D
+)
 {
     my Bool:D $is-same = $a eqv $b;
 }
@@ -6079,7 +6081,8 @@ sub cmp-ok-document(
 sub cmp-ok-parse-tree(
     Finn::Parser::ParseTree:D $a,
     Finn::Parser::ParseTree:D $b
-) returns Bool:D
+    --> Bool:D
+)
 {
     my Bool:D $is-same = $a eqv $b;
 }

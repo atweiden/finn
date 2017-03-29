@@ -64,7 +64,8 @@ subtest
 sub cmp-ok-horizontal-rule(
     HorizontalRule:D $a,
     HorizontalRule:D $b
-) returns Bool:D
+    --> Bool:D
+)
 {
     my Bool:D $is-same = $a eqv $b;
 }

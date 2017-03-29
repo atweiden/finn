@@ -78,7 +78,7 @@ subtest 'relative',
     }
 }
 
-sub cmp-ok-file(File:D $a, File:D $b) returns Bool:D
+sub cmp-ok-file(File:D $a, File:D $b --> Bool:D)
 {
     my Bool:D $is-same = $a eqv $b;
 }

@@ -97,7 +97,7 @@ subtest
         q{ListItem['Ordered'] OK};
 }
 
-sub cmp-ok-list-item-ordered(ListItem:D $a, ListItem:D $b) returns Bool:D
+sub cmp-ok-list-item-ordered(ListItem:D $a, ListItem:D $b --> Bool:D)
 {
     my Bool:D $is-same = $a eqv $b;
 }
