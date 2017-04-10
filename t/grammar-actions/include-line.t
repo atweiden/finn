@@ -17,11 +17,10 @@ subtest
     my Str:D $name = 'A';
     my IncludeLine::Request['Name'] $request .= new(:$name);
     my &resolve;
-    my IncludeLine::Response['Name'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -33,11 +32,10 @@ subtest
     my Str:D $name = 'Abc';
     my IncludeLine::Request['Name'] $request .= new(:$name);
     my &resolve;
-    my IncludeLine::Response['Name'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -49,11 +47,10 @@ subtest
     my Str:D $name = 'Abc Foo Bar';
     my IncludeLine::Request['Name'] $request .= new(:$name);
     my &resolve;
-    my IncludeLine::Response['Name'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -66,11 +63,10 @@ subtest
     my File['Absolute'] $file .= new(:$path);
     my IncludeLine::Request['File'] $request .= new(:$file);
     my &resolve;
-    my IncludeLine::Response['File'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -83,11 +79,10 @@ subtest
     my File['Absolute'] $file .= new(:$path);
     my IncludeLine::Request['File'] $request .= new(:$file);
     my &resolve;
-    my IncludeLine::Response['File'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -100,11 +95,10 @@ subtest
     my File['Absolute'] $file .= new(:$path);
     my IncludeLine::Request['File'] $request .= new(:$file);
     my &resolve;
-    my IncludeLine::Response['File'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -117,11 +111,10 @@ subtest
     my File['Absolute'] $file .= new(:$path);
     my IncludeLine::Request['File'] $request .= new(:$file);
     my &resolve;
-    my IncludeLine::Response['File'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -135,11 +128,10 @@ subtest
     my File['Absolute', 'Protocol'] $file .= new(:$path, :$protocol);
     my IncludeLine::Request['File'] $request .= new(:$file);
     my &resolve;
-    my IncludeLine::Response['File'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -153,11 +145,10 @@ subtest
     my File['Absolute', 'Protocol'] $file .= new(:$path, :$protocol);
     my IncludeLine::Request['File'] $request .= new(:$file);
     my &resolve;
-    my IncludeLine::Response['File'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -171,11 +162,10 @@ subtest
     my File['Absolute', 'Protocol'] $file .= new(:$path, :$protocol);
     my IncludeLine::Request['File'] $request .= new(:$file);
     my &resolve;
-    my IncludeLine::Response['File'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -189,11 +179,10 @@ subtest
     my File['Absolute', 'Protocol'] $file .= new(:$path, :$protocol);
     my IncludeLine::Request['File'] $request .= new(:$file);
     my &resolve;
-    my IncludeLine::Response['File'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -206,11 +195,10 @@ subtest
     my ReferenceInline $reference-inline .= new(:$number);
     my IncludeLine::Request['Reference'] $request .= new(:$reference-inline);
     my &resolve;
-    my IncludeLine::Response['Reference'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -223,11 +211,10 @@ subtest
     my ReferenceInline $reference-inline .= new(:$number);
     my IncludeLine::Request['Reference'] $request .= new(:$reference-inline);
     my &resolve;
-    my IncludeLine::Response['Reference'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -240,11 +227,10 @@ subtest
     my ReferenceInline $reference-inline .= new(:$number);
     my IncludeLine::Request['Reference'] $request .= new(:$reference-inline);
     my &resolve;
-    my IncludeLine::Response['Reference'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -258,11 +244,10 @@ subtest
     my File['Absolute'] $file .= new(:$path);
     my IncludeLine::Request['Name', 'File'] $request .= new(:$name, :$file);
     my &resolve;
-    my IncludeLine::Response['Name', 'File'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -276,11 +261,10 @@ subtest
     my File['Absolute'] $file .= new(:$path);
     my IncludeLine::Request['Name', 'File'] $request .= new(:$name, :$file);
     my &resolve;
-    my IncludeLine::Response['Name', 'File'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -294,11 +278,10 @@ subtest
     my File['Absolute'] $file .= new(:$path);
     my IncludeLine::Request['Name', 'File'] $request .= new(:$name, :$file);
     my &resolve;
-    my IncludeLine::Response['Name', 'File'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -312,11 +295,10 @@ subtest
     my File['Absolute'] $file .= new(:$path);
     my IncludeLine::Request['Name', 'File'] $request .= new(:$name, :$file);
     my &resolve;
-    my IncludeLine::Response['Name', 'File'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -331,11 +313,10 @@ subtest
     my File['Absolute', 'Protocol'] $file .= new(:$path, :$protocol);
     my IncludeLine::Request['Name', 'File'] $request .= new(:$name, :$file);
     my &resolve;
-    my IncludeLine::Response['Name', 'File'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -350,11 +331,10 @@ subtest
     my File['Absolute', 'Protocol'] $file .= new(:$path, :$protocol);
     my IncludeLine::Request['Name', 'File'] $request .= new(:$name, :$file);
     my &resolve;
-    my IncludeLine::Response['Name', 'File'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -369,11 +349,10 @@ subtest
     my File['Absolute', 'Protocol'] $file .= new(:$path, :$protocol);
     my IncludeLine::Request['Name', 'File'] $request .= new(:$name, :$file);
     my &resolve;
-    my IncludeLine::Response['Name', 'File'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -388,11 +367,10 @@ subtest
     my File['Absolute', 'Protocol'] $file .= new(:$path, :$protocol);
     my IncludeLine::Request['Name', 'File'] $request .= new(:$name, :$file);
     my &resolve;
-    my IncludeLine::Response['Name', 'File'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -409,11 +387,10 @@ subtest
         :$reference-inline
     );
     my &resolve;
-    my IncludeLine::Response['Name', 'Reference'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -430,11 +407,10 @@ subtest
         :$reference-inline
     );
     my &resolve;
-    my IncludeLine::Response['Name', 'Reference'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -451,11 +427,10 @@ subtest
         :$reference-inline
     );
     my &resolve;
-    my IncludeLine::Response['Name', 'Reference'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -469,11 +444,10 @@ subtest
     my File['Relative'] $file .= new(:$path);
     my IncludeLine::Request['Name', 'File'] $request .= new(:$name, :$file);
     my &resolve;
-    my IncludeLine::Response['Name', 'File'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -487,11 +461,10 @@ subtest
     my File['Relative'] $file .= new(:$path);
     my IncludeLine::Request['Name', 'File'] $request .= new(:$name, :$file);
     my &resolve;
-    my IncludeLine::Response['Name', 'File'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -504,11 +477,10 @@ subtest
     my File['Relative'] $file .= new(:$path);
     my IncludeLine::Request['File'] $request .= new(:$file);
     my &resolve;
-    my IncludeLine::Response['File'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -521,11 +493,10 @@ subtest
     my File['Relative'] $file .= new(:$path);
     my IncludeLine::Request['File'] $request .= new(:$file);
     my &resolve;
-    my IncludeLine::Response['File'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -539,11 +510,10 @@ subtest
     my File['Relative'] $file .= new(:$path);
     my IncludeLine::Request['File'] $request .= new(:$file);
     my &resolve;
-    my IncludeLine::Response['File'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -558,11 +528,10 @@ subtest
     my File['Relative'] $file .= new(:$path);
     my IncludeLine::Request['Name', 'File'] $request .= new(:$name, :$file);
     my &resolve;
-    my IncludeLine::Response['Name', 'File'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -576,11 +545,10 @@ subtest
     my File['Relative', 'Protocol'] $file .= new(:$path, :$protocol);
     my IncludeLine::Request['File'] $request .= new(:$file);
     my &resolve;
-    my IncludeLine::Response['File'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -594,11 +562,10 @@ subtest
     my File['Relative', 'Protocol'] $file .= new(:$path, :$protocol);
     my IncludeLine::Request['File'] $request .= new(:$file);
     my &resolve;
-    my IncludeLine::Response['File'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -613,11 +580,10 @@ subtest
     my File['Relative', 'Protocol'] $file .= new(:$path, :$protocol);
     my IncludeLine::Request['Name', 'File'] $request .= new(:$name, :$file);
     my &resolve;
-    my IncludeLine::Response['Name', 'File'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Finn'].new(:$request, :$response),
+        IncludeLine['Finn'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 
@@ -632,11 +598,10 @@ subtest
     my File['Relative', 'Protocol'] $file .= new(:$path, :$protocol);
     my IncludeLine::Request['Name', 'File'] $request .= new(:$name, :$file);
     my &resolve;
-    my IncludeLine::Response['Name', 'File'] $response .= new(:&resolve);
     cmp-ok
         Finn::Parser::Grammar.parse($include-line, :$rule, :$actions).made,
         &cmp-ok-include-line,
-        IncludeLine['Text'].new(:$request, :$response),
+        IncludeLine['Text'].new(:$request, :&resolve),
         'IncludeLine OK';
 }
 

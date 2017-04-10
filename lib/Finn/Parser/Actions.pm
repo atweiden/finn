@@ -234,30 +234,30 @@ multi method include-line:finn ($/ where @<leading-ws>.so --> Nil)
 {
     my LeadingWS:D @leading-ws = @<leading-ws>».made;
     my IncludeLine::Request:D $request = $<include-line-request>.made;
-    my IncludeLine::Response:D $response = self.gen-response($request, :finn);
-    make IncludeLine['Finn'].new(:@leading-ws, :$request, :$response);
+    my &resolve = self.gen-resolve-request-closure($request, :finn);
+    make IncludeLine['Finn'].new(:@leading-ws, :$request, :&resolve);
 }
 
 multi method include-line:finn ($/ --> Nil)
 {
     my IncludeLine::Request:D $request = $<include-line-request>.made;
-    my IncludeLine::Response:D $response = self.gen-response($request, :finn);
-    make IncludeLine['Finn'].new(:$request, :$response);
+    my &resolve = self.gen-resolve-request-closure($request, :finn);
+    make IncludeLine['Finn'].new(:$request, :&resolve);
 }
 
 multi method include-line:text ($/ where @<leading-ws>.so --> Nil)
 {
     my LeadingWS:D @leading-ws = @<leading-ws>».made;
     my IncludeLine::Request:D $request = $<include-line-request>.made;
-    my IncludeLine::Response:D $response = self.gen-response($request, :text);
-    make IncludeLine['Text'].new(:@leading-ws, :$request, :$response);
+    my &resolve = self.gen-resolve-request-closure($request, :text);
+    make IncludeLine['Text'].new(:@leading-ws, :$request, :&resolve);
 }
 
 multi method include-line:text ($/ --> Nil)
 {
     my IncludeLine::Request:D $request = $<include-line-request>.made;
-    my IncludeLine::Response:D $response = self.gen-response($request, :text);
-    make IncludeLine['Text'].new(:$request, :$response);
+    my &resolve = self.gen-resolve-request-closure($request, :text);
+    make IncludeLine['Text'].new(:$request, :&resolve);
 }
 
 # --- end include-line }}}
@@ -1865,37 +1865,35 @@ method gen-reference-closure(
 }
 
 # end method gen-reference-closure }}}
-# method gen-response {{{
+# method gen-resolve-request-closure {{{
 
-multi method gen-response(
+multi method gen-resolve-request-closure(
     ::?CLASS:D:
     IncludeLine::Request['Name'] $request,
     Bool:D :finn($)! where *.so
-    --> IncludeLine::Response['Name']
+    --> Sub:D
 )
 {
     my Str:D $name = $request.name;
     my &resolve = self.gen-sectional-block-closure(:$name, :finn);
-    my IncludeLine::Response['Name'] $response .= new(:&resolve);
 }
 
-multi method gen-response(
+multi method gen-resolve-request-closure(
     ::?CLASS:D:
     IncludeLine::Request['Name'] $request,
     Bool:D :text($)! where *.so
-    --> IncludeLine::Response['Name']
+    --> Sub:D
 )
 {
     my Str:D $name = $request.name;
     my &resolve = self.gen-sectional-block-closure(:$name, :text);
-    my IncludeLine::Response['Name'] $response .= new(:&resolve);
 }
 
-multi method gen-response(
+multi method gen-resolve-request-closure(
     ::?CLASS:D:
     IncludeLine::Request['File'] $request,
     Bool:D :finn($)! where *.so
-    --> IncludeLine::Response['File']
+    --> Sub:D
 )
 {
     my File:D $file = $request.file;
@@ -1905,14 +1903,13 @@ multi method gen-response(
         :pending-file,
         :finn
     );
-    my IncludeLine::Response['File'] $response .= new(:&resolve);
 }
 
-multi method gen-response(
+multi method gen-resolve-request-closure(
     ::?CLASS:D:
     IncludeLine::Request['File'] $request,
     Bool:D :text($)! where *.so
-    --> IncludeLine::Response['File']
+    --> Sub:D
 )
 {
     my File:D $file = $request.file;
@@ -1922,14 +1919,13 @@ multi method gen-response(
         :pending-file,
         :text
     );
-    my IncludeLine::Response['File'] $response .= new(:&resolve);
 }
 
-multi method gen-response(
+multi method gen-resolve-request-closure(
     ::?CLASS:D:
     IncludeLine::Request['Reference'] $request,
     Bool:D :finn($)! where *.so
-    --> IncludeLine::Response['Reference']
+    --> Sub:D
 )
 {
     my UInt:D $number = $request.reference-inline.number;
@@ -1938,14 +1934,13 @@ multi method gen-response(
         self.gen-absolute-path-closure(&reference, :pending-reference);
     my &resolve =
         self.gen-document-closure(&absolute-path, :pending-reference, :finn);
-    my IncludeLine::Response['Reference'] $response .= new(:&resolve);
 }
 
-multi method gen-response(
+multi method gen-resolve-request-closure(
     ::?CLASS:D:
     IncludeLine::Request['Reference'] $request,
     Bool:D :text($)! where *.so
-    --> IncludeLine::Response['Reference']
+    --> Sub:D
 )
 {
     my UInt:D $number = $request.reference-inline.number;
@@ -1954,14 +1949,13 @@ multi method gen-response(
         self.gen-absolute-path-closure(&reference, :pending-reference);
     my &resolve =
         self.gen-document-closure(&absolute-path, :pending-reference, :text);
-    my IncludeLine::Response['Reference'] $response .= new(:&resolve);
 }
 
-multi method gen-response(
+multi method gen-resolve-request-closure(
     ::?CLASS:D:
     IncludeLine::Request['Name', 'File'] $request,
     Bool:D :finn($)! where *.so
-    --> IncludeLine::Response['Name', 'File']
+    --> Sub:D
 )
 {
     my Str:D $name = $request.name;
@@ -1978,14 +1972,13 @@ multi method gen-response(
         :pending-file,
         :finn
     );
-    my IncludeLine::Response['Name', 'File'] $response .= new(:&resolve);
 }
 
-multi method gen-response(
+multi method gen-resolve-request-closure(
     ::?CLASS:D:
     IncludeLine::Request['Name', 'File'] $request,
     Bool:D :text($)! where *.so
-    --> IncludeLine::Response['Name', 'File']
+    --> Sub:D
 )
 {
     my Str:D $name = $request.name;
@@ -2002,14 +1995,13 @@ multi method gen-response(
         :pending-file,
         :text
     );
-    my IncludeLine::Response['Name', 'File'] $response .= new(:&resolve);
 }
 
-multi method gen-response(
+multi method gen-resolve-request-closure(
     ::?CLASS:D:
     IncludeLine::Request['Name', 'Reference'] $request,
     Bool:D :finn($)! where *.so
-    --> IncludeLine::Response['Name', 'Reference']
+    --> Sub:D
 )
 {
     my Str:D $name = $request.name;
@@ -2025,14 +2017,13 @@ multi method gen-response(
         :pending-reference,
         :finn
     );
-    my IncludeLine::Response['Name', 'Reference'] $response .= new(:&resolve);
 }
 
-multi method gen-response(
+multi method gen-resolve-request-closure(
     ::?CLASS:D:
     IncludeLine::Request['Name', 'Reference'] $request,
     Bool:D :text($)! where *.so
-    --> IncludeLine::Response['Name', 'Reference']
+    --> Sub:D
 )
 {
     my Str:D $name = $request.name;
@@ -2048,10 +2039,9 @@ multi method gen-response(
         :pending-reference,
         :text
     );
-    my IncludeLine::Response['Name', 'Reference'] $response .= new(:&resolve);
 }
 
-# end method gen-response }}}
+# end method gen-resolve-request-closure }}}
 # method gen-sectional-block-closure {{{
 
 multi method gen-sectional-block-closure(

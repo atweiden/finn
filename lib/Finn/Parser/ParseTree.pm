@@ -172,13 +172,12 @@ role HorizontalRule['Soft'] {*}
 # end role HorizontalRule }}}
 # role IncludeLine {{{
 
-role IncludeLine::Request  {...}
-role IncludeLine::Response {...}
+role IncludeLine::Request {...}
 
 role IncludeLine['Finn'] does MaybeLeadingWS
 {
     has IncludeLine::Request:D $.request is required;
-    has IncludeLine::Response:D $.response is required;
+    has &.resolve is required;
 
     method Str(::?CLASS:D: --> Str:D)
     {
@@ -189,7 +188,7 @@ role IncludeLine['Finn'] does MaybeLeadingWS
 role IncludeLine['Text'] does MaybeLeadingWS
 {
     has IncludeLine::Request:D $.request is required;
-    has IncludeLine::Response:D $.response is required;
+    has &.resolve is required;
 
     method Str(::?CLASS:D: --> Str:D)
     {
@@ -309,25 +308,6 @@ role IncludeLine::Request::Reference
 }
 
 # --- end role IncludeLine::Request }}}
-# --- role IncludeLine::Response {{{
-
-class Document                      {...}
-role SectionalBlock                 {...}
-role IncludeLine::Response::Resolve {...}
-
-role IncludeLine::Response['Name']              does IncludeLine::Response::Resolve {*}
-role IncludeLine::Response['File']              does IncludeLine::Response::Resolve {*}
-role IncludeLine::Response['Reference']         does IncludeLine::Response::Resolve {*}
-role IncludeLine::Response['Name', 'File']      does IncludeLine::Response::Resolve {*}
-role IncludeLine::Response['Name', 'Reference'] does IncludeLine::Response::Resolve {*}
-
-# XXX Callable type checking presently not fully implemented
-role IncludeLine::Response::Resolve
-{
-    has &.resolve is required;
-}
-
-# --- end role IncludeLine::Response }}}
 
 # end role IncludeLine }}}
 # role IncludeLineBlock {{{
