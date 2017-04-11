@@ -2293,6 +2293,31 @@ sub gen-bounds(--> Chunk::Meta::Bounds:D)
 }
 
 # end sub gen-bounds }}}
+# sub gen-include-line {{{
+
+multi sub gen-include-line(
+    IncludeLine['Finn'],
+    LeadingWS:D :@leading-ws!,
+    IncludeLine::Request:D :$request!,
+    :&resolve!
+    --> IncludeLine['Finn']
+)
+{
+    my IncludeLine['Finn'] $include .= new(:@leading-ws, :$request, :&resolve);
+}
+
+multi sub gen-include-line(
+    IncludeLine['Text'],
+    LeadingWS:D :@leading-ws!,
+    IncludeLine::Request:D :$request!,
+    :&resolve!
+    --> IncludeLine['Text']
+)
+{
+    my IncludeLine['Text'] $include .= new(:@leading-ws, :$request, :&resolve);
+}
+
+# end sub gen-include-line }}}
 # sub merge {{{
 
 multi sub merge(
@@ -2368,26 +2393,32 @@ multi sub trim(
 
 multi sub trim(
     LeadingWS:D @leading-ws,
-    SectionalBlockContent['IncludeLine'] $content is copy
+    SectionalBlockContent['IncludeLine'] $content
     --> SectionalBlockContent['IncludeLine']
 )
 {
     my LeadingWS:D @actual = $content.include-line.leading-ws;
     my LeadingWS:D @padding = @leading-ws;
     my LeadingWS:D @comb = comb(@actual, @padding);
-    $content.include-line.set-leading-ws(@comb);
-    $content;
+    my IncludeLine::Request:D $request = $content.include-line.request;
+    my &resolve = $content.include-line.resolve;
+    my IncludeLine:D $include-line = gen-include-line(
+        $content.include-line.WHAT,
+        :leading-ws(@comb),
+        :$request,
+        :&resolve
+    );
+    my SectionalBlockContent['IncludeLine'] $s .= new(:$include-line);
 }
 
 multi sub trim(
     LeadingWS:D @leading-ws,
-    SectionalBlockContent['Text'] $content is copy
+    SectionalBlockContent['Text'] $content
     --> SectionalBlockContent['Text']
 )
 {
     my Str:D $text = trim(@leading-ws, $content.text);
-    $content.set-text($text);
-    $content;
+    my SectionalBlockContent['Text'] $s .= new(:$text);
 }
 
 # --- end SectionalBlockContent }}}

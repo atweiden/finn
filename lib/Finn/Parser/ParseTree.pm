@@ -355,10 +355,6 @@ role LeadingWS['Tab']
 role MaybeLeadingWS
 {
     has LeadingWS:D @.leading-ws;
-    method set-leading-ws(::?CLASS:D: LeadingWS:D @leading-ws)
-    {
-        @!leading-ws = @leading-ws;
-    }
 }
 
 # end role LeadingWS }}}
@@ -594,11 +590,6 @@ role SectionalBlockContent['IncludeLine']
 role SectionalBlockContent['Text']
 {
     has Str:D $.text is required;
-
-    method set-text(::?CLASS:D: Str:D $text)
-    {
-        $!text = $text;
-    }
 
     method Str(::?CLASS:D: --> Str:D)
     {
