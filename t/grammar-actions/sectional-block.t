@@ -534,10 +534,10 @@ subtest
     my Str:D $name-b = 'misc';
     my IncludeLine::Request['Name'] $request-b .= new(:name($name-b));
     my &resolve-b;
-    my IncludeLine::Response['Name'] $response-b .= new(:resolve(&resolve-b));
+    my IncludeLine::Resolver['Name'] $resolver-b .= new(:resolve(&resolve-b));
     my IncludeLine['Finn'] $include-line-b .= new(
         :request($request-b),
-        :response($response-b)
+        :resolver($resolver-b)
     );
     my SectionalBlockContent['IncludeLine'] $content-b .= new(
         :include-line($include-line-b)
@@ -599,11 +599,11 @@ subtest 'sectional-block with indented include-lines',
     my Str:D $name-b = 'f.ex';
     my IncludeLine::Request['Name'] $request-b .= new(:name($name-b));
     my &resolve-b;
-    my IncludeLine::Response['Name'] $response-b .= new(:resolve(&resolve-b));
+    my IncludeLine::Resolver['Name'] $resolver-b .= new(:resolve(&resolve-b));
     my IncludeLine['Text'] $include-line-b .= new(
         :leading-ws(@leading-ws-b),
         :request($request-b),
-        :response($response-b)
+        :resolver($resolver-b)
     );
     my SectionalBlockContent['IncludeLine'] $content-b .= new(
         :include-line($include-line-b)
@@ -623,10 +623,10 @@ subtest 'sectional-block with indented include-lines',
     my Str:D $name-d = 'g.ex';
     my IncludeLine::Request['Name'] $request-d .= new(:name($name-d));
     my &resolve-d;
-    my IncludeLine::Response['Name'] $response-d .= new(:resolve(&resolve-d));
+    my IncludeLine::Resolver['Name'] $resolver-d .= new(:resolve(&resolve-d));
     my IncludeLine['Text'] $include-line-d .= new(
         :request($request-d),
-        :response($response-d)
+        :resolver($resolver-d)
     );
     my SectionalBlockContent['IncludeLine'] $content-d .= new(
         :include-line($include-line-d)
@@ -647,11 +647,11 @@ subtest 'sectional-block with indented include-lines',
     my Str:D $name-f = 'h.ex';
     my IncludeLine::Request['Name'] $request-f .= new(:name($name-f));
     my &resolve-f;
-    my IncludeLine::Response['Name'] $response-f .= new(:resolve(&resolve-f));
+    my IncludeLine::Resolver['Name'] $resolver-f .= new(:resolve(&resolve-f));
     my IncludeLine['Finn'] $include-line-f .= new(
         :leading-ws(@leading-ws-f),
         :request($request-f),
-        :response($response-f)
+        :resolver($resolver-f)
     );
     my SectionalBlockContent['IncludeLine'] $content-f .= new(
         :include-line($include-line-f)
@@ -671,10 +671,10 @@ subtest 'sectional-block with indented include-lines',
     my Str:D $name-h = 'i.ex';
     my IncludeLine::Request['Name'] $request-h .= new(:name($name-h));
     my &resolve-h;
-    my IncludeLine::Response['Name'] $response-h .= new(:resolve(&resolve-h));
+    my IncludeLine::Resolver['Name'] $resolver-h .= new(:resolve(&resolve-h));
     my IncludeLine['Finn'] $include-line-h .= new(
         :request($request-h),
-        :response($response-h)
+        :resolver($resolver-h)
     );
     my SectionalBlockContent['IncludeLine'] $content-h .= new(
         :include-line($include-line-h)
@@ -750,11 +750,11 @@ subtest 'indented sectional-block with indented include-lines',
     my Str:D $name-b = 'f.ex';
     my IncludeLine::Request['Name'] $request-b .= new(:name($name-b));
     my &resolve-b;
-    my IncludeLine::Response['Name'] $response-b .= new(:resolve(&resolve-b));
+    my IncludeLine::Resolver['Name'] $resolver-b .= new(:resolve(&resolve-b));
     my IncludeLine['Text'] $include-line-b .= new(
         :leading-ws(@leading-ws-b),
         :request($request-b),
-        :response($response-b)
+        :resolver($resolver-b)
     );
     my SectionalBlockContent['IncludeLine'] $content-b .= new(
         :include-line($include-line-b)
@@ -774,10 +774,10 @@ subtest 'indented sectional-block with indented include-lines',
     my Str:D $name-d = 'g.ex';
     my IncludeLine::Request['Name'] $request-d .= new(:name($name-d));
     my &resolve-d;
-    my IncludeLine::Response['Name'] $response-d .= new(:resolve(&resolve-d));
+    my IncludeLine::Resolver['Name'] $resolver-d .= new(:resolve(&resolve-d));
     my IncludeLine['Text'] $include-line-d .= new(
         :request($request-d),
-        :response($response-d)
+        :resolver($resolver-d)
     );
     my SectionalBlockContent['IncludeLine'] $content-d .= new(
         :include-line($include-line-d)
@@ -798,11 +798,11 @@ subtest 'indented sectional-block with indented include-lines',
     my Str:D $name-f = 'h.ex';
     my IncludeLine::Request['Name'] $request-f .= new(:name($name-f));
     my &resolve-f;
-    my IncludeLine::Response['Name'] $response-f .= new(:resolve(&resolve-f));
+    my IncludeLine::Resolver['Name'] $resolver-f .= new(:resolve(&resolve-f));
     my IncludeLine['Finn'] $include-line-f .= new(
         :leading-ws(@leading-ws-f),
         :request($request-f),
-        :response($response-f)
+        :resolver($resolver-f)
     );
     my SectionalBlockContent['IncludeLine'] $content-f .= new(
         :include-line($include-line-f)
@@ -822,10 +822,10 @@ subtest 'indented sectional-block with indented include-lines',
     my Str:D $name-h = 'i.ex';
     my IncludeLine::Request['Name'] $request-h .= new(:name($name-h));
     my &resolve-h;
-    my IncludeLine::Response['Name'] $response-h .= new(:resolve(&resolve-h));
+    my IncludeLine::Resolver['Name'] $resolver-h .= new(:resolve(&resolve-h));
     my IncludeLine['Finn'] $include-line-h .= new(
         :request($request-h),
-        :response($response-h)
+        :resolver($resolver-h)
     );
     my SectionalBlockContent['IncludeLine'] $content-h .= new(
         :include-line($include-line-h)

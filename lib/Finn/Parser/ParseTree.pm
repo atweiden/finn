@@ -173,12 +173,12 @@ role HorizontalRule['Soft'] {*}
 # role IncludeLine {{{
 
 role IncludeLine::Request  {...}
-role IncludeLine::Response {...}
+role IncludeLine::Resolver {...}
 
 role IncludeLine['Finn'] does MaybeLeadingWS
 {
     has IncludeLine::Request:D $.request is required;
-    has IncludeLine::Response:D $.response is required;
+    has IncludeLine::Resolver:D $.resolver is required;
 
     method Str(::?CLASS:D: --> Str:D)
     {
@@ -189,7 +189,7 @@ role IncludeLine['Finn'] does MaybeLeadingWS
 role IncludeLine['Text'] does MaybeLeadingWS
 {
     has IncludeLine::Request:D $.request is required;
-    has IncludeLine::Response:D $.response is required;
+    has IncludeLine::Resolver:D $.resolver is required;
 
     method Str(::?CLASS:D: --> Str:D)
     {
@@ -309,23 +309,23 @@ role IncludeLine::Request::Reference
 }
 
 # --- end role IncludeLine::Request }}}
-# --- role IncludeLine::Response {{{
+# --- role IncludeLine::Resolver {{{
 
-role IncludeLine::Response::Resolve {...}
+role IncludeLine::Resolver::Resolve {...}
 
-role IncludeLine::Response['Name']              does IncludeLine::Response::Resolve {*}
-role IncludeLine::Response['File']              does IncludeLine::Response::Resolve {*}
-role IncludeLine::Response['Reference']         does IncludeLine::Response::Resolve {*}
-role IncludeLine::Response['Name', 'File']      does IncludeLine::Response::Resolve {*}
-role IncludeLine::Response['Name', 'Reference'] does IncludeLine::Response::Resolve {*}
+role IncludeLine::Resolver['Name']              does IncludeLine::Resolver::Resolve {*}
+role IncludeLine::Resolver['File']              does IncludeLine::Resolver::Resolve {*}
+role IncludeLine::Resolver['Reference']         does IncludeLine::Resolver::Resolve {*}
+role IncludeLine::Resolver['Name', 'File']      does IncludeLine::Resolver::Resolve {*}
+role IncludeLine::Resolver['Name', 'Reference'] does IncludeLine::Resolver::Resolve {*}
 
 # XXX Callable type checking presently not fully implemented
-role IncludeLine::Response::Resolve
+role IncludeLine::Resolver::Resolve
 {
     has &.resolve is required;
 }
 
-# --- end role IncludeLine::Response }}}
+# --- end role IncludeLine::Resolver }}}
 
 # end role IncludeLine }}}
 # role IncludeLineBlock {{{
