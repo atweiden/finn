@@ -189,9 +189,10 @@ subtest 'finn-examples/app',
     my File['Absolute'] $file-j .= new(:path($path-j));
     my IncludeLine::Request['File'] $request-j .= new(:file($file-j));
     my &resolve-j;
+    my IncludeLine::Response['File'] $response-j .= new(:resolve(&resolve-j));
     my IncludeLine['Finn'] $include-line-j .= new(
         :request($request-j),
-        :resolve(&resolve-j)
+        :response($response-j)
     );
 
     my IncludeLine:D @include-line-j = $include-line-j;
@@ -249,9 +250,10 @@ subtest 'finn-examples/app',
     my File['Absolute'] $file-m .= new(:path($path-m));
     my IncludeLine::Request['File'] $request-m .= new(:file($file-m));
     my &resolve-m;
+    my IncludeLine::Response['File'] $response-m .= new(:resolve(&resolve-m));
     my IncludeLine['Finn'] $include-line-m .= new(
         :request($request-m),
-        :resolve(&resolve-m)
+        :response($response-m)
     );
 
     my IncludeLine:D @include-line-m = $include-line-m;
@@ -309,9 +311,10 @@ subtest 'finn-examples/app',
     my File['Absolute'] $file-p .= new(:path($path-p));
     my IncludeLine::Request['File'] $request-p .= new(:file($file-p));
     my &resolve-p;
+    my IncludeLine::Response['File'] $response-p .= new(:resolve(&resolve-p));
     my IncludeLine['Finn'] $include-line-p .= new(
         :request($request-p),
-        :resolve(&resolve-p)
+        :response($response-p)
     );
 
     my IncludeLine:D @include-line-p = $include-line-p;
@@ -578,9 +581,12 @@ subtest 'finn-examples/hangman',
         :name($include-line-name-h02)
     );
     my &resolve-h02;
+    my IncludeLine::Response['Name'] $response-h02 .= new(
+        :resolve(&resolve-h02)
+    );
     my IncludeLine['Finn'] $include-line-h02 .= new(
         :request($request-h02),
-        :resolve(&resolve-h02)
+        :response($response-h02)
     );
     my SectionalBlockContent['IncludeLine'] $content-h02 .= new(
         :include-line($include-line-h02)
@@ -605,10 +611,13 @@ subtest 'finn-examples/hangman',
         :name($include-line-name-h04)
     );
     my &resolve-h04;
+    my IncludeLine::Response['Name'] $response-h04 .= new(
+        :resolve(&resolve-h04)
+    );
     my IncludeLine['Finn'] $include-line-h04 .= new(
         :leading-ws(@leading-ws-h04),
         :request($request-h04),
-        :resolve(&resolve-h04)
+        :response($response-h04)
     );
     my SectionalBlockContent['IncludeLine'] $content-h04 .= new(
         :include-line($include-line-h04)
@@ -623,10 +632,13 @@ subtest 'finn-examples/hangman',
         :name($include-line-name-h05)
     );
     my &resolve-h05;
+    my IncludeLine::Response['Name'] $response-h05 .= new(
+        :resolve(&resolve-h05)
+    );
     my IncludeLine['Finn'] $include-line-h05 .= new(
         :leading-ws(@leading-ws-h05),
         :request($request-h05),
-        :resolve(&resolve-h05)
+        :response($response-h05)
     );
     my SectionalBlockContent['IncludeLine'] $content-h05 .= new(
         :include-line($include-line-h05)
@@ -641,10 +653,13 @@ subtest 'finn-examples/hangman',
         :name($include-line-name-h06)
     );
     my &resolve-h06;
+    my IncludeLine::Response['Name'] $response-h06 .= new(
+        :resolve(&resolve-h06)
+    );
     my IncludeLine['Finn'] $include-line-h06 .= new(
         :leading-ws(@leading-ws-h06),
         :request($request-h06),
-        :resolve(&resolve-h06)
+        :response($response-h06)
     );
     my SectionalBlockContent['IncludeLine'] $content-h06 .= new(
         :include-line($include-line-h06)
@@ -664,9 +679,12 @@ subtest 'finn-examples/hangman',
         :name($include-line-name-h08)
     );
     my &resolve-h08;
+    my IncludeLine::Response['Name'] $response-h08 .= new(
+        :resolve(&resolve-h08)
+    );
     my IncludeLine['Finn'] $include-line-h08 .= new(
         :request($request-h08),
-        :resolve(&resolve-h08)
+        :response($response-h08)
     );
     my SectionalBlockContent['IncludeLine'] $content-h08 .= new(
         :include-line($include-line-h08)
@@ -1045,9 +1063,12 @@ subtest 'finn-examples/hangman',
         :name($include-line-name-x01)
     );
     my &resolve-x01;
+    my IncludeLine::Response['Name'] $response-x01 .= new(
+        :resolve(&resolve-x01)
+    );
     my IncludeLine['Finn'] $include-line-x01 .= new(
         :request($request-x01),
-        :resolve(&resolve-x01)
+        :response($response-x01)
     );
     my SectionalBlockContent['IncludeLine'] $content-x01 .= new(
         :include-line($include-line-x01)
@@ -4309,9 +4330,12 @@ subtest 'finn-examples/hello',
         :name($include-line-name-i01)
     );
     my &resolve-i01;
+    my IncludeLine::Response['Name'] $response-i01 .= new(
+        :resolve(&resolve-i01)
+    );
     my IncludeLine['Finn'] $include-line-i01 .= new(
         :request($request-i01),
-        :resolve(&resolve-i01)
+        :response($response-i01)
     );
     my SectionalBlockContent['IncludeLine'] $content-i01 .= new(
         :include-line($include-line-i01)
@@ -4325,9 +4349,12 @@ subtest 'finn-examples/hello',
         :name($include-line-name-i02)
     );
     my &resolve-i02;
+    my IncludeLine::Response['Name'] $response-i02 .= new(
+        :resolve(&resolve-i02)
+    );
     my IncludeLine['Finn'] $include-line-i02 .= new(
         :request($request-i02),
-        :resolve(&resolve-i02)
+        :response($response-i02)
     );
     my SectionalBlockContent['IncludeLine'] $content-i02 .= new(
         :include-line($include-line-i02)
@@ -4744,9 +4771,12 @@ subtest 'finn-examples/novel',
     my File['Relative'] $file-e .= new(:path($path-e));
     my IncludeLine::Request['File'] $request-e .= new(:file($file-e));
     my &resolve-e;
+    my IncludeLine::Response['File'] $response-e .= new(
+        :resolve(&resolve-e)
+    );
     my IncludeLine['Finn'] $include-line-e .= new(
         :request($request-e),
-        :resolve(&resolve-e)
+        :response($response-e)
     );
 
     my IncludeLine:D @include-line-e = $include-line-e;
@@ -4805,9 +4835,12 @@ subtest 'finn-examples/novel',
     my File['Relative'] $file-h .= new(:path($path-h));
     my IncludeLine::Request['File'] $request-h .= new(:file($file-h));
     my &resolve-h;
+    my IncludeLine::Response['File'] $response-h .= new(
+        :resolve(&resolve-h)
+    );
     my IncludeLine['Finn'] $include-line-h .= new(
         :request($request-h),
-        :resolve(&resolve-h)
+        :response($response-h)
     );
 
     my IncludeLine:D @include-line-h = $include-line-h;
@@ -4866,9 +4899,12 @@ subtest 'finn-examples/novel',
     my File['Relative'] $file-k .= new(:path($path-k));
     my IncludeLine::Request['File'] $request-k .= new(:file($file-k));
     my &resolve-k;
+    my IncludeLine::Response['File'] $response-k .= new(
+        :resolve(&resolve-k)
+    );
     my IncludeLine['Finn'] $include-line-k .= new(
         :request($request-k),
-        :resolve(&resolve-k)
+        :response($response-k)
     );
 
     my IncludeLine:D @include-line-k = $include-line-k;
