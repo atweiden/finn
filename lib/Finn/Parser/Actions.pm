@@ -1736,6 +1736,229 @@ method reference-inline($/ --> Nil)
 
 =begin pod
 =head Helper Methods
+
+=head2 Methods for Generating Closures
+
+Generate closures in response to C<IncludeLine>s, which are found at
+Finn document top level and within C<SectionalBlock>s.
+=end pod
+
+# method gen-include-line-resolver {{{
+
+multi method gen-include-line-resolver(
+    ::?CLASS:D:
+    IncludeLine::Request['Name'] $request,
+    Bool:D :finn($)! where *.so
+    --> IncludeLine::Resolver['Name']
+)
+{
+    my Str:D $name = $request.name;
+    my &resolve = self.gen-sectional-block-closure(
+        :$name,
+        :pending-self-document-parse,
+        :finn
+    );
+    my IncludeLine::Resolver['Name'] $resolver .= new(:&resolve);
+}
+
+multi method gen-include-line-resolver(
+    ::?CLASS:D:
+    IncludeLine::Request['Name'] $request,
+    Bool:D :text($)! where *.so
+    --> IncludeLine::Resolver['Name']
+)
+{
+    my Str:D $name = $request.name;
+    my &resolve = self.gen-sectional-block-closure(
+        :$name,
+        :pending-self-document-parse,
+        :text
+    );
+    my IncludeLine::Resolver['Name'] $resolver .= new(:&resolve);
+}
+
+multi method gen-include-line-resolver(
+    ::?CLASS:D:
+    IncludeLine::Request['File'] $request,
+    Bool:D :finn($)! where *.so
+    --> IncludeLine::Resolver['File']
+)
+{
+    my File:D $file = $request.file;
+    my IO::Path:D $absolute-path-from-file = self.resolve-path-from-file($file);
+    my &resolve = self.gen-document-closure(
+        $absolute-path-from-file,
+        :pending-link-document-parse,
+        :finn
+    );
+    my IncludeLine::Resolver['File'] $resolver .= new(:&resolve);
+}
+
+multi method gen-include-line-resolver(
+    ::?CLASS:D:
+    IncludeLine::Request['File'] $request,
+    Bool:D :text($)! where *.so
+    --> IncludeLine::Resolver['File']
+)
+{
+    my File:D $file = $request.file;
+    my IO::Path:D $absolute-path-from-file = self.resolve-path-from-file($file);
+    my &resolve = self.gen-document-closure(
+        $absolute-path-from-file,
+        :pending-link-document-parse,
+        :text
+    );
+    my IncludeLine::Resolver['File'] $resolver .= new(:&resolve);
+}
+
+multi method gen-include-line-resolver(
+    ::?CLASS:D:
+    IncludeLine::Request['Reference'] $request,
+    Bool:D :finn($)! where *.so
+    --> IncludeLine::Resolver['Reference']
+)
+{
+    my UInt:D $number = $request.reference-inline.number;
+    my &reference =
+        self.gen-reference-closure($number, :pending-reference-table);
+    my &absolute-path =
+        self.gen-absolute-path-closure(&reference, :pending-reference-table);
+    my &resolve = self.gen-document-closure(
+        &absolute-path,
+        :pending-reference-table,
+        :finn
+    );
+    my IncludeLine::Resolver['Reference'] $resolver .= new(:&resolve);
+}
+
+multi method gen-include-line-resolver(
+    ::?CLASS:D:
+    IncludeLine::Request['Reference'] $request,
+    Bool:D :text($)! where *.so
+    --> IncludeLine::Resolver['Reference']
+)
+{
+    my UInt:D $number = $request.reference-inline.number;
+    my &reference =
+        self.gen-reference-closure($number, :pending-reference-table);
+    my &absolute-path =
+        self.gen-absolute-path-closure(&reference, :pending-reference-table);
+    my &resolve = self.gen-document-closure(
+        &absolute-path,
+        :pending-reference-table,
+        :text
+    );
+    my IncludeLine::Resolver['Reference'] $resolver .= new(:&resolve);
+}
+
+multi method gen-include-line-resolver(
+    ::?CLASS:D:
+    IncludeLine::Request['Name', 'File'] $request,
+    Bool:D :finn($)! where *.so
+    --> IncludeLine::Resolver['Name', 'File']
+)
+{
+    my Str:D $name = $request.name;
+    my File:D $file = $request.file;
+    my IO::Path:D $absolute-path-from-file = self.resolve-path-from-file($file);
+    my &document = self.gen-document-closure(
+        $absolute-path-from-file,
+        :pending-link-document-parse,
+        :finn
+    );
+    my &resolve = self.gen-sectional-block-closure(
+        &document,
+        :$name,
+        :pending-link-document-parse,
+        :finn
+    );
+    my IncludeLine::Resolver['Name', 'File'] $resolver .= new(:&resolve);
+}
+
+multi method gen-include-line-resolver(
+    ::?CLASS:D:
+    IncludeLine::Request['Name', 'File'] $request,
+    Bool:D :text($)! where *.so
+    --> IncludeLine::Resolver['Name', 'File']
+)
+{
+    my Str:D $name = $request.name;
+    my File:D $file = $request.file;
+    my IO::Path:D $absolute-path-from-file = self.resolve-path-from-file($file);
+    my &document = self.gen-document-closure(
+        $absolute-path-from-file,
+        :pending-link-document-parse,
+        :finn
+    );
+    my &resolve = self.gen-sectional-block-closure(
+        &document,
+        :$name,
+        :pending-link-document-parse,
+        :text
+    );
+    my IncludeLine::Resolver['Name', 'File'] $resolver .= new(:&resolve);
+}
+
+multi method gen-include-line-resolver(
+    ::?CLASS:D:
+    IncludeLine::Request['Name', 'Reference'] $request,
+    Bool:D :finn($)! where *.so
+    --> IncludeLine::Resolver['Name', 'Reference']
+)
+{
+    my Str:D $name = $request.name;
+    my UInt:D $number = $request.reference-inline.number;
+    my &reference =
+        self.gen-reference-closure($number, :pending-reference-table);
+    my &absolute-path =
+        self.gen-absolute-path-closure(&reference, :pending-reference-table);
+    my &document = self.gen-document-closure(
+        &absolute-path,
+        :pending-reference-table,
+        :finn
+    );
+    my &resolve = self.gen-sectional-block-closure(
+        &document,
+        :$name,
+        :pending-reference-table,
+        :finn
+    );
+    my IncludeLine::Resolver['Name', 'Reference'] $resolver .= new(:&resolve);
+}
+
+multi method gen-include-line-resolver(
+    ::?CLASS:D:
+    IncludeLine::Request['Name', 'Reference'] $request,
+    Bool:D :text($)! where *.so
+    --> IncludeLine::Resolver['Name', 'Reference']
+)
+{
+    my Str:D $name = $request.name;
+    my UInt:D $number = $request.reference-inline.number;
+    my &reference =
+        self.gen-reference-closure($number, :pending-reference-table);
+    my &absolute-path =
+        self.gen-absolute-path-closure(&reference, :pending-reference-table);
+    my &document = self.gen-document-closure(
+        &absolute-path,
+        :pending-reference-table,
+        :finn
+    );
+    my &resolve = self.gen-sectional-block-closure(
+        &document,
+        :$name,
+        :pending-reference-table,
+        :text
+    );
+    my IncludeLine::Resolver['Name', 'Reference'] $resolver .= new(:&resolve);
+}
+
+# end method gen-include-line-resolver }}}
+
+=begin pod
+=head3 Ancillary Methods for Generating Closures
+
+Should eventually integrate a cache.
 =end pod
 
 # method gen-absolute-path-closure {{{
@@ -1744,7 +1967,7 @@ method reference-inline($/ --> Nil)
 method gen-absolute-path-closure(
     ::?CLASS:D:
     Str:D &reference,
-    Bool:D :pending-reference($)! where *.so
+    Bool:D :pending-reference-table($)! where *.so
     --> Sub:D
 )
 {
@@ -1770,7 +1993,7 @@ method gen-absolute-path-closure(
 multi method gen-document-closure(
     ::?CLASS:D:
     IO::Path:D &absolute-path,
-    Bool:D :pending-reference($)! where *.so,
+    Bool:D :pending-reference-table($)! where *.so,
     Bool:D :finn($)! where *.so
     --> Sub:D
 )
@@ -1795,7 +2018,7 @@ multi method gen-document-closure(
 multi method gen-document-closure(
     ::?CLASS:D:
     IO::Path:D &absolute-path,
-    Bool:D :pending-reference($)! where *.so,
+    Bool:D :pending-reference-table($)! where *.so,
     Bool:D :text($)! where *.so
     --> Sub:D
 )
@@ -1813,7 +2036,7 @@ multi method gen-document-closure(
 multi method gen-document-closure(
     ::?CLASS:D:
     IO::Path:D $absolute-path,
-    Bool:D :pending-file($)! where *.so,
+    Bool:D :pending-link-document-parse($)! where *.so,
     Bool:D :finn($)! where *.so
     --> Sub:D
 )
@@ -1834,7 +2057,7 @@ multi method gen-document-closure(
 multi method gen-document-closure(
     ::?CLASS:D:
     IO::Path:D $absolute-path,
-    Bool:D :pending-file($)! where *.so,
+    Bool:D :pending-link-document-parse($)! where *.so,
     Bool:D :text($)! where *.so
     --> Sub:D
 )
@@ -1846,200 +2069,13 @@ multi method gen-document-closure(
 }
 
 # end method gen-document-closure }}}
-# method gen-include-line-resolver {{{
-
-multi method gen-include-line-resolver(
-    ::?CLASS:D:
-    IncludeLine::Request['Name'] $request,
-    Bool:D :finn($)! where *.so
-    --> IncludeLine::Resolver['Name']
-)
-{
-    my Str:D $name = $request.name;
-    my &resolve = self.gen-sectional-block-closure(:$name, :finn);
-    my IncludeLine::Resolver['Name'] $resolver .= new(:&resolve);
-}
-
-multi method gen-include-line-resolver(
-    ::?CLASS:D:
-    IncludeLine::Request['Name'] $request,
-    Bool:D :text($)! where *.so
-    --> IncludeLine::Resolver['Name']
-)
-{
-    my Str:D $name = $request.name;
-    my &resolve = self.gen-sectional-block-closure(:$name, :text);
-    my IncludeLine::Resolver['Name'] $resolver .= new(:&resolve);
-}
-
-multi method gen-include-line-resolver(
-    ::?CLASS:D:
-    IncludeLine::Request['File'] $request,
-    Bool:D :finn($)! where *.so
-    --> IncludeLine::Resolver['File']
-)
-{
-    my File:D $file = $request.file;
-    my IO::Path:D $absolute-path-from-file = self.resolve-path-from-file($file);
-    my &resolve = self.gen-document-closure(
-        $absolute-path-from-file,
-        :pending-file,
-        :finn
-    );
-    my IncludeLine::Resolver['File'] $resolver .= new(:&resolve);
-}
-
-multi method gen-include-line-resolver(
-    ::?CLASS:D:
-    IncludeLine::Request['File'] $request,
-    Bool:D :text($)! where *.so
-    --> IncludeLine::Resolver['File']
-)
-{
-    my File:D $file = $request.file;
-    my IO::Path:D $absolute-path-from-file = self.resolve-path-from-file($file);
-    my &resolve = self.gen-document-closure(
-        $absolute-path-from-file,
-        :pending-file,
-        :text
-    );
-    my IncludeLine::Resolver['File'] $resolver .= new(:&resolve);
-}
-
-multi method gen-include-line-resolver(
-    ::?CLASS:D:
-    IncludeLine::Request['Reference'] $request,
-    Bool:D :finn($)! where *.so
-    --> IncludeLine::Resolver['Reference']
-)
-{
-    my UInt:D $number = $request.reference-inline.number;
-    my &reference = self.gen-reference-closure($number, :pending-reference);
-    my &absolute-path =
-        self.gen-absolute-path-closure(&reference, :pending-reference);
-    my &resolve =
-        self.gen-document-closure(&absolute-path, :pending-reference, :finn);
-    my IncludeLine::Resolver['Reference'] $resolver .= new(:&resolve);
-}
-
-multi method gen-include-line-resolver(
-    ::?CLASS:D:
-    IncludeLine::Request['Reference'] $request,
-    Bool:D :text($)! where *.so
-    --> IncludeLine::Resolver['Reference']
-)
-{
-    my UInt:D $number = $request.reference-inline.number;
-    my &reference = self.gen-reference-closure($number, :pending-reference);
-    my &absolute-path =
-        self.gen-absolute-path-closure(&reference, :pending-reference);
-    my &resolve =
-        self.gen-document-closure(&absolute-path, :pending-reference, :text);
-    my IncludeLine::Resolver['Reference'] $resolver .= new(:&resolve);
-}
-
-multi method gen-include-line-resolver(
-    ::?CLASS:D:
-    IncludeLine::Request['Name', 'File'] $request,
-    Bool:D :finn($)! where *.so
-    --> IncludeLine::Resolver['Name', 'File']
-)
-{
-    my Str:D $name = $request.name;
-    my File:D $file = $request.file;
-    my IO::Path:D $absolute-path-from-file = self.resolve-path-from-file($file);
-    my &document = self.gen-document-closure(
-        $absolute-path-from-file,
-        :pending-file,
-        :finn
-    );
-    my &resolve = self.gen-sectional-block-closure(
-        &document,
-        :$name,
-        :pending-file,
-        :finn
-    );
-    my IncludeLine::Resolver['Name', 'File'] $resolver .= new(:&resolve);
-}
-
-multi method gen-include-line-resolver(
-    ::?CLASS:D:
-    IncludeLine::Request['Name', 'File'] $request,
-    Bool:D :text($)! where *.so
-    --> IncludeLine::Resolver['Name', 'File']
-)
-{
-    my Str:D $name = $request.name;
-    my File:D $file = $request.file;
-    my IO::Path:D $absolute-path-from-file = self.resolve-path-from-file($file);
-    my &document = self.gen-document-closure(
-        $absolute-path-from-file,
-        :pending-file,
-        :finn
-    );
-    my &resolve = self.gen-sectional-block-closure(
-        &document,
-        :$name,
-        :pending-file,
-        :text
-    );
-    my IncludeLine::Resolver['Name', 'File'] $resolver .= new(:&resolve);
-}
-
-multi method gen-include-line-resolver(
-    ::?CLASS:D:
-    IncludeLine::Request['Name', 'Reference'] $request,
-    Bool:D :finn($)! where *.so
-    --> IncludeLine::Resolver['Name', 'Reference']
-)
-{
-    my Str:D $name = $request.name;
-    my UInt:D $number = $request.reference-inline.number;
-    my &reference = self.gen-reference-closure($number, :pending-reference);
-    my &absolute-path =
-        self.gen-absolute-path-closure(&reference, :pending-reference);
-    my &document =
-        self.gen-document-closure(&absolute-path, :pending-reference, :finn);
-    my &resolve = self.gen-sectional-block-closure(
-        &document,
-        :$name,
-        :pending-reference,
-        :finn
-    );
-    my IncludeLine::Resolver['Name', 'Reference'] $resolver .= new(:&resolve);
-}
-
-multi method gen-include-line-resolver(
-    ::?CLASS:D:
-    IncludeLine::Request['Name', 'Reference'] $request,
-    Bool:D :text($)! where *.so
-    --> IncludeLine::Resolver['Name', 'Reference']
-)
-{
-    my Str:D $name = $request.name;
-    my UInt:D $number = $request.reference-inline.number;
-    my &reference = self.gen-reference-closure($number, :pending-reference);
-    my &absolute-path =
-        self.gen-absolute-path-closure(&reference, :pending-reference);
-    my &document =
-        self.gen-document-closure(&absolute-path, :pending-reference, :finn);
-    my &resolve = self.gen-sectional-block-closure(
-        &document,
-        :$name,
-        :pending-reference,
-        :text
-    );
-    my IncludeLine::Resolver['Name', 'Reference'] $resolver .= new(:&resolve);
-}
-
-# end method gen-include-line-resolver }}}
 # method gen-reference-closure {{{
 
 # find link text referenced from request
 method gen-reference-closure(
     ::?CLASS:D:
     UInt:D $number,
-    Bool:D :pending-reference($)! where *.so
+    Bool:D :pending-reference-table($)! where *.so
     --> Sub:D
 )
 {
@@ -2062,7 +2098,7 @@ multi method gen-sectional-block-closure(
     ::?CLASS:D:
     &document,
     Str:D :$name! where *.so,
-    Bool:D :pending-reference($)! where *.so,
+    Bool:D :pending-reference-table($)! where *.so,
     Bool:D :finn($)! where *.so
     --> Sub:D
 )
@@ -2084,7 +2120,7 @@ multi method gen-sectional-block-closure(
     ::?CLASS:D:
     &document,
     Str:D :$name! where *.so,
-    Bool:D :pending-reference($)! where *.so,
+    Bool:D :pending-reference-table($)! where *.so,
     Bool:D :text($)! where *.so
     --> Sub:D
 )
@@ -2106,7 +2142,7 @@ multi method gen-sectional-block-closure(
     ::?CLASS:D:
     &document,
     Str:D :$name! where *.so,
-    Bool:D :pending-file($)! where *.so,
+    Bool:D :pending-link-document-parse($)! where *.so,
     Bool:D :finn($)! where *.so
     --> Sub:D
 )
@@ -2125,7 +2161,7 @@ multi method gen-sectional-block-closure(
     ::?CLASS:D:
     &document,
     Str:D :$name! where *.so,
-    Bool:D :pending-file($)! where *.so,
+    Bool:D :pending-link-document-parse($)! where *.so,
     Bool:D :text($)! where *.so
     --> Sub:D
 )
@@ -2143,24 +2179,43 @@ multi method gen-sectional-block-closure(
 multi method gen-sectional-block-closure(
     ::?CLASS:D:
     Str:D :$name where *.so,
+    Bool:D :pending-self-document-parse($)! where *.so,
     Bool:D :finn($)! where *.so
     --> Sub:D
 )
 {
-    my &resolve = self.resolve-sectional-block(:$name, :finn);
+    my &resolve = sub (Document:D $document --> SectionalBlock:D)
+    {
+        my SectionalBlock:D @sectional-block =
+            $document.sectional-block(:$name);
+        my SectionalBlock:D $sectional-block =
+            self.resolve-sectional-block(@sectional-block, :finn);
+    }
 }
 
 multi method gen-sectional-block-closure(
     ::?CLASS:D:
     Str:D :$name where *.so,
+    Bool:D :pending-self-document-parse($)! where *.so,
     Bool:D :text($)! where *.so
     --> Sub:D
 )
 {
-    my &resolve = self.resolve-sectional-block(:$name, :text);
+    my &resolve = sub (Document:D $document --> Str:D)
+    {
+        my SectionalBlock:D @sectional-block =
+            $document.sectional-block(:$name);
+        my Str:D $sectional-block =
+            self.resolve-sectional-block(@sectional-block, :text);
+    }
 }
 
 # end method gen-sectional-block-closure }}}
+
+=begin pod
+=head2 Methods for Resolving File Paths and Named Sectional Blocks
+=end pod
+
 # method resolve-path-from-file {{{
 
 # append relative to project root
@@ -2203,38 +2258,6 @@ multi method resolve-path-from-file(
 # method resolve-sectional-block {{{
 
 sub infix:<∑>(SectionalBlock:D, SectionalBlock:D --> SectionalBlock:D) {...}
-
-multi method resolve-sectional-block(
-    ::?CLASS:D:
-    Str:D :$name! where *.so,
-    Bool:D :finn($)! where *.so
-    --> Sub:D
-)
-{
-    my &resolve = sub (Document:D $document --> SectionalBlock:D)
-    {
-        my SectionalBlock:D @sectional-block =
-            $document.sectional-block(:$name);
-        my SectionalBlock:D $sectional-block =
-            self.resolve-sectional-block(@sectional-block, :finn);
-    }
-}
-
-multi method resolve-sectional-block(
-    ::?CLASS:D:
-    Str:D :$name! where *.so,
-    Bool:D :text($)! where *.so
-    --> Sub:D
-)
-{
-    my &resolve = sub (Document:D $document --> Str:D)
-    {
-        my SectionalBlock:D @sectional-block =
-            $document.sectional-block(:$name);
-        my Str:D $sectional-block =
-            self.resolve-sectional-block(@sectional-block, :text);
-    }
-}
 
 multi method resolve-sectional-block(
     ::?CLASS:D:
