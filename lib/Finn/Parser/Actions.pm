@@ -1755,7 +1755,7 @@ multi method gen-include-line-resolver(
     my Str:D $name = $request.name;
     my &resolve = self.gen-sectional-block-closure(
         :$name,
-        :pending-self-document-parse,
+        :await-self-document-parse,
         :finn
     );
     my IncludeLine::Resolver['Name'] $resolver .= new(:&resolve);
@@ -1771,7 +1771,7 @@ multi method gen-include-line-resolver(
     my Str:D $name = $request.name;
     my &resolve = self.gen-sectional-block-closure(
         :$name,
-        :pending-self-document-parse,
+        :await-self-document-parse,
         :text
     );
     my IncludeLine::Resolver['Name'] $resolver .= new(:&resolve);
@@ -1788,7 +1788,7 @@ multi method gen-include-line-resolver(
     my IO::Path:D $absolute-path-from-file = self.resolve-path-from-file($file);
     my &resolve = self.gen-document-closure(
         $absolute-path-from-file,
-        :pending-link-document-parse,
+        :defer-link-document-parse,
         :finn
     );
     my IncludeLine::Resolver['File'] $resolver .= new(:&resolve);
@@ -1805,7 +1805,7 @@ multi method gen-include-line-resolver(
     my IO::Path:D $absolute-path-from-file = self.resolve-path-from-file($file);
     my &resolve = self.gen-document-closure(
         $absolute-path-from-file,
-        :pending-link-document-parse,
+        :defer-link-document-parse,
         :text
     );
     my IncludeLine::Resolver['File'] $resolver .= new(:&resolve);
@@ -1819,13 +1819,12 @@ multi method gen-include-line-resolver(
 )
 {
     my UInt:D $number = $request.reference-inline.number;
-    my &reference =
-        self.gen-reference-closure($number, :pending-reference-table);
+    my &reference = self.gen-reference-closure($number, :await-reference-table);
     my &absolute-path =
-        self.gen-absolute-path-closure(&reference, :pending-reference-table);
+        self.gen-absolute-path-closure(&reference, :await-reference-table);
     my &resolve = self.gen-document-closure(
         &absolute-path,
-        :pending-reference-table,
+        :await-reference-table,
         :finn
     );
     my IncludeLine::Resolver['Reference'] $resolver .= new(:&resolve);
@@ -1839,13 +1838,12 @@ multi method gen-include-line-resolver(
 )
 {
     my UInt:D $number = $request.reference-inline.number;
-    my &reference =
-        self.gen-reference-closure($number, :pending-reference-table);
+    my &reference = self.gen-reference-closure($number, :await-reference-table);
     my &absolute-path =
-        self.gen-absolute-path-closure(&reference, :pending-reference-table);
+        self.gen-absolute-path-closure(&reference, :await-reference-table);
     my &resolve = self.gen-document-closure(
         &absolute-path,
-        :pending-reference-table,
+        :await-reference-table,
         :text
     );
     my IncludeLine::Resolver['Reference'] $resolver .= new(:&resolve);
@@ -1863,13 +1861,13 @@ multi method gen-include-line-resolver(
     my IO::Path:D $absolute-path-from-file = self.resolve-path-from-file($file);
     my &document = self.gen-document-closure(
         $absolute-path-from-file,
-        :pending-link-document-parse,
+        :defer-link-document-parse,
         :finn
     );
     my &resolve = self.gen-sectional-block-closure(
         &document,
         :$name,
-        :pending-link-document-parse,
+        :defer-link-document-parse,
         :finn
     );
     my IncludeLine::Resolver['Name', 'File'] $resolver .= new(:&resolve);
@@ -1887,13 +1885,13 @@ multi method gen-include-line-resolver(
     my IO::Path:D $absolute-path-from-file = self.resolve-path-from-file($file);
     my &document = self.gen-document-closure(
         $absolute-path-from-file,
-        :pending-link-document-parse,
+        :defer-link-document-parse,
         :finn
     );
     my &resolve = self.gen-sectional-block-closure(
         &document,
         :$name,
-        :pending-link-document-parse,
+        :defer-link-document-parse,
         :text
     );
     my IncludeLine::Resolver['Name', 'File'] $resolver .= new(:&resolve);
@@ -1908,19 +1906,18 @@ multi method gen-include-line-resolver(
 {
     my Str:D $name = $request.name;
     my UInt:D $number = $request.reference-inline.number;
-    my &reference =
-        self.gen-reference-closure($number, :pending-reference-table);
+    my &reference = self.gen-reference-closure($number, :await-reference-table);
     my &absolute-path =
-        self.gen-absolute-path-closure(&reference, :pending-reference-table);
+        self.gen-absolute-path-closure(&reference, :await-reference-table);
     my &document = self.gen-document-closure(
         &absolute-path,
-        :pending-reference-table,
+        :await-reference-table,
         :finn
     );
     my &resolve = self.gen-sectional-block-closure(
         &document,
         :$name,
-        :pending-reference-table,
+        :await-reference-table,
         :finn
     );
     my IncludeLine::Resolver['Name', 'Reference'] $resolver .= new(:&resolve);
@@ -1935,19 +1932,18 @@ multi method gen-include-line-resolver(
 {
     my Str:D $name = $request.name;
     my UInt:D $number = $request.reference-inline.number;
-    my &reference =
-        self.gen-reference-closure($number, :pending-reference-table);
+    my &reference = self.gen-reference-closure($number, :await-reference-table);
     my &absolute-path =
-        self.gen-absolute-path-closure(&reference, :pending-reference-table);
+        self.gen-absolute-path-closure(&reference, :await-reference-table);
     my &document = self.gen-document-closure(
         &absolute-path,
-        :pending-reference-table,
+        :await-reference-table,
         :finn
     );
     my &resolve = self.gen-sectional-block-closure(
         &document,
         :$name,
-        :pending-reference-table,
+        :await-reference-table,
         :text
     );
     my IncludeLine::Resolver['Name', 'Reference'] $resolver .= new(:&resolve);
@@ -1967,7 +1963,7 @@ Should eventually integrate a cache.
 method gen-absolute-path-closure(
     ::?CLASS:D:
     Str:D &reference,
-    Bool:D :pending-reference-table($)! where *.so
+    Bool:D :await-reference-table($)! where *.so
     --> Sub:D
 )
 {
@@ -1993,7 +1989,7 @@ method gen-absolute-path-closure(
 multi method gen-document-closure(
     ::?CLASS:D:
     IO::Path:D &absolute-path,
-    Bool:D :pending-reference-table($)! where *.so,
+    Bool:D :await-reference-table($)! where *.so,
     Bool:D :finn($)! where *.so
     --> Sub:D
 )
@@ -2018,7 +2014,7 @@ multi method gen-document-closure(
 multi method gen-document-closure(
     ::?CLASS:D:
     IO::Path:D &absolute-path,
-    Bool:D :pending-reference-table($)! where *.so,
+    Bool:D :await-reference-table($)! where *.so,
     Bool:D :text($)! where *.so
     --> Sub:D
 )
@@ -2036,7 +2032,7 @@ multi method gen-document-closure(
 multi method gen-document-closure(
     ::?CLASS:D:
     IO::Path:D $absolute-path,
-    Bool:D :pending-link-document-parse($)! where *.so,
+    Bool:D :defer-link-document-parse($)! where *.so,
     Bool:D :finn($)! where *.so
     --> Sub:D
 )
@@ -2057,7 +2053,7 @@ multi method gen-document-closure(
 multi method gen-document-closure(
     ::?CLASS:D:
     IO::Path:D $absolute-path,
-    Bool:D :pending-link-document-parse($)! where *.so,
+    Bool:D :defer-link-document-parse($)! where *.so,
     Bool:D :text($)! where *.so
     --> Sub:D
 )
@@ -2075,7 +2071,7 @@ multi method gen-document-closure(
 method gen-reference-closure(
     ::?CLASS:D:
     UInt:D $number,
-    Bool:D :pending-reference-table($)! where *.so
+    Bool:D :await-reference-table($)! where *.so
     --> Sub:D
 )
 {
@@ -2098,7 +2094,7 @@ multi method gen-sectional-block-closure(
     ::?CLASS:D:
     &document,
     Str:D :$name! where *.so,
-    Bool:D :pending-reference-table($)! where *.so,
+    Bool:D :await-reference-table($)! where *.so,
     Bool:D :finn($)! where *.so
     --> Sub:D
 )
@@ -2120,7 +2116,7 @@ multi method gen-sectional-block-closure(
     ::?CLASS:D:
     &document,
     Str:D :$name! where *.so,
-    Bool:D :pending-reference-table($)! where *.so,
+    Bool:D :await-reference-table($)! where *.so,
     Bool:D :text($)! where *.so
     --> Sub:D
 )
@@ -2142,7 +2138,7 @@ multi method gen-sectional-block-closure(
     ::?CLASS:D:
     &document,
     Str:D :$name! where *.so,
-    Bool:D :pending-link-document-parse($)! where *.so,
+    Bool:D :defer-link-document-parse($)! where *.so,
     Bool:D :finn($)! where *.so
     --> Sub:D
 )
@@ -2161,7 +2157,7 @@ multi method gen-sectional-block-closure(
     ::?CLASS:D:
     &document,
     Str:D :$name! where *.so,
-    Bool:D :pending-link-document-parse($)! where *.so,
+    Bool:D :defer-link-document-parse($)! where *.so,
     Bool:D :text($)! where *.so
     --> Sub:D
 )
@@ -2179,7 +2175,7 @@ multi method gen-sectional-block-closure(
 multi method gen-sectional-block-closure(
     ::?CLASS:D:
     Str:D :$name where *.so,
-    Bool:D :pending-self-document-parse($)! where *.so,
+    Bool:D :await-self-document-parse($)! where *.so,
     Bool:D :finn($)! where *.so
     --> Sub:D
 )
@@ -2196,7 +2192,7 @@ multi method gen-sectional-block-closure(
 multi method gen-sectional-block-closure(
     ::?CLASS:D:
     Str:D :$name where *.so,
-    Bool:D :pending-self-document-parse($)! where *.so,
+    Bool:D :await-self-document-parse($)! where *.so,
     Bool:D :text($)! where *.so
     --> Sub:D
 )
