@@ -4,14 +4,34 @@ Todo
 Finn::Parser
 ------------
 
+### resolve closures
+
+- resolve closures in parser
+
+#### towards a working cache
+
+- imagine we have `has Document:D %.cache{Str:D}` in Actions
+  - that is, a cache filled with Documents indexed by PathString
+    - although, would be useful to also know in which context the Document
+      was found in
+      - a PathString may have originated from a:
+        - `IncludeLine['File']`
+        - `IncludeLine['Name', 'File']`
+        - `IncludeLine['Name', 'Reference']`
+        - `ReferenceLineBlock`
+        - `SectionalLink`
+      - and then where does that item appear?
+- then we can say method `gen-document-closure` should grep `%.cache`
+  by PathString for any requested Document
+  - this should be done during step *Resolve Closures*
+
+- probably best to eventually implement this with `%!cache` in Actions
+  - but needs custom submethod `BUILD`
+
 ### other
 
 - sub `merge` for `SectionalBlockName['File']` types
   - likely requires making Finn::Parser::Utils::Equivalence
-
-### resolve closures
-
-- resolve closures in parser upon required data availability
 
 ### check for circular include directives
 
