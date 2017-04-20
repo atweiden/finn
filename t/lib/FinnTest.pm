@@ -34,7 +34,7 @@ multi sub infix:<eqv>(
     {
         @a[$i] eqv @b[$i]
     }
-    my Bool:D $is-same = [[&is-true]] @is-same;
+    my Bool:D $is-same = [&&] @is-same;
 }
 
 multi sub infix:<eqv>(
@@ -413,7 +413,7 @@ multi sub infix:<eqv>(
     {
         @a[$i] eqv @b[$i]
     }
-    my Bool:D $is-same = [[&is-true]] @is-same;
+    my Bool:D $is-same = [&&] @is-same;
 }
 
 multi sub infix:<eqv>(
@@ -594,7 +594,7 @@ multi sub infix:<eqv>(
     {
         @a[$i] eqv @b[$i]
     }
-    my Bool:D $is-same = [[&is-true]] @is-same;
+    my Bool:D $is-same = [&&] @is-same;
 }
 
 multi sub infix:<eqv>(
@@ -672,7 +672,7 @@ multi sub infix:<eqv>(
     {
         @a[$i] eqv @b[$i]
     }
-    my Bool:D $is-same = [[&is-true]] @is-same;
+    my Bool:D $is-same = [&&] @is-same;
 }
 
 multi sub infix:<eqv>(
@@ -1284,7 +1284,7 @@ multi sub infix:<eqv>(
     {
         @a[$i] eqv @b[$i]
     }
-    my Bool:D $is-same = [[&is-true]] @is-same;
+    my Bool:D $is-same = [&&] @is-same;
 }
 
 multi sub infix:<eqv>(
@@ -1450,7 +1450,7 @@ multi sub infix:<eqv>(
     {
         @a[$i] eqv @b[$i]
     }
-    my Bool:D $is-same = [[&is-true]] @is-same;
+    my Bool:D $is-same = [&&] @is-same;
 }
 
 multi sub infix:<eqv>(
@@ -1523,14 +1523,5 @@ multi sub infix:<eqv>(
 }
 
 # end sectional-block }}}
-
-# sub is-true {{{
-
-sub is-true(Bool:D $a, Bool:D $b --> Bool:D)
-{
-    my Bool:D $is-true = $a && $b;
-}
-
-# sub end is-true }}}
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:
