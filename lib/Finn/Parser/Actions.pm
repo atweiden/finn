@@ -2441,7 +2441,7 @@ multi sub trim(
         :$request,
         :$resolver
     );
-    my SectionalBlockContent['IncludeLine'] $s .= new(:$include-line);
+    my SectionalBlockContent['IncludeLine'] $c .= new(:$include-line);
 }
 
 multi sub trim(
@@ -2451,7 +2451,7 @@ multi sub trim(
 )
 {
     my Str:D $text = trim(@leading-ws, $content.text);
-    my SectionalBlockContent['Text'] $s .= new(:$text);
+    my SectionalBlockContent['Text'] $c .= new(:$text);
 }
 
 # --- end SectionalBlockContent }}}
