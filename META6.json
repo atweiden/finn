@@ -5,7 +5,7 @@
     "author"      : "Andy Weidenbaum",
     "description" : "Literate programming made easy",
     "depends"     : ["Config::TOML"],
-    "license"     : "http://unlicense.org/UNLICENSE",
+    "license"     : "Unlicense",
     "source-type" : "git",
     "source-url"  : "git://github.com/atweiden/finn.git",
     "support"     : {
