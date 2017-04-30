@@ -2616,17 +2616,36 @@ method !slurp-plus-cache-docutext(
 =head5 File
 =end pod
 
-# method get-or-parse-plus-cache-file {{{
+# method get-file-from-cache {{{
 
-multi method get-or-parse-plus-cache-file(
+multi method get-file-from-cache(
     ::?CLASS:D:
-    Str:D $path-text where {
-        %Finn::Parser::Actions::Cache::file{$path-text}:exists
-    }
+    Str:D $path-text where { %Finn::Parser::Actions::Cache::file{$_}:exists }
     --> File:D
 )
 {
     my File:D $file = %Finn::Parser::Actions::Cache::file{$path-text};
+}
+
+multi method get-file-from-cache(
+    ::?CLASS:D:
+    Str:D $path-text
+    --> Nil
+)
+{
+    Nil;
+}
+
+# end method get-file-from-cache }}}
+# method get-or-parse-plus-cache-file {{{
+
+multi method get-or-parse-plus-cache-file(
+    ::?CLASS:D:
+    Str:D $path-text where { self.get-file-from-cache($_).so }
+    --> File:D
+)
+{
+    my File:D $file = self.get-file-from-cache($path-text);
 }
 
 multi method get-or-parse-plus-cache-file(
@@ -2639,16 +2658,41 @@ multi method get-or-parse-plus-cache-file(
 }
 
 # end method get-or-parse-plus-cache-file }}}
-# method !parse-plus-cache-file {{{
+# method !cache-file {{{
 
-method !parse-plus-cache-file(::?CLASS:D: Str:D $path-text --> File:D)
+method !cache-file(
+    ::?CLASS:D:
+    Str:D $path-text,
+    File:D $file
+    --> Nil
+)
+{
+    %Finn::Parser::Actions::Cache::file{$path-text} = $file;
+}
+
+# end method !cache-file }}}
+# method !parse-file {{{
+
+method !parse-file(
+    ::?CLASS:D:
+    Str:D $path-text
+    --> File:D
+)
 {
     my Finn::Parser::Actions $actions .=
         new(:$.file, :$.project-root, :$.section);
     my Str:D $rule = 'file';
     my File:D $file =
         Finn::Parser::Grammar.parse($path-text, :$actions, :$rule).made;
-    %Finn::Parser::Actions::Cache::file{$path-text} = $file;
+}
+
+# end method !parse-file }}}
+# method !parse-plus-cache-file {{{
+
+method !parse-plus-cache-file(::?CLASS:D: Str:D $path-text --> File:D)
+{
+    my File:D $file = self!parse-file($path-text);
+    self!cache-file($path-text, $file);
     $file;
 }
 
