@@ -12,9 +12,10 @@ Finn::Parser::Actions::Cache
 
 =begin code
 use Finn::Parser::Actions::Cache;
-my Str:D $path-to-document = 'path/to/document';
-%Finn::Parser::Actions::Cache::document{$path-to-document} = Document.new(...);
-%Finn::Parser::Actions::Cache::file{$path-to-file} = File.new(...);
+my Str:D $path = 'path';
+%Finn::Parser::Actions::Cache::document{$path} = Document.new;
+%Finn::Parser::Actions::Cache::document-slurp{$path} = Str.new;
+%Finn::Parser::Actions::Cache::file{$path} = File.new;
 =end code
 
 =head DESCRIPTION
@@ -32,6 +33,7 @@ from Finn source documents.
 # public variables {{{
 
 our %document;
+our %document-slurp;
 our %file;
 
 # end public variables }}}
