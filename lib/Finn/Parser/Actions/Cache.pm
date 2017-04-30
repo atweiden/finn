@@ -32,8 +32,13 @@ from Finn source documents.
 
 # public variables {{{
 
+# parsed C<Document>s indexed by pathstring
 our %document;
-our %document-slurp;
+
+# C<IO.slurp>'d document text indexed by pathstring
+our %docutext;
+
+# parsed C<File>s indexed by pathstring
 our %file;
 
 # end public variables }}}

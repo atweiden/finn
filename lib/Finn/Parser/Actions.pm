@@ -2525,48 +2525,92 @@ method !parse-plus-cache-document(
 =head5 Document (Text-mode)
 =end pod
 
-# method get-or-slurp-plus-cache-document-text {{{
+# method get-docutext-from-cache {{{
 
-# link Docuslurp exists in cache, so get it from cache
-multi method get-or-slurp-plus-cache-document-text(
+multi method get-docutext-from-cache(
     ::?CLASS:D:
     IO::Path:D $absolute-path where {
-        %Finn::Parser::Actions::Cache::document-slurp{~$absolute-path}:exists
+        %Finn::Parser::Actions::Cache::docutext{~$_}:exists
     }
     --> Str:D
 )
 {
-    my Str:D $file = ~$absolute-path;
-    my Str:D $text = %Finn::Parser::Actions::Cache::document-slurp{$file};
+    my Str:D $text = %Finn::Parser::Actions::Cache::docutext{~$_};
 }
 
-# link Docuslurp does not exist in cache, so slurp it and add to cache
-multi method get-or-slurp-plus-cache-document-text(
+multi method get-docutext-from-cache(
+    ::?CLASS:D:
+    IO::Path:D $absolute-path
+    --> Nil
+)
+{
+    Nil;
+}
+
+# end method get-docutext-from-cache }}}
+# method get-or-slurp-plus-cache-docutext {{{
+
+# link docutext exists in cache, so get it from cache
+multi method get-or-slurp-plus-cache-docutext(
+    ::?CLASS:D:
+    IO::Path:D $absolute-path where { self.get-docutext-from-cache($_).so }
+    --> Str:D
+)
+{
+    my Str:D $text = self.get-docutext-from-cache($absolute-path);
+}
+
+# link docutext does not exist in cache, so slurp it and add to cache
+multi method get-or-slurp-plus-cache-docutext(
     ::?CLASS:D:
     IO::Path:D $absolute-path
     --> Str:D
 )
 {
-    my Document:D $document =
-        self!slurp-plus-cache-document-text($absolute-path);
+    my Str:D $text = self!slurp-plus-cache-docutext($absolute-path);
 }
 
-# end method get-or-slurp-plus-cache-document-text }}}
-# method !slurp-plus-cache-document-text {{{
+# end method get-or-slurp-plus-cache-docutext }}}
+# method !cache-docutext {{{
 
-method !slurp-plus-cache-document-text(
+method !cache-docutext(
+    ::?CLASS:D:
+    IO::Path:D $absolute-path,
+    Str:D $text
+    --> Nil
+)
+{
+    my Str:D $file = ~$absolute-path;
+    %Finn::Parser::Actions::Cache::docutext{$file} = $text;
+}
+
+# end method !cache-docutext }}}
+# method !slurp-docutext {{{
+
+method !slurp-docutext(
     ::?CLASS:D:
     IO::Path:D $absolute-path
     --> Str:D
 )
 {
-    my Str:D $file = ~$absolute-path;
     my Str:D $text = $absolute-path.slurp;
-    %Finn::Parser::Actions::Cache::document-slurp{$file} = $text;
+}
+
+# end method !slurp-docutext }}}
+# method !slurp-plus-cache-docutext {{{
+
+method !slurp-plus-cache-docutext(
+    ::?CLASS:D:
+    IO::Path:D $absolute-path
+    --> Str:D
+)
+{
+    my Str:D $text = self!slurp-docutext($absolute-path);
+    self!cache-docutext($absolute-path, $text);
     $text;
 }
 
-# end method !slurp-plus-cache-document-text }}}
+# end method !slurp-plus-cache-docutext }}}
 
 =begin pod
 =head5 File
