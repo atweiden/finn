@@ -29,9 +29,8 @@ C<Finn::Parser::ParseTree> to build a parse tree from Finn source
 documents.
 
 Follows C<include-line>s and C<sectional-link>s which link to external
-files that are assumed to be Finn source documents. Parses external source
-documents in turn. Initial concept code doesn't do any optimization,
-and may parse the same external source document many times.
+files that are assumed to be Finn source documents. Parses external
+source documents in turn.
 
 Since C<include-line>s may contain C<reference-inline>s linking
 to external documents in place of file paths, and since the
@@ -2430,19 +2429,39 @@ method !gen-sectional-block-closure-text(
 =head5 Document (Finn-mode)
 =end pod
 
+# method get-document-from-cache {{{
+
+multi method get-document-from-cache(
+    ::?CLASS:D:
+    IO::Path:D $absolute-path where {
+        %Finn::Parser::Actions::Cache::document{~$_}:exists
+    }
+    --> Document:D
+)
+{
+    my Document:D $document = %Finn::Parser::Actions::Cache::document{~$_};
+}
+
+multi method get-document-from-cache(
+    ::?CLASS:D:
+    IO::Path:D $absolute-path
+    --> Nil
+)
+{
+    Nil;
+}
+
+# end method get-document-from-cache }}}
 # method get-or-parse-plus-cache-document {{{
 
 # link Document exists in cache, so get it from cache
 multi method get-or-parse-plus-cache-document(
     ::?CLASS:D:
-    IO::Path:D $absolute-path where {
-        %Finn::Parser::Actions::Cache::document{~$absolute-path}:exists
-    }
+    IO::Path:D $absolute-path where { self.get-document-from-cache($_).so }
     --> Document:D
 )
 {
-    my Str:D $file = ~$absolute-path;
-    my Document:D $document = %Finn::Parser::Actions::Cache::document{$file};
+    my Document:D $document = self.get-document-from-cache($absolute-path);
 }
 
 # link Document does not exist in cache, so parse it and add to cache
@@ -2456,9 +2475,23 @@ multi method get-or-parse-plus-cache-document(
 }
 
 # end method get-or-parse-plus-cache-document }}}
-# method !parse-plus-cache-document {{{
+# method !cache-document {{{
 
-method !parse-plus-cache-document(
+method !cache-document(
+    ::?CLASS:D:
+    IO::Path:D $absolute-path,
+    Document:D $document
+    --> Nil
+)
+{
+    my Str:D $file = ~$absolute-path;
+    %Finn::Parser::Actions::Cache::document{$file} = $document;
+}
+
+# end method !cache-document }}}
+# method !parse-document {{{
+
+method !parse-document(
     ::?CLASS:D:
     IO::Path:D $absolute-path
     --> Document:D
@@ -2470,7 +2503,19 @@ method !parse-plus-cache-document(
     my Str:D $rule = 'document';
     my Document:D $document =
         Finn::Parser::Grammar.parsefile($file, :$actions, :$rule).made;
-    %Finn::Parser::Actions::Cache::document{$file} = $document;
+}
+
+# end method !parse-document }}}
+# method !parse-plus-cache-document {{{
+
+method !parse-plus-cache-document(
+    ::?CLASS:D:
+    IO::Path:D $absolute-path
+    --> Document:D
+)
+{
+    my Document:D $document = self!parse-document($absolute-path);
+    self!cache-document($absolute-path, $document);
     $document;
 }
 
