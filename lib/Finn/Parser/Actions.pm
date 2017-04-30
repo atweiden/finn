@@ -2299,7 +2299,12 @@ multi method gen-sectional-block-closure(
     --> Sub:D
 )
 {
-    my &resolve = self!gen-sectional-block-closure-finn(&document, :$name);
+    my &resolve = sub (--> SectionalBlock:D)
+    {
+        my Document:D $document = &document();
+        my SectionalBlock:D $sectional-block =
+            self.resolve-sectional-block($document, :$name, :finn);
+    }
 }
 
 multi method gen-sectional-block-closure(
@@ -2312,7 +2317,12 @@ multi method gen-sectional-block-closure(
     --> Sub:D
 )
 {
-    my &resolve = self!gen-sectional-block-closure-text(&document, :$name);
+    my &resolve = sub (--> SectionalBlock:D)
+    {
+        my Document:D $document = &document();
+        my Str:D $sectional-block =
+            self.resolve-sectional-block($document, :$name, :text);
+    }
 }
 
 multi method gen-sectional-block-closure(
@@ -2325,7 +2335,12 @@ multi method gen-sectional-block-closure(
     --> Sub:D
 )
 {
-    my &resolve = self!gen-sectional-block-closure-finn(&document, :$name);
+    my &resolve = sub (--> SectionalBlock:D)
+    {
+        my Document:D $document = &document();
+        my SectionalBlock:D $sectional-block =
+            self.resolve-sectional-block($document, :$name, :finn);
+    }
 }
 
 multi method gen-sectional-block-closure(
@@ -2338,7 +2353,12 @@ multi method gen-sectional-block-closure(
     --> Sub:D
 )
 {
-    my &resolve = self!gen-sectional-block-closure-text(&document, :$name);
+    my &resolve = sub (--> SectionalBlock:D)
+    {
+        my Document:D $document = &document();
+        my Str:D $sectional-block =
+            self.resolve-sectional-block($document, :$name, :text);
+    }
 }
 
 multi method gen-sectional-block-closure(
@@ -2357,10 +2377,8 @@ multi method gen-sectional-block-closure(
     )
     {
         my Document:D $document = &document(@reference-line-block);
-        my SectionalBlock:D @sectional-block =
-            $document.sectional-block(:$name);
         my SectionalBlock:D $sectional-block =
-            self.resolve-sectional-block(@sectional-block, :finn);
+            self.resolve-sectional-block($document, :$name, :finn);
     }
 }
 
@@ -2380,44 +2398,8 @@ multi method gen-sectional-block-closure(
     )
     {
         my Document:D $document = &document(@reference-line-block);
-        my SectionalBlock:D @sectional-block =
-            $document.sectional-block(:$name);
         my Str:D $sectional-block =
-            self.resolve-sectional-block(@sectional-block, :text);
-    }
-}
-
-method !gen-sectional-block-closure-finn(
-    ::?CLASS:D:
-    &document,
-    Str:D :$name! where *.so
-    --> Sub:D
-)
-{
-    my &resolve = sub (--> SectionalBlock:D)
-    {
-        my Document:D $document = &document();
-        my SectionalBlock:D @sectional-block =
-            $document.sectional-block(:$name);
-        my SectionalBlock:D $sectional-block =
-            self.resolve-sectional-block(@sectional-block, :finn);
-    }
-}
-
-method !gen-sectional-block-closure-text(
-    ::?CLASS:D:
-    &document,
-    Str:D :$name! where *.so
-    --> Sub:D
-)
-{
-    my &resolve = sub (--> Str:D)
-    {
-        my Document:D $document = &document();
-        my SectionalBlock:D @sectional-block =
-            $document.sectional-block(:$name);
-        my Str:D $sectional-block =
-            self.resolve-sectional-block(@sectional-block, :text);
+            self.resolve-sectional-block($document, :$name, :text);
     }
 }
 
@@ -2742,6 +2724,32 @@ multi method resolve-path-from-file(
 
 # end method resolve-path-from-file }}}
 # method resolve-sectional-block {{{
+
+multi method resolve-sectional-block(
+    ::?CLASS:D:
+    Document:D $document,
+    Str:D :$name! where *.so,
+    Bool:D :finn($)! where *.so
+    --> SectionalBlock:D
+)
+{
+    my SectionalBlock:D @sectional-block = $document.sectional-block(:$name);
+    my SectionalBlock:D $sectional-block =
+        self.resolve-sectional-block(@sectional-block, :finn);
+}
+
+multi method resolve-sectional-block(
+    ::?CLASS:D:
+    Document:D $document,
+    Str:D :$name! where *.so,
+    Bool:D :text($)! where *.so
+    --> Str:D
+)
+{
+    my SectionalBlock:D @sectional-block = $document.sectional-block(:$name);
+    my Str:D $sectional-block =
+        self.resolve-sectional-block(@sectional-block, :text);
+}
 
 sub infix:<∑>(SectionalBlock:D, SectionalBlock:D --> SectionalBlock:D) {...}
 
