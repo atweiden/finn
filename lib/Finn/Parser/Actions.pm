@@ -162,6 +162,7 @@ method chunk:blank-line ($/ --> Nil)
 method document($/ --> Nil)
 {
     my Chunk:D @chunk = @<chunk>».made;
+    my Sift $sift .= new(@chunk);
     make Document.new(:@chunk);
 }
 
@@ -2970,5 +2971,57 @@ sub trim-leading(LeadingWS:D @leading-ws, Str:D $text --> Str:D)
 # --- end text }}}
 
 # end sub trim }}}
+
+=begin pod
+=head Helper Classes
+
+=head2 Sift
+
+Document sifted for:
+
+=over
+=item Reference Table
+=item Sectional Blocks, merged by ID
+=back
+=end pod
+
+# class Sift {{{
+
+my class Sift
+{
+    has ReferenceLineBlock:D @.reference-line-block;
+    has SectionalBlock:D @.sectional-block;
+
+    multi submethod BUILD(
+        ReferenceLineBlock:D :@!reference-line-block! where *.so,
+        SectionalBlock:D :@!sectional-block! where *.so
+        --> Nil
+    )
+    {*}
+
+    multi submethod BUILD(
+        ReferenceLineBlock:D :@!reference-line-block! where *.so
+        --> Nil
+    )
+    {*}
+
+    multi submethod BUILD(
+        SectionalBlock:D :@!sectional-block! where *.so
+        --> Nil
+    )
+    {*}
+
+    multi submethod BUILD(
+        --> Nil
+    )
+    {*}
+
+    method new(Chunk:D @chunk --> Sift:D)
+    {
+
+    }
+}
+
+# end class Sift }}}
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:
