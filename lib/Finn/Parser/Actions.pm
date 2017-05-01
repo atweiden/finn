@@ -1752,11 +1752,11 @@ multi method gen-include-line-resolver(
     --> IncludeLine::Resolver['Name']
 )
 {
-    my IO::Path:D $absolute-path-of-self-document = $.file.IO.resolve;
+    my IO::Path:D $absolute-path = $.file.IO.resolve;
     my Str:D $name = $request.name;
     my &document = self.gen-document-closure(
         IncludeLine::Request['Name'],
-        $absolute-path-of-self-document,
+        $absolute-path,
         :await-self-document-parse,
         :finn
     );
@@ -1777,11 +1777,11 @@ multi method gen-include-line-resolver(
     --> IncludeLine::Resolver['Name']
 )
 {
-    my IO::Path:D $absolute-path-of-self-document = $.file.IO.resolve;
+    my IO::Path:D $absolute-path = $.file.IO.resolve;
     my Str:D $name = $request.name;
     my &document = self.gen-document-closure(
         IncludeLine::Request['Name'],
-        $absolute-path-of-self-document,
+        $absolute-path,
         :await-self-document-parse,
         :text
     );
@@ -1803,10 +1803,10 @@ multi method gen-include-line-resolver(
 )
 {
     my File:D $file = $request.file;
-    my IO::Path:D $absolute-path-from-file = self.resolve-path-from-file($file);
+    my IO::Path:D $absolute-path = self.resolve-path-from-file($file);
     my &resolve = self.gen-document-closure(
         IncludeLine::Request['File'],
-        $absolute-path-from-file,
+        $absolute-path,
         :defer-link-document-parse,
         :finn
     );
@@ -1821,10 +1821,10 @@ multi method gen-include-line-resolver(
 )
 {
     my File:D $file = $request.file;
-    my IO::Path:D $absolute-path-from-file = self.resolve-path-from-file($file);
+    my IO::Path:D $absolute-path = self.resolve-path-from-file($file);
     my &resolve = self.gen-document-closure(
         IncludeLine::Request['File'],
-        $absolute-path-from-file,
+        $absolute-path,
         :defer-link-document-parse,
         :text
     );
@@ -1894,10 +1894,10 @@ multi method gen-include-line-resolver(
 {
     my Str:D $name = $request.name;
     my File:D $file = $request.file;
-    my IO::Path:D $absolute-path-from-file = self.resolve-path-from-file($file);
+    my IO::Path:D $absolute-path = self.resolve-path-from-file($file);
     my &document = self.gen-document-closure(
         IncludeLine::Request['Name', 'File'],
-        $absolute-path-from-file,
+        $absolute-path,
         :defer-link-document-parse,
         :finn
     );
@@ -1920,10 +1920,10 @@ multi method gen-include-line-resolver(
 {
     my Str:D $name = $request.name;
     my File:D $file = $request.file;
-    my IO::Path:D $absolute-path-from-file = self.resolve-path-from-file($file);
+    my IO::Path:D $absolute-path = self.resolve-path-from-file($file);
     my &document = self.gen-document-closure(
         IncludeLine::Request['Name', 'File'],
-        $absolute-path-from-file,
+        $absolute-path,
         :defer-link-document-parse,
         :text
     );
@@ -2056,8 +2056,7 @@ method !gen-absolute-path-closure(
     {
         my Str:D $path-text = &reference(@reference-line-block);
         my File:D $file = self.get-or-parse-plus-cache-file($path-text);
-        my IO::Path:D $absolute-path-from-file =
-            self.resolve-path-from-file($file);
+        my IO::Path:D $absolute-path = self.resolve-path-from-file($file);
     }
 }
 
@@ -2068,7 +2067,7 @@ method !gen-absolute-path-closure(
 multi method gen-document-closure(
     ::?CLASS:D:
     IncludeLine::Request['Name'],
-    IO::Path:D $absolute-path-of-self-document,
+    IO::Path:D $absolute-path,
     Bool:D :await-self-document-parse($)! where *.so,
     Bool:D :finn($)! where *.so
     --> Sub:D
@@ -2076,16 +2075,14 @@ multi method gen-document-closure(
 {
     my &resolve = sub (--> Document:D)
     {
-        my Str:D $file = ~$absolute-path-of-self-document;
-        my Document:D $document =
-            %Finn::Parser::Actions::Cache::document{$file};
+        my Document:D $document = self.get-document-from-cache($absolute-path);
     }
 }
 
 multi method gen-document-closure(
     ::?CLASS:D:
     IncludeLine::Request['Name'],
-    IO::Path:D $absolute-path-of-self-document,
+    IO::Path:D $absolute-path,
     Bool:D :await-self-document-parse($)! where *.so,
     Bool:D :text($)! where *.so
     --> Sub:D
@@ -2094,7 +2091,7 @@ multi method gen-document-closure(
     # we need self Document parsed in Finn-mode for SectionalBlock by Name
     my &resolve = self.gen-document-closure(
         IncludeLine::Request['Name'],
-        $absolute-path-of-self-document,
+        $absolute-path,
         :await-self-document-parse,
         :finn
     );
