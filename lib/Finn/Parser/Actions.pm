@@ -2418,7 +2418,8 @@ multi method get-document-from-cache(
     --> Document:D
 )
 {
-    my Document:D $document = %Finn::Parser::Actions::Cache::document{~$_};
+    my Str:D $file = ~$absolute-path;
+    my Document:D $document = %Finn::Parser::Actions::Cache::document{$file};
 }
 
 multi method get-document-from-cache(
@@ -2514,7 +2515,8 @@ multi method get-docutext-from-cache(
     --> Str:D
 )
 {
-    my Str:D $text = %Finn::Parser::Actions::Cache::docutext{~$_};
+    my Str:D $file = ~$absolute-path;
+    my Str:D $text = %Finn::Parser::Actions::Cache::docutext{$file};
 }
 
 multi method get-docutext-from-cache(
