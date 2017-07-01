@@ -162,7 +162,6 @@ method chunk:blank-line ($/ --> Nil)
 method document($/ --> Nil)
 {
     my Chunk:D @chunk = @<chunk>».made;
-    my Sift $sift .= new(@chunk);
     make Document.new(:@chunk);
 }
 
@@ -172,7 +171,8 @@ method document($/ --> Nil)
 multi method TOP($/ where $<document>.so --> Nil)
 {
     my Document:D $document = $<document>.made;
-    make Finn::Parser::ParseTree.new(:$document);
+    my &resolve = gen-document-resolver($document);
+    make Finn::Parser::ParseTree.new(:$document, :&resolve);
 }
 
 multi method TOP($/ --> Nil)
@@ -2684,6 +2684,9 @@ method !parse-plus-cache-file(::?CLASS:D: Str:D $path-text --> File:D)
 =head2 Methods for Resolving File Paths and Named Sectional Blocks
 =end pod
 
+# method resolve-document {{{
+#
+# end method resolve-document }}}
 # method resolve-path-from-file {{{
 
 # append relative to project root
