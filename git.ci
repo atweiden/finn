@@ -1,0 +1,118 @@
+/* vim: set filetype=finn foldmethod=marker foldlevel=0: */
+
+Sift
+====
+
+if you come to an IncludeLine:
+------------------------------
+
+resolve IncludeLine
+
+- if we get to an IncludeLine, we resolve it
+  - but we can't resolve `IncludeLine['Reference']` or
+    `IncludeLine['Name', 'Reference']` without the ReferenceTable
+    - the ReferenceTable must be built *before* resolving IncludeLines
+  - the ReferenceTable may not exist
+    - missing ReferenceTable is only a problem if
+      `IncludeLine['Reference']` or `IncludeLine['Name', 'Reference']`
+      exists in the Document
+      - optionality can be handled with a multi method signature where
+        `ReferenceTable.not`
+    - e.g. /* {{{ */
+      ```perl6
+      multi method TOP(
+          $/ where $<document>.made.so && $<document>.made.reference-table.so
+          --> Nil
+      )
+      {
+          my Document:D $d = $<document>.made;
+          my ReferenceTable:D $reference-table = $d.reference-table;
+          my Document:D $document =
+              self.resolve-document($d, :$reference-table);
+          make Finn::Parser::ParseTree.new(:$document);
+      }
+
+      multi method TOP(
+          $/ where $<document>.made.so
+          --> Nil
+      )
+      {
+          my Document:D $d = $<document>.made;
+          my Document:D $document = self.resolve-document($d);
+          make Finn::Parser::ParseTree.new(:$document);
+      }
+
+      multi method TOP(
+          $/ --> Nil
+      )
+      {
+          make Nil;
+      }
+
+      multi method resolve-document(
+          Document:D $document,
+          ReferenceTable:D :$reference-table!
+          --> Document:D
+      )
+      {
+
+      }
+
+      multi method resolve-document(
+          Document:D $document where *.no-reference-table-needed
+          --> Document:D
+      )
+      {
+
+      }
+
+      multi method resolve-document(
+          Document:D $document
+          --> Nil
+      )
+      {
+          die X::Finn::Parser::Actions::TOP::ReferenceTable::Missing.new;
+      }
+      ```
+    /* }}} */
+      - but it may be best to handle a missing ReferenceTable just like
+        we would handle a missing File or missing SectionalBlockName
+        - raise Exceptions as they are encountered
+  - we can easily implement `Document.reference-table` in ParseTree.pm
+    - result can be static variable for efficiency
+      - e.g. @ZoffixZnet config example
+
+
+if you come to a SectionalBlock:
+--------------------------------
+
+resolve SectionalBlock
+
+- resolve IncludeLines inside SectionalBlock
+
+
+if you come to anything else:
+-----------------------------
+
+skip
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Post-Processing
+===============
+
+- afterwards, sum SectionalBlocks
+  - cache in .sectional-block
+- generate files on disk
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Other
+=====
+
+Rename Cache to Context
+-----------------------
+
+A Context is a place where we accumulate information
