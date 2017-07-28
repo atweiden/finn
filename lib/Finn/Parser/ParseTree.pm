@@ -28,6 +28,22 @@ parameterized, for building a parse tree from Finn source documents.
 # end p6doc }}}
 
 =begin pod
+=head Helper Roles
+=end pod
+
+# role MaybeResolved {{{
+
+# has the element passed through Include resolving step?
+role MaybeResolved
+{
+    # True: element's include lines have been resolved
+    # False (default): element's include lines have not been resolved
+    has Bool:D $.resolved = False;
+}
+
+# end role MaybeResolved }}}
+
+=begin pod
 =head Elements
 =end pod
 
@@ -173,12 +189,12 @@ role HorizontalRule['Soft'] {*}
 # role IncludeLine {{{
 
 role IncludeLine::Request  {...}
-role IncludeLine::Resolver {...}
+role IncludeLine::Response {...}
 
-role IncludeLine['Finn'] does MaybeLeadingWS
+role IncludeLine['Finn'] does MaybeLeadingWS does MaybeResolved
 {
     has IncludeLine::Request:D $.request is required;
-    has IncludeLine::Resolver:D $.resolver is required;
+    has IncludeLine::Response:D $.response is required;
 
     method Str(::?CLASS:D: --> Str:D)
     {
@@ -186,10 +202,10 @@ role IncludeLine['Finn'] does MaybeLeadingWS
     }
 }
 
-role IncludeLine['Text'] does MaybeLeadingWS
+role IncludeLine['Text'] does MaybeLeadingWS does MaybeResolved
 {
     has IncludeLine::Request:D $.request is required;
-    has IncludeLine::Resolver:D $.resolver is required;
+    has IncludeLine::Response:D $.response is required;
 
     method Str(::?CLASS:D: --> Str:D)
     {
@@ -309,23 +325,30 @@ role IncludeLine::Request::Reference
 }
 
 # --- end role IncludeLine::Request }}}
-# --- role IncludeLine::Resolver {{{
+# --- role IncludeLine::Response {{{
 
-role IncludeLine::Resolver::Resolve {...}
+class Document                      {...}
+role SectionalBlock                 {...}
+role IncludeLine::Response::Resolve {...}
 
-role IncludeLine::Resolver['Name']              does IncludeLine::Resolver::Resolve {*}
-role IncludeLine::Resolver['File']              does IncludeLine::Resolver::Resolve {*}
-role IncludeLine::Resolver['Reference']         does IncludeLine::Resolver::Resolve {*}
-role IncludeLine::Resolver['Name', 'File']      does IncludeLine::Resolver::Resolve {*}
-role IncludeLine::Resolver['Name', 'Reference'] does IncludeLine::Resolver::Resolve {*}
+role IncludeLine::Response['Name']              does IncludeLine::Response::Resolve {*}
+role IncludeLine::Response['File']              does IncludeLine::Response::Resolve {*}
+role IncludeLine::Response['Reference']         does IncludeLine::Response::Resolve {*}
+role IncludeLine::Response['Name', 'File']      does IncludeLine::Response::Resolve {*}
+role IncludeLine::Response['Name', 'Reference'] does IncludeLine::Response::Resolve {*}
 
 # XXX Callable type checking presently not fully implemented
-role IncludeLine::Resolver::Resolve
+role IncludeLine::Response::Resolve
 {
     has &.resolve is required;
 }
 
-# --- end role IncludeLine::Resolver }}}
+# --- end role IncludeLine::Response }}}
+
+subset IncludeLine::Resolved of IncludeLine:D is export where
+{
+    [[&is-true]] .include-line».resolved.so;
+}
 
 # end role IncludeLine }}}
 # role IncludeLineBlock {{{
@@ -357,6 +380,11 @@ role IncludeLineBlock['Top']
     has IncludeLine:D @.include-line is required;
 }
 
+subset IncludeLineBlock::Resolved of IncludeLineBlock:D is export where
+{
+    [[&is-true]] .include-line».resolved.so;
+}
+
 # end role IncludeLineBlock }}}
 # role LeadingWS {{{
 
@@ -373,6 +401,10 @@ role LeadingWS['Tab']
 role MaybeLeadingWS
 {
     has LeadingWS:D @.leading-ws;
+    method set-leading-ws(::?CLASS:D: LeadingWS:D @leading-ws)
+    {
+        @!leading-ws = @leading-ws;
+    }
 }
 
 # end role LeadingWS }}}
@@ -609,6 +641,11 @@ role SectionalBlockContent['Text']
 {
     has Str:D $.text is required;
 
+    method set-text(::?CLASS:D: Str:D $text)
+    {
+        $!text = $text;
+    }
+
     method Str(::?CLASS:D: --> Str:D)
     {
         my Str:D $text = $.text;
@@ -643,7 +680,7 @@ role Chunk::Meta {...}
 
 # --- role Chunk['IncludeLineBlock'] {{{
 
-role Chunk['IncludeLineBlock'] does Chunk::Meta
+role Chunk['IncludeLineBlock'] does Chunk::Meta does MaybeResolved
 {
     has IncludeLineBlock:D $.include-line-block is required;
 }
@@ -651,7 +688,7 @@ role Chunk['IncludeLineBlock'] does Chunk::Meta
 # --- end role Chunk['IncludeLineBlock'] }}}
 # --- role Chunk['SectionalBlock'] {{{
 
-role Chunk['SectionalBlock'] does Chunk::Meta
+role Chunk['SectionalBlock'] does Chunk::Meta does MaybeResolved
 {
     has SectionalBlock:D $.sectional-block is required;
 }
@@ -659,7 +696,7 @@ role Chunk['SectionalBlock'] does Chunk::Meta
 # --- end role Chunk['SectionalBlock'] }}}
 # --- role Chunk['CodeBlock'] {{{
 
-role Chunk['CodeBlock'] does Chunk::Meta
+role Chunk['CodeBlock'] does Chunk::Meta does MaybeResolved
 {
     has CodeBlock:D $.code-block is required;
 }
@@ -667,7 +704,7 @@ role Chunk['CodeBlock'] does Chunk::Meta
 # --- end role Chunk['CodeBlock'] }}}
 # --- role Chunk['ReferenceLineBlock'] {{{
 
-role Chunk['ReferenceLineBlock'] does Chunk::Meta
+role Chunk['ReferenceLineBlock'] does Chunk::Meta does MaybeResolved
 {
     has ReferenceLineBlock:D $.reference-line-block is required;
 }
@@ -675,7 +712,7 @@ role Chunk['ReferenceLineBlock'] does Chunk::Meta
 # --- end role Chunk['ReferenceLineBlock'] }}}
 # --- role Chunk['HeaderBlock'] {{{
 
-role Chunk['HeaderBlock'] does Chunk::Meta
+role Chunk['HeaderBlock'] does Chunk::Meta does MaybeResolved
 {
     has HeaderBlock:D $.header-block is required;
 }
@@ -683,7 +720,7 @@ role Chunk['HeaderBlock'] does Chunk::Meta
 # --- end role Chunk['HeaderBlock'] }}}
 # --- role Chunk['ListBlock'] {{{
 
-role Chunk['ListBlock'] does Chunk::Meta
+role Chunk['ListBlock'] does Chunk::Meta does MaybeResolved
 {
     has ListBlock:D $.list-block is required;
 }
@@ -691,7 +728,7 @@ role Chunk['ListBlock'] does Chunk::Meta
 # --- end role Chunk['ListBlock'] }}}
 # --- role Chunk['Paragraph'] {{{
 
-role Chunk['Paragraph'] does Chunk::Meta
+role Chunk['Paragraph'] does Chunk::Meta does MaybeResolved
 {
     has Paragraph:D $.paragraph is required;
 }
@@ -699,7 +736,7 @@ role Chunk['Paragraph'] does Chunk::Meta
 # --- end role Chunk['Paragraph'] }}}
 # --- role Chunk['HorizontalRule'] {{{
 
-role Chunk['HorizontalRule'] does Chunk::Meta
+role Chunk['HorizontalRule'] does Chunk::Meta does MaybeResolved
 {
     has HorizontalRule:D $.horizontal-rule is required;
 }
@@ -707,7 +744,7 @@ role Chunk['HorizontalRule'] does Chunk::Meta
 # --- end role Chunk['HorizontalRule'] }}}
 # --- role Chunk['CommentBlock'] {{{
 
-role Chunk['CommentBlock'] does Chunk::Meta
+role Chunk['CommentBlock'] does Chunk::Meta does MaybeResolved
 {
     has CommentBlock:D $.comment-block is required;
 }
@@ -715,7 +752,7 @@ role Chunk['CommentBlock'] does Chunk::Meta
 # --- end role Chunk['CommentBlock'] }}}
 # --- role Chunk['BlankLine'] {{{
 
-role Chunk['BlankLine'] does Chunk::Meta
+role Chunk['BlankLine'] does Chunk::Meta does MaybeResolved
 {
     has BlankLine:D $.blank-line is required;
 }
@@ -750,6 +787,8 @@ class Chunk::Meta::Bounds
 }
 
 # --- end class Chunk::Meta::Bounds }}}
+
+subset Chunk::Resolved of Chunk:D is export where *.resolved.so;
 
 # end role Chunk }}}
 
