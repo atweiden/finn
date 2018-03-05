@@ -7,10 +7,9 @@ use lib 't/lib';
 use FinnTest;
 use Test;
 
-plan 2;
+plan(2);
 
-subtest 'absolute',
-{
+subtest('absolute', {
     my Finn::Parser::Actions $actions .= new;
     my Str:D @file = qw<
         /
@@ -43,16 +42,16 @@ subtest 'absolute',
         File['Absolute', 'Protocol'].new(:path(IO::Path.new('~/a/b/c/d/e/f')), :$protocol);
     loop (my UInt:D $i = 0; $i < @file.elems; $i++)
     {
-        cmp-ok
+        cmp-ok(
             Finn::Parser::Grammar.parse(@file[$i], :$rule, :$actions).made,
             &cmp-ok-file,
             @file-made[$i],
-            'File OK';
+            'File OK'
+        );
     }
-}
+});
 
-subtest 'relative',
-{
+subtest('relative', {
     my Finn::Parser::Actions $actions .= new;
     my Str:D @file = qw<
         a
@@ -70,13 +69,14 @@ subtest 'relative',
         File['Relative', 'Protocol'].new(:path(IO::Path.new('./a/b/c/d/e/f')), :$protocol);
     loop (my UInt:D $i = 0; $i < @file.elems; $i++)
     {
-        cmp-ok
+        cmp-ok(
             Finn::Parser::Grammar.parse(@file[$i], :$rule, :$actions).made,
             &cmp-ok-file,
             @file-made[$i],
-            'File OK';
+            'File OK'
+        );
     }
-}
+});
 
 sub cmp-ok-file(File:D $a, File:D $b --> Bool:D)
 {

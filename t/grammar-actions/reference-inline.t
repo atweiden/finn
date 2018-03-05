@@ -5,10 +5,9 @@ use Finn::Parser::Grammar;
 use Finn::Parser::ParseTree;
 use Test;
 
-plan 1;
+plan(1);
 
-subtest
-{
+subtest({
     my Finn::Parser::Actions $actions .= new;
     my Str:D @reference-inline = qw<
         [0]
@@ -26,11 +25,12 @@ subtest
         ReferenceInline.new(:number(10990));
     loop (my UInt:D $i = 0; $i < @reference-inline.elems; $i++)
     {
-        is-deeply
+        is-deeply(
             Finn::Parser::Grammar.parse(@reference-inline[$i], :$rule, :$actions).made,
             @reference-inline-made[$i],
             'ReferenceInline OK'
+        );
     }
-}
+});
 
 # vim: set reference-inlinetype=perl6 foldmethod=marker foldlevel=0:

@@ -2,7 +2,7 @@
     "perl"        : "6.*",
     "name"        : "Finn",
     "version"     : "*",
-    "author"      : "Andy Weidenbaum",
+    "author"      : "atweiden",
     "description" : "Literate programming made easy",
     "depends"     : ["Config::TOML"],
     "license"     : "Unlicense",

@@ -5,10 +5,9 @@ use Finn::Parser::Grammar;
 use Finn::Parser::ParseTree;
 use Test;
 
-plan 3;
+plan(3);
 
-subtest
-{
+subtest({
     my Finn::Parser::Actions $actions .= new;
     my Str:D $code-block = q:to/EOF/.trim;
     ```
@@ -28,14 +27,14 @@ subtest
     [x] Building…
     [!] Construction complete.
     EOF
-    is-deeply
+    is-deeply(
         Finn::Parser::Grammar.parse($code-block, :$rule, :$actions).made,
         CodeBlock.new(:$delimiter, :$text),
-        'CodeBlock OK';
-}
+        'CodeBlock OK'
+    );
+});
 
-subtest
-{
+subtest({
     my Finn::Parser::Actions $actions .= new;
     my Str:D $code-block = q:to/EOF/.trim;
     ```sh
@@ -48,14 +47,14 @@ subtest
     my Str:D $text = q:to/EOF/.trim;
     $ cat TODO.md
     EOF
-    is-deeply
+    is-deeply(
         Finn::Parser::Grammar.parse($code-block, :$rule, :$actions).made,
         CodeBlock.new(:$delimiter, :$language, :$text),
-        'CodeBlock OK';
-}
+        'CodeBlock OK'
+    );
+});
 
-subtest
-{
+subtest({
     my Finn::Parser::Actions $actions .= new;
     my Str:D $code-block = q:to/EOF/.trim;
     ```markdown
@@ -142,10 +141,11 @@ subtest
     Ukrainian  | Мяу
     Welsh      | Meow
     EOF
-    is-deeply
+    is-deeply(
         Finn::Parser::Grammar.parse($code-block, :$rule, :$actions).made,
         CodeBlock.new(:$delimiter, :$language, :$text),
-        'CodeBlock OK';
-}
+        'CodeBlock OK'
+    );
+});
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

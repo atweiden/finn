@@ -3,27 +3,24 @@ use lib 'lib';
 use Finn::Parser::Grammar;
 use Test;
 
-plan 3;
+plan(3);
 
-subtest
-{
+subtest({
     my Str:D $bold = '**a bold piece of text**';
     my Str:D $rule = 'bold';
-    ok Finn::Parser::Grammar.parse($bold, :$rule), 'Bold text parses';
-}
+    ok(Finn::Parser::Grammar.parse($bold, :$rule), 'Bold text parses');
+});
 
-subtest
-{
+subtest({
     my Str:D $bold = '**a**';
     my Str:D $rule = 'bold';
-    ok Finn::Parser::Grammar.parse($bold, :$rule), 'Bold text parses';
-}
+    ok(Finn::Parser::Grammar.parse($bold, :$rule), 'Bold text parses');
+});
 
-subtest
-{
+subtest({
     my Str:D $bold = '**\ \ \ a**';
     my Str:D $rule = 'bold';
-    ok Finn::Parser::Grammar.parse($bold, :$rule), 'Bold text parses';
-}
+    ok(Finn::Parser::Grammar.parse($bold, :$rule), 'Bold text parses');
+});
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

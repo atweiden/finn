@@ -3,10 +3,9 @@ use lib 'lib';
 use Finn::Parser::Grammar;
 use Test;
 
-plan 1;
+plan(1);
 
-subtest
-{
+subtest({
     my Str:D @string =
         Q{"a"},
         Q{"\\"},
@@ -18,8 +17,8 @@ subtest
         Q{'/path/to/document'};
     my Str:D $rule = 'string';
     @string.map({
-        ok Finn::Parser::Grammar.parse($_, :$rule), 'Parses string'
+        ok(Finn::Parser::Grammar.parse($_, :$rule), 'Parses string')
     });
-}
+});
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

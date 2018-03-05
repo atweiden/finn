@@ -3,43 +3,42 @@ use lib 'lib';
 use Finn::Parser::Grammar;
 use Test;
 
-plan 4;
+plan(4);
 
-subtest
-{
+subtest({
     my Str:D $list-unordered-item = q:to/EOF/.trim;
     -> One
     EOF
     my Str:D $rule = 'list-unordered-item';
-    ok
+    ok(
         Finn::Parser::Grammar.parse($list-unordered-item, :$rule),
-        'Parses list-unordered-item';
-}
+        'Parses list-unordered-item'
+    );
+});
 
-subtest
-{
+subtest({
     my Str:D $list-unordered-item = q:to/EOF/.trim;
     => One
     EOF
     my Str:D $rule = 'list-unordered-item';
-    ok
+    ok(
         Finn::Parser::Grammar.parse($list-unordered-item, :$rule),
-        'Parses list-unordered-item';
-}
+        'Parses list-unordered-item'
+    );
+});
 
-subtest
-{
+subtest({
     my Str:D $list-unordered-item = q:to/EOF/.trim;
     <- One
     EOF
     my Str:D $rule = 'list-unordered-item';
-    ok
+    ok(
         Finn::Parser::Grammar.parse($list-unordered-item, :$rule),
-        'Parses list-unordered-item';
-}
+        'Parses list-unordered-item'
+    );
+});
 
-subtest
-{
+subtest({
     my Str:D $list-unordered-item = q:to/EOF/.trim;
     <= One one one one one one one one one one one one one one one one
        one one one one one one one one one one one one one one one one
@@ -49,9 +48,10 @@ subtest
        one one one one one one one one one one one one one one one one
     EOF
     my Str:D $rule = 'list-unordered-item';
-    ok
+    ok(
         Finn::Parser::Grammar.parse($list-unordered-item, :$rule),
-        'Parses list-unordered-item';
-}
+        'Parses list-unordered-item'
+    );
+});
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

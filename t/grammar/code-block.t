@@ -3,10 +3,9 @@ use lib 'lib';
 use Finn::Parser::Grammar;
 use Test;
 
-plan 3;
+plan(3);
 
-subtest
-{
+subtest({
     my Str:D $code-block = q:to/EOF/.trim;
     ```
     Todos
@@ -17,22 +16,20 @@ subtest
     ```
     EOF
     my Str:D $rule = 'code-block';
-    ok Finn::Parser::Grammar.parse($code-block, :$rule), 'Parses code-block';
-}
+    ok(Finn::Parser::Grammar.parse($code-block, :$rule), 'Parses code-block');
+});
 
-subtest
-{
+subtest({
     my Str:D $code-block = q:to/EOF/.trim;
     ```sh
     $ cat TODO.md
     ```
     EOF
     my Str:D $rule = 'code-block';
-    ok Finn::Parser::Grammar.parse($code-block, :$rule), 'Parses code-block';
-}
+    ok(Finn::Parser::Grammar.parse($code-block, :$rule), 'Parses code-block');
+});
 
-subtest
-{
+subtest({
     my Str:D $code-block = q:to/EOF/.trim;
     ```markdown
     Language   | Ways to say meow
@@ -76,7 +73,7 @@ subtest
     ```
     EOF
     my Str:D $rule = 'code-block';
-    ok Finn::Parser::Grammar.parse($code-block, :$rule), 'Parses code-block';
-}
+    ok(Finn::Parser::Grammar.parse($code-block, :$rule), 'Parses code-block');
+});
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

@@ -3,50 +3,50 @@ use lib 'lib';
 use Finn::Parser::Grammar;
 use Test;
 
-plan 4;
+plan(4);
 
-subtest
-{
+subtest({
     my Str:D $list-todo-item = q:to/EOF/.trim;
     [ ] Building…
     EOF
     my Str:D $rule = 'list-todo-item';
-    ok
+    ok(
         Finn::Parser::Grammar.parse($list-todo-item, :$rule),
-        'Parses list-todo-item';
-}
+        'Parses list-todo-item'
+    );
+});
 
-subtest
-{
+subtest({
     my Str:D $list-todo-item = q:to/EOF/.trim;
     [x] Construction complete.
     EOF
     my Str:D $rule = 'list-todo-item';
-    ok
+    ok(
         Finn::Parser::Grammar.parse($list-todo-item, :$rule),
-        'Parses list-todo-item';
-}
+        'Parses list-todo-item'
+    );
+});
 
-subtest
-{
+subtest({
     my Str:D $list-todo-item = q:to/EOF/.trim;
     [+] Achievement unlocked.
     EOF
     my Str:D $rule = 'list-todo-item';
-    ok
+    ok(
         Finn::Parser::Grammar.parse($list-todo-item, :$rule),
-        'Parses list-todo-item';
-}
+        'Parses list-todo-item'
+    );
+});
 
-subtest
-{
+subtest({
     my Str:D $list-todo-item = q:to/EOF/.trim;
     [!] We are under attack.
     EOF
     my Str:D $rule = 'list-todo-item';
-    ok
+    ok(
         Finn::Parser::Grammar.parse($list-todo-item, :$rule),
-        'Parses list-todo-item';
-}
+        'Parses list-todo-item'
+    );
+});
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

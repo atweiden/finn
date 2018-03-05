@@ -3,41 +3,37 @@ use lib 'lib';
 use Finn::Parser::Grammar;
 use Test;
 
-plan 4;
+plan(4);
 
-subtest
-{
+subtest({
     my Str:D $blank-line = q:to/EOF/;
     EOF
     my Str:D $rule = 'blank-line';
-    ok Finn::Parser::Grammar.parse($blank-line, :$rule), 'Blank line parses';
-}
+    ok(Finn::Parser::Grammar.parse($blank-line, :$rule), 'Blank line parses');
+});
 
-subtest
-{
+subtest({
     my Str:D $blank-line = q:to/EOF/.trim-trailing;
 
     EOF
     my Str:D $rule = 'blank-line';
-    ok Finn::Parser::Grammar.parse($blank-line, :$rule), 'Blank line parses';
-}
+    ok(Finn::Parser::Grammar.parse($blank-line, :$rule), 'Blank line parses');
+});
 
-subtest
-{
+subtest({
     my Str:D $blank-line = q:to/EOF/.trim-trailing;
             
     EOF
     my Str:D $rule = 'blank-line';
-    ok Finn::Parser::Grammar.parse($blank-line, :$rule), 'Blank line parses';
-}
+    ok(Finn::Parser::Grammar.parse($blank-line, :$rule), 'Blank line parses');
+});
 
-subtest
-{
+subtest({
     my Str:D $blank-line = q:to/EOF/.trim-trailing;
     	       
     EOF
     my Str:D $rule = 'blank-line';
-    ok Finn::Parser::Grammar.parse($blank-line, :$rule), 'Blank line parses';
-}
+    ok(Finn::Parser::Grammar.parse($blank-line, :$rule), 'Blank line parses');
+});
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

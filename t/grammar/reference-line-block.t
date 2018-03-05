@@ -3,21 +3,20 @@ use lib 'lib';
 use Finn::Parser::Grammar;
 use Test;
 
-plan 5;
+plan(5);
 
-subtest 'reference-line-block:top',
-{
+subtest('reference-line-block:top', {
     my Str:D $reference-line-block = q:to/EOF/.trim-trailing;
     [0]: 0
     EOF
     my Str:D $rule = 'reference-line-block';
-    ok
+    ok(
         Finn::Parser::Grammar.parse($reference-line-block, :$rule),
-        'Parses reference-line-block';
-}
+        'Parses reference-line-block'
+    );
+});
 
-subtest 'reference-line-block:after-blank-lines',
-{
+subtest('reference-line-block:after-blank-lines', {
     my Str:D $reference-line-block = q:to/EOF/.trim-trailing;
 
 
@@ -28,13 +27,13 @@ subtest 'reference-line-block:after-blank-lines',
     [33]: g.h.i
     EOF
     my Str:D $rule = 'reference-line-block';
-    ok
+    ok(
         Finn::Parser::Grammar.parse($reference-line-block, :$rule),
-        'Parses reference-line-block';
-}
+        'Parses reference-line-block'
+    );
+});
 
-subtest 'reference-line-block:after-comment-block',
-{
+subtest('reference-line-block:after-comment-block', {
     my Str:D $reference-line-block = q:to/EOF/.trim-trailing;
     /*
      * a comment block
@@ -42,25 +41,25 @@ subtest 'reference-line-block:after-comment-block',
     [0]: 0
     EOF
     my Str:D $rule = 'reference-line-block';
-    ok
+    ok(
         Finn::Parser::Grammar.parse($reference-line-block, :$rule),
-        'Parses reference-line-block';
-}
+        'Parses reference-line-block'
+    );
+});
 
-subtest 'reference-line-block:after-horizontal-rule',
-{
+subtest('reference-line-block:after-horizontal-rule', {
     my Str:D $reference-line-block = q:to/EOF/.trim-trailing;
     ******************************************************************************
     [0]: 0
     EOF
     my Str:D $rule = 'reference-line-block';
-    ok
+    ok(
         Finn::Parser::Grammar.parse($reference-line-block, :$rule),
-        'Parses reference-line-block';
-}
+        'Parses reference-line-block'
+    );
+});
 
-subtest 'reference-line continuations',
-{
+subtest('reference-line continuations', {
     my Str:D $reference-line-block = q:to/EOF/.trim-trailing;
     [0]: 0                     |||||||||||||||||||||||
       1                     |||||||||||||||||||||||
@@ -79,9 +78,10 @@ subtest 'reference-line continuations',
     <CAPS>                     |||||||||||||||||||||||
     EOF
     my Str:D $rule = 'reference-line-block';
-    ok
+    ok(
         Finn::Parser::Grammar.parse($reference-line-block, :$rule),
-        'Parses reference-line-block';
-}
+        'Parses reference-line-block'
+    );
+});
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

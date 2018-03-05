@@ -3,10 +3,9 @@ use lib 'lib';
 use Finn::Parser::Grammar;
 use Test;
 
-plan 2;
+plan(2);
 
-subtest 'absolute',
-{
+subtest('absolute', {
     my Str:D @file = qw<
         /
         /a
@@ -23,12 +22,11 @@ subtest 'absolute',
     >;
     my Str:D $rule = 'file';
     @file.map({
-        ok Finn::Parser::Grammar.parse($_, :$rule), 'Parses absolute file'
+        ok(Finn::Parser::Grammar.parse($_, :$rule), 'Parses absolute file')
     });
-}
+});
 
-subtest 'relative',
-{
+subtest('relative', {
     my Str:D @file = qw<
         a
         a/b/c/d/e/f
@@ -37,8 +35,8 @@ subtest 'relative',
     >;
     my Str:D $rule = 'file';
     @file.map({
-        ok Finn::Parser::Grammar.parse($_, :$rule), 'Parses relative file'
+        ok(Finn::Parser::Grammar.parse($_, :$rule), 'Parses relative file')
     });
-}
+});
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

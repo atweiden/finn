@@ -3,12 +3,11 @@ use lib 'lib';
 use Finn::Parser::Grammar;
 use Test;
 
-plan 5;
+plan(5);
 
 # weekday {{{
 
-subtest
-{
+subtest({
     my Str:D @weekday = qw<
         MON
         TUE
@@ -23,15 +22,14 @@ subtest
     >;
     my Str:D $rule = 'weekday';
     @weekday.map({
-        ok Finn::Parser::Grammar.parse($_, :$rule), 'Parses weekday'
+        ok(Finn::Parser::Grammar.parse($_, :$rule), 'Parses weekday')
     });
-}
+});
 
 # end weekday }}}
 # weekend {{{
 
-subtest
-{
+subtest({
     my Str:D @weekend = qw<
         SAT
         SUN
@@ -40,15 +38,14 @@ subtest
     >;
     my Str:D $rule = 'weekend';
     @weekend.map({
-        ok Finn::Parser::Grammar.parse($_, :$rule), 'Parses weekend'
+        ok(Finn::Parser::Grammar.parse($_, :$rule), 'Parses weekend')
     });
-}
+});
 
 # end weekend }}}
 # month {{{
 
-subtest
-{
+subtest({
     my Str:D @month = qw<
         JAN
         FEB
@@ -77,15 +74,14 @@ subtest
     >;
     my Str:D $rule = 'month';
     @month.map({
-        ok Finn::Parser::Grammar.parse($_, :$rule), 'Parses month'
+        ok(Finn::Parser::Grammar.parse($_, :$rule), 'Parses month')
     });
-}
+});
 
 # end month }}}
 # full-date {{{
 
-subtest
-{
+subtest({
     my Str:D @full-date = qw<
         2014-01-01
         2014/01/01
@@ -94,15 +90,14 @@ subtest
     >;
     my Str:D $rule = 'full-date';
     @full-date.map({
-        ok Finn::Parser::Grammar.parse($_, :$rule), 'Parses full-date';
-    })
-}
+        ok(Finn::Parser::Grammar.parse($_, :$rule), 'Parses full-date')
+    });
+});
 
 # end full-date }}}
 # partial-time {{{
 
-subtest
-{
+subtest({
     my Str:D @partial-time = qw<
         01:59:15
         12:00:00
@@ -110,9 +105,9 @@ subtest
     >;
     my Str:D $rule = 'partial-time';
     @partial-time.map({
-        ok Finn::Parser::Grammar.parse($_, :$rule), 'Parses partial-time'
+        ok(Finn::Parser::Grammar.parse($_, :$rule), 'Parses partial-time')
     });
-}
+});
 
 # end partial-time }}}
 

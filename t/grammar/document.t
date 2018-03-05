@@ -3,14 +3,13 @@ use lib 'lib';
 use Finn::Parser::Grammar;
 use Test;
 
-plan 6;
+plan(6);
 
-subtest 'finn-examples/app',
-{
+subtest('finn-examples/app', {
     my Str:D $document = 't/data/app/Story';
     my Match:D $match = Finn::Parser::Grammar.parsefile($document);
 
-    ok $match, 'Parses Finn source document';
+    ok($match, 'Parses Finn source document');
 
     # @chunk {{{
 
@@ -60,40 +59,39 @@ subtest 'finn-examples/app',
     # end @chunk }}}
     # @chunk tests {{{
 
-    is-deeply ~$match<document><chunk>[0]<comment-block>, @chunk[0];
-    is-deeply ~$match<document><chunk>[1]<header-block><blank-line>, @chunk[1];
-    is-deeply ~$match<document><chunk>[1]<header-block><header>, @chunk[2];
-    is-deeply ~$match<document><chunk>[2]<header-block><blank-line>, @chunk[3];
-    is-deeply ~$match<document><chunk>[2]<header-block><header>, @chunk[4];
-    is-deeply ~$match<document><chunk>[3]<blank-line>, @chunk[5];
-    is-deeply ~$match<document><chunk>[4]<paragraph>, @chunk[6];
-    is-deeply ~$match<document><chunk>[5]<blank-line>, @chunk[7];
-    is-deeply ~$match<document><chunk>[6]<paragraph>, @chunk[8];
-    is-deeply ~$match<document><chunk>[7]<blank-line>, @chunk[9];
-    is-deeply ~$match<document><chunk>[8]<horizontal-rule>, @chunk[10];
-    is-deeply ~$match<document><chunk>[9]<include-line-block><blank-line>, @chunk[11];
-    is-deeply ~$match<document><chunk>[9]<include-line-block><include-line>, @chunk[12];
-    is-deeply ~$match<document><chunk>[10]<blank-line>, @chunk[13];
-    is-deeply ~$match<document><chunk>[11]<horizontal-rule>, @chunk[14];
-    is-deeply ~$match<document><chunk>[12]<include-line-block><blank-line>, @chunk[15];
-    is-deeply ~$match<document><chunk>[12]<include-line-block><include-line>, @chunk[16];
-    is-deeply ~$match<document><chunk>[13]<blank-line>, @chunk[17];
-    is-deeply ~$match<document><chunk>[14]<horizontal-rule>, @chunk[18];
-    is-deeply ~$match<document><chunk>[15]<include-line-block><blank-line>, @chunk[19];
-    is-deeply ~$match<document><chunk>[15]<include-line-block><include-line>, @chunk[20];
-    is-deeply ~$match<document><chunk>[16]<blank-line>, @chunk[21];
-    is-deeply ~$match<document><chunk>[17]<horizontal-rule>, @chunk[22];
-    ok $match<document><chunk>[18].isa(Any);
+    is-deeply(~$match<document><chunk>[0]<comment-block>, @chunk[0]);
+    is-deeply(~$match<document><chunk>[1]<header-block><blank-line>, @chunk[1]);
+    is-deeply(~$match<document><chunk>[1]<header-block><header>, @chunk[2]);
+    is-deeply(~$match<document><chunk>[2]<header-block><blank-line>, @chunk[3]);
+    is-deeply(~$match<document><chunk>[2]<header-block><header>, @chunk[4]);
+    is-deeply(~$match<document><chunk>[3]<blank-line>, @chunk[5]);
+    is-deeply(~$match<document><chunk>[4]<paragraph>, @chunk[6]);
+    is-deeply(~$match<document><chunk>[5]<blank-line>, @chunk[7]);
+    is-deeply(~$match<document><chunk>[6]<paragraph>, @chunk[8]);
+    is-deeply(~$match<document><chunk>[7]<blank-line>, @chunk[9]);
+    is-deeply(~$match<document><chunk>[8]<horizontal-rule>, @chunk[10]);
+    is-deeply(~$match<document><chunk>[9]<include-line-block><blank-line>, @chunk[11]);
+    is-deeply(~$match<document><chunk>[9]<include-line-block><include-line>, @chunk[12]);
+    is-deeply(~$match<document><chunk>[10]<blank-line>, @chunk[13]);
+    is-deeply(~$match<document><chunk>[11]<horizontal-rule>, @chunk[14]);
+    is-deeply(~$match<document><chunk>[12]<include-line-block><blank-line>, @chunk[15]);
+    is-deeply(~$match<document><chunk>[12]<include-line-block><include-line>, @chunk[16]);
+    is-deeply(~$match<document><chunk>[13]<blank-line>, @chunk[17]);
+    is-deeply(~$match<document><chunk>[14]<horizontal-rule>, @chunk[18]);
+    is-deeply(~$match<document><chunk>[15]<include-line-block><blank-line>, @chunk[19]);
+    is-deeply(~$match<document><chunk>[15]<include-line-block><include-line>, @chunk[20]);
+    is-deeply(~$match<document><chunk>[16]<blank-line>, @chunk[21]);
+    is-deeply(~$match<document><chunk>[17]<horizontal-rule>, @chunk[22]);
+    ok($match<document><chunk>[18].isa(Any));
 
     # end @chunk tests }}}
-}
+});
 
-subtest 'finn-examples/hangman',
-{
+subtest('finn-examples/hangman', {
     my Str:D $document = 't/data/hangman/Story';
     my Match:D $match = Finn::Parser::Grammar.parsefile($document);
 
-    ok $match, 'Parses Finn source document';
+    ok($match, 'Parses Finn source document');
 
     # @chunk {{{
 
@@ -325,86 +323,85 @@ subtest 'finn-examples/hangman',
     # end @chunk }}}
     # @chunk tests {{{
 
-    is-deeply ~$match<document><chunk>[0]<comment-block>, @chunk[0];
-    is-deeply ~$match<document><chunk>[1]<header-block><blank-line>, @chunk[1];
-    is-deeply ~$match<document><chunk>[1]<header-block><header>, @chunk[2];
-    is-deeply ~$match<document><chunk>[2]<header-block><blank-line>, @chunk[3];
-    is-deeply ~$match<document><chunk>[2]<header-block><header>, @chunk[4];
-    is-deeply ~$match<document><chunk>[3]<blank-line>, @chunk[5];
-    is-deeply ~$match<document><chunk>[4]<paragraph>, @chunk[6];
-    is-deeply ~$match<document><chunk>[5]<header-block><blank-line>, @chunk[7];
-    is-deeply ~$match<document><chunk>[5]<header-block><header>, @chunk[8];
-    is-deeply ~$match<document><chunk>[6]<blank-line>, @chunk[9];
-    is-deeply ~$match<document><chunk>[7]<sectional-block>, @chunk[10];
-    is-deeply ~$match<document><chunk>[8]<blank-line>, @chunk[11];
-    is-deeply ~$match<document><chunk>[9]<header-block><blank-line>, @chunk[12];
-    is-deeply ~$match<document><chunk>[9]<header-block><header>, @chunk[13];
-    is-deeply ~$match<document><chunk>[10]<blank-line>, @chunk[14];
-    is-deeply ~$match<document><chunk>[11]<paragraph>, @chunk[15];
-    is-deeply ~$match<document><chunk>[12]<blank-line>, @chunk[16];
-    is-deeply ~$match<document><chunk>[13]<sectional-block>, @chunk[17];
-    is-deeply ~$match<document><chunk>[14]<blank-line>, @chunk[18];
-    is-deeply ~$match<document><chunk>[15]<paragraph>, @chunk[19];
-    is-deeply ~$match<document><chunk>[16]<blank-line>, @chunk[20];
-    is-deeply ~$match<document><chunk>[17]<sectional-block>, @chunk[21];
-    is-deeply ~$match<document><chunk>[18]<blank-line>, @chunk[22];
-    is-deeply ~$match<document><chunk>[19]<header-block><blank-line>, @chunk[23];
-    is-deeply ~$match<document><chunk>[19]<header-block><header>, @chunk[24];
-    is-deeply ~$match<document><chunk>[20]<blank-line>, @chunk[25];
-    is-deeply ~$match<document><chunk>[21]<paragraph>, @chunk[26];
-    is-deeply ~$match<document><chunk>[22]<blank-line>, @chunk[27];
-    is-deeply ~$match<document><chunk>[23]<sectional-block>, @chunk[28];
-    is-deeply ~$match<document><chunk>[24]<blank-line>, @chunk[29];
-    is-deeply ~$match<document><chunk>[25]<header-block><blank-line>, @chunk[30];
-    is-deeply ~$match<document><chunk>[25]<header-block><header>, @chunk[31];
-    is-deeply ~$match<document><chunk>[26]<blank-line>, @chunk[32];
-    is-deeply ~$match<document><chunk>[27]<paragraph>, @chunk[33];
-    is-deeply ~$match<document><chunk>[28]<blank-line>, @chunk[34];
-    is-deeply ~$match<document><chunk>[29]<sectional-block>, @chunk[35];
-    is-deeply ~$match<document><chunk>[30]<blank-line>, @chunk[36];
-    is-deeply ~$match<document><chunk>[31]<header-block><blank-line>, @chunk[37];
-    is-deeply ~$match<document><chunk>[31]<header-block><header>, @chunk[38];
-    is-deeply ~$match<document><chunk>[32]<blank-line>, @chunk[39];
-    is-deeply ~$match<document><chunk>[33]<paragraph>, @chunk[40];
-    is-deeply ~$match<document><chunk>[34]<blank-line>, @chunk[41];
-    is-deeply ~$match<document><chunk>[35]<paragraph>, @chunk[42];
-    is-deeply ~$match<document><chunk>[36]<blank-line>, @chunk[43];
-    is-deeply ~$match<document><chunk>[37]<sectional-block>, @chunk[44];
-    is-deeply ~$match<document><chunk>[38]<blank-line>, @chunk[45];
-    is-deeply ~$match<document><chunk>[39]<header-block><blank-line>, @chunk[46];
-    is-deeply ~$match<document><chunk>[39]<header-block><header>, @chunk[47];
-    is-deeply ~$match<document><chunk>[40]<blank-line>, @chunk[48];
-    is-deeply ~$match<document><chunk>[41]<paragraph>, @chunk[49];
-    is-deeply ~$match<document><chunk>[42]<blank-line>, @chunk[50];
-    is-deeply ~$match<document><chunk>[43]<sectional-block>, @chunk[51];
-    is-deeply ~$match<document><chunk>[44]<blank-line>, @chunk[52];
-    is-deeply ~$match<document><chunk>[45]<header-block><blank-line>, @chunk[53];
-    is-deeply ~$match<document><chunk>[45]<header-block><header>, @chunk[54];
-    is-deeply ~$match<document><chunk>[46]<blank-line>, @chunk[55];
-    is-deeply ~$match<document><chunk>[47]<sectional-block>, @chunk[56];
-    is-deeply ~$match<document><chunk>[48]<blank-line>, @chunk[57];
-    is-deeply ~$match<document><chunk>[49]<header-block><blank-line>, @chunk[58];
-    is-deeply ~$match<document><chunk>[49]<header-block><header>, @chunk[59];
-    is-deeply ~$match<document><chunk>[50]<blank-line>, @chunk[60];
-    is-deeply ~$match<document><chunk>[51]<paragraph>, @chunk[61];
-    is-deeply ~$match<document><chunk>[52]<blank-line>, @chunk[62];
-    is-deeply ~$match<document><chunk>[53]<sectional-block>, @chunk[63];
-    is-deeply ~$match<document><chunk>[54]<blank-line>, @chunk[64];
-    is-deeply ~$match<document><chunk>[55]<blank-line>, @chunk[65];
-    is-deeply ~$match<document><chunk>[56]<horizontal-rule>, @chunk[66];
-    is-deeply ~$match<document><chunk>[57]<reference-line-block><blank-lines>, @chunk[67];
-    is-deeply ~$match<document><chunk>[57]<reference-line-block><reference-lines>, @chunk[68];
-    ok $match<document><chunk>[58].isa(Any);
+    is-deeply(~$match<document><chunk>[0]<comment-block>, @chunk[0]);
+    is-deeply(~$match<document><chunk>[1]<header-block><blank-line>, @chunk[1]);
+    is-deeply(~$match<document><chunk>[1]<header-block><header>, @chunk[2]);
+    is-deeply(~$match<document><chunk>[2]<header-block><blank-line>, @chunk[3]);
+    is-deeply(~$match<document><chunk>[2]<header-block><header>, @chunk[4]);
+    is-deeply(~$match<document><chunk>[3]<blank-line>, @chunk[5]);
+    is-deeply(~$match<document><chunk>[4]<paragraph>, @chunk[6]);
+    is-deeply(~$match<document><chunk>[5]<header-block><blank-line>, @chunk[7]);
+    is-deeply(~$match<document><chunk>[5]<header-block><header>, @chunk[8]);
+    is-deeply(~$match<document><chunk>[6]<blank-line>, @chunk[9]);
+    is-deeply(~$match<document><chunk>[7]<sectional-block>, @chunk[10]);
+    is-deeply(~$match<document><chunk>[8]<blank-line>, @chunk[11]);
+    is-deeply(~$match<document><chunk>[9]<header-block><blank-line>, @chunk[12]);
+    is-deeply(~$match<document><chunk>[9]<header-block><header>, @chunk[13]);
+    is-deeply(~$match<document><chunk>[10]<blank-line>, @chunk[14]);
+    is-deeply(~$match<document><chunk>[11]<paragraph>, @chunk[15]);
+    is-deeply(~$match<document><chunk>[12]<blank-line>, @chunk[16]);
+    is-deeply(~$match<document><chunk>[13]<sectional-block>, @chunk[17]);
+    is-deeply(~$match<document><chunk>[14]<blank-line>, @chunk[18]);
+    is-deeply(~$match<document><chunk>[15]<paragraph>, @chunk[19]);
+    is-deeply(~$match<document><chunk>[16]<blank-line>, @chunk[20]);
+    is-deeply(~$match<document><chunk>[17]<sectional-block>, @chunk[21]);
+    is-deeply(~$match<document><chunk>[18]<blank-line>, @chunk[22]);
+    is-deeply(~$match<document><chunk>[19]<header-block><blank-line>, @chunk[23]);
+    is-deeply(~$match<document><chunk>[19]<header-block><header>, @chunk[24]);
+    is-deeply(~$match<document><chunk>[20]<blank-line>, @chunk[25]);
+    is-deeply(~$match<document><chunk>[21]<paragraph>, @chunk[26]);
+    is-deeply(~$match<document><chunk>[22]<blank-line>, @chunk[27]);
+    is-deeply(~$match<document><chunk>[23]<sectional-block>, @chunk[28]);
+    is-deeply(~$match<document><chunk>[24]<blank-line>, @chunk[29]);
+    is-deeply(~$match<document><chunk>[25]<header-block><blank-line>, @chunk[30]);
+    is-deeply(~$match<document><chunk>[25]<header-block><header>, @chunk[31]);
+    is-deeply(~$match<document><chunk>[26]<blank-line>, @chunk[32]);
+    is-deeply(~$match<document><chunk>[27]<paragraph>, @chunk[33]);
+    is-deeply(~$match<document><chunk>[28]<blank-line>, @chunk[34]);
+    is-deeply(~$match<document><chunk>[29]<sectional-block>, @chunk[35]);
+    is-deeply(~$match<document><chunk>[30]<blank-line>, @chunk[36]);
+    is-deeply(~$match<document><chunk>[31]<header-block><blank-line>, @chunk[37]);
+    is-deeply(~$match<document><chunk>[31]<header-block><header>, @chunk[38]);
+    is-deeply(~$match<document><chunk>[32]<blank-line>, @chunk[39]);
+    is-deeply(~$match<document><chunk>[33]<paragraph>, @chunk[40]);
+    is-deeply(~$match<document><chunk>[34]<blank-line>, @chunk[41]);
+    is-deeply(~$match<document><chunk>[35]<paragraph>, @chunk[42]);
+    is-deeply(~$match<document><chunk>[36]<blank-line>, @chunk[43]);
+    is-deeply(~$match<document><chunk>[37]<sectional-block>, @chunk[44]);
+    is-deeply(~$match<document><chunk>[38]<blank-line>, @chunk[45]);
+    is-deeply(~$match<document><chunk>[39]<header-block><blank-line>, @chunk[46]);
+    is-deeply(~$match<document><chunk>[39]<header-block><header>, @chunk[47]);
+    is-deeply(~$match<document><chunk>[40]<blank-line>, @chunk[48]);
+    is-deeply(~$match<document><chunk>[41]<paragraph>, @chunk[49]);
+    is-deeply(~$match<document><chunk>[42]<blank-line>, @chunk[50]);
+    is-deeply(~$match<document><chunk>[43]<sectional-block>, @chunk[51]);
+    is-deeply(~$match<document><chunk>[44]<blank-line>, @chunk[52]);
+    is-deeply(~$match<document><chunk>[45]<header-block><blank-line>, @chunk[53]);
+    is-deeply(~$match<document><chunk>[45]<header-block><header>, @chunk[54]);
+    is-deeply(~$match<document><chunk>[46]<blank-line>, @chunk[55]);
+    is-deeply(~$match<document><chunk>[47]<sectional-block>, @chunk[56]);
+    is-deeply(~$match<document><chunk>[48]<blank-line>, @chunk[57]);
+    is-deeply(~$match<document><chunk>[49]<header-block><blank-line>, @chunk[58]);
+    is-deeply(~$match<document><chunk>[49]<header-block><header>, @chunk[59]);
+    is-deeply(~$match<document><chunk>[50]<blank-line>, @chunk[60]);
+    is-deeply(~$match<document><chunk>[51]<paragraph>, @chunk[61]);
+    is-deeply(~$match<document><chunk>[52]<blank-line>, @chunk[62]);
+    is-deeply(~$match<document><chunk>[53]<sectional-block>, @chunk[63]);
+    is-deeply(~$match<document><chunk>[54]<blank-line>, @chunk[64]);
+    is-deeply(~$match<document><chunk>[55]<blank-line>, @chunk[65]);
+    is-deeply(~$match<document><chunk>[56]<horizontal-rule>, @chunk[66]);
+    is-deeply(~$match<document><chunk>[57]<reference-line-block><blank-lines>, @chunk[67]);
+    is-deeply(~$match<document><chunk>[57]<reference-line-block><reference-lines>, @chunk[68]);
+    ok($match<document><chunk>[58].isa(Any));
 
     # end @chunk tests }}}
-}
+});
 
-subtest 'finn-examples/hard',
-{
+subtest('finn-examples/hard', {
     my Str:D $document = 't/data/hard/Story';
     my Match:D $match = Finn::Parser::Grammar.parsefile($document);
 
-    ok $match, 'Parses Finn source document';
+    ok($match, 'Parses Finn source document');
 
     # @chunk {{{
 
@@ -683,105 +680,104 @@ subtest 'finn-examples/hard',
     # end @chunk }}}
     # @chunk tests {{{
 
-    is-deeply ~$match<document><chunk>[0]<comment-block>, @chunk[0];
-    is-deeply ~$match<document><chunk>[1]<header-block><blank-line>, @chunk[1];
-    is-deeply ~$match<document><chunk>[1]<header-block><header>, @chunk[2];
-    is-deeply ~$match<document><chunk>[2]<paragraph>, @chunk[3];
-    is-deeply ~$match<document><chunk>[3]<header-block><blank-line>, @chunk[4];
-    is-deeply ~$match<document><chunk>[3]<header-block><header>, @chunk[5];
-    is-deeply ~$match<document><chunk>[4]<header-block><blank-line>, @chunk[6];
-    is-deeply ~$match<document><chunk>[4]<header-block><header>, @chunk[7];
-    is-deeply ~$match<document><chunk>[5]<blank-line>, @chunk[8];
-    is-deeply ~$match<document><chunk>[6]<paragraph>, @chunk[9];
-    is-deeply ~$match<document><chunk>[7]<blank-line>, @chunk[10];
-    is-deeply ~$match<document><chunk>[8]<paragraph>, @chunk[11];
-    is-deeply ~$match<document><chunk>[9]<blank-line>, @chunk[12];
-    is-deeply ~$match<document><chunk>[10]<paragraph>, @chunk[13];
-    is-deeply ~$match<document><chunk>[11]<blank-line>, @chunk[14];
-    is-deeply ~$match<document><chunk>[12]<paragraph>, @chunk[15];
-    is-deeply ~$match<document><chunk>[13]<blank-line>, @chunk[16];
-    is-deeply ~$match<document><chunk>[14]<paragraph>, @chunk[17];
-    is-deeply ~$match<document><chunk>[15]<blank-line>, @chunk[18];
-    is-deeply ~$match<document><chunk>[16]<comment-block>, @chunk[19];
-    is-deeply ~$match<document><chunk>[17]<header-block><blank-line>, @chunk[20];
-    is-deeply ~$match<document><chunk>[17]<header-block><header>, @chunk[21];
-    is-deeply ~$match<document><chunk>[18]<list-block>, @chunk[22];
-    is-deeply ~$match<document><chunk>[19]<header-block><blank-line>, @chunk[23];
-    is-deeply ~$match<document><chunk>[19]<header-block><header>, @chunk[24];
-    is-deeply ~$match<document><chunk>[20]<list-block>, @chunk[25];
-    is-deeply ~$match<document><chunk>[21]<header-block><blank-line>, @chunk[26];
-    is-deeply ~$match<document><chunk>[21]<header-block><header>, @chunk[27];
-    is-deeply ~$match<document><chunk>[22]<list-block>, @chunk[28];
-    is-deeply ~$match<document><chunk>[23]<comment-block>, @chunk[29];
-    is-deeply ~$match<document><chunk>[24]<list-block>, @chunk[30];
-    is-deeply ~$match<document><chunk>[25]<comment-block>, @chunk[31];
-    is-deeply ~$match<document><chunk>[26]<list-block>, @chunk[32];
-    is-deeply ~$match<document><chunk>[27]<blank-line>, @chunk[33];
-    is-deeply ~$match<document><chunk>[28]<comment-block>, @chunk[34];
-    is-deeply ~$match<document><chunk>[29]<blank-line>, @chunk[35];
-    is-deeply ~$match<document><chunk>[30]<paragraph>, @chunk[36];
-    is-deeply ~$match<document><chunk>[31]<header-block><blank-line>, @chunk[37];
-    is-deeply ~$match<document><chunk>[31]<header-block><header>, @chunk[38];
-    is-deeply ~$match<document><chunk>[32]<horizontal-rule>, @chunk[39];
-    is-deeply ~$match<document><chunk>[33]<header-block><blank-line>, @chunk[40];
-    is-deeply ~$match<document><chunk>[33]<header-block><header>, @chunk[41];
-    is-deeply ~$match<document><chunk>[34]<paragraph>, @chunk[42];
-    is-deeply ~$match<document><chunk>[35]<blank-line>, @chunk[43];
-    is-deeply ~$match<document><chunk>[36]<header-block><horizontal-rule>, @chunk[44];
-    is-deeply ~$match<document><chunk>[36]<header-block><header>, @chunk[45];
-    is-deeply ~$match<document><chunk>[37]<header-block><blank-line>, @chunk[46];
-    is-deeply ~$match<document><chunk>[37]<header-block><header>, @chunk[47];
-    is-deeply ~$match<document><chunk>[38]<blank-line>, @chunk[48];
-    is-deeply ~$match<document><chunk>[39]<header-block><horizontal-rule>, @chunk[49];
-    is-deeply ~$match<document><chunk>[39]<header-block><header>, @chunk[50];
-    is-deeply ~$match<document><chunk>[40]<horizontal-rule>, @chunk[51];
-    is-deeply ~$match<document><chunk>[41]<paragraph>, @chunk[52];
-    is-deeply ~$match<document><chunk>[42]<blank-line>, @chunk[53];
-    is-deeply ~$match<document><chunk>[43]<horizontal-rule>, @chunk[54];
-    is-deeply ~$match<document><chunk>[44]<paragraph>, @chunk[55];
-    is-deeply ~$match<document><chunk>[45]<header-block><blank-line>, @chunk[56];
-    is-deeply ~$match<document><chunk>[45]<header-block><header>, @chunk[57];
-    is-deeply ~$match<document><chunk>[46]<list-block>, @chunk[58];
-    is-deeply ~$match<document><chunk>[47]<code-block>, @chunk[59];
-    is-deeply ~$match<document><chunk>[48]<comment-block>, @chunk[60];
-    is-deeply ~$match<document><chunk>[49]<list-block>, @chunk[61];
-    is-deeply ~$match<document><chunk>[50]<code-block>, @chunk[62];
-    is-deeply ~$match<document><chunk>[51]<sectional-block>, @chunk[63];
-    is-deeply ~$match<document><chunk>[52]<sectional-block>, @chunk[64];
-    is-deeply ~$match<document><chunk>[53]<sectional-block>, @chunk[65];
-    is-deeply ~$match<document><chunk>[54]<sectional-block>, @chunk[66];
-    is-deeply ~$match<document><chunk>[55]<blank-line>, @chunk[67];
-    is-deeply ~$match<document><chunk>[56]<header-block><horizontal-rule>, @chunk[68];
-    is-deeply ~$match<document><chunk>[56]<header-block><header>, @chunk[69];
-    is-deeply ~$match<document><chunk>[57]<list-block>, @chunk[70];
-    is-deeply ~$match<document><chunk>[58]<blank-line>, @chunk[71];
-    is-deeply ~$match<document><chunk>[59]<header-block><horizontal-rule>, @chunk[72];
-    is-deeply ~$match<document><chunk>[59]<header-block><header>, @chunk[73];
-    is-deeply ~$match<document><chunk>[60]<list-block>, @chunk[74];
-    is-deeply ~$match<document><chunk>[61]<blank-line>, @chunk[75];
-    is-deeply ~$match<document><chunk>[62]<paragraph>, @chunk[76];
-    is-deeply ~$match<document><chunk>[63]<blank-line>, @chunk[77];
-    is-deeply ~$match<document><chunk>[64]<paragraph>, @chunk[78];
-    is-deeply ~$match<document><chunk>[65]<code-block>, @chunk[79];
-    is-deeply ~$match<document><chunk>[66]<blank-line>, @chunk[80];
-    is-deeply ~$match<document><chunk>[67]<paragraph>, @chunk[81];
-    is-deeply ~$match<document><chunk>[68]<blank-line>, @chunk[82];
-    is-deeply ~$match<document><chunk>[69]<blank-line>, @chunk[83];
-    is-deeply ~$match<document><chunk>[70]<blank-line>, @chunk[84];
-    is-deeply ~$match<document><chunk>[71]<horizontal-rule>, @chunk[85];
-    is-deeply ~$match<document><chunk>[72]<reference-line-block><blank-lines>, @chunk[86];
-    is-deeply ~$match<document><chunk>[72]<reference-line-block><reference-lines>, @chunk[87];
-    ok $match<document><chunk>[73].isa(Any);
+    is-deeply(~$match<document><chunk>[0]<comment-block>, @chunk[0]);
+    is-deeply(~$match<document><chunk>[1]<header-block><blank-line>, @chunk[1]);
+    is-deeply(~$match<document><chunk>[1]<header-block><header>, @chunk[2]);
+    is-deeply(~$match<document><chunk>[2]<paragraph>, @chunk[3]);
+    is-deeply(~$match<document><chunk>[3]<header-block><blank-line>, @chunk[4]);
+    is-deeply(~$match<document><chunk>[3]<header-block><header>, @chunk[5]);
+    is-deeply(~$match<document><chunk>[4]<header-block><blank-line>, @chunk[6]);
+    is-deeply(~$match<document><chunk>[4]<header-block><header>, @chunk[7]);
+    is-deeply(~$match<document><chunk>[5]<blank-line>, @chunk[8]);
+    is-deeply(~$match<document><chunk>[6]<paragraph>, @chunk[9]);
+    is-deeply(~$match<document><chunk>[7]<blank-line>, @chunk[10]);
+    is-deeply(~$match<document><chunk>[8]<paragraph>, @chunk[11]);
+    is-deeply(~$match<document><chunk>[9]<blank-line>, @chunk[12]);
+    is-deeply(~$match<document><chunk>[10]<paragraph>, @chunk[13]);
+    is-deeply(~$match<document><chunk>[11]<blank-line>, @chunk[14]);
+    is-deeply(~$match<document><chunk>[12]<paragraph>, @chunk[15]);
+    is-deeply(~$match<document><chunk>[13]<blank-line>, @chunk[16]);
+    is-deeply(~$match<document><chunk>[14]<paragraph>, @chunk[17]);
+    is-deeply(~$match<document><chunk>[15]<blank-line>, @chunk[18]);
+    is-deeply(~$match<document><chunk>[16]<comment-block>, @chunk[19]);
+    is-deeply(~$match<document><chunk>[17]<header-block><blank-line>, @chunk[20]);
+    is-deeply(~$match<document><chunk>[17]<header-block><header>, @chunk[21]);
+    is-deeply(~$match<document><chunk>[18]<list-block>, @chunk[22]);
+    is-deeply(~$match<document><chunk>[19]<header-block><blank-line>, @chunk[23]);
+    is-deeply(~$match<document><chunk>[19]<header-block><header>, @chunk[24]);
+    is-deeply(~$match<document><chunk>[20]<list-block>, @chunk[25]);
+    is-deeply(~$match<document><chunk>[21]<header-block><blank-line>, @chunk[26]);
+    is-deeply(~$match<document><chunk>[21]<header-block><header>, @chunk[27]);
+    is-deeply(~$match<document><chunk>[22]<list-block>, @chunk[28]);
+    is-deeply(~$match<document><chunk>[23]<comment-block>, @chunk[29]);
+    is-deeply(~$match<document><chunk>[24]<list-block>, @chunk[30]);
+    is-deeply(~$match<document><chunk>[25]<comment-block>, @chunk[31]);
+    is-deeply(~$match<document><chunk>[26]<list-block>, @chunk[32]);
+    is-deeply(~$match<document><chunk>[27]<blank-line>, @chunk[33]);
+    is-deeply(~$match<document><chunk>[28]<comment-block>, @chunk[34]);
+    is-deeply(~$match<document><chunk>[29]<blank-line>, @chunk[35]);
+    is-deeply(~$match<document><chunk>[30]<paragraph>, @chunk[36]);
+    is-deeply(~$match<document><chunk>[31]<header-block><blank-line>, @chunk[37]);
+    is-deeply(~$match<document><chunk>[31]<header-block><header>, @chunk[38]);
+    is-deeply(~$match<document><chunk>[32]<horizontal-rule>, @chunk[39]);
+    is-deeply(~$match<document><chunk>[33]<header-block><blank-line>, @chunk[40]);
+    is-deeply(~$match<document><chunk>[33]<header-block><header>, @chunk[41]);
+    is-deeply(~$match<document><chunk>[34]<paragraph>, @chunk[42]);
+    is-deeply(~$match<document><chunk>[35]<blank-line>, @chunk[43]);
+    is-deeply(~$match<document><chunk>[36]<header-block><horizontal-rule>, @chunk[44]);
+    is-deeply(~$match<document><chunk>[36]<header-block><header>, @chunk[45]);
+    is-deeply(~$match<document><chunk>[37]<header-block><blank-line>, @chunk[46]);
+    is-deeply(~$match<document><chunk>[37]<header-block><header>, @chunk[47]);
+    is-deeply(~$match<document><chunk>[38]<blank-line>, @chunk[48]);
+    is-deeply(~$match<document><chunk>[39]<header-block><horizontal-rule>, @chunk[49]);
+    is-deeply(~$match<document><chunk>[39]<header-block><header>, @chunk[50]);
+    is-deeply(~$match<document><chunk>[40]<horizontal-rule>, @chunk[51]);
+    is-deeply(~$match<document><chunk>[41]<paragraph>, @chunk[52]);
+    is-deeply(~$match<document><chunk>[42]<blank-line>, @chunk[53]);
+    is-deeply(~$match<document><chunk>[43]<horizontal-rule>, @chunk[54]);
+    is-deeply(~$match<document><chunk>[44]<paragraph>, @chunk[55]);
+    is-deeply(~$match<document><chunk>[45]<header-block><blank-line>, @chunk[56]);
+    is-deeply(~$match<document><chunk>[45]<header-block><header>, @chunk[57]);
+    is-deeply(~$match<document><chunk>[46]<list-block>, @chunk[58]);
+    is-deeply(~$match<document><chunk>[47]<code-block>, @chunk[59]);
+    is-deeply(~$match<document><chunk>[48]<comment-block>, @chunk[60]);
+    is-deeply(~$match<document><chunk>[49]<list-block>, @chunk[61]);
+    is-deeply(~$match<document><chunk>[50]<code-block>, @chunk[62]);
+    is-deeply(~$match<document><chunk>[51]<sectional-block>, @chunk[63]);
+    is-deeply(~$match<document><chunk>[52]<sectional-block>, @chunk[64]);
+    is-deeply(~$match<document><chunk>[53]<sectional-block>, @chunk[65]);
+    is-deeply(~$match<document><chunk>[54]<sectional-block>, @chunk[66]);
+    is-deeply(~$match<document><chunk>[55]<blank-line>, @chunk[67]);
+    is-deeply(~$match<document><chunk>[56]<header-block><horizontal-rule>, @chunk[68]);
+    is-deeply(~$match<document><chunk>[56]<header-block><header>, @chunk[69]);
+    is-deeply(~$match<document><chunk>[57]<list-block>, @chunk[70]);
+    is-deeply(~$match<document><chunk>[58]<blank-line>, @chunk[71]);
+    is-deeply(~$match<document><chunk>[59]<header-block><horizontal-rule>, @chunk[72]);
+    is-deeply(~$match<document><chunk>[59]<header-block><header>, @chunk[73]);
+    is-deeply(~$match<document><chunk>[60]<list-block>, @chunk[74]);
+    is-deeply(~$match<document><chunk>[61]<blank-line>, @chunk[75]);
+    is-deeply(~$match<document><chunk>[62]<paragraph>, @chunk[76]);
+    is-deeply(~$match<document><chunk>[63]<blank-line>, @chunk[77]);
+    is-deeply(~$match<document><chunk>[64]<paragraph>, @chunk[78]);
+    is-deeply(~$match<document><chunk>[65]<code-block>, @chunk[79]);
+    is-deeply(~$match<document><chunk>[66]<blank-line>, @chunk[80]);
+    is-deeply(~$match<document><chunk>[67]<paragraph>, @chunk[81]);
+    is-deeply(~$match<document><chunk>[68]<blank-line>, @chunk[82]);
+    is-deeply(~$match<document><chunk>[69]<blank-line>, @chunk[83]);
+    is-deeply(~$match<document><chunk>[70]<blank-line>, @chunk[84]);
+    is-deeply(~$match<document><chunk>[71]<horizontal-rule>, @chunk[85]);
+    is-deeply(~$match<document><chunk>[72]<reference-line-block><blank-lines>, @chunk[86]);
+    is-deeply(~$match<document><chunk>[72]<reference-line-block><reference-lines>, @chunk[87]);
+    ok($match<document><chunk>[73].isa(Any));
 
     # end @chunk tests }}}
-}
+});
 
-subtest 'finn-examples/hello',
-{
+subtest('finn-examples/hello', {
     my Str:D $document = 't/data/hello/Story';
     my Match:D $match = Finn::Parser::Grammar.parsefile($document);
 
-    ok $match, 'Parses Finn source document';
+    ok($match, 'Parses Finn source document');
 
     # @chunk {{{
 
@@ -847,40 +843,39 @@ subtest 'finn-examples/hello',
     # end @chunk }}}
     # @chunk tests {{{
 
-    is-deeply ~$match<document><chunk>[0]<comment-block>, @chunk[0];
-    is-deeply ~$match<document><chunk>[1]<header-block><blank-line>, @chunk[1];
-    is-deeply ~$match<document><chunk>[1]<header-block><header>, @chunk[2];
-    is-deeply ~$match<document><chunk>[2]<header-block><blank-line>, @chunk[3];
-    is-deeply ~$match<document><chunk>[2]<header-block><header>, @chunk[4];
-    is-deeply ~$match<document><chunk>[3]<blank-line>, @chunk[5];
-    is-deeply ~$match<document><chunk>[4]<paragraph>, @chunk[6];
-    is-deeply ~$match<document><chunk>[5]<blank-line>, @chunk[7];
-    is-deeply ~$match<document><chunk>[6]<paragraph>, @chunk[8];
-    is-deeply ~$match<document><chunk>[7]<blank-line>, @chunk[9];
-    is-deeply ~$match<document><chunk>[8]<sectional-block>, @chunk[10];
-    is-deeply ~$match<document><chunk>[9]<header-block><blank-line>, @chunk[11];
-    is-deeply ~$match<document><chunk>[9]<header-block><header>, @chunk[12];
-    is-deeply ~$match<document><chunk>[10]<blank-line>, @chunk[13];
-    is-deeply ~$match<document><chunk>[11]<sectional-block>, @chunk[14];
-    is-deeply ~$match<document><chunk>[12]<header-block><blank-line>, @chunk[15];
-    is-deeply ~$match<document><chunk>[12]<header-block><header>, @chunk[16];
-    is-deeply ~$match<document><chunk>[13]<blank-line>, @chunk[17];
-    is-deeply ~$match<document><chunk>[14]<sectional-block>, @chunk[18];
-    is-deeply ~$match<document><chunk>[15]<header-block><blank-line>, @chunk[19];
-    is-deeply ~$match<document><chunk>[15]<header-block><header>, @chunk[20];
-    is-deeply ~$match<document><chunk>[16]<blank-line>, @chunk[21];
-    is-deeply ~$match<document><chunk>[17]<sectional-block>, @chunk[22];
-    ok $match<document><chunk>[18].isa(Any);
+    is-deeply(~$match<document><chunk>[0]<comment-block>, @chunk[0]);
+    is-deeply(~$match<document><chunk>[1]<header-block><blank-line>, @chunk[1]);
+    is-deeply(~$match<document><chunk>[1]<header-block><header>, @chunk[2]);
+    is-deeply(~$match<document><chunk>[2]<header-block><blank-line>, @chunk[3]);
+    is-deeply(~$match<document><chunk>[2]<header-block><header>, @chunk[4]);
+    is-deeply(~$match<document><chunk>[3]<blank-line>, @chunk[5]);
+    is-deeply(~$match<document><chunk>[4]<paragraph>, @chunk[6]);
+    is-deeply(~$match<document><chunk>[5]<blank-line>, @chunk[7]);
+    is-deeply(~$match<document><chunk>[6]<paragraph>, @chunk[8]);
+    is-deeply(~$match<document><chunk>[7]<blank-line>, @chunk[9]);
+    is-deeply(~$match<document><chunk>[8]<sectional-block>, @chunk[10]);
+    is-deeply(~$match<document><chunk>[9]<header-block><blank-line>, @chunk[11]);
+    is-deeply(~$match<document><chunk>[9]<header-block><header>, @chunk[12]);
+    is-deeply(~$match<document><chunk>[10]<blank-line>, @chunk[13]);
+    is-deeply(~$match<document><chunk>[11]<sectional-block>, @chunk[14]);
+    is-deeply(~$match<document><chunk>[12]<header-block><blank-line>, @chunk[15]);
+    is-deeply(~$match<document><chunk>[12]<header-block><header>, @chunk[16]);
+    is-deeply(~$match<document><chunk>[13]<blank-line>, @chunk[17]);
+    is-deeply(~$match<document><chunk>[14]<sectional-block>, @chunk[18]);
+    is-deeply(~$match<document><chunk>[15]<header-block><blank-line>, @chunk[19]);
+    is-deeply(~$match<document><chunk>[15]<header-block><header>, @chunk[20]);
+    is-deeply(~$match<document><chunk>[16]<blank-line>, @chunk[21]);
+    is-deeply(~$match<document><chunk>[17]<sectional-block>, @chunk[22]);
+    ok($match<document><chunk>[18].isa(Any));
 
     # end @chunk tests }}}
-}
+});
 
-subtest 'finn-examples/novel',
-{
+subtest('finn-examples/novel', {
     my Str:D $document = 't/data/novel/Story';
     my Match:D $match = Finn::Parser::Grammar.parsefile($document);
 
-    ok $match, 'Parses Finn source document';
+    ok($match, 'Parses Finn source document');
 
     # @chunk {{{
 
@@ -920,36 +915,35 @@ subtest 'finn-examples/novel',
     # end @chunk }}}
     # @chunk tests {{{
 
-    is-deeply ~$match<document><chunk>[0]<comment-block>, @chunk[0];
-    is-deeply ~$match<document><chunk>[1]<header-block><blank-line>, @chunk[1];
-    is-deeply ~$match<document><chunk>[1]<header-block><header>, @chunk[2];
-    is-deeply ~$match<document><chunk>[2]<blank-line>, @chunk[3];
-    is-deeply ~$match<document><chunk>[3]<horizontal-rule>, @chunk[4];
-    is-deeply ~$match<document><chunk>[4]<include-line-block><blank-line>, @chunk[5];
-    is-deeply ~$match<document><chunk>[4]<include-line-block><include-line>, @chunk[6];
-    is-deeply ~$match<document><chunk>[5]<blank-line>, @chunk[7];
-    is-deeply ~$match<document><chunk>[6]<horizontal-rule>, @chunk[8];
-    is-deeply ~$match<document><chunk>[7]<include-line-block><blank-line>, @chunk[9];
-    is-deeply ~$match<document><chunk>[7]<include-line-block><include-line>, @chunk[10];
-    is-deeply ~$match<document><chunk>[8]<blank-line>, @chunk[11];
-    is-deeply ~$match<document><chunk>[9]<horizontal-rule>, @chunk[12];
-    is-deeply ~$match<document><chunk>[10]<include-line-block><blank-line>, @chunk[13];
-    is-deeply ~$match<document><chunk>[10]<include-line-block><include-line>, @chunk[14];
-    is-deeply ~$match<document><chunk>[11]<blank-line>, @chunk[15];
-    is-deeply ~$match<document><chunk>[12]<horizontal-rule>, @chunk[16];
-    is-deeply ~$match<document><chunk>[13]<header-block><blank-line>, @chunk[17];
-    is-deeply ~$match<document><chunk>[13]<header-block><header>, @chunk[18];
-    ok $match<document><chunk>[14].isa(Any);
+    is-deeply(~$match<document><chunk>[0]<comment-block>, @chunk[0]);
+    is-deeply(~$match<document><chunk>[1]<header-block><blank-line>, @chunk[1]);
+    is-deeply(~$match<document><chunk>[1]<header-block><header>, @chunk[2]);
+    is-deeply(~$match<document><chunk>[2]<blank-line>, @chunk[3]);
+    is-deeply(~$match<document><chunk>[3]<horizontal-rule>, @chunk[4]);
+    is-deeply(~$match<document><chunk>[4]<include-line-block><blank-line>, @chunk[5]);
+    is-deeply(~$match<document><chunk>[4]<include-line-block><include-line>, @chunk[6]);
+    is-deeply(~$match<document><chunk>[5]<blank-line>, @chunk[7]);
+    is-deeply(~$match<document><chunk>[6]<horizontal-rule>, @chunk[8]);
+    is-deeply(~$match<document><chunk>[7]<include-line-block><blank-line>, @chunk[9]);
+    is-deeply(~$match<document><chunk>[7]<include-line-block><include-line>, @chunk[10]);
+    is-deeply(~$match<document><chunk>[8]<blank-line>, @chunk[11]);
+    is-deeply(~$match<document><chunk>[9]<horizontal-rule>, @chunk[12]);
+    is-deeply(~$match<document><chunk>[10]<include-line-block><blank-line>, @chunk[13]);
+    is-deeply(~$match<document><chunk>[10]<include-line-block><include-line>, @chunk[14]);
+    is-deeply(~$match<document><chunk>[11]<blank-line>, @chunk[15]);
+    is-deeply(~$match<document><chunk>[12]<horizontal-rule>, @chunk[16]);
+    is-deeply(~$match<document><chunk>[13]<header-block><blank-line>, @chunk[17]);
+    is-deeply(~$match<document><chunk>[13]<header-block><header>, @chunk[18]);
+    ok($match<document><chunk>[14].isa(Any));
 
     # end @chunk tests }}}
-}
+});
 
-subtest 'finn-examples/sample',
-{
+subtest('finn-examples/sample', {
     my Str:D $document = 't/data/sample/Story';
     my Match:D $match = Finn::Parser::Grammar.parsefile($document);
 
-    ok $match, 'Parses Finn source document';
+    ok($match, 'Parses Finn source document');
 
     # @chunk {{{
 
@@ -1077,50 +1071,50 @@ subtest 'finn-examples/sample',
     # end @chunk }}}
     # @chunk tests {{{
 
-    is-deeply ~$match<document><chunk>[0]<comment-block>, @chunk[0];
-    is-deeply ~$match<document><chunk>[1]<header-block><blank-line>, @chunk[1];
-    is-deeply ~$match<document><chunk>[1]<header-block><header>, @chunk[2];
-    is-deeply ~$match<document><chunk>[2]<blank-line>, @chunk[3];
-    is-deeply ~$match<document><chunk>[3]<paragraph>, @chunk[4];
-    is-deeply ~$match<document><chunk>[4]<blank-line>, @chunk[5];
-    is-deeply ~$match<document><chunk>[5]<horizontal-rule>, @chunk[6];
-    is-deeply ~$match<document><chunk>[6]<header-block><blank-line>, @chunk[7];
-    is-deeply ~$match<document><chunk>[6]<header-block><header>, @chunk[8];
-    is-deeply ~$match<document><chunk>[7]<header-block><blank-line>, @chunk[9];
-    is-deeply ~$match<document><chunk>[7]<header-block><header>, @chunk[10];
-    is-deeply ~$match<document><chunk>[8]<list-block>, @chunk[11];
-    is-deeply ~$match<document><chunk>[9]<blank-line>, @chunk[12];
-    is-deeply ~$match<document><chunk>[10]<horizontal-rule>, @chunk[13];
-    is-deeply ~$match<document><chunk>[11]<header-block><blank-line>, @chunk[14];
-    is-deeply ~$match<document><chunk>[11]<header-block><header>, @chunk[15];
-    is-deeply ~$match<document><chunk>[12]<blank-line>, @chunk[16];
-    is-deeply ~$match<document><chunk>[13]<paragraph>, @chunk[17];
-    is-deeply ~$match<document><chunk>[14]<blank-line>, @chunk[18];
-    is-deeply ~$match<document><chunk>[15]<list-block>, @chunk[19];
-    is-deeply ~$match<document><chunk>[16]<blank-line>, @chunk[20];
-    is-deeply ~$match<document><chunk>[17]<horizontal-rule>, @chunk[21];
-    is-deeply ~$match<document><chunk>[18]<header-block><blank-line>, @chunk[22];
-    is-deeply ~$match<document><chunk>[18]<header-block><header>, @chunk[23];
-    is-deeply ~$match<document><chunk>[19]<blank-line>, @chunk[24];
-    is-deeply ~$match<document><chunk>[20]<paragraph>, @chunk[25];
-    is-deeply ~$match<document><chunk>[21]<blank-line>, @chunk[26];
-    is-deeply ~$match<document><chunk>[22]<horizontal-rule>, @chunk[27];
-    is-deeply ~$match<document><chunk>[23]<header-block><blank-line>, @chunk[28];
-    is-deeply ~$match<document><chunk>[23]<header-block><header>, @chunk[29];
-    is-deeply ~$match<document><chunk>[24]<blank-line>, @chunk[30];
-    is-deeply ~$match<document><chunk>[25]<code-block>, @chunk[31];
-    is-deeply ~$match<document><chunk>[26]<blank-line>, @chunk[32];
-    is-deeply ~$match<document><chunk>[27]<paragraph>, @chunk[33];
-    is-deeply ~$match<document><chunk>[28]<blank-line>, @chunk[34];
-    is-deeply ~$match<document><chunk>[29]<code-block>, @chunk[35];
-    is-deeply ~$match<document><chunk>[30]<blank-line>, @chunk[36];
-    is-deeply ~$match<document><chunk>[31]<blank-line>, @chunk[37];
-    is-deeply ~$match<document><chunk>[32]<horizontal-rule>, @chunk[38];
-    is-deeply ~$match<document><chunk>[33]<reference-line-block><blank-lines>, @chunk[39];
-    is-deeply ~$match<document><chunk>[33]<reference-line-block><reference-lines>, @chunk[40];
-    ok $match<document><chunk>[34].isa(Any);
+    is-deeply(~$match<document><chunk>[0]<comment-block>, @chunk[0]);
+    is-deeply(~$match<document><chunk>[1]<header-block><blank-line>, @chunk[1]);
+    is-deeply(~$match<document><chunk>[1]<header-block><header>, @chunk[2]);
+    is-deeply(~$match<document><chunk>[2]<blank-line>, @chunk[3]);
+    is-deeply(~$match<document><chunk>[3]<paragraph>, @chunk[4]);
+    is-deeply(~$match<document><chunk>[4]<blank-line>, @chunk[5]);
+    is-deeply(~$match<document><chunk>[5]<horizontal-rule>, @chunk[6]);
+    is-deeply(~$match<document><chunk>[6]<header-block><blank-line>, @chunk[7]);
+    is-deeply(~$match<document><chunk>[6]<header-block><header>, @chunk[8]);
+    is-deeply(~$match<document><chunk>[7]<header-block><blank-line>, @chunk[9]);
+    is-deeply(~$match<document><chunk>[7]<header-block><header>, @chunk[10]);
+    is-deeply(~$match<document><chunk>[8]<list-block>, @chunk[11]);
+    is-deeply(~$match<document><chunk>[9]<blank-line>, @chunk[12]);
+    is-deeply(~$match<document><chunk>[10]<horizontal-rule>, @chunk[13]);
+    is-deeply(~$match<document><chunk>[11]<header-block><blank-line>, @chunk[14]);
+    is-deeply(~$match<document><chunk>[11]<header-block><header>, @chunk[15]);
+    is-deeply(~$match<document><chunk>[12]<blank-line>, @chunk[16]);
+    is-deeply(~$match<document><chunk>[13]<paragraph>, @chunk[17]);
+    is-deeply(~$match<document><chunk>[14]<blank-line>, @chunk[18]);
+    is-deeply(~$match<document><chunk>[15]<list-block>, @chunk[19]);
+    is-deeply(~$match<document><chunk>[16]<blank-line>, @chunk[20]);
+    is-deeply(~$match<document><chunk>[17]<horizontal-rule>, @chunk[21]);
+    is-deeply(~$match<document><chunk>[18]<header-block><blank-line>, @chunk[22]);
+    is-deeply(~$match<document><chunk>[18]<header-block><header>, @chunk[23]);
+    is-deeply(~$match<document><chunk>[19]<blank-line>, @chunk[24]);
+    is-deeply(~$match<document><chunk>[20]<paragraph>, @chunk[25]);
+    is-deeply(~$match<document><chunk>[21]<blank-line>, @chunk[26]);
+    is-deeply(~$match<document><chunk>[22]<horizontal-rule>, @chunk[27]);
+    is-deeply(~$match<document><chunk>[23]<header-block><blank-line>, @chunk[28]);
+    is-deeply(~$match<document><chunk>[23]<header-block><header>, @chunk[29]);
+    is-deeply(~$match<document><chunk>[24]<blank-line>, @chunk[30]);
+    is-deeply(~$match<document><chunk>[25]<code-block>, @chunk[31]);
+    is-deeply(~$match<document><chunk>[26]<blank-line>, @chunk[32]);
+    is-deeply(~$match<document><chunk>[27]<paragraph>, @chunk[33]);
+    is-deeply(~$match<document><chunk>[28]<blank-line>, @chunk[34]);
+    is-deeply(~$match<document><chunk>[29]<code-block>, @chunk[35]);
+    is-deeply(~$match<document><chunk>[30]<blank-line>, @chunk[36]);
+    is-deeply(~$match<document><chunk>[31]<blank-line>, @chunk[37]);
+    is-deeply(~$match<document><chunk>[32]<horizontal-rule>, @chunk[38]);
+    is-deeply(~$match<document><chunk>[33]<reference-line-block><blank-lines>, @chunk[39]);
+    is-deeply(~$match<document><chunk>[33]<reference-line-block><reference-lines>, @chunk[40]);
+    ok($match<document><chunk>[34].isa(Any));
 
     # end @chunk tests }}}
-}
+});
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

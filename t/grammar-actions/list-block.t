@@ -7,10 +7,9 @@ use lib 't/lib';
 use FinnTest;
 use Test;
 
-plan 3;
+plan(3);
 
-subtest
-{
+subtest({
     my Finn::Parser::Actions $actions .= new;
     my Str:D $list-block = q:to/EOF/.trim-trailing;
     - abcdefghijklmnopqrstuvwxyz /* inner comment */
@@ -88,15 +87,15 @@ subtest
         $list-item-d,
         $list-item-e;
 
-    cmp-ok
+    cmp-ok(
         Finn::Parser::Grammar.parse($list-block, :$rule, :$actions).made,
         &cmp-ok-list-block,
         ListBlock.new(:@list-item),
-        'ListBlock OK';
-}
+        'ListBlock OK'
+    );
+});
 
-subtest
-{
+subtest({
     my Finn::Parser::Actions $actions .= new;
     my Str:D $list-block = q:to/EOF/.trim-trailing;
     - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
@@ -182,15 +181,15 @@ subtest
         $list-item-d,
         $list-item-e;
 
-    cmp-ok
+    cmp-ok(
         Finn::Parser::Grammar.parse($list-block, :$rule, :$actions).made,
         &cmp-ok-list-block,
         ListBlock.new(:@list-item),
-        'ListBlock OK';
-}
+        'ListBlock OK'
+    );
+});
 
-subtest
-{
+subtest({
     my Finn::Parser::Actions $actions .= new;
     my Str:D $list-block = q:to/EOF/.trim-trailing;
     1. abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
@@ -352,12 +351,13 @@ subtest
         $list-item-i,
         $list-item-j;
 
-    cmp-ok
+    cmp-ok(
         Finn::Parser::Grammar.parse($list-block, :$rule, :$actions).made,
         &cmp-ok-list-block,
         ListBlock.new(:@list-item),
-        'ListBlock OK';
-}
+        'ListBlock OK'
+    );
+});
 
 sub cmp-ok-list-block(ListBlock:D $a, ListBlock:D $b --> Bool:D)
 {

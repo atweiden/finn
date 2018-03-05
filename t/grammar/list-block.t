@@ -3,10 +3,9 @@ use lib 'lib';
 use Finn::Parser::Grammar;
 use Test;
 
-plan 3;
+plan(3);
 
-subtest
-{
+subtest({
     my Str:D $list-block = q:to/EOF/.trim-trailing;
     - abcdefghijklmnopqrstuvwxyz /* inner comment */
       ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890 /* eol comment */
@@ -17,11 +16,10 @@ subtest
             - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
     EOF
     my Str:D $rule = 'list-block';
-    ok Finn::Parser::Grammar.parse($list-block, :$rule), 'Parses list-block';
-}
+    ok(Finn::Parser::Grammar.parse($list-block, :$rule), 'Parses list-block');
+});
 
-subtest
-{
+subtest({
     my Str:D $list-block = q:to/EOF/.trim-trailing;
     - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
       - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
@@ -34,11 +32,10 @@ subtest
               1234567890
     EOF
     my Str:D $rule = 'list-block';
-    ok Finn::Parser::Grammar.parse($list-block, :$rule), 'Parses list-block';
-}
+    ok(Finn::Parser::Grammar.parse($list-block, :$rule), 'Parses list-block');
+});
 
-subtest
-{
+subtest({
     my Str:D $list-block = q:to/EOF/.trim-trailing;
     1. abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
        - abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890
@@ -55,7 +52,7 @@ subtest
               1234567890
     EOF
     my Str:D $rule = 'list-block';
-    ok Finn::Parser::Grammar.parse($list-block, :$rule), 'Parses list-block';
-}
+    ok(Finn::Parser::Grammar.parse($list-block, :$rule), 'Parses list-block');
+});
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

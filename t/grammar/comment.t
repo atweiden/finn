@@ -3,17 +3,15 @@ use lib 'lib';
 use Finn::Parser::Grammar;
 use Test;
 
-plan 3;
+plan(3);
 
-subtest
-{
+subtest({
     my Str:D $comment = '/* this is a comment */';
     my Str:D $rule = 'comment';
-    ok Finn::Parser::Grammar.parse($comment, :$rule), 'Parses comment';
-}
+    ok(Finn::Parser::Grammar.parse($comment, :$rule), 'Parses comment');
+});
 
-subtest
-{
+subtest({
     my Str:D $comment = q:to/EOF/.trim;
     /*
      *
@@ -24,11 +22,10 @@ subtest
      */
     EOF
     my Str:D $rule = 'comment';
-    ok Finn::Parser::Grammar.parse($comment, :$rule), 'Parses comment';
-}
+    ok(Finn::Parser::Grammar.parse($comment, :$rule), 'Parses comment');
+});
 
-subtest
-{
+subtest({
     my Str:D $comment = q:to/EOF/.trim;
     /*
      <!--                             -->
@@ -38,7 +35,7 @@ subtest
      <!--                             --> */
     EOF
     my Str:D $rule = 'comment';
-    ok Finn::Parser::Grammar.parse($comment, :$rule), 'Parses comment';
-}
+    ok(Finn::Parser::Grammar.parse($comment, :$rule), 'Parses comment');
+});
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

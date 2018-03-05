@@ -7,10 +7,9 @@ use lib 't/lib';
 use FinnTest;
 use Test;
 
-plan 6;
+plan(6);
 
-subtest 'finn-examples/app',
-{
+subtest('finn-examples/app', {
     my Str:D $document = 't/data/app/Story';
     my Finn::Parser::Actions $actions .= new(:file($document));
     my Finn::Parser::ParseTree:D $parse-tree =
@@ -384,21 +383,20 @@ subtest 'finn-examples/app',
     # end @chunk }}}
     # @chunk tests {{{
 
-    cmp-ok $parse-tree.document.chunk[$_], &cmp-ok-chunk, @chunk[$_], 'Chunk OK'
+    cmp-ok($parse-tree.document.chunk[$_], &cmp-ok-chunk, @chunk[$_], 'Chunk OK')
         for (0..17);
-    ok $parse-tree.document.chunk[18].not;
+    ok($parse-tree.document.chunk[18].not);
 
     # end @chunk tests }}}
 
     my Document $d .= new(:@chunk);
-    cmp-ok $parse-tree.document, &cmp-ok-document, $d, 'Document OK';
+    cmp-ok($parse-tree.document, &cmp-ok-document, $d, 'Document OK');
 
     my Finn::Parser::ParseTree $t .= new(:document($d));
-    cmp-ok $parse-tree, &cmp-ok-parse-tree, $t, 'ParseTree OK';
-}
+    cmp-ok($parse-tree, &cmp-ok-parse-tree, $t, 'ParseTree OK');
+});
 
-subtest 'finn-examples/hangman',
-{
+subtest('finn-examples/hangman', {
     my Str:D $document = 't/data/hangman/Story';
     my Finn::Parser::Actions $actions .= new(:file($document));
     my Finn::Parser::ParseTree:D $parse-tree =
@@ -1954,21 +1952,20 @@ subtest 'finn-examples/hangman',
     # end @chunk }}}
     # @chunk tests {{{
 
-    cmp-ok $parse-tree.document.chunk[$_], &cmp-ok-chunk, @chunk[$_], 'Chunk OK'
+    cmp-ok($parse-tree.document.chunk[$_], &cmp-ok-chunk, @chunk[$_], 'Chunk OK')
         for (0..57);
-    ok $parse-tree.document.chunk[58].not;
+    ok($parse-tree.document.chunk[58].not);
 
     # end @chunk tests }}}
 
     my Document $d .= new(:@chunk);
-    cmp-ok $parse-tree.document, &cmp-ok-document, $d, 'Document OK';
+    cmp-ok($parse-tree.document, &cmp-ok-document, $d, 'Document OK');
 
     my Finn::Parser::ParseTree $t .= new(:document($d));
-    cmp-ok $parse-tree, &cmp-ok-parse-tree, $t, 'ParseTree OK';
-}
+    cmp-ok($parse-tree, &cmp-ok-parse-tree, $t, 'ParseTree OK');
+});
 
-subtest 'finn-examples/hard',
-{
+subtest('finn-examples/hard', {
     my Str:D $document = 't/data/hard/Story';
     my Finn::Parser::Actions $actions .= new(:file($document));
     my Finn::Parser::ParseTree:D $parse-tree =
@@ -4134,21 +4131,20 @@ subtest 'finn-examples/hard',
     # end @chunk }}}
     # @chunk tests {{{
 
-    cmp-ok $parse-tree.document.chunk[$_], &cmp-ok-chunk, @chunk[$_], 'Chunk OK'
+    cmp-ok($parse-tree.document.chunk[$_], &cmp-ok-chunk, @chunk[$_], 'Chunk OK')
         for (0..72);
-    ok $parse-tree.document.chunk[73].not;
+    ok($parse-tree.document.chunk[73].not);
 
     # end @chunk tests }}}
 
     my Document $d .= new(:@chunk);
-    cmp-ok $parse-tree.document, &cmp-ok-document, $d, 'Document OK';
+    cmp-ok($parse-tree.document, &cmp-ok-document, $d, 'Document OK');
 
     my Finn::Parser::ParseTree $t .= new(:document($d));
-    cmp-ok $parse-tree, &cmp-ok-parse-tree, $t, 'ParseTree OK';
-}
+    cmp-ok($parse-tree, &cmp-ok-parse-tree, $t, 'ParseTree OK');
+});
 
-subtest 'finn-examples/hello',
-{
+subtest('finn-examples/hello', {
     my Str:D $document = 't/data/hello/Story';
     my Finn::Parser::Actions $actions .= new(:file($document));
     my Finn::Parser::ParseTree:D $parse-tree =
@@ -4666,21 +4662,20 @@ subtest 'finn-examples/hello',
     # end @chunk }}}
     # @chunk tests {{{
 
-    cmp-ok $parse-tree.document.chunk[$_], &cmp-ok-chunk, @chunk[$_], 'Chunk OK'
+    cmp-ok($parse-tree.document.chunk[$_], &cmp-ok-chunk, @chunk[$_], 'Chunk OK')
         for (0..17);
-    ok $parse-tree.document.chunk[18].not;
+    ok($parse-tree.document.chunk[18].not);
 
     # end @chunk tests }}}
 
     my Document $d .= new(:@chunk);
-    cmp-ok $parse-tree.document, &cmp-ok-document, $d, 'Document OK';
+    cmp-ok($parse-tree.document, &cmp-ok-document, $d, 'Document OK');
 
     my Finn::Parser::ParseTree $t .= new(:document($d));
-    cmp-ok $parse-tree, &cmp-ok-parse-tree, $t, 'ParseTree OK';
-}
+    cmp-ok($parse-tree, &cmp-ok-parse-tree, $t, 'ParseTree OK');
+});
 
-subtest 'finn-examples/novel',
-{
+subtest('finn-examples/novel', {
     my Str:D $document = 't/data/novel/Story';
     my Finn::Parser::Actions $actions .= new(:file($document));
     my Finn::Parser::ParseTree:D $parse-tree =
@@ -4993,21 +4988,20 @@ subtest 'finn-examples/novel',
     # end @chunk }}}
     # @chunk tests {{{
 
-    cmp-ok $parse-tree.document.chunk[$_], &cmp-ok-chunk, @chunk[$_], 'Chunk OK'
+    cmp-ok($parse-tree.document.chunk[$_], &cmp-ok-chunk, @chunk[$_], 'Chunk OK')
         for (0..13);
-    ok $parse-tree.document.chunk[14].not;
+    ok($parse-tree.document.chunk[14].not);
 
     # end @chunk tests }}}
 
     my Document $d .= new(:@chunk);
-    cmp-ok $parse-tree.document, &cmp-ok-document, $d, 'Document OK';
+    cmp-ok($parse-tree.document, &cmp-ok-document, $d, 'Document OK');
 
     my Finn::Parser::ParseTree $t .= new(:document($d));
-    cmp-ok $parse-tree, &cmp-ok-parse-tree, $t, 'ParseTree OK';
-}
+    cmp-ok($parse-tree, &cmp-ok-parse-tree, $t, 'ParseTree OK');
+});
 
-subtest 'finn-examples/sample',
-{
+subtest('finn-examples/sample', {
     my Str:D $document = 't/data/sample/Story';
     my Finn::Parser::Actions $actions .= new(:file($document));
     my Finn::Parser::ParseTree:D $parse-tree =
@@ -6032,18 +6026,18 @@ subtest 'finn-examples/sample',
     # end @chunk }}}
     # @chunk tests {{{
 
-    cmp-ok $parse-tree.document.chunk[$_], &cmp-ok-chunk, @chunk[$_], 'Chunk OK'
+    cmp-ok($parse-tree.document.chunk[$_], &cmp-ok-chunk, @chunk[$_], 'Chunk OK')
         for (0..33);
-    ok $parse-tree.document.chunk[34].not;
+    ok($parse-tree.document.chunk[34].not);
 
     # end @chunk tests }}}
 
     my Document $d .= new(:@chunk);
-    cmp-ok $parse-tree.document, &cmp-ok-document, $d, 'Document OK';
+    cmp-ok($parse-tree.document, &cmp-ok-document, $d, 'Document OK');
 
     my Finn::Parser::ParseTree $t .= new(:document($d));
-    cmp-ok $parse-tree, &cmp-ok-parse-tree, $t, 'ParseTree OK';
-}
+    cmp-ok($parse-tree, &cmp-ok-parse-tree, $t, 'ParseTree OK');
+});
 
 # sub gen-bounds {{{
 

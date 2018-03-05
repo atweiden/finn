@@ -7,10 +7,9 @@ use lib 't/lib';
 use FinnTest;
 use Test;
 
-plan 15;
+plan(15);
 
-subtest
-{
+subtest({
     my Finn::Parser::Actions $actions .= new;
     my Str:D $sectional-block = q:to/EOF/.trim;
     ``` A
@@ -40,15 +39,15 @@ subtest
 
     my SectionalBlockContent:D @content = $content-a;
 
-    cmp-ok
+    cmp-ok(
         Finn::Parser::Grammar.parse($sectional-block, :$rule, :$actions).made,
         &cmp-ok-sectional-block,
         SectionalBlock.new(:$delimiter, :$name, :@content),
-        'SectionalBlock OK';
-}
+        'SectionalBlock OK'
+    );
+});
 
-subtest
-{
+subtest({
     my Finn::Parser::Actions $actions .= new;
     my Str:D $sectional-block = q:to/EOF/.trim;
     -- A
@@ -78,15 +77,15 @@ subtest
 
     my SectionalBlockContent:D @content = $content-a;
 
-    cmp-ok
+    cmp-ok(
         Finn::Parser::Grammar.parse($sectional-block, :$rule, :$actions).made,
         &cmp-ok-sectional-block,
         SectionalBlock.new(:$delimiter, :$name, :@content),
-        'SectionalBlock OK';
-}
+        'SectionalBlock OK'
+    );
+});
 
-subtest
-{
+subtest({
     my Finn::Parser::Actions $actions .= new;
     my Str:D $sectional-block = q:to/EOF/.trim;
     ------------------- A
@@ -116,15 +115,15 @@ subtest
 
     my SectionalBlockContent:D @content = $content-a;
 
-    cmp-ok
+    cmp-ok(
         Finn::Parser::Grammar.parse($sectional-block, :$rule, :$actions).made,
         &cmp-ok-sectional-block,
         SectionalBlock.new(:$delimiter, :$name, :@content),
-        'SectionalBlock OK';
-}
+        'SectionalBlock OK'
+    );
+});
 
-subtest
-{
+subtest({
     my Finn::Parser::Actions $actions .= new;
     my Str:D $sectional-block = q:to/EOF/.trim;
     --- A*
@@ -155,15 +154,15 @@ subtest
 
     my SectionalBlockContent:D @content = $content-a;
 
-    cmp-ok
+    cmp-ok(
         Finn::Parser::Grammar.parse($sectional-block, :$rule, :$actions).made,
         &cmp-ok-sectional-block,
         SectionalBlock.new(:$delimiter, :$name, :@content),
-        'SectionalBlock OK';
-}
+        'SectionalBlock OK'
+    );
+});
 
-subtest
-{
+subtest({
     my Finn::Parser::Actions $actions .= new;
     my Str:D $sectional-block = q:to/EOF/.trim;
     --- A* +=
@@ -195,15 +194,15 @@ subtest
 
     my SectionalBlockContent:D @content = $content-a;
 
-    cmp-ok
+    cmp-ok(
         Finn::Parser::Grammar.parse($sectional-block, :$rule, :$actions).made,
         &cmp-ok-sectional-block,
         SectionalBlock.new(:$delimiter, :$name, :@content),
-        'SectionalBlock OK';
-}
+        'SectionalBlock OK'
+    );
+});
 
-subtest
-{
+subtest({
     my Finn::Parser::Actions $actions .= new;
     my Str:D $sectional-block = q:to/EOF/.trim;
     --- A* :=
@@ -235,15 +234,15 @@ subtest
 
     my SectionalBlockContent:D @content = $content-a;
 
-    cmp-ok
+    cmp-ok(
         Finn::Parser::Grammar.parse($sectional-block, :$rule, :$actions).made,
         &cmp-ok-sectional-block,
         SectionalBlock.new(:$delimiter, :$name, :@content),
-        'SectionalBlock OK';
-}
+        'SectionalBlock OK'
+    );
+});
 
-subtest
-{
+subtest({
     my Finn::Parser::Actions $actions .= new;
     my Str:D $sectional-block = q:to/EOF/.trim;
     ``` A* :=
@@ -275,15 +274,15 @@ subtest
 
     my SectionalBlockContent:D @content = $content-a;
 
-    cmp-ok
+    cmp-ok(
         Finn::Parser::Grammar.parse($sectional-block, :$rule, :$actions).made,
         &cmp-ok-sectional-block,
         SectionalBlock.new(:$delimiter, :$name, :@content),
-        'SectionalBlock OK';
-}
+        'SectionalBlock OK'
+    );
+});
 
-subtest
-{
+subtest({
     my Finn::Parser::Actions $actions .= new;
     my Str:D $sectional-block = q:to/EOF/.trim;
     ``` Cities in Washington
@@ -321,15 +320,15 @@ subtest
 
     my SectionalBlockContent:D @content = $content-a;
 
-    cmp-ok
+    cmp-ok(
         Finn::Parser::Grammar.parse($sectional-block, :$rule, :$actions).made,
         &cmp-ok-sectional-block,
         SectionalBlock.new(:$delimiter, :$name, :@content),
-        'SectionalBlock OK';
-}
+        'SectionalBlock OK'
+    );
+});
 
-subtest
-{
+subtest({
     my Finn::Parser::Actions $actions .= new;
     my Str:D $sectional-block = q:to/EOF/.trim;
     ``` /README.md
@@ -360,15 +359,15 @@ subtest
 
     my SectionalBlockContent:D @content = $content-a;
 
-    cmp-ok
+    cmp-ok(
         Finn::Parser::Grammar.parse($sectional-block, :$rule, :$actions).made,
         &cmp-ok-sectional-block,
         SectionalBlock.new(:$delimiter, :$name, :@content),
-        'SectionalBlock OK';
-}
+        'SectionalBlock OK'
+    );
+});
 
-subtest
-{
+subtest({
     my Finn::Parser::Actions $actions .= new;
     my Str:D $sectional-block = q:to/EOF/.trim;
     ``` /README.md +=
@@ -400,15 +399,15 @@ subtest
 
     my SectionalBlockContent:D @content = $content-a;
 
-    cmp-ok
+    cmp-ok(
         Finn::Parser::Grammar.parse($sectional-block, :$rule, :$actions).made,
         &cmp-ok-sectional-block,
         SectionalBlock.new(:$delimiter, :$name, :@content),
-        'SectionalBlock OK';
-}
+        'SectionalBlock OK'
+    );
+});
 
-subtest
-{
+subtest({
     my Finn::Parser::Actions $actions .= new;
     my Str:D $sectional-block = q:to/EOF/.trim;
     ``` /README.md* +=
@@ -441,15 +440,15 @@ subtest
 
     my SectionalBlockContent:D @content = $content-a;
 
-    cmp-ok
+    cmp-ok(
         Finn::Parser::Grammar.parse($sectional-block, :$rule, :$actions).made,
         &cmp-ok-sectional-block,
         SectionalBlock.new(:$delimiter, :$name, :@content),
-        'SectionalBlock OK';
-}
+        'SectionalBlock OK'
+    );
+});
 
-subtest
-{
+subtest({
     my Finn::Parser::Actions $actions .= new;
     my Str:D $sectional-block = q:to/EOF/.trim;
     ``` /doc/TODO.md
@@ -490,15 +489,15 @@ subtest
 
     my SectionalBlockContent:D @content = $content-a;
 
-    cmp-ok
+    cmp-ok(
         Finn::Parser::Grammar.parse($sectional-block, :$rule, :$actions).made,
         &cmp-ok-sectional-block,
         SectionalBlock.new(:$delimiter, :$name, :@content),
-        'SectionalBlock OK';
-}
+        'SectionalBlock OK'
+    );
+});
 
-subtest
-{
+subtest({
     my Finn::Parser::Actions $actions .= new;
     my Str:D $sectional-block = q:to/EOF/.trim;
     ``` misc
@@ -547,15 +546,15 @@ subtest
 
     my SectionalBlockContent:D @content = $content-a, $content-b;
 
-    cmp-ok
+    cmp-ok(
         Finn::Parser::Grammar.parse($sectional-block, :$rule, :$actions).made,
         &cmp-ok-sectional-block,
         SectionalBlock.new(:$delimiter, :$name, :@content),
-        'SectionalBlock OK';
-}
+        'SectionalBlock OK'
+    );
+});
 
-subtest 'sectional-block with indented include-lines',
-{
+subtest('sectional-block with indented include-lines', {
     my Finn::Parser::Actions $actions .= new;
     my Str:D $sectional-block = q:to/EOF/.trim;
     ``` name
@@ -694,16 +693,16 @@ subtest 'sectional-block with indented include-lines',
         $content-g,
         $content-h;
 
-    cmp-ok
+    cmp-ok(
         Finn::Parser::Grammar.parse($sectional-block, :$rule, :$actions).made,
         &cmp-ok-sectional-block,
         SectionalBlock.new(:$delimiter, :$name, :@content),
-        'SectionalBlock OK';
-}
+        'SectionalBlock OK'
+    );
+});
 
 # same test as the one above, but SectionalBlock is indented four spaces
-subtest 'indented sectional-block with indented include-lines',
-{
+subtest('indented sectional-block with indented include-lines', {
     my Finn::Parser::Actions $actions .= new;
     my Str:D $sectional-block = q:to/EOF/.trim-trailing;
         ``` name
@@ -845,12 +844,13 @@ subtest 'indented sectional-block with indented include-lines',
         $content-g,
         $content-h;
 
-    cmp-ok
+    cmp-ok(
         Finn::Parser::Grammar.parse($sectional-block, :$rule, :$actions).made,
         &cmp-ok-sectional-block,
         SectionalBlock.new(:$delimiter, :$name, :@content),
-        'SectionalBlock OK';
-}
+        'SectionalBlock OK'
+    );
+});
 
 sub cmp-ok-sectional-block(
     SectionalBlock:D $a,

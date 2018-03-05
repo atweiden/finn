@@ -3,10 +3,9 @@ use lib 'lib';
 use Finn::Parser::Grammar;
 use Test;
 
-plan 4;
+plan(4);
 
-subtest
-{
+subtest({
     my Str:D $include-line-block = q:to/EOF/.trim-trailing;
 
     § 'Name Of Section To Embed' [1]
@@ -16,13 +15,13 @@ subtest
     § "Name Of Section To Embed" file:///
     EOF
     my Str:D $rule = 'include-line-block';
-    ok
+    ok(
         Finn::Parser::Grammar.parse($include-line-block, :$rule),
-        'Parses include-line-block';
-}
+        'Parses include-line-block'
+    );
+});
 
-subtest
-{
+subtest({
     my Str:D $include-line-block = q:to/EOF/.trim-trailing;
     /*
      *
@@ -34,13 +33,13 @@ subtest
     § "Name Of Section To Embed" file:///a/b/c/d
     EOF
     my Str:D $rule = 'include-line-block';
-    ok
+    ok(
         Finn::Parser::Grammar.parse($include-line-block, :$rule),
-        'Parses include-line-block';
-}
+        'Parses include-line-block'
+    );
+});
 
-subtest
-{
+subtest({
     my Str:D $include-line-block = q:to/EOF/.trim-trailing;
     /* a comment block */
     § 'Name Of Section To Embed' file://~/a/b/c/d
@@ -48,13 +47,13 @@ subtest
     § 'Name Of Section To Embed' [1010101010101]
     EOF
     my Str:D $rule = 'include-line-block';
-    ok
+    ok(
         Finn::Parser::Grammar.parse($include-line-block, :$rule),
-        'Parses include-line-block';
-}
+        'Parses include-line-block'
+    );
+});
 
-subtest
-{
+subtest({
     my Str:D $include-line-block = q:to/EOF/.trim-trailing;
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     § ~/finn/share/vimfmt
@@ -70,9 +69,10 @@ subtest
     ¶ [2]
     EOF
     my Str:D $rule = 'include-line-block';
-    ok
+    ok(
         Finn::Parser::Grammar.parse($include-line-block, :$rule),
-        'Parses include-line-block';
-}
+        'Parses include-line-block'
+    );
+});
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

@@ -3,46 +3,46 @@ use lib 'lib';
 use Finn::Parser::Grammar;
 use Test;
 
-plan 4;
+plan(4);
 
-subtest
-{
+subtest({
     my Str:D $underline = '_an underlined piece of text_';
     my Str:D $rule = 'underline';
-    ok
+    ok(
         Finn::Parser::Grammar.parse($underline, :$rule),
-        'Underlined text parses';
-}
+        'Underlined text parses'
+    );
+});
 
-subtest
-{
+subtest({
     my Str:D $underline = '_a_';
     my Str:D $rule = 'underline';
-    ok
+    ok(
         Finn::Parser::Grammar.parse($underline, :$rule),
-        'Underlined text parses';
-}
+        'Underlined text parses'
+    );
+});
 
-subtest
-{
+subtest({
     my Str:D $underline = '_\ \ \ a_';
     my Str:D $rule = 'underline';
-    ok
+    ok(
         Finn::Parser::Grammar.parse($underline, :$rule),
-        'Underlined text parses';
-}
+        'Underlined text parses'
+    );
+});
 
-subtest
-{
+subtest({
     my Str:D $underline = q:to/EOF/.trim;
     _line one
     line two
     line three_
     EOF
     my Str:D $rule = 'underline';
-    ok
+    ok(
         Finn::Parser::Grammar.parse($underline, :$rule),
-        'Underlined text parses';
-}
+        'Underlined text parses'
+    );
+});
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

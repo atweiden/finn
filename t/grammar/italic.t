@@ -3,27 +3,24 @@ use lib 'lib';
 use Finn::Parser::Grammar;
 use Test;
 
-plan 3;
+plan(3);
 
-subtest
-{
+subtest({
     my Str:D $italic = '*an italic piece of text*';
     my Str:D $rule = 'italic';
-    ok Finn::Parser::Grammar.parse($italic, :$rule), 'Italic text parses';
-}
+    ok(Finn::Parser::Grammar.parse($italic, :$rule), 'Italic text parses');
+});
 
-subtest
-{
+subtest({
     my Str:D $italic = '*a*';
     my Str:D $rule = 'italic';
-    ok Finn::Parser::Grammar.parse($italic, :$rule), 'Italic text parses';
-}
+    ok(Finn::Parser::Grammar.parse($italic, :$rule), 'Italic text parses');
+});
 
-subtest
-{
+subtest({
     my Str:D $italic = '*\ \ \ a*';
     my Str:D $rule = 'italic';
-    ok Finn::Parser::Grammar.parse($italic, :$rule), 'Italic text parses';
-}
+    ok(Finn::Parser::Grammar.parse($italic, :$rule), 'Italic text parses');
+});
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

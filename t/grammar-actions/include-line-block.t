@@ -7,10 +7,9 @@ use lib 't/lib';
 use FinnTest;
 use Test;
 
-plan 4;
+plan(4);
 
-subtest
-{
+subtest({
     my Finn::Parser::Actions $actions .= new;
     my Str:D $include-line-block = q:to/EOF/.trim-trailing;
 
@@ -124,15 +123,15 @@ subtest
         $include-line-d,
         $include-line-e;
 
-    cmp-ok
+    cmp-ok(
         Finn::Parser::Grammar.parse($include-line-block, :$rule, :$actions).made,
         &cmp-ok-include-line-block,
         IncludeLineBlock['BlankLine'].new(:$blank-line, :@include-line),
-        'IncludeLineBlock OK';
-}
+        'IncludeLineBlock OK'
+    );
+});
 
-subtest
-{
+subtest({
     my Finn::Parser::Actions $actions .= new;
     my Str:D $include-line-block = q:to/EOF/.trim-trailing;
     /*
@@ -181,15 +180,15 @@ subtest
 
     my IncludeLine:D @include-line = $include-line-a;
 
-    cmp-ok
+    cmp-ok(
         Finn::Parser::Grammar.parse($include-line-block, :$rule, :$actions).made,
         &cmp-ok-include-line-block,
         IncludeLineBlock['CommentBlock'].new(:$comment-block, :@include-line),
-        'IncludeLineBlock OK';
-}
+        'IncludeLineBlock OK'
+    );
+});
 
-subtest
-{
+subtest({
     my Finn::Parser::Actions $actions .= new;
     my Str:D $include-line-block = q:to/EOF/.trim-trailing;
     /* a comment block */
@@ -270,15 +269,15 @@ subtest
         $include-line-b,
         $include-line-c;
 
-    cmp-ok
+    cmp-ok(
         Finn::Parser::Grammar.parse($include-line-block, :$rule, :$actions).made,
         &cmp-ok-include-line-block,
         IncludeLineBlock['CommentBlock'].new(:$comment-block, :@include-line),
-        'IncludeLineBlock OK';
-}
+        'IncludeLineBlock OK'
+    );
+});
 
-subtest
-{
+subtest({
     my Finn::Parser::Actions $actions .= new;
     my Str:D $include-line-block = q:to/EOF/.trim-trailing;
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -499,12 +498,13 @@ subtest
         $include-line-j,
         $include-line-k;
 
-    cmp-ok
+    cmp-ok(
         Finn::Parser::Grammar.parse($include-line-block, :$rule, :$actions).made,
         &cmp-ok-include-line-block,
         IncludeLineBlock['HorizontalRule'].new(:$horizontal-rule, :@include-line),
-        'IncludeLineBlock OK';
-}
+        'IncludeLineBlock OK'
+    );
+});
 
 sub cmp-ok-include-line-block(
     IncludeLineBlock:D $a,

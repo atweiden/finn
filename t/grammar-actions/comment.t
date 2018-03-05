@@ -5,22 +5,21 @@ use Finn::Parser::Grammar;
 use Finn::Parser::ParseTree;
 use Test;
 
-plan 3;
+plan(3);
 
-subtest
-{
+subtest({
     my Finn::Parser::Actions $actions .= new;
     my Str:D $comment = '/* this is a comment */';
     my Str:D $rule = 'comment';
     my Str:D $text = ' this is a comment ';
-    is-deeply
+    is-deeply(
         Finn::Parser::Grammar.parse($comment, :$rule, :$actions).made,
         Comment.new(:$text),
-        'Comment OK';
-}
+        'Comment OK'
+    );
+});
 
-subtest
-{
+subtest({
     my Finn::Parser::Actions $actions .= new;
     my Str:D $comment = q:to/EOF/.trim;
     /*
@@ -41,14 +40,14 @@ subtest
      *
     EOF
     $text ~= ' ';
-    is-deeply
+    is-deeply(
         Finn::Parser::Grammar.parse($comment, :$rule, :$actions).made,
         Comment.new(:$text),
-        'Comment OK';
-}
+        'Comment OK'
+    );
+});
 
-subtest
-{
+subtest({
     my Finn::Parser::Actions $actions .= new;
     my Str:D $comment = q:to/EOF/.trim;
     /*
@@ -68,10 +67,11 @@ subtest
      <!--                             -->
     EOF
     $text ~= ' ';
-    is-deeply
+    is-deeply(
         Finn::Parser::Grammar.parse($comment, :$rule, :$actions).made,
         Comment.new(:$text),
-        'Comment OK';
-}
+        'Comment OK'
+    );
+});
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

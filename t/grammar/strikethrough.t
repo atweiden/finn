@@ -3,33 +3,33 @@ use lib 'lib';
 use Finn::Parser::Grammar;
 use Test;
 
-plan 3;
+plan(3);
 
-subtest
-{
+subtest({
     my Str:D $strikethrough = '~a strikethrough piece of text~';
     my Str:D $rule = 'strikethrough';
-    ok
+    ok(
         Finn::Parser::Grammar.parse($strikethrough, :$rule),
-        'Strikethrough text parses';
-}
+        'Strikethrough text parses'
+    );
+});
 
-subtest
-{
+subtest({
     my Str:D $strikethrough = '~a~';
     my Str:D $rule = 'strikethrough';
-    ok
+    ok(
         Finn::Parser::Grammar.parse($strikethrough, :$rule),
-        'Strikethrough text parses';
-}
+        'Strikethrough text parses'
+    );
+});
 
-subtest
-{
+subtest({
     my Str:D $strikethrough = '~\ \ \ a~';
     my Str:D $rule = 'strikethrough';
-    ok
+    ok(
         Finn::Parser::Grammar.parse($strikethrough, :$rule),
-        'Strikethrough text parses';
-}
+        'Strikethrough text parses'
+    );
+});
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

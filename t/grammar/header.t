@@ -3,10 +3,9 @@ use lib 'lib';
 use Finn::Parser::Grammar;
 use Test;
 
-plan 3;
+plan(3);
 
-subtest
-{
+subtest({
     my Str:D $header1 = q:to/EOF/.trim;
     Header One
     ==========
@@ -19,13 +18,12 @@ subtest
     Header Three
     EOF
 
-    ok Finn::Parser::Grammar.parse($header1, :rule<header1>), 'Parses header1';
-    ok Finn::Parser::Grammar.parse($header2, :rule<header2>), 'Parses header2';
-    ok Finn::Parser::Grammar.parse($header3, :rule<header3>), 'Parses header3';
-}
+    ok(Finn::Parser::Grammar.parse($header1, :rule<header1>), 'Parses header1');
+    ok(Finn::Parser::Grammar.parse($header2, :rule<header2>), 'Parses header2');
+    ok(Finn::Parser::Grammar.parse($header3, :rule<header3>), 'Parses header3');
+});
 
-subtest
-{
+subtest({
     my Str:D $header1 = q:to/EOF/.trim;
     Header One111111111111111111 !@%%^&^%$#
     ==========
@@ -38,13 +36,12 @@ subtest
     Header Three333333333333333333 !@%%^&^%$#
     EOF
 
-    ok Finn::Parser::Grammar.parse($header1, :rule<header1>), 'Parses header1';
-    ok Finn::Parser::Grammar.parse($header2, :rule<header2>), 'Parses header2';
-    ok Finn::Parser::Grammar.parse($header3, :rule<header3>), 'Parses header3';
-}
+    ok(Finn::Parser::Grammar.parse($header1, :rule<header1>), 'Parses header1');
+    ok(Finn::Parser::Grammar.parse($header2, :rule<header2>), 'Parses header2');
+    ok(Finn::Parser::Grammar.parse($header3, :rule<header3>), 'Parses header3');
+});
 
-subtest
-{
+subtest({
     my Str:D $header1 = q:to/EOF/.trim;
     Header One
     =
@@ -57,9 +54,9 @@ subtest
     Header Three
     EOF
 
-    ok Finn::Parser::Grammar.parse($header1, :rule<header1>), 'Parses header1';
-    ok Finn::Parser::Grammar.parse($header2, :rule<header2>), 'Parses header2';
-    ok Finn::Parser::Grammar.parse($header3, :rule<header3>), 'Parses header3';
-}
+    ok(Finn::Parser::Grammar.parse($header1, :rule<header1>), 'Parses header1');
+    ok(Finn::Parser::Grammar.parse($header2, :rule<header2>), 'Parses header2');
+    ok(Finn::Parser::Grammar.parse($header3, :rule<header3>), 'Parses header3');
+});
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

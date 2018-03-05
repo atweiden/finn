@@ -3,20 +3,18 @@ use lib 'lib';
 use Finn::Parser::Grammar;
 use Test;
 
-plan 2;
+plan(2);
 
-subtest
-{
+subtest({
     my Str:D $boolean = 'true';
     my Str:D $rule = 'boolean';
-    ok Finn::Parser::Grammar.parse($boolean, :$rule), 'Boolean parses';
-}
+    ok(Finn::Parser::Grammar.parse($boolean, :$rule), 'Boolean parses');
+});
 
-subtest
-{
+subtest({
     my Str:D $boolean = 'false';
     my Str:D $rule = 'boolean';
-    ok Finn::Parser::Grammar.parse($boolean, :$rule), 'Boolean parses';
-}
+    ok(Finn::Parser::Grammar.parse($boolean, :$rule), 'Boolean parses');
+});
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:

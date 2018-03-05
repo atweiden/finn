@@ -7,10 +7,9 @@ use lib 't/lib';
 use FinnTest;
 use Test;
 
-plan 5;
+plan(5);
 
-subtest 'reference-line-block:top',
-{
+subtest('reference-line-block:top', {
     my Finn::Parser::Actions $actions .= new;
     my Str:D $reference-line-block = q:to/EOF/.trim-trailing;
     [0]: 0
@@ -27,15 +26,15 @@ subtest 'reference-line-block:top',
 
     my ReferenceLine:D @reference-line = $reference-line-a;
 
-    cmp-ok
+    cmp-ok(
         Finn::Parser::Grammar.parse($reference-line-block, :$rule, :$actions).made,
         &cmp-ok-reference-line-block,
         ReferenceLineBlock['Top'].new(:@reference-line),
-        'ReferenceLineBlock OK';
-}
+        'ReferenceLineBlock OK'
+    );
+});
 
-subtest 'reference-line-block:after-blank-lines',
-{
+subtest('reference-line-block:after-blank-lines', {
     my Finn::Parser::Actions $actions .= new;
     my Str:D $reference-line-block = q:to/EOF/.trim-trailing;
 
@@ -92,15 +91,15 @@ subtest 'reference-line-block:after-blank-lines',
         $reference-line-f,
         $reference-line-g;
 
-    cmp-ok
+    cmp-ok(
         Finn::Parser::Grammar.parse($reference-line-block, :$rule, :$actions).made,
         &cmp-ok-reference-line-block,
         ReferenceLineBlock['BlankLine'].new(:@blank-line, :@reference-line),
-        'ReferenceLineBlock OK';
-}
+        'ReferenceLineBlock OK'
+    );
+});
 
-subtest 'reference-line-block:after-comment-block',
-{
+subtest('reference-line-block:after-comment-block', {
     my Finn::Parser::Actions $actions .= new;
     my Str:D $reference-line-block = q:to/EOF/.trim-trailing;
     /*
@@ -128,18 +127,18 @@ subtest 'reference-line-block:after-comment-block',
 
     my ReferenceLine:D @reference-line = $reference-line-b;
 
-    cmp-ok
+    cmp-ok(
         Finn::Parser::Grammar.parse($reference-line-block, :$rule, :$actions).made,
         &cmp-ok-reference-line-block,
         ReferenceLineBlock['CommentBlock'].new(
             :comment-block($comment-block-a),
             :@reference-line
         ),
-        'ReferenceLineBlock OK';
-}
+        'ReferenceLineBlock OK'
+    );
+});
 
-subtest 'reference-line-block:after-horizontal-rule',
-{
+subtest('reference-line-block:after-horizontal-rule', {
     my Finn::Parser::Actions $actions .= new;
     my Str:D $reference-line-block = q:to/EOF/.trim-trailing;
     ******************************************************************************
@@ -159,18 +158,18 @@ subtest 'reference-line-block:after-horizontal-rule',
 
     my ReferenceLine:D @reference-line = $reference-line-b;
 
-    cmp-ok
+    cmp-ok(
         Finn::Parser::Grammar.parse($reference-line-block, :$rule, :$actions).made,
         &cmp-ok-reference-line-block,
         ReferenceLineBlock['HorizontalRule'].new(
             :horizontal-rule($horizontal-rule-a),
             :@reference-line
         ),
-        'ReferenceLineBlock OK';
-}
+        'ReferenceLineBlock OK'
+    );
+});
 
-subtest 'reference-line continuations',
-{
+subtest('reference-line continuations', {
     my Finn::Parser::Actions $actions .= new;
     my Str:D $reference-line-block = q:to/EOF/.trim-trailing;
     [0]: 0                     |||||||||||||||||||||||
@@ -274,12 +273,13 @@ subtest 'reference-line continuations',
         $reference-line-d,
         $reference-line-e;
 
-    cmp-ok
+    cmp-ok(
         Finn::Parser::Grammar.parse($reference-line-block, :$rule, :$actions).made,
         &cmp-ok-reference-line-block,
         ReferenceLineBlock['Top'].new(:@reference-line),
-        'ReferenceLineBlock OK';
-}
+        'ReferenceLineBlock OK'
+    );
+});
 
 sub cmp-ok-reference-line-block(
     ReferenceLineBlock:D $a,

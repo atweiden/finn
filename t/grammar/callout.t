@@ -3,10 +3,9 @@ use lib 'lib';
 use Finn::Parser::Grammar;
 use Test;
 
-plan 1;
+plan(1);
 
-subtest
-{
+subtest({
     my Str:D @callout = qw<
         FIXME
         TODO
@@ -14,8 +13,8 @@ subtest
     >;
     my Str:D $rule = 'callout';
     @callout.map({
-        ok Finn::Parser::Grammar.parse($_, :$rule), 'Parses callout'
+        ok(Finn::Parser::Grammar.parse($_, :$rule), 'Parses callout')
     });
-}
+});
 
 # vim: set filetype=perl6 foldmethod=marker foldlevel=0:
