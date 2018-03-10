@@ -2832,7 +2832,8 @@ sub comb(
     --> Array:D
 )
 {
-    die unless @actual.elems >= @padding.elems;
+    @actual.elems >= @padding.elems
+        or die;
     @actual.splice(0, @padding.elems);
     @actual;
 }
@@ -2992,7 +2993,8 @@ sub trim-leading(LeadingWS:D @leading-ws, Str:D $text --> Str:D)
 {
     my Str:D $actual = $text.comb(/^\h*/).first;
     my Str:D $padding = @leading-ws.hyper.map({ .Str }).join;
-    die unless $actual.chars >= $padding.chars;
+    $actual.chars >= $padding.chars
+        or die;
     my Str:D $s = $text.subst($padding, '');
 }
 
