@@ -73,10 +73,12 @@ method chunk:include-line-block ($/ --> Nil)
     my Chunk::Meta::Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
     my IncludeLineBlock:D $include-line-block = $<include-line-block>.made;
-    make Chunk['IncludeLineBlock'].new(
-        :$bounds,
-        :$section,
-        :$include-line-block
+    make(
+        Chunk['IncludeLineBlock'].new(
+            :$bounds,
+            :$section,
+            :$include-line-block
+        )
     );
 }
 
@@ -85,7 +87,7 @@ method chunk:sectional-block ($/ --> Nil)
     my Chunk::Meta::Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
     my SectionalBlock:D $sectional-block = $<sectional-block>.made;
-    make Chunk['SectionalBlock'].new(:$bounds, :$section, :$sectional-block);
+    make(Chunk['SectionalBlock'].new(:$bounds, :$section, :$sectional-block));
 }
 
 method chunk:code-block ($/ --> Nil)
@@ -93,7 +95,7 @@ method chunk:code-block ($/ --> Nil)
     my Chunk::Meta::Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
     my CodeBlock:D $code-block = $<code-block>.made;
-    make Chunk['CodeBlock'].new(:$bounds, :$section, :$code-block);
+    make(Chunk['CodeBlock'].new(:$bounds, :$section, :$code-block));
 }
 
 method chunk:reference-line-block ($/ --> Nil)
@@ -102,10 +104,12 @@ method chunk:reference-line-block ($/ --> Nil)
     my UInt:D $section = 0;
     my ReferenceLineBlock:D $reference-line-block =
         $<reference-line-block>.made;
-    make Chunk['ReferenceLineBlock'].new(
-        :$bounds,
-        :$section,
-        :$reference-line-block
+    make(
+        Chunk['ReferenceLineBlock'].new(
+            :$bounds,
+            :$section,
+            :$reference-line-block
+        )
     );
 }
 
@@ -114,7 +118,7 @@ method chunk:header-block ($/ --> Nil)
     my Chunk::Meta::Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
     my HeaderBlock:D $header-block = $<header-block>.made;
-    make Chunk['HeaderBlock'].new(:$bounds, :$section, :$header-block);
+    make(Chunk['HeaderBlock'].new(:$bounds, :$section, :$header-block));
 }
 
 method chunk:list-block ($/ --> Nil)
@@ -122,7 +126,7 @@ method chunk:list-block ($/ --> Nil)
     my Chunk::Meta::Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
     my ListBlock:D $list-block = $<list-block>.made;
-    make Chunk['ListBlock'].new(:$bounds, :$section, :$list-block);
+    make(Chunk['ListBlock'].new(:$bounds, :$section, :$list-block));
 }
 
 method chunk:paragraph ($/ --> Nil)
@@ -130,7 +134,7 @@ method chunk:paragraph ($/ --> Nil)
     my Chunk::Meta::Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
     my Paragraph:D $paragraph = $<paragraph>.made;
-    make Chunk['Paragraph'].new(:$bounds, :$section, :$paragraph);
+    make(Chunk['Paragraph'].new(:$bounds, :$section, :$paragraph));
 }
 
 method chunk:horizontal-rule ($/ --> Nil)
@@ -138,7 +142,7 @@ method chunk:horizontal-rule ($/ --> Nil)
     my Chunk::Meta::Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
     my HorizontalRule:D $horizontal-rule = $<horizontal-rule>.made;
-    make Chunk['HorizontalRule'].new(:$bounds, :$section, :$horizontal-rule);
+    make(Chunk['HorizontalRule'].new(:$bounds, :$section, :$horizontal-rule));
 }
 
 method chunk:comment-block ($/ --> Nil)
@@ -146,7 +150,7 @@ method chunk:comment-block ($/ --> Nil)
     my Chunk::Meta::Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
     my CommentBlock:D $comment-block = $<comment-block>.made;
-    make Chunk['CommentBlock'].new(:$bounds, :$section, :$comment-block);
+    make(Chunk['CommentBlock'].new(:$bounds, :$section, :$comment-block));
 }
 
 method chunk:blank-line ($/ --> Nil)
@@ -154,7 +158,7 @@ method chunk:blank-line ($/ --> Nil)
     my Chunk::Meta::Bounds:D $bounds = gen-bounds();
     my UInt:D $section = 0;
     my BlankLine:D $blank-line = $<blank-line>.made;
-    make Chunk['BlankLine'].new(:$bounds, :$section, :$blank-line);
+    make(Chunk['BlankLine'].new(:$bounds, :$section, :$blank-line));
 }
 
 # --- end chunk }}}
@@ -162,7 +166,7 @@ method chunk:blank-line ($/ --> Nil)
 method document($/ --> Nil)
 {
     my Chunk:D @chunk = @<chunk>.hyper.map({ .made });
-    make Document.new(:@chunk);
+    make(Document.new(:@chunk));
 }
 
 # end document }}}
@@ -171,12 +175,12 @@ method document($/ --> Nil)
 multi method TOP($/ where $<document>.so --> Nil)
 {
     my Document:D $document = $<document>.made;
-    make Finn::Parser::ParseTree.new(:$document);
+    make(Finn::Parser::ParseTree.new(:$document));
 }
 
 multi method TOP($/ --> Nil)
 {
-    make Nil;
+    make(Nil);
 }
 
 # end TOP }}}
@@ -195,7 +199,7 @@ method include-line-request:name-and-file ($/ --> Nil)
 {
     my Str:D $name = $<include-line-request-name>.made;
     my File:D $file = $<include-line-request-file>.made;
-    make IncludeLine::Request['Name', 'File'].new(:$name, :$file);
+    make(IncludeLine::Request['Name', 'File'].new(:$name, :$file));
 }
 
 method include-line-request:name-and-reference ($/ --> Nil)
@@ -203,29 +207,31 @@ method include-line-request:name-and-reference ($/ --> Nil)
     my Str:D $name = $<include-line-request-name>.made;
     my ReferenceInline:D $reference-inline =
         $<include-line-request-reference>.made;
-    make IncludeLine::Request['Name', 'Reference'].new(
-        :$name,
-        :$reference-inline
+    make(
+        IncludeLine::Request['Name', 'Reference'].new(
+            :$name,
+            :$reference-inline
+        )
     );
 }
 
 method include-line-request:file-only ($/ --> Nil)
 {
     my File:D $file = $<include-line-request-file>.made;
-    make IncludeLine::Request['File'].new(:$file);
+    make(IncludeLine::Request['File'].new(:$file));
 }
 
 method include-line-request:reference-only ($/ --> Nil)
 {
     my ReferenceInline:D $reference-inline =
         $<include-line-request-reference>.made;
-    make IncludeLine::Request['Reference'].new(:$reference-inline);
+    make(IncludeLine::Request['Reference'].new(:$reference-inline));
 }
 
 method include-line-request:name-only ($/ --> Nil)
 {
     my Str:D $name = $<include-line-request-name>.made;
-    make IncludeLine::Request['Name'].new(:$name);
+    make(IncludeLine::Request['Name'].new(:$name));
 }
 
 # --- --- end include-line-request }}}
@@ -236,7 +242,7 @@ multi method include-line:finn ($/ where @<leading-ws>.so --> Nil)
     my IncludeLine::Request:D $request = $<include-line-request>.made;
     my IncludeLine::Resolver:D $resolver =
         self.gen-include-line-resolver($request, :finn);
-    make IncludeLine['Finn'].new(:@leading-ws, :$request, :$resolver);
+    make(IncludeLine['Finn'].new(:@leading-ws, :$request, :$resolver));
 }
 
 multi method include-line:finn ($/ --> Nil)
@@ -244,7 +250,7 @@ multi method include-line:finn ($/ --> Nil)
     my IncludeLine::Request:D $request = $<include-line-request>.made;
     my IncludeLine::Resolver:D $resolver =
         self.gen-include-line-resolver($request, :finn);
-    make IncludeLine['Finn'].new(:$request, :$resolver);
+    make(IncludeLine['Finn'].new(:$request, :$resolver));
 }
 
 multi method include-line:text ($/ where @<leading-ws>.so --> Nil)
@@ -253,7 +259,7 @@ multi method include-line:text ($/ where @<leading-ws>.so --> Nil)
     my IncludeLine::Request:D $request = $<include-line-request>.made;
     my IncludeLine::Resolver:D $resolver =
         self.gen-include-line-resolver($request, :text);
-    make IncludeLine['Text'].new(:@leading-ws, :$request, :$resolver);
+    make(IncludeLine['Text'].new(:@leading-ws, :$request, :$resolver));
 }
 
 multi method include-line:text ($/ --> Nil)
@@ -261,7 +267,7 @@ multi method include-line:text ($/ --> Nil)
     my IncludeLine::Request:D $request = $<include-line-request>.made;
     my IncludeLine::Resolver:D $resolver =
         self.gen-include-line-resolver($request, :text);
-    make IncludeLine['Text'].new(:$request, :$resolver);
+    make(IncludeLine['Text'].new(:$request, :$resolver));
 }
 
 # --- end include-line }}}
@@ -269,30 +275,32 @@ multi method include-line:text ($/ --> Nil)
 method include-line-block:top ($/ --> Nil)
 {
     my IncludeLine:D @include-line = @<include-line>.hyper.map({ .made });
-    make IncludeLineBlock['Top'].new(:@include-line);
+    make(IncludeLineBlock['Top'].new(:@include-line));
 }
 
 multi method include-line-block:after-blank-line ($/ --> Nil)
 {
     my BlankLine:D $blank-line = $<blank-line>.made;
     my IncludeLine:D @include-line = @<include-line>.hyper.map({ .made });
-    make IncludeLineBlock['BlankLine'].new(:$blank-line, :@include-line);
+    make(IncludeLineBlock['BlankLine'].new(:$blank-line, :@include-line));
 }
 
 multi method include-line-block:after-comment-block ($/ --> Nil)
 {
     my CommentBlock:D $comment-block = $<comment-block>.made;
     my IncludeLine:D @include-line = @<include-line>.hyper.map({ .made });
-    make IncludeLineBlock['CommentBlock'].new(:$comment-block, :@include-line);
+    make(IncludeLineBlock['CommentBlock'].new(:$comment-block, :@include-line));
 }
 
 multi method include-line-block:after-horizontal-rule ($/ --> Nil)
 {
     my HorizontalRule:D $horizontal-rule = $<horizontal-rule>.made;
     my IncludeLine:D @include-line = @<include-line>.hyper.map({ .made });
-    make IncludeLineBlock['HorizontalRule'].new(
-        :$horizontal-rule,
-        :@include-line
+    make(
+        IncludeLineBlock['HorizontalRule'].new(
+            :$horizontal-rule,
+            :@include-line
+        )
     );
 }
 
@@ -305,14 +313,14 @@ multi method include-line-block:after-horizontal-rule ($/ --> Nil)
 
 method sectional-block-name-identifier-export($/ --> Nil)
 {
-    make SectionalBlockName::Identifier::Export.new;
+    make(SectionalBlockName::Identifier::Export.new);
 }
 
 method sectional-block-name-identifier-file:absolute ($/ --> Nil)
 {
     my Str:D $file-absolute = $<file-absolute>.made<file-absolute>;
     my IO::Path:D $path = IO::Path.new($file-absolute);
-    make File['Absolute'].new(:$path);
+    make(File['Absolute'].new(:$path));
 }
 
 method sectional-block-name-identifier-file:absolute-protocol ($/ --> Nil)
@@ -320,7 +328,7 @@ method sectional-block-name-identifier-file:absolute-protocol ($/ --> Nil)
     my Str:D $file-absolute = $<file-absolute-protocol>.made<file-absolute>;
     my IO::Path:D $path = IO::Path.new($file-absolute);
     my Str:D $protocol = $<file-absolute-protocol>.made<file-protocol>;
-    make File['Absolute', 'Protocol'].new(:$path, :$protocol);
+    make(File['Absolute', 'Protocol'].new(:$path, :$protocol));
 }
 
 method sectional-block-name-identifier-file:relative-protocol ($/ --> Nil)
@@ -329,19 +337,19 @@ method sectional-block-name-identifier-file:relative-protocol ($/ --> Nil)
     my IO::Path:D $path =
         IO::Path.new($.file.IO.dirname ~ '/' ~ $file-relative);
     my Str:D $protocol = $<file-relative-protocol>.made<file-protocol>;
-    make File['Relative', 'Protocol'].new(:$path, :$protocol);
+    make(File['Relative', 'Protocol'].new(:$path, :$protocol));
 }
 
 method sectional-block-name-identifier:file ($/ --> Nil)
 {
     my File:D $file = $<sectional-block-name-identifier-file>.made;
-    make SectionalBlockName::Identifier['File'].new(:$file);
+    make(SectionalBlockName::Identifier['File'].new(:$file));
 }
 
 method sectional-block-name-identifier:word ($/ --> Nil)
 {
     my Str:D $word = ~$/;
-    make SectionalBlockName::Identifier['Word'].new(:$word);
+    make(SectionalBlockName::Identifier['Word'].new(:$word));
 }
 
 # --- --- end sectional-block-name-identifier }}}
@@ -349,12 +357,12 @@ method sectional-block-name-identifier:word ($/ --> Nil)
 
 method sectional-block-name-operator:additive ($/ --> Nil)
 {
-    make SectionalBlockName::Operator['Additive'].new;
+    make(SectionalBlockName::Operator['Additive'].new);
 }
 
 method sectional-block-name-operator:redefine ($/ --> Nil)
 {
-    make SectionalBlockName::Operator['Redefine'].new;
+    make(SectionalBlockName::Operator['Redefine'].new);
 }
 
 # --- --- end sectional-block-name-operator }}}
@@ -371,7 +379,7 @@ multi method sectional-block-name(
         $<sectional-block-name-identifier-export>.made;
     my SectionalBlockName::Operator:D $operator =
         $<sectional-block-name-operator>.made;
-    make SectionalBlockName.new(:$identifier, :$export, :$operator);
+    make(SectionalBlockName.new(:$identifier, :$export, :$operator));
 }
 
 multi method sectional-block-name(
@@ -383,7 +391,7 @@ multi method sectional-block-name(
         $<sectional-block-name-identifier>.made;
     my SectionalBlockName::Identifier::Export:D $export =
         $<sectional-block-name-identifier-export>.made;
-    make SectionalBlockName.new(:$identifier, :$export);
+    make(SectionalBlockName.new(:$identifier, :$export));
 }
 
 multi method sectional-block-name(
@@ -395,14 +403,14 @@ multi method sectional-block-name(
         $<sectional-block-name-identifier>.made;
     my SectionalBlockName::Operator:D $operator =
         $<sectional-block-name-operator>.made;
-    make SectionalBlockName.new(:$identifier, :$operator);
+    make(SectionalBlockName.new(:$identifier, :$operator));
 }
 
 multi method sectional-block-name($/ --> Nil)
 {
     my SectionalBlockName::Identifier:D $identifier =
         $<sectional-block-name-identifier>.made;
-    make SectionalBlockName.new(:$identifier);
+    make(SectionalBlockName.new(:$identifier));
 }
 
 # --- end sectional-block-name }}}
@@ -412,26 +420,30 @@ multi method sectional-block-name($/ --> Nil)
 
 method sectional-block-content-text-backticks($/ --> Nil)
 {
-    make @<sectional-block-content-text-line-backticks>
+    make(
+        @<sectional-block-content-text-line-backticks>
         .hyper.map({ .made })
-        .join("\n");
+        .join("\n")
+    );
 }
 
 method sectional-block-content-text-line-backticks($/ --> Nil)
 {
-    make ~$/;
+    make(~$/);
 }
 
 method sectional-block-content-text-dashes($/ --> Nil)
 {
-    make @<sectional-block-content-text-line-dashes>
+    make(
+        @<sectional-block-content-text-line-dashes>
         .hyper.map({ .made })
-        .join("\n");
+        .join("\n")
+    );
 }
 
 method sectional-block-content-text-line-dashes($/ --> Nil)
 {
-    make ~$/;
+    make(~$/);
 }
 
 # --- --- end sectional-block-content-text }}}
@@ -439,35 +451,35 @@ method sectional-block-content-text-line-dashes($/ --> Nil)
 method sectional-block-contents-backticks($/ --> Nil)
 {
     my @made = @<sectional-block-content-backticks>.hyper.map({ .made });
-    make @made;
+    make(@made);
 }
 
 method sectional-block-content-backticks:include-line ($/ --> Nil)
 {
     my IncludeLine:D $include-line = $<include-line>.made;
-    make SectionalBlockContent['IncludeLine'].new(:$include-line);
+    make(SectionalBlockContent['IncludeLine'].new(:$include-line));
 }
 method sectional-block-content-backticks:text ($/ --> Nil)
 {
     my Str:D $text = $<sectional-block-content-text-backticks>.made;
-    make SectionalBlockContent['Text'].new(:$text);
+    make(SectionalBlockContent['Text'].new(:$text));
 }
 
 method sectional-block-contents-dashes($/ --> Nil)
 {
     my @made = @<sectional-block-content-dashes>.hyper.map({ .made });
-    make @made;
+    make(@made);
 }
 
 method sectional-block-content-dashes:include-line ($/ --> Nil)
 {
     my IncludeLine:D $include-line = $<include-line>.made;
-    make SectionalBlockContent['IncludeLine'].new(:$include-line);
+    make(SectionalBlockContent['IncludeLine'].new(:$include-line));
 }
 method sectional-block-content-dashes:text ($/ --> Nil)
 {
     my Str:D $text = $<sectional-block-content-text-dashes>.made;
-    make SectionalBlockContent['Text'].new(:$text);
+    make(SectionalBlockContent['Text'].new(:$text));
 }
 
 # --- end sectional-block-content }}}
@@ -485,7 +497,7 @@ multi method sectional-block:backticks (
     my SectionalBlockContent:D @content-raw =
         $<sectional-block-contents-backticks>.made;
     my SectionalBlockContent:D @content = trim(@leading-ws, @content-raw);
-    make SectionalBlock.new(:@content, :$delimiter, :$name);
+    make(SectionalBlock.new(:@content, :$delimiter, :$name));
 }
 
 multi method sectional-block:backticks (
@@ -497,7 +509,7 @@ multi method sectional-block:backticks (
     my SectionalBlockName:D $name = $<sectional-block-name>.made;
     my SectionalBlockContent:D @content =
         $<sectional-block-contents-backticks>.made;
-    make SectionalBlock.new(:@content, :$delimiter, :$name);
+    make(SectionalBlock.new(:@content, :$delimiter, :$name));
 }
 
 multi method sectional-block:backticks (
@@ -508,14 +520,14 @@ multi method sectional-block:backticks (
     my LeadingWS:D @leading-ws = @<closing-ws>.hyper.map({ .made });
     my SectionalBlockDelimiter['Backticks'] $delimiter .= new(:@leading-ws);
     my SectionalBlockName:D $name = $<sectional-block-name>.made;
-    make SectionalBlock.new(:$delimiter, :$name);
+    make(SectionalBlock.new(:$delimiter, :$name));
 }
 
 multi method sectional-block:backticks ($/ --> Nil)
 {
     my SectionalBlockDelimiter['Backticks'] $delimiter .= new;
     my SectionalBlockName:D $name = $<sectional-block-name>.made;
-    make SectionalBlock.new(:$delimiter, :$name);
+    make(SectionalBlock.new(:$delimiter, :$name));
 }
 
 # --- end sectional-block:backticks }}}
@@ -533,7 +545,7 @@ multi method sectional-block:dashes (
     my SectionalBlockContent:D @content-raw =
         $<sectional-block-contents-dashes>.made;
     my SectionalBlockContent:D @content = trim(@leading-ws, @content-raw);
-    make SectionalBlock.new(:@content, :$delimiter, :$name);
+    make(SectionalBlock.new(:@content, :$delimiter, :$name));
 }
 
 multi method sectional-block:dashes (
@@ -545,7 +557,7 @@ multi method sectional-block:dashes (
     my SectionalBlockName:D $name = $<sectional-block-name>.made;
     my SectionalBlockContent:D @content =
         $<sectional-block-contents-dashes>.made;
-    make SectionalBlock.new(:@content, :$delimiter, :$name);
+    make(SectionalBlock.new(:@content, :$delimiter, :$name));
 }
 
 multi method sectional-block:dashes (
@@ -556,14 +568,14 @@ multi method sectional-block:dashes (
     my LeadingWS:D @leading-ws = @<closing-ws>.hyper.map({ .made });
     my SectionalBlockDelimiter['Dashes'] $delimiter .= new(:@leading-ws);
     my SectionalBlockName:D $name = $<sectional-block-name>.made;
-    make SectionalBlock.new(:$delimiter, :$name);
+    make(SectionalBlock.new(:$delimiter, :$name));
 }
 
 multi method sectional-block:dashes ($/ --> Nil)
 {
     my SectionalBlockDelimiter['Dashes'] $delimiter .= new;
     my SectionalBlockName:D $name = $<sectional-block-name>.made;
-    make SectionalBlock.new(:$delimiter, :$name);
+    make(SectionalBlock.new(:$delimiter, :$name));
 }
 
 # --- end sectional-block:dashes }}}
@@ -575,7 +587,7 @@ multi method sectional-block:dashes ($/ --> Nil)
 
 method code-block-language($/ --> Nil)
 {
-    make ~$/;
+    make(~$/);
 }
 
 # --- end code-block-language }}}
@@ -583,12 +595,12 @@ method code-block-language($/ --> Nil)
 
 method code-block-content-backticks($/ --> Nil)
 {
-    make ~$/;
+    make(~$/);
 }
 
 method code-block-content-dashes($/ --> Nil)
 {
-    make ~$/;
+    make(~$/);
 }
 
 # --- end code-block-content }}}
@@ -605,7 +617,7 @@ multi method code-block:backticks (
     my CodeBlockDelimiter['Backticks'] $delimiter .= new(:@leading-ws);
     my Str:D $language = $<code-block-language>.made;
     my Str:D $text = trim(@leading-ws, $<code-block-content-backticks>.made);
-    make CodeBlock.new(:$delimiter, :$language, :$text);
+    make(CodeBlock.new(:$delimiter, :$language, :$text));
 }
 
 multi method code-block:backticks (
@@ -617,7 +629,7 @@ multi method code-block:backticks (
     my CodeBlockDelimiter['Backticks'] $delimiter .= new;
     my Str:D $language = $<code-block-language>.made;
     my Str:D $text = $<code-block-content-backticks>.made.lines.join("\n");
-    make CodeBlock.new(:$delimiter, :$language, :$text);
+    make(CodeBlock.new(:$delimiter, :$language, :$text));
 }
 
 multi method code-block:backticks (
@@ -629,7 +641,7 @@ multi method code-block:backticks (
     my LeadingWS:D @leading-ws = @<closing-ws>.hyper.map({ .made });
     my CodeBlockDelimiter['Backticks'] $delimiter .= new(:@leading-ws);
     my Str:D $language = $<code-block-language>.made;
-    make CodeBlock.new(:$delimiter, :$language);
+    make(CodeBlock.new(:$delimiter, :$language));
 }
 
 multi method code-block:backticks (
@@ -639,7 +651,7 @@ multi method code-block:backticks (
 {
     my CodeBlockDelimiter['Backticks'] $delimiter .= new;
     my Str:D $language = $<code-block-language>.made;
-    make CodeBlock.new(:$delimiter, :$language);
+    make(CodeBlock.new(:$delimiter, :$language));
 }
 
 multi method code-block:backticks (
@@ -651,7 +663,7 @@ multi method code-block:backticks (
     my LeadingWS:D @leading-ws = @<closing-ws>.hyper.map({ .made });
     my CodeBlockDelimiter['Backticks'] $delimiter .= new(:@leading-ws);
     my Str:D $text = trim(@leading-ws, $<code-block-content-backticks>.made);
-    make CodeBlock.new(:$delimiter, :$text);
+    make(CodeBlock.new(:$delimiter, :$text));
 }
 
 multi method code-block:backticks (
@@ -661,7 +673,7 @@ multi method code-block:backticks (
 {
     my CodeBlockDelimiter['Backticks'] $delimiter .= new;
     my Str:D $text = $<code-block-content-backticks>.made.lines.join("\n");
-    make CodeBlock.new(:$delimiter, :$text);
+    make(CodeBlock.new(:$delimiter, :$text));
 }
 
 multi method code-block:backticks (
@@ -671,13 +683,13 @@ multi method code-block:backticks (
 {
     my LeadingWS:D @leading-ws = @<closing-ws>.hyper.map({ .made });
     my CodeBlockDelimiter['Backticks'] $delimiter .= new(:@leading-ws);
-    make CodeBlock.new(:$delimiter);
+    make(CodeBlock.new(:$delimiter));
 }
 
 multi method code-block:backticks ($/ --> Nil)
 {
     my CodeBlockDelimiter['Backticks'] $delimiter .= new;
-    make CodeBlock.new(:$delimiter);
+    make(CodeBlock.new(:$delimiter));
 }
 
 # --- end code-block:backticks }}}
@@ -694,7 +706,7 @@ multi method code-block:dashes (
     my CodeBlockDelimiter['Dashes'] $delimiter .= new(:@leading-ws);
     my Str:D $language = $<code-block-language>.made;
     my Str:D $text = trim(@leading-ws, $<code-block-content-dashes>.made);
-    make CodeBlock.new(:$delimiter, :$language, :$text);
+    make(CodeBlock.new(:$delimiter, :$language, :$text));
 }
 
 multi method code-block:dashes (
@@ -706,7 +718,7 @@ multi method code-block:dashes (
     my CodeBlockDelimiter['Dashes'] $delimiter .= new;
     my Str:D $language = $<code-block-language>.made;
     my Str:D $text = $<code-block-content-dashes>.made.lines.join("\n");
-    make CodeBlock.new(:$delimiter, :$language, :$text);
+    make(CodeBlock.new(:$delimiter, :$language, :$text));
 }
 
 multi method code-block:dashes (
@@ -718,7 +730,7 @@ multi method code-block:dashes (
     my LeadingWS:D @leading-ws = @<closing-ws>.hyper.map({ .made });
     my CodeBlockDelimiter['Dashes'] $delimiter .= new(:@leading-ws);
     my Str:D $language = $<code-block-language>.made;
-    make CodeBlock.new(:$delimiter, :$language);
+    make(CodeBlock.new(:$delimiter, :$language));
 }
 
 multi method code-block:dashes (
@@ -728,7 +740,7 @@ multi method code-block:dashes (
 {
     my CodeBlockDelimiter['Dashes'] $delimiter .= new;
     my Str:D $language = $<code-block-language>.made;
-    make CodeBlock.new(:$delimiter, :$language);
+    make(CodeBlock.new(:$delimiter, :$language));
 }
 
 multi method code-block:dashes (
@@ -740,7 +752,7 @@ multi method code-block:dashes (
     my LeadingWS:D @leading-ws = @<closing-ws>.hyper.map({ .made });
     my CodeBlockDelimiter['Dashes'] $delimiter .= new(:@leading-ws);
     my Str:D $text = trim(@leading-ws, $<code-block-content-dashes>.made);
-    make CodeBlock.new(:$delimiter, :$text);
+    make(CodeBlock.new(:$delimiter, :$text));
 }
 
 multi method code-block:dashes (
@@ -750,7 +762,7 @@ multi method code-block:dashes (
 {
     my CodeBlockDelimiter['Dashes'] $delimiter .= new;
     my Str:D $text = $<code-block-content-dashes>.made.lines.join("\n");
-    make CodeBlock.new(:$delimiter, :$text);
+    make(CodeBlock.new(:$delimiter, :$text));
 }
 
 multi method code-block:dashes (
@@ -760,13 +772,13 @@ multi method code-block:dashes (
 {
     my LeadingWS:D @leading-ws = @<closing-ws>.hyper.map({ .made });
     my CodeBlockDelimiter['Dashes'] $delimiter .= new(:@leading-ws);
-    make CodeBlock.new(:$delimiter);
+    make(CodeBlock.new(:$delimiter));
 }
 
 multi method code-block:dashes ($/ --> Nil)
 {
     my CodeBlockDelimiter['Dashes'] $delimiter .= new;
-    make CodeBlock.new(:$delimiter);
+    make(CodeBlock.new(:$delimiter));
 }
 
 # --- end code-block:dashes }}}
@@ -780,12 +792,12 @@ multi method code-block:dashes ($/ --> Nil)
 
 method reference-line-text-first-line($/ --> Nil)
 {
-    make ~$/;
+    make(~$/);
 }
 
 method reference-line-text-continuation($/ --> Nil)
 {
-    make ~$/;
+    make(~$/);
 }
 
 multi method reference-line-text(
@@ -793,15 +805,18 @@ multi method reference-line-text(
     --> Nil
 )
 {
-    make (
-        $<reference-line-text-first-line>.made,
-        @<reference-line-text-continuation>.hyper.map({ .made }).join("\n")
-    ).join("\n");
+    make(
+        ($<reference-line-text-first-line>.made,
+         @<reference-line-text-continuation>
+         .hyper.map({ .made })
+         .join("\n"))
+         .join("\n")
+    );
 }
 
 multi method reference-line-text($/ --> Nil)
 {
-    make $<reference-line-text-first-line>.made;
+    make($<reference-line-text-first-line>.made);
 }
 
 # --- --- end reference-line-text }}}
@@ -810,13 +825,13 @@ method reference-line($/ --> Nil)
 {
     my ReferenceInline:D $reference-inline = $<reference-inline>.made;
     my Str:D $reference-text = $<reference-line-text>.made;
-    make ReferenceLine.new(:$reference-inline, :$reference-text);
+    make(ReferenceLine.new(:$reference-inline, :$reference-text));
 }
 
 method reference-lines($/ --> Nil)
 {
     my @made = @<reference-line>.hyper.map({ .made });
-    make @made;
+    make(@made);
 }
 
 # --- end reference-line }}}
@@ -824,23 +839,25 @@ method reference-lines($/ --> Nil)
 method reference-line-block:top ($/ --> Nil)
 {
     my ReferenceLine:D @reference-line = $<reference-lines>.made;
-    make ReferenceLineBlock['Top'].new(:@reference-line);
+    make(ReferenceLineBlock['Top'].new(:@reference-line));
 }
 
 method reference-line-block:after-blank-lines ($/ --> Nil)
 {
     my BlankLine:D @blank-line = $<blank-lines>.made;
     my ReferenceLine:D @reference-line = $<reference-lines>.made;
-    make ReferenceLineBlock['BlankLine'].new(:@blank-line, :@reference-line);
+    make(ReferenceLineBlock['BlankLine'].new(:@blank-line, :@reference-line));
 }
 
 method reference-line-block:after-comment-block ($/ --> Nil)
 {
     my CommentBlock:D $comment-block = $<comment-block>.made;
     my ReferenceLine:D @reference-line = $<reference-lines>.made;
-    make ReferenceLineBlock['CommentBlock'].new(
-        :$comment-block,
-        :@reference-line
+    make(
+        ReferenceLineBlock['CommentBlock'].new(
+            :$comment-block,
+            :@reference-line
+        )
     );
 }
 
@@ -848,16 +865,18 @@ method reference-line-block:after-horizontal-rule ($/ --> Nil)
 {
     my HorizontalRule:D $horizontal-rule = $<horizontal-rule>.made;
     my ReferenceLine:D @reference-line = $<reference-lines>.made;
-    make ReferenceLineBlock['HorizontalRule'].new(
-        :$horizontal-rule,
-        :@reference-line
+    make(
+        ReferenceLineBlock['HorizontalRule'].new(
+            :$horizontal-rule,
+            :@reference-line
+        )
     );
 }
 
 method reference-line-blocks($/ --> Nil)
 {
     my @made = @<reference-line-block>.hyper.map({ .made });
-    make @made;
+    make(@made);
 }
 
 # end reference-line-block }}}
@@ -865,67 +884,67 @@ method reference-line-blocks($/ --> Nil)
 
 method header-text($/ --> Nil)
 {
-    make ~$/;
+    make(~$/);
 }
 
 method header1($/ --> Nil)
 {
     my Str:D $text = $<header-text>.made;
-    make Header[1].new(:$text);
+    make(Header[1].new(:$text));
 }
 
 method header2($/ --> Nil)
 {
     my Str:D $text = $<header-text>.made;
-    make Header[2].new(:$text);
+    make(Header[2].new(:$text));
 }
 
 method header3($/ --> Nil)
 {
     my Str:D $text = $<header-text>.made;
-    make Header[3].new(:$text);
+    make(Header[3].new(:$text));
 }
 
 method header:h1 ($/ --> Nil)
 {
-    make $<header1>.made;
+    make($<header1>.made);
 }
 
 method header:h2 ($/ --> Nil)
 {
-    make $<header2>.made;
+    make($<header2>.made);
 }
 
 method header:h3 ($/ --> Nil)
 {
-    make $<header3>.made;
+    make($<header3>.made);
 }
 
 multi method header-block:top ($/ --> Nil)
 {
     my Header:D $header = $<header>.made;
-    make HeaderBlock['Top'].new(:$header);
+    make(HeaderBlock['Top'].new(:$header));
 }
 
 multi method header-block:after-blank-line ($/ --> Nil)
 {
     my BlankLine:D $blank-line = $<blank-line>.made;
     my Header:D $header = $<header>.made;
-    make HeaderBlock['BlankLine'].new(:$blank-line, :$header);
+    make(HeaderBlock['BlankLine'].new(:$blank-line, :$header));
 }
 
 multi method header-block:after-comment-block ($/ --> Nil)
 {
     my CommentBlock:D $comment-block = $<comment-block>.made;
     my Header:D $header = $<header>.made;
-    make HeaderBlock['CommentBlock'].new(:$comment-block, :$header);
+    make(HeaderBlock['CommentBlock'].new(:$comment-block, :$header));
 }
 
 multi method header-block:after-horizontal-rule ($/ --> Nil)
 {
     my HorizontalRule:D $horizontal-rule = $<horizontal-rule>.made;
     my Header:D $header = $<header>.made;
-    make HeaderBlock['HorizontalRule'].new(:$horizontal-rule, :$header);
+    make(HeaderBlock['HorizontalRule'].new(:$horizontal-rule, :$header));
 }
 
 # end header-block }}}
@@ -937,22 +956,22 @@ multi method header-block:after-horizontal-rule ($/ --> Nil)
 
 method list-ordered-item-number-value($/ --> Nil)
 {
-    make +$/;
+    make(+$/);
 }
 
 method list-ordered-item-number-terminator:sym<.>($/ --> Nil)
 {
-    make ListItem::Number::Terminator['.'].new;
+    make(ListItem::Number::Terminator['.'].new);
 }
 
 method list-ordered-item-number-terminator:sym<:>($/ --> Nil)
 {
-    make ListItem::Number::Terminator[':'].new;
+    make(ListItem::Number::Terminator[':'].new);
 }
 
 method list-ordered-item-number-terminator:sym<)>($/ --> Nil)
 {
-    make ListItem::Number::Terminator[')'].new;
+    make(ListItem::Number::Terminator[')'].new);
 }
 
 method list-ordered-item-number($/ --> Nil)
@@ -960,7 +979,7 @@ method list-ordered-item-number($/ --> Nil)
     my ListItem::Number::Terminator:D $terminator =
         $<list-ordered-item-number-terminator>.made;
     my UInt:D $value = $<list-ordered-item-number-value>.made;
-    make ListItem::Number.new(:$terminator, :$value);
+    make(ListItem::Number.new(:$terminator, :$value));
 }
 
 # --- --- end list-ordered-item-number }}}
@@ -968,12 +987,12 @@ method list-ordered-item-number($/ --> Nil)
 
 method list-ordered-item-text-first-line($/ --> Nil)
 {
-    make ~$/;
+    make(~$/);
 }
 
 method list-ordered-item-text-continuation($/ --> Nil)
 {
-    make ~$/;
+    make(~$/);
 }
 
 multi method list-ordered-item-text(
@@ -981,15 +1000,18 @@ multi method list-ordered-item-text(
     --> Nil
 )
 {
-    make (
-        $<list-ordered-item-text-first-line>.made,
-        @<list-ordered-item-text-continuation>.hyper.map({ .made }).join("\n")
-    ).join("\n");
+    make(
+        ($<list-ordered-item-text-first-line>.made,
+         @<list-ordered-item-text-continuation>
+         .hyper.map({ .made })
+         .join("\n"))
+         .join("\n")
+     );
 }
 
 multi method list-ordered-item-text($/ --> Nil)
 {
-    make $<list-ordered-item-text-first-line>.made;
+    make($<list-ordered-item-text-first-line>.made);
 }
 
 # --- --- end list-ordered-item-text }}}
@@ -998,14 +1020,14 @@ multi method list-ordered-item($/ where $<list-ordered-item-text>.so --> Nil)
 {
     my ListItem::Number:D $number = $<list-ordered-item-number>.made;
     my Str:D $text = $<list-ordered-item-text>.made;
-    make ListItem['Ordered'].new(:$number, :$text);
+    make(ListItem['Ordered'].new(:$number, :$text));
 }
 
 multi method list-ordered-item($/ --> Nil)
 {
     my ListItem::Number:D $number = $<list-ordered-item-number>.made;
     my Str:D $text = '';
-    make ListItem['Ordered'].new(:$number, :$text);
+    make(ListItem['Ordered'].new(:$number, :$text));
 }
 
 # --- end list-ordered-item }}}
@@ -1017,23 +1039,23 @@ multi method list-ordered-item($/ --> Nil)
 
 method checkbox-checked-char:sym<x>($/ --> Nil)
 {
-    make CheckboxCheckedChar['x'].new;
+    make(CheckboxCheckedChar['x'].new);
 }
 
 method checkbox-checked-char:sym<o>($/ --> Nil)
 {
-    make CheckboxCheckedChar['o'].new;
+    make(CheckboxCheckedChar['o'].new);
 }
 
 method checkbox-checked-char:sym<v>($/ --> Nil)
 {
-    make CheckboxCheckedChar['v'].new;
+    make(CheckboxCheckedChar['v'].new);
 }
 
 method checkbox-checked($/ --> Nil)
 {
     my CheckboxCheckedChar:D $char = $<checkbox-checked-char>.made;
-    make Checkbox['Checked'].new(:$char);
+    make(Checkbox['Checked'].new(:$char));
 }
 
 # --- --- --- end checkbox-checked }}}
@@ -1041,23 +1063,23 @@ method checkbox-checked($/ --> Nil)
 
 method checkbox-etc-char:sym<+>($/ --> Nil)
 {
-    make CheckboxEtcChar['+'].new;
+    make(CheckboxEtcChar['+'].new);
 }
 
 method checkbox-etc-char:sym<=>($/ --> Nil)
 {
-    make CheckboxEtcChar['='].new;
+    make(CheckboxEtcChar['='].new);
 }
 
 method checkbox-etc-char:sym<->($/ --> Nil)
 {
-    make CheckboxEtcChar['-'].new;
+    make(CheckboxEtcChar['-'].new);
 }
 
 method checkbox-etc($/ --> Nil)
 {
     my CheckboxEtcChar:D $char = $<checkbox-etc-char>.made;
-    make Checkbox['Etc'].new(:$char);
+    make(Checkbox['Etc'].new(:$char));
 }
 
 # --- --- --- end checkbox-etc }}}
@@ -1065,18 +1087,18 @@ method checkbox-etc($/ --> Nil)
 
 method checkbox-exception-char:sym<*>($/ --> Nil)
 {
-    make CheckboxExceptionChar['*'].new;
+    make(CheckboxExceptionChar['*'].new);
 }
 
 method checkbox-exception-char:sym<!>($/ --> Nil)
 {
-    make CheckboxExceptionChar['!'].new;
+    make(CheckboxExceptionChar['!'].new);
 }
 
 method checkbox-exception($/ --> Nil)
 {
     my CheckboxExceptionChar:D $char = $<checkbox-exception-char>.made;
-    make Checkbox['Exception'].new(:$char);
+    make(Checkbox['Exception'].new(:$char));
 }
 
 # --- --- --- end checkbox-exception }}}
@@ -1084,29 +1106,29 @@ method checkbox-exception($/ --> Nil)
 
 method checkbox-unchecked($/ --> Nil)
 {
-    make Checkbox['Unchecked'].new;
+    make(Checkbox['Unchecked'].new);
 }
 
 # --- --- --- end checkbox-unchecked }}}
 
 method checkbox:checked ($/ --> Nil)
 {
-    make $<checkbox-checked>.made;
+    make($<checkbox-checked>.made);
 }
 
 method checkbox:etc ($/ --> Nil)
 {
-    make $<checkbox-etc>.made;
+    make($<checkbox-etc>.made);
 }
 
 method checkbox:exception ($/ --> Nil)
 {
-    make $<checkbox-exception>.made;
+    make($<checkbox-exception>.made);
 }
 
 method checkbox:unchecked ($/ --> Nil)
 {
-    make $<checkbox-unchecked>.made;
+    make($<checkbox-unchecked>.made);
 }
 
 # --- --- end checkbox }}}
@@ -1114,7 +1136,7 @@ method checkbox:unchecked ($/ --> Nil)
 
 method list-todo-item-text($/ --> Nil)
 {
-    make ~$/;
+    make(~$/);
 }
 
 # --- --- end list-todo-item-text }}}
@@ -1123,7 +1145,7 @@ method list-todo-item($/ --> Nil)
 {
     my Checkbox:D $checkbox = $<checkbox>.made;
     my Str:D $text = $<list-todo-item-text>.made;
-    make ListItem['Todo'].new(:$checkbox, :$text);
+    make(ListItem['Todo'].new(:$checkbox, :$text));
 }
 
 # --- end list-todo-item }}}
@@ -1133,87 +1155,87 @@ method list-todo-item($/ --> Nil)
 
 method bullet-point:sym<->($/ --> Nil)
 {
-    make BulletPoint['-'].new;
+    make(BulletPoint['-'].new);
 }
 
 method bullet-point:sym<@>($/ --> Nil)
 {
-    make BulletPoint['@'].new;
+    make(BulletPoint['@'].new);
 }
 
 method bullet-point:sym<#>($/ --> Nil)
 {
-    make BulletPoint['#'].new;
+    make(BulletPoint['#'].new);
 }
 
 method bullet-point:sym<$>($/ --> Nil)
 {
-    make BulletPoint['$'].new;
+    make(BulletPoint['$'].new);
 }
 
 method bullet-point:sym<*>($/ --> Nil)
 {
-    make BulletPoint['*'].new;
+    make(BulletPoint['*'].new);
 }
 
 method bullet-point:sym<:>($/ --> Nil)
 {
-    make BulletPoint[':'].new;
+    make(BulletPoint[':'].new);
 }
 
 method bullet-point:sym<x>($/ --> Nil)
 {
-    make BulletPoint['x'].new;
+    make(BulletPoint['x'].new);
 }
 
 method bullet-point:sym<o>($/ --> Nil)
 {
-    make BulletPoint['o'].new;
+    make(BulletPoint['o'].new);
 }
 
 method bullet-point:sym<+>($/ --> Nil)
 {
-    make BulletPoint['+'].new;
+    make(BulletPoint['+'].new);
 }
 
 method bullet-point:sym<=>($/ --> Nil)
 {
-    make BulletPoint['='].new;
+    make(BulletPoint['='].new);
 }
 
 method bullet-point:sym<!>($/ --> Nil)
 {
-    make BulletPoint['!'].new;
+    make(BulletPoint['!'].new);
 }
 
 method bullet-point:sym<~>($/ --> Nil)
 {
-    make BulletPoint['~'].new;
+    make(BulletPoint['~'].new);
 }
 
 method bullet-point:sym«>»($/ --> Nil)
 {
-    make BulletPoint['>'].new;
+    make(BulletPoint['>'].new);
 }
 
 method bullet-point:sym«<-»($/ --> Nil)
 {
-    make BulletPoint['<-'].new;
+    make(BulletPoint['<-'].new);
 }
 
 method bullet-point:sym«<=»($/ --> Nil)
 {
-    make BulletPoint['<='].new;
+    make(BulletPoint['<='].new);
 }
 
 method bullet-point:sym«->»($/ --> Nil)
 {
-    make BulletPoint['->'].new;
+    make(BulletPoint['->'].new);
 }
 
 method bullet-point:sym«=>»($/ --> Nil)
 {
-    make BulletPoint['=>'].new;
+    make(BulletPoint['=>'].new);
 }
 
 # --- --- end bullet-point }}}
@@ -1221,12 +1243,12 @@ method bullet-point:sym«=>»($/ --> Nil)
 
 method list-unordered-item-text-first-line($/ --> Nil)
 {
-    make ~$/;
+    make(~$/);
 }
 
 method list-unordered-item-text-continuation($/ --> Nil)
 {
-    make ~$/;
+    make(~$/);
 }
 
 multi method list-unordered-item-text(
@@ -1234,15 +1256,18 @@ multi method list-unordered-item-text(
     --> Nil
 )
 {
-    make (
-        $<list-unordered-item-text-first-line>.made,
-        @<list-unordered-item-text-continuation>.hyper.map({ .made }).join("\n")
-    ).join("\n");
+    make(
+        ($<list-unordered-item-text-first-line>.made,
+         @<list-unordered-item-text-continuation>
+         .hyper.map({ .made })
+         .join("\n"))
+         .join("\n")
+     );
 }
 
 multi method list-unordered-item-text($/ --> Nil)
 {
-    make $<list-unordered-item-text-first-line>.made;
+    make($<list-unordered-item-text-first-line>.made);
 }
 
 # --- --- end list-unordered-item-text }}}
@@ -1251,37 +1276,37 @@ multi method list-unordered-item($/ where $<list-unordered-item-text>.so --> Nil
 {
     my BulletPoint:D $bullet-point = $<bullet-point>.made;
     my Str:D $text = $<list-unordered-item-text>.made;
-    make ListItem['Unordered'].new(:$bullet-point, :$text);
+    make(ListItem['Unordered'].new(:$bullet-point, :$text));
 }
 
 multi method list-unordered-item($/ --> Nil)
 {
     my BulletPoint:D $bullet-point = $<bullet-point>.made;
     my Str:D $text = '';
-    make ListItem['Unordered'].new(:$bullet-point, :$text);
+    make(ListItem['Unordered'].new(:$bullet-point, :$text));
 }
 
 # --- end list-unordered-item }}}
 
 method list-item:ordered ($/ --> Nil)
 {
-    make $<list-ordered-item>.made;
+    make($<list-ordered-item>.made);
 }
 
 method list-item:todo ($/ --> Nil)
 {
-    make $<list-todo-item>.made;
+    make($<list-todo-item>.made);
 }
 
 method list-item:unordered ($/ --> Nil)
 {
-    make $<list-unordered-item>.made;
+    make($<list-unordered-item>.made);
 }
 
 method list-block($/ --> Nil)
 {
     my ListItem:D @list-item = @<list-item>.hyper.map({ .made });
-    make ListBlock.new(:@list-item);
+    make(ListBlock.new(:@list-item));
 }
 
 # end list-block }}}
@@ -1289,13 +1314,13 @@ method list-block($/ --> Nil)
 
 method paragraph-line($/ --> Nil)
 {
-    make ~$/;
+    make(~$/);
 }
 
 method paragraph($/ --> Nil)
 {
     my Str:D $text = @<paragraph-line>.hyper.map({ .made }).join("\n");
-    make Paragraph.new(:$text);
+    make(Paragraph.new(:$text));
 }
 
 # end paragraph }}}
@@ -1303,22 +1328,22 @@ method paragraph($/ --> Nil)
 
 method horizontal-rule-soft($/ --> Nil)
 {
-    make HorizontalRule['Soft'].new;
+    make(HorizontalRule['Soft'].new);
 }
 
 method horizontal-rule-hard($/ --> Nil)
 {
-    make HorizontalRule['Hard'].new;
+    make(HorizontalRule['Hard'].new);
 }
 
 method horizontal-rule:soft ($/ --> Nil)
 {
-    make $<horizontal-rule-soft>.made;
+    make($<horizontal-rule-soft>.made);
 }
 
 method horizontal-rule:hard ($/ --> Nil)
 {
-    make $<horizontal-rule-hard>.made;
+    make($<horizontal-rule-hard>.made);
 }
 
 # end horizontal-rule }}}
@@ -1326,24 +1351,24 @@ method horizontal-rule:hard ($/ --> Nil)
 
 method comment-text($/ --> Nil)
 {
-    make ~$/;
+    make(~$/);
 }
 
 multi method comment($/ where $<comment-text>.made.so --> Nil)
 {
     my Str:D $text = $<comment-text>.made;
-    make Comment.new(:$text);
+    make(Comment.new(:$text));
 }
 
 multi method comment($/ --> Nil)
 {
-    make Comment.new;
+    make(Comment.new);
 }
 
 method comment-block($/ --> Nil)
 {
     my Comment:D $comment = $<comment>.made;
-    make CommentBlock.new(:$comment);
+    make(CommentBlock.new(:$comment));
 }
 
 # end comment-block }}}
@@ -1352,13 +1377,13 @@ method comment-block($/ --> Nil)
 method blank-line($/ --> Nil)
 {
     my Str:D $text = ~$/;
-    make BlankLine.new(:$text);
+    make(BlankLine.new(:$text));
 }
 
 method blank-lines($/ --> Nil)
 {
     my @made = @<blank-line>.hyper.map({ .made });
-    make @made;
+    make(@made);
 }
 
 # end blank-line }}}
@@ -1371,12 +1396,12 @@ method blank-lines($/ --> Nil)
 
 method leading-ws:space ($/ --> Nil)
 {
-    make LeadingWS['Space'].new;
+    make(LeadingWS['Space'].new);
 }
 
 method leading-ws:tab ($/ --> Nil)
 {
-    make LeadingWS['Tab'].new;
+    make(LeadingWS['Tab'].new);
 }
 
 # end leading-ws }}}
@@ -1388,17 +1413,17 @@ method leading-ws:tab ($/ --> Nil)
 
 method string-basic-char:common ($/ --> Nil)
 {
-    make ~$/;
+    make(~$/);
 }
 
 method string-basic-char:tab ($/ --> Nil)
 {
-    make ~$/;
+    make(~$/);
 }
 
 method string-basic-char:escape-sequence ($/ --> Nil)
 {
-    make $<escape>.made;
+    make($<escape>.made);
 }
 
 # --- --- end string-basic-char }}}
@@ -1406,59 +1431,59 @@ method string-basic-char:escape-sequence ($/ --> Nil)
 
 method escape:sym<b>($/ --> Nil)
 {
-    make "\b";
+    make("\b");
 }
 
 method escape:sym<t>($/ --> Nil)
 {
-    make "\t";
+    make("\t");
 }
 
 method escape:sym<n>($/ --> Nil)
 {
-    make "\n";
+    make("\n");
 }
 
 method escape:sym<f>($/ --> Nil)
 {
-    make "\f";
+    make("\f");
 }
 
 method escape:sym<r>($/ --> Nil)
 {
-    make "\r";
+    make("\r");
 }
 
 method escape:sym<quote>($/ --> Nil)
 {
-    make "\"";
+    make("\"");
 }
 
 method escape:sym<backslash>($/ --> Nil)
 {
-    make '\\';
+    make('\\');
 }
 
 method escape:sym<u>($/ --> Nil)
 {
-    make chr(:16(@<hex>.join));
+    make(chr(:16(@<hex>.join)));
 }
 
 method escape:sym<U>($/ --> Nil)
 {
-    make chr(:16(@<hex>.join));
+    make(chr(:16(@<hex>.join)));
 }
 
 # --- --- end escape }}}
 
 method string-basic-text($/ --> Nil)
 {
-    make @<string-basic-char>.hyper.map({ .made }).join;
+    make(@<string-basic-char>.hyper.map({ .made }).join);
 }
 
 method string-basic($/ --> Nil)
 {
-    make $<string-basic-text>.made;
+    make($<string-basic-text>.made);
 }
 
 # --- end string-basic }}}
@@ -1468,36 +1493,36 @@ method string-basic($/ --> Nil)
 
 method string-literal-char:common ($/ --> Nil)
 {
-    make ~$/;
+    make(~$/);
 }
 
 method string-literal-char:backslash ($/ --> Nil)
 {
-    make '\\';
+    make('\\');
 }
 
 # --- --- end string-literal-char }}}
 
 method string-literal-text($/ --> Nil)
 {
-    make @<string-literal-char>.hyper.map({ .made }).join;
+    make(@<string-literal-char>.hyper.map({ .made }).join);
 }
 
 method string-literal($/ --> Nil)
 {
-    make $<string-literal-text>.made;
+    make($<string-literal-text>.made);
 }
 
 # --- end string-literal }}}
 
 method string:basic ($/ --> Nil)
 {
-    make $<string-basic>.made;
+    make($<string-basic>.made);
 }
 
 method string:literal ($/ --> Nil)
 {
-    make $<string-literal>.made;
+    make($<string-literal>.made);
 }
 
 # end string }}}
@@ -1507,12 +1532,12 @@ method string:literal ($/ --> Nil)
 
 method file-path-char:common ($/ --> Nil)
 {
-    make ~$/;
+    make(~$/);
 }
 
 method file-path-char:escape-sequence ($/ --> Nil)
 {
-    make $<file-path-escape>.made;
+    make($<file-path-escape>.made);
 }
 
 # --- end file-path-char }}}
@@ -1520,87 +1545,87 @@ method file-path-char:escape-sequence ($/ --> Nil)
 
 method file-path-escape:sym<whitespace>($/ --> Nil)
 {
-    make ~$/;
+    make(~$/);
 }
 
 method file-path-escape:sym<b>($/ --> Nil)
 {
-    make "\b";
+    make("\b");
 }
 
 method file-path-escape:sym<t>($/ --> Nil)
 {
-    make "\t";
+    make("\t");
 }
 
 method file-path-escape:sym<n>($/ --> Nil)
 {
-    make "\n";
+    make("\n");
 }
 
 method file-path-escape:sym<f>($/ --> Nil)
 {
-    make "\f";
+    make("\f");
 }
 
 method file-path-escape:sym<r>($/ --> Nil)
 {
-    make "\r";
+    make("\r");
 }
 
 method file-path-escape:sym<single-quote>($/ --> Nil)
 {
-    make "'";
+    make("'");
 }
 
 method file-path-escape:sym<double-quote>($/ --> Nil)
 {
-    make "\"";
+    make("\"");
 }
 
 method file-path-escape:sym<fwdslash>($/ --> Nil)
 {
-    make '/';
+    make('/');
 }
 
 method file-path-escape:sym<backslash>($/ --> Nil)
 {
-    make '\\';
+    make('\\');
 }
 
 method file-path-escape:sym<*>($/ --> Nil)
 {
-    make ~$/;
+    make(~$/);
 }
 
 method file-path-escape:sym<[>($/ --> Nil)
 {
-    make ~$/;
+    make(~$/);
 }
 
 method file-path-escape:sym<]>($/ --> Nil)
 {
-    make ~$/;
+    make(~$/);
 }
 
 method file-path-escape:sym<{>($/ --> Nil)
 {
-    make ~$/;
+    make(~$/);
 }
 
 method file-path-escape:sym<}>($/ --> Nil)
 {
-    make ~$/;
+    make(~$/);
 }
 
 method file-path-escape:sym<u>($/ --> Nil)
 {
-    make chr(:16(@<hex>.join));
+    make(chr(:16(@<hex>.join)));
 }
 
 method file-path-escape:sym<U>($/ --> Nil)
 {
-    make chr(:16(@<hex>.join));
+    make(chr(:16(@<hex>.join)));
 }
 
 # --- end file-path-escape }}}
@@ -1608,7 +1633,7 @@ method file-path-escape:sym<U>($/ --> Nil)
 
 method file-protocol($/ --> Nil)
 {
-    make ~$/;
+    make(~$/);
 }
 
 # --- end file-protocol }}}
@@ -1618,27 +1643,29 @@ method file-protocol($/ --> Nil)
 
 method file-path-absolute-home($/ --> Nil)
 {
-    make ~$/;
+    make(~$/);
 }
 
 method file-path-absolute-root($/ --> Nil)
 {
-    make ~$/;
+    make(~$/);
 }
 
 multi method file-path-absolute($/ where @<file-path-absolute>.so --> Nil)
 {
-    make
+    make(
         ~ $<file-path-absolute-root>.made
         ~ @<file-path-char>.hyper.map({ .made }).join
-        ~ @<file-path-absolute>.hyper.map({ .made }).join;
+        ~ @<file-path-absolute>.hyper.map({ .made }).join
+    );
 }
 
 multi method file-path-absolute($/ --> Nil)
 {
-    make
-        $<file-path-absolute-root>.made
-        ~ @<file-path-char>.hyper.map({ .made }).join;
+    make(
+        ~ $<file-path-absolute-root>.made
+        ~ @<file-path-char>.hyper.map({ .made }).join
+    );
 }
 
 # --- --- end file-path-absolute }}}
@@ -1647,25 +1674,25 @@ multi method file-absolute:deep ($/ where $<file-path-absolute-home>.so --> Nil)
 {
     my Str:D $file-absolute =
         $<file-path-absolute-home>.made ~ $<file-path-absolute>.made;
-    make %(:$file-absolute);
+    make(%(:$file-absolute));
 }
 
 multi method file-absolute:deep ($/ --> Nil)
 {
     my Str:D $file-absolute = $<file-path-absolute>.made;
-    make %(:$file-absolute);
+    make(%(:$file-absolute));
 }
 
 method file-absolute:home ($/ --> Nil)
 {
     my Str:D $file-absolute = $<file-path-absolute-home>.made;
-    make %(:$file-absolute);
+    make(%(:$file-absolute));
 }
 
 method file-absolute:root ($/ --> Nil)
 {
     my Str:D $file-absolute = $<file-path-absolute-root>.made;
-    make %(:$file-absolute);
+    make(%(:$file-absolute));
 }
 
 # --- end file-absolute }}}
@@ -1675,7 +1702,7 @@ method file-absolute-protocol($/ --> Nil)
 {
     my Str:D $file-absolute = $<file-absolute>.made<file-absolute>;
     my Str:D $file-protocol = $<file-protocol>.made;
-    make %(:$file-absolute, :$file-protocol);
+    make(%(:$file-absolute, :$file-protocol));
 }
 
 # --- end file-absolute-protocol }}}
@@ -1683,20 +1710,21 @@ method file-absolute-protocol($/ --> Nil)
 
 multi method file-path-relative($/ where @<file-path-absolute>.so --> Nil)
 {
-    make
-        @<file-path-char>.hyper.map({ .made }).join
-        ~ @<file-path-absolute>.hyper.map({ .made }).join;
+    make(
+        ~ @<file-path-char>.hyper.map({ .made }).join
+        ~ @<file-path-absolute>.hyper.map({ .made }).join
+    );
 }
 
 multi method file-path-relative($/ --> Nil)
 {
-    make @<file-path-char>.hyper.map({ .made }).join;
+    make(@<file-path-char>.hyper.map({ .made }).join);
 }
 
 multi method file-relative($/ --> Nil)
 {
     my Str:D $file-relative = $<file-path-relative>.made;
-    make %(:$file-relative);
+    make(%(:$file-relative));
 }
 
 # --- end file-relative }}}
@@ -1706,7 +1734,7 @@ method file-relative-protocol($/ --> Nil)
 {
     my Str:D $file-relative = $<file-relative>.made<file-relative>;
     my Str:D $file-protocol = $<file-protocol>.made;
-    make %(:$file-relative, :$file-protocol);
+    make(%(:$file-relative, :$file-protocol));
 }
 
 # --- end file-relative-protocol }}}
@@ -1715,7 +1743,7 @@ method file:absolute ($/ --> Nil)
 {
     my Str:D $file-absolute = $<file-absolute>.made<file-absolute>;
     my IO::Path:D $path = IO::Path.new($file-absolute);
-    make File['Absolute'].new(:$path);
+    make(File['Absolute'].new(:$path));
 }
 
 method file:absolute-protocol ($/ --> Nil)
@@ -1723,7 +1751,7 @@ method file:absolute-protocol ($/ --> Nil)
     my Str:D $file-absolute = $<file-absolute-protocol>.made<file-absolute>;
     my IO::Path:D $path = IO::Path.new($file-absolute);
     my Str:D $protocol = $<file-absolute-protocol>.made<file-protocol>;
-    make File['Absolute', 'Protocol'].new(:$path, :$protocol);
+    make(File['Absolute', 'Protocol'].new(:$path, :$protocol));
 }
 
 method file:relative ($/ --> Nil)
@@ -1731,7 +1759,7 @@ method file:relative ($/ --> Nil)
     my Str:D $file-relative = $<file-relative>.made<file-relative>;
     my IO::Path:D $path =
         IO::Path.new($.file.IO.dirname ~ '/' ~ $file-relative);
-    make File['Relative'].new(:$path);
+    make(File['Relative'].new(:$path));
 }
 
 method file:relative-protocol ($/ --> Nil)
@@ -1740,7 +1768,7 @@ method file:relative-protocol ($/ --> Nil)
     my IO::Path:D $path =
         IO::Path.new($.file.IO.dirname ~ '/' ~ $file-relative);
     my Str:D $protocol = $<file-relative-protocol>.made<file-protocol>;
-    make File['Relative', 'Protocol'].new(:$path, :$protocol);
+    make(File['Relative', 'Protocol'].new(:$path, :$protocol));
 }
 
 # end file }}}
@@ -1748,13 +1776,13 @@ method file:relative-protocol ($/ --> Nil)
 
 method reference-inline-number($/ --> Nil)
 {
-    make +$/;
+    make(+$/);
 }
 
 method reference-inline($/ --> Nil)
 {
     my UInt:D $number = $<reference-inline-number>.made;
-    make ReferenceInline.new(:$number);
+    make(ReferenceInline.new(:$number));
 }
 
 # end reference-inline }}}
@@ -2303,10 +2331,11 @@ method !gen-reference-closure(
     {
         my ReferenceLine:D $reference-line =
             @reference-line-block
-                .flatmap({
+                .map({
                     .reference-line
                     .grep({ .reference-inline.number == $number })
                 })
+                .flat
                 .tail;
         my Str:D $reference-text = $reference-line.reference-text;
     }
@@ -2833,7 +2862,7 @@ sub comb(
 )
 {
     @actual.elems >= @padding.elems
-        or die;
+        or die();
     @actual.splice(0, @padding.elems);
     @actual;
 }
@@ -2932,7 +2961,7 @@ multi sub merge(
     --> SectionalBlock:D
 )
 {
-    die;
+    die();
 }
 
 # end sub merge }}}
@@ -2994,7 +3023,7 @@ sub trim-leading(LeadingWS:D @leading-ws, Str:D $text --> Str:D)
     my Str:D $actual = $text.comb(/^\h*/).first;
     my Str:D $padding = @leading-ws.hyper.map({ .Str }).join;
     $actual.chars >= $padding.chars
-        or die;
+        or die();
     my Str:D $s = $text.subst($padding, '');
 }
 

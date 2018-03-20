@@ -1173,7 +1173,7 @@ token string-basic-char:escape-sequence
         ||
 
         .
-        { die }
+        { die() }
     ]
 }
 
@@ -1295,7 +1295,7 @@ token file-path-char:escape-sequence
         ||
 
         .
-        { die }
+        { die() }
     ]
 }
 
