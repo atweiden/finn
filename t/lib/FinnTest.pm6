@@ -215,8 +215,8 @@ multi sub infix:<eqv>(Chunk $, Chunk $ --> Bool:D) is export
 # document {{{
 
 multi sub infix:<eqv>(
-    Document:D $a where *.so,
-    Document:D $b where *.so
+    Document:D $a where .so,
+    Document:D $b where .so
     --> Bool:D
 ) is export
 {
@@ -646,8 +646,8 @@ multi sub infix:<eqv>(LeadingWS $, LeadingWS $ --> Bool:D) is export
 # list-block {{{
 
 multi sub infix:<eqv>(
-    ListBlock:D $a where *.so,
-    ListBlock:D $b where *.so
+    ListBlock:D $a where .so,
+    ListBlock:D $b where .so
     --> Bool:D
 ) is export
 {
@@ -936,8 +936,8 @@ multi sub infix:<eqv>(
 # --- --- Checkbox['Unchecked'] {{{
 
 multi sub infix:<eqv>(
-    Checkbox['Unchecked'] $a where *.so,
-    Checkbox['Unchecked'] $b where *.so
+    Checkbox['Unchecked'] $a where .so,
+    Checkbox['Unchecked'] $b where .so
     --> Bool:D
 ) is export
 {
@@ -1191,8 +1191,8 @@ multi sub infix:<eqv>(ListItem $, ListItem $ --> Bool:D) is export
 # parse-tree {{{
 
 multi sub infix:<eqv>(
-    Finn::Parser::ParseTree:D $a where *.so,
-    Finn::Parser::ParseTree:D $b where *.so
+    Finn::Parser::ParseTree:D $a where .so,
+    Finn::Parser::ParseTree:D $b where .so
     --> Bool:D
 ) is export
 {
@@ -1306,8 +1306,8 @@ multi sub infix:<eqv>(
 }
 
 multi sub infix:<eqv>(
-    LeadingWS['Space'] $ where *.so,
-    LeadingWS['Space'] $ where *.so
+    LeadingWS['Space'] $ where .so,
+    LeadingWS['Space'] $ where .so
     --> Bool:D
 ) is export
 {
@@ -1315,8 +1315,8 @@ multi sub infix:<eqv>(
 }
 
 multi sub infix:<eqv>(
-    LeadingWS['Tab'] $ where *.so,
-    LeadingWS['Tab'] $ where *.so
+    LeadingWS['Tab'] $ where .so,
+    LeadingWS['Tab'] $ where .so
     --> Bool:D
 ) is export
 {
@@ -1378,8 +1378,8 @@ multi sub infix:<eqv>(
 }
 
 multi sub infix:<eqv>(
-    SectionalBlockName::Identifier::Export:D $ where *.so,
-    SectionalBlockName::Identifier::Export:D $ where *.so
+    SectionalBlockName::Identifier::Export:D $ where .so,
+    SectionalBlockName::Identifier::Export:D $ where .so
     --> Bool:D
 ) is export
 {

@@ -1801,7 +1801,7 @@ Finn document top level and within C<SectionalBlock>s.
 multi method gen-include-line-resolver(
     ::?CLASS:D:
     IncludeLine::Request['Name'] $request,
-    Bool:D :finn($)! where *.so
+    Bool:D :finn($)! where .so
     --> IncludeLine::Resolver['Name']
 )
 {
@@ -1826,7 +1826,7 @@ multi method gen-include-line-resolver(
 multi method gen-include-line-resolver(
     ::?CLASS:D:
     IncludeLine::Request['Name'] $request,
-    Bool:D :text($)! where *.so
+    Bool:D :text($)! where .so
     --> IncludeLine::Resolver['Name']
 )
 {
@@ -1851,7 +1851,7 @@ multi method gen-include-line-resolver(
 multi method gen-include-line-resolver(
     ::?CLASS:D:
     IncludeLine::Request['File'] $request,
-    Bool:D :finn($)! where *.so
+    Bool:D :finn($)! where .so
     --> IncludeLine::Resolver['File']
 )
 {
@@ -1869,7 +1869,7 @@ multi method gen-include-line-resolver(
 multi method gen-include-line-resolver(
     ::?CLASS:D:
     IncludeLine::Request['File'] $request,
-    Bool:D :text($)! where *.so
+    Bool:D :text($)! where .so
     --> IncludeLine::Resolver['File']
 )
 {
@@ -1887,7 +1887,7 @@ multi method gen-include-line-resolver(
 multi method gen-include-line-resolver(
     ::?CLASS:D:
     IncludeLine::Request['Reference'] $request,
-    Bool:D :finn($)! where *.so
+    Bool:D :finn($)! where .so
     --> IncludeLine::Resolver['Reference']
 )
 {
@@ -1914,7 +1914,7 @@ multi method gen-include-line-resolver(
 multi method gen-include-line-resolver(
     ::?CLASS:D:
     IncludeLine::Request['Reference'] $request,
-    Bool:D :text($)! where *.so
+    Bool:D :text($)! where .so
     --> IncludeLine::Resolver['Reference']
 )
 {
@@ -1941,7 +1941,7 @@ multi method gen-include-line-resolver(
 multi method gen-include-line-resolver(
     ::?CLASS:D:
     IncludeLine::Request['Name', 'File'] $request,
-    Bool:D :finn($)! where *.so
+    Bool:D :finn($)! where .so
     --> IncludeLine::Resolver['Name', 'File']
 )
 {
@@ -1967,7 +1967,7 @@ multi method gen-include-line-resolver(
 multi method gen-include-line-resolver(
     ::?CLASS:D:
     IncludeLine::Request['Name', 'File'] $request,
-    Bool:D :text($)! where *.so
+    Bool:D :text($)! where .so
     --> IncludeLine::Resolver['Name', 'File']
 )
 {
@@ -1993,7 +1993,7 @@ multi method gen-include-line-resolver(
 multi method gen-include-line-resolver(
     ::?CLASS:D:
     IncludeLine::Request['Name', 'Reference'] $request,
-    Bool:D :finn($)! where *.so
+    Bool:D :finn($)! where .so
     --> IncludeLine::Resolver['Name', 'Reference']
 )
 {
@@ -2028,7 +2028,7 @@ multi method gen-include-line-resolver(
 multi method gen-include-line-resolver(
     ::?CLASS:D:
     IncludeLine::Request['Name', 'Reference'] $request,
-    Bool:D :text($)! where *.so
+    Bool:D :text($)! where .so
     --> IncludeLine::Resolver['Name', 'Reference']
 )
 {
@@ -2078,7 +2078,7 @@ multi method gen-absolute-path-closure(
     ::?CLASS:D:
     IncludeLine::Request['Reference'],
     Str:D &reference,
-    Bool:D :await-reference-table($)! where *.so
+    Bool:D :await-reference-table($)! where .so
     --> Sub:D
 )
 {
@@ -2089,7 +2089,7 @@ multi method gen-absolute-path-closure(
     ::?CLASS:D:
     IncludeLine::Request['Name', 'Reference'],
     Str:D &reference,
-    Bool:D :await-reference-table($)! where *.so
+    Bool:D :await-reference-table($)! where .so
     --> Sub:D
 )
 {
@@ -2121,8 +2121,8 @@ multi method gen-document-closure(
     ::?CLASS:D:
     IncludeLine::Request['Name'],
     IO::Path:D $absolute-path,
-    Bool:D :await-self-document-parse($)! where *.so,
-    Bool:D :finn($)! where *.so
+    Bool:D :await-self-document-parse($)! where .so,
+    Bool:D :finn($)! where .so
     --> Sub:D
 )
 {
@@ -2136,8 +2136,8 @@ multi method gen-document-closure(
     ::?CLASS:D:
     IncludeLine::Request['Name'],
     IO::Path:D $absolute-path,
-    Bool:D :await-self-document-parse($)! where *.so,
-    Bool:D :text($)! where *.so
+    Bool:D :await-self-document-parse($)! where .so,
+    Bool:D :text($)! where .so
     --> Sub:D
 )
 {
@@ -2154,8 +2154,8 @@ multi method gen-document-closure(
     ::?CLASS:D:
     IncludeLine::Request['File'],
     IO::Path:D $absolute-path,
-    Bool:D :defer-link-document-parse($)! where *.so,
-    Bool:D :finn($)! where *.so
+    Bool:D :defer-link-document-parse($)! where .so,
+    Bool:D :finn($)! where .so
     --> Sub:D
 )
 {
@@ -2170,8 +2170,8 @@ multi method gen-document-closure(
     ::?CLASS:D:
     IncludeLine::Request['File'],
     IO::Path:D $absolute-path,
-    Bool:D :defer-link-document-parse($)! where *.so,
-    Bool:D :text($)! where *.so
+    Bool:D :defer-link-document-parse($)! where .so,
+    Bool:D :text($)! where .so
     --> Sub:D
 )
 {
@@ -2185,8 +2185,8 @@ multi method gen-document-closure(
     ::?CLASS:D:
     IncludeLine::Request['Reference'],
     IO::Path:D &absolute-path,
-    Bool:D :await-reference-table($)! where *.so,
-    Bool:D :finn($)! where *.so
+    Bool:D :await-reference-table($)! where .so,
+    Bool:D :finn($)! where .so
     --> Sub:D
 )
 {
@@ -2205,8 +2205,8 @@ multi method gen-document-closure(
     ::?CLASS:D:
     IncludeLine::Request['Reference'],
     IO::Path:D &absolute-path,
-    Bool:D :await-reference-table($)! where *.so,
-    Bool:D :text($)! where *.so
+    Bool:D :await-reference-table($)! where .so,
+    Bool:D :text($)! where .so
     --> Sub:D
 )
 {
@@ -2224,8 +2224,8 @@ multi method gen-document-closure(
     ::?CLASS:D:
     IncludeLine::Request['Name', 'File'],
     IO::Path:D $absolute-path,
-    Bool:D :defer-link-document-parse($)! where *.so,
-    Bool:D :finn($)! where *.so
+    Bool:D :defer-link-document-parse($)! where .so,
+    Bool:D :finn($)! where .so
     --> Sub:D
 )
 {
@@ -2240,8 +2240,8 @@ multi method gen-document-closure(
     ::?CLASS:D:
     IncludeLine::Request['Name', 'File'],
     IO::Path:D $absolute-path,
-    Bool:D :defer-link-document-parse($)! where *.so,
-    Bool:D :text($)! where *.so
+    Bool:D :defer-link-document-parse($)! where .so,
+    Bool:D :text($)! where .so
     --> Sub:D
 )
 {
@@ -2258,8 +2258,8 @@ multi method gen-document-closure(
     ::?CLASS:D:
     IncludeLine::Request['Name', 'Reference'],
     IO::Path:D &absolute-path,
-    Bool:D :await-reference-table($)! where *.so,
-    Bool:D :finn($)! where *.so
+    Bool:D :await-reference-table($)! where .so,
+    Bool:D :finn($)! where .so
     --> Sub:D
 )
 {
@@ -2278,8 +2278,8 @@ multi method gen-document-closure(
     ::?CLASS:D:
     IncludeLine::Request['Name', 'Reference'],
     IO::Path:D &absolute-path,
-    Bool:D :await-reference-table($)! where *.so,
-    Bool:D :text($)! where *.so
+    Bool:D :await-reference-table($)! where .so,
+    Bool:D :text($)! where .so
     --> Sub:D
 )
 {
@@ -2300,7 +2300,7 @@ multi method gen-reference-closure(
     ::?CLASS:D:
     IncludeLine::Request['Reference'],
     UInt:D $number,
-    Bool:D :await-reference-table($)! where *.so
+    Bool:D :await-reference-table($)! where .so
     --> Sub:D
 )
 {
@@ -2311,7 +2311,7 @@ multi method gen-reference-closure(
     ::?CLASS:D:
     IncludeLine::Request['Name', 'Reference'],
     UInt:D $number,
-    Bool:D :await-reference-table($)! where *.so
+    Bool:D :await-reference-table($)! where .so
     --> Sub:D
 )
 {
@@ -2348,9 +2348,9 @@ multi method gen-sectional-block-closure(
     ::?CLASS:D:
     IncludeLine::Request['Name'],
     &document,
-    Str:D :$name! where *.so,
-    Bool:D :await-self-document-parse($)! where *.so,
-    Bool:D :finn($)! where *.so
+    Str:D :$name! where .so,
+    Bool:D :await-self-document-parse($)! where .so,
+    Bool:D :finn($)! where .so
     --> Sub:D
 )
 {
@@ -2366,9 +2366,9 @@ multi method gen-sectional-block-closure(
     ::?CLASS:D:
     IncludeLine::Request['Name'],
     &document,
-    Str:D :$name! where *.so,
-    Bool:D :await-self-document-parse($)! where *.so,
-    Bool:D :text($)! where *.so
+    Str:D :$name! where .so,
+    Bool:D :await-self-document-parse($)! where .so,
+    Bool:D :text($)! where .so
     --> Sub:D
 )
 {
@@ -2384,9 +2384,9 @@ multi method gen-sectional-block-closure(
     ::?CLASS:D:
     IncludeLine::Request['Name', 'File'],
     &document,
-    Str:D :$name! where *.so,
-    Bool:D :defer-link-document-parse($)! where *.so,
-    Bool:D :finn($)! where *.so
+    Str:D :$name! where .so,
+    Bool:D :defer-link-document-parse($)! where .so,
+    Bool:D :finn($)! where .so
     --> Sub:D
 )
 {
@@ -2402,9 +2402,9 @@ multi method gen-sectional-block-closure(
     ::?CLASS:D:
     IncludeLine::Request['Name', 'File'],
     &document,
-    Str:D :$name! where *.so,
-    Bool:D :defer-link-document-parse($)! where *.so,
-    Bool:D :text($)! where *.so
+    Str:D :$name! where .so,
+    Bool:D :defer-link-document-parse($)! where .so,
+    Bool:D :text($)! where .so
     --> Sub:D
 )
 {
@@ -2420,9 +2420,9 @@ multi method gen-sectional-block-closure(
     ::?CLASS:D:
     IncludeLine::Request['Name', 'Reference'],
     &document,
-    Str:D :$name! where *.so,
-    Bool:D :await-reference-table($)! where *.so,
-    Bool:D :finn($)! where *.so
+    Str:D :$name! where .so,
+    Bool:D :await-reference-table($)! where .so,
+    Bool:D :finn($)! where .so
     --> Sub:D
 )
 {
@@ -2441,9 +2441,9 @@ multi method gen-sectional-block-closure(
     ::?CLASS:D:
     IncludeLine::Request['Name', 'Reference'],
     &document,
-    Str:D :$name! where *.so,
-    Bool:D :await-reference-table($)! where *.so,
-    Bool:D :text($)! where *.so
+    Str:D :$name! where .so,
+    Bool:D :await-reference-table($)! where .so,
+    Bool:D :text($)! where .so
     --> Sub:D
 )
 {
@@ -2785,8 +2785,8 @@ multi method resolve-path-from-file(
 multi method resolve-sectional-block(
     ::?CLASS:D:
     Document:D $document,
-    Str:D :$name! where *.so,
-    Bool:D :finn($)! where *.so
+    Str:D :$name! where .so,
+    Bool:D :finn($)! where .so
     --> SectionalBlock:D
 )
 {
@@ -2798,8 +2798,8 @@ multi method resolve-sectional-block(
 multi method resolve-sectional-block(
     ::?CLASS:D:
     Document:D $document,
-    Str:D :$name! where *.so,
-    Bool:D :text($)! where *.so
+    Str:D :$name! where .so,
+    Bool:D :text($)! where .so
     --> Str:D
 )
 {
@@ -2813,7 +2813,7 @@ sub infix:<∑>(SectionalBlock:D, SectionalBlock:D --> SectionalBlock:D) {...}
 multi method resolve-sectional-block(
     ::?CLASS:D:
     SectionalBlock:D @sectional-block,
-    Bool:D :finn($)! where *.so
+    Bool:D :finn($)! where .so
     --> SectionalBlock:D
 )
 {
@@ -2823,7 +2823,7 @@ multi method resolve-sectional-block(
 multi method resolve-sectional-block(
     ::?CLASS:D:
     SectionalBlock:D @sectional-block,
-    Bool:D :text($)! where *.so
+    Bool:D :text($)! where .so
     --> Str:D
 )
 {

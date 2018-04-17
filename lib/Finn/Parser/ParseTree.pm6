@@ -208,12 +208,12 @@ role ReferenceInline                 {...}
 # telling us to process C<self.name> as Sectional Block and embed in-place
 role IncludeLine::Request['Name'] does IncludeLine::Request::Name
 {
-    multi method Str(::?CLASS:D: Bool:D :finn($)! where *.so --> Str:D)
+    multi method Str(::?CLASS:D: Bool:D :finn($)! where .so --> Str:D)
     {
         my Str:D $request = '§ ' ~ $.name.perl;
     }
 
-    multi method Str(::?CLASS:D: Bool:D :text($)! where *.so --> Str:D)
+    multi method Str(::?CLASS:D: Bool:D :text($)! where .so --> Str:D)
     {
         my Str:D $request = '¶ ' ~ $.name.perl;
     }
@@ -224,12 +224,12 @@ role IncludeLine::Request['Name'] does IncludeLine::Request::Name
 # and embed in-place
 role IncludeLine::Request['File'] does IncludeLine::Request::File
 {
-    multi method Str(::?CLASS:D: Bool:D :finn($)! where *.so --> Str:D)
+    multi method Str(::?CLASS:D: Bool:D :finn($)! where .so --> Str:D)
     {
         my Str:D $request = '§ ' ~ $.file.Str;
     }
 
-    multi method Str(::?CLASS:D: Bool:D :text($)! where *.so --> Str:D)
+    multi method Str(::?CLASS:D: Bool:D :text($)! where .so --> Str:D)
     {
         my Str:D $request = '¶ ' ~ $.file.Str;
     }
@@ -240,12 +240,12 @@ role IncludeLine::Request['File'] does IncludeLine::Request::File
 # source file given by Reference Inline and embed in-place
 role IncludeLine::Request['Reference'] does IncludeLine::Request::Reference
 {
-    multi method Str(::?CLASS:D: Bool:D :finn($)! where *.so --> Str:D)
+    multi method Str(::?CLASS:D: Bool:D :finn($)! where .so --> Str:D)
     {
         my Str:D $request = '§ ' ~ $.reference-inline.Str;
     }
 
-    multi method Str(::?CLASS:D: Bool:D :text($)! where *.so --> Str:D)
+    multi method Str(::?CLASS:D: Bool:D :text($)! where .so --> Str:D)
     {
         my Str:D $request = '¶ ' ~ $.reference-inline.Str;
     }
@@ -261,12 +261,12 @@ role IncludeLine::Request['Name', 'File']
     does IncludeLine::Request::Name
     does IncludeLine::Request::File
 {
-    multi method Str(::?CLASS:D: Bool:D :finn($)! where *.so --> Str:D)
+    multi method Str(::?CLASS:D: Bool:D :finn($)! where .so --> Str:D)
     {
         my Str:D $request = '§ ' ~ $.name.perl ~ ' ' ~ $.file.Str;
     }
 
-    multi method Str(::?CLASS:D: Bool:D :text($)! where *.so --> Str:D)
+    multi method Str(::?CLASS:D: Bool:D :text($)! where .so --> Str:D)
     {
         my Str:D $request = '¶ ' ~ $.name.perl ~ ' ' ~ $.file.Str;
     }
@@ -279,12 +279,12 @@ role IncludeLine::Request['Name', 'Reference']
     does IncludeLine::Request::Name
     does IncludeLine::Request::Reference
 {
-    multi method Str(::?CLASS:D: Bool:D :finn($)! where *.so --> Str:D)
+    multi method Str(::?CLASS:D: Bool:D :finn($)! where .so --> Str:D)
     {
         my Str:D $request = '§ ' ~ $.name.perl ~ ' ' ~ $.reference-inline.Str;
     }
 
-    multi method Str(::?CLASS:D: Bool:D :text($)! where *.so --> Str:D)
+    multi method Str(::?CLASS:D: Bool:D :text($)! where .so --> Str:D)
     {
         my Str:D $request = '¶ ' ~ $.name.perl ~ ' ' ~ $.reference-inline.Str;
     }
@@ -627,7 +627,7 @@ role SectionalBlock
 
     method Str(::?CLASS:D: --> Str:D)
     {
-        my Str:D $content = @.content.map(*.Str).join("\n");
+        my Str:D $content = @.content.map({ .Str }).join("\n");
     }
 }
 
@@ -770,7 +770,7 @@ class Document
     {
         my ReferenceLineBlock:D @reference-line-block =
             @.chunk.grep(Chunk['ReferenceLineBlock'])
-                   .map(*.reference-line-block);
+                   .map({ .reference-line-block });
     }
 
     multi method sectional-block(
@@ -780,7 +780,7 @@ class Document
     )
     {
         my SectionalBlock:D @sectional-block =
-            self.sectional-block.grep(*.sectional-block-name.identifier)
+            self.sectional-block.grep({ .sectional-block-name.identifier })
                                 .grep(SectionalBlockName::Identifier['Word'])
                                 .grep({ .word eq $name });
     }
@@ -792,7 +792,7 @@ class Document
     {
         my SectionalBlock:D @sectional-block =
             @.chunk.grep(Chunk['SectionalBlock'])
-                   .map(*.sectional-block);
+                   .map({ .sectional-block });
     }
 }
 
