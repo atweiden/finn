@@ -165,7 +165,7 @@ method chunk:blank-line ($/ --> Nil)
 
 method document($/ --> Nil)
 {
-    my Chunk:D @chunk = @<chunk>.hyper.map({ .made });
+    my Chunk:D @chunk = @<chunk>.map({ .made });
     make(Document.new(:@chunk));
 }
 
@@ -238,7 +238,7 @@ method include-line-request:name-only ($/ --> Nil)
 
 multi method include-line:finn ($/ where @<leading-ws>.so --> Nil)
 {
-    my LeadingWS:D @leading-ws = @<leading-ws>.hyper.map({ .made });
+    my LeadingWS:D @leading-ws = @<leading-ws>.map({ .made });
     my IncludeLine::Request:D $request = $<include-line-request>.made;
     my IncludeLine::Resolver:D $resolver =
         self.gen-include-line-resolver($request, :finn);
@@ -255,7 +255,7 @@ multi method include-line:finn ($/ --> Nil)
 
 multi method include-line:text ($/ where @<leading-ws>.so --> Nil)
 {
-    my LeadingWS:D @leading-ws = @<leading-ws>.hyper.map({ .made });
+    my LeadingWS:D @leading-ws = @<leading-ws>.map({ .made });
     my IncludeLine::Request:D $request = $<include-line-request>.made;
     my IncludeLine::Resolver:D $resolver =
         self.gen-include-line-resolver($request, :text);
@@ -274,28 +274,28 @@ multi method include-line:text ($/ --> Nil)
 
 method include-line-block:top ($/ --> Nil)
 {
-    my IncludeLine:D @include-line = @<include-line>.hyper.map({ .made });
+    my IncludeLine:D @include-line = @<include-line>.map({ .made });
     make(IncludeLineBlock['Top'].new(:@include-line));
 }
 
 multi method include-line-block:after-blank-line ($/ --> Nil)
 {
     my BlankLine:D $blank-line = $<blank-line>.made;
-    my IncludeLine:D @include-line = @<include-line>.hyper.map({ .made });
+    my IncludeLine:D @include-line = @<include-line>.map({ .made });
     make(IncludeLineBlock['BlankLine'].new(:$blank-line, :@include-line));
 }
 
 multi method include-line-block:after-comment-block ($/ --> Nil)
 {
     my CommentBlock:D $comment-block = $<comment-block>.made;
-    my IncludeLine:D @include-line = @<include-line>.hyper.map({ .made });
+    my IncludeLine:D @include-line = @<include-line>.map({ .made });
     make(IncludeLineBlock['CommentBlock'].new(:$comment-block, :@include-line));
 }
 
 multi method include-line-block:after-horizontal-rule ($/ --> Nil)
 {
     my HorizontalRule:D $horizontal-rule = $<horizontal-rule>.made;
-    my IncludeLine:D @include-line = @<include-line>.hyper.map({ .made });
+    my IncludeLine:D @include-line = @<include-line>.map({ .made });
     make(
         IncludeLineBlock['HorizontalRule'].new(
             :$horizontal-rule,
@@ -422,7 +422,7 @@ method sectional-block-content-text-backticks($/ --> Nil)
 {
     make(
         @<sectional-block-content-text-line-backticks>
-        .hyper.map({ .made })
+        .map({ .made })
         .join("\n")
     );
 }
@@ -436,7 +436,7 @@ method sectional-block-content-text-dashes($/ --> Nil)
 {
     make(
         @<sectional-block-content-text-line-dashes>
-        .hyper.map({ .made })
+        .map({ .made })
         .join("\n")
     );
 }
@@ -450,7 +450,7 @@ method sectional-block-content-text-line-dashes($/ --> Nil)
 
 method sectional-block-contents-backticks($/ --> Nil)
 {
-    my @made = @<sectional-block-content-backticks>.hyper.map({ .made });
+    my @made = @<sectional-block-content-backticks>.map({ .made });
     make(@made);
 }
 
@@ -467,7 +467,7 @@ method sectional-block-content-backticks:text ($/ --> Nil)
 
 method sectional-block-contents-dashes($/ --> Nil)
 {
-    my @made = @<sectional-block-content-dashes>.hyper.map({ .made });
+    my @made = @<sectional-block-content-dashes>.map({ .made });
     make(@made);
 }
 
@@ -491,7 +491,7 @@ multi method sectional-block:backticks (
     --> Nil
 )
 {
-    my LeadingWS:D @leading-ws = @<closing-ws>.hyper.map({ .made });
+    my LeadingWS:D @leading-ws = @<closing-ws>.map({ .made });
     my SectionalBlockDelimiter['Backticks'] $delimiter .= new(:@leading-ws);
     my SectionalBlockName:D $name = $<sectional-block-name>.made;
     my SectionalBlockContent:D @content-raw =
@@ -517,7 +517,7 @@ multi method sectional-block:backticks (
     --> Nil
 )
 {
-    my LeadingWS:D @leading-ws = @<closing-ws>.hyper.map({ .made });
+    my LeadingWS:D @leading-ws = @<closing-ws>.map({ .made });
     my SectionalBlockDelimiter['Backticks'] $delimiter .= new(:@leading-ws);
     my SectionalBlockName:D $name = $<sectional-block-name>.made;
     make(SectionalBlock.new(:$delimiter, :$name));
@@ -539,7 +539,7 @@ multi method sectional-block:dashes (
     --> Nil
 )
 {
-    my LeadingWS:D @leading-ws = @<closing-ws>.hyper.map({ .made });
+    my LeadingWS:D @leading-ws = @<closing-ws>.map({ .made });
     my SectionalBlockDelimiter['Dashes'] $delimiter .= new(:@leading-ws);
     my SectionalBlockName:D $name = $<sectional-block-name>.made;
     my SectionalBlockContent:D @content-raw =
@@ -565,7 +565,7 @@ multi method sectional-block:dashes (
     --> Nil
 )
 {
-    my LeadingWS:D @leading-ws = @<closing-ws>.hyper.map({ .made });
+    my LeadingWS:D @leading-ws = @<closing-ws>.map({ .made });
     my SectionalBlockDelimiter['Dashes'] $delimiter .= new(:@leading-ws);
     my SectionalBlockName:D $name = $<sectional-block-name>.made;
     make(SectionalBlock.new(:$delimiter, :$name));
@@ -613,7 +613,7 @@ multi method code-block:backticks (
     --> Nil
 )
 {
-    my LeadingWS:D @leading-ws = @<closing-ws>.hyper.map({ .made });
+    my LeadingWS:D @leading-ws = @<closing-ws>.map({ .made });
     my CodeBlockDelimiter['Backticks'] $delimiter .= new(:@leading-ws);
     my Str:D $language = $<code-block-language>.made;
     my Str:D $text = trim(@leading-ws, $<code-block-content-backticks>.made);
@@ -638,7 +638,7 @@ multi method code-block:backticks (
     --> Nil
 )
 {
-    my LeadingWS:D @leading-ws = @<closing-ws>.hyper.map({ .made });
+    my LeadingWS:D @leading-ws = @<closing-ws>.map({ .made });
     my CodeBlockDelimiter['Backticks'] $delimiter .= new(:@leading-ws);
     my Str:D $language = $<code-block-language>.made;
     make(CodeBlock.new(:$delimiter, :$language));
@@ -660,7 +660,7 @@ multi method code-block:backticks (
     --> Nil
 )
 {
-    my LeadingWS:D @leading-ws = @<closing-ws>.hyper.map({ .made });
+    my LeadingWS:D @leading-ws = @<closing-ws>.map({ .made });
     my CodeBlockDelimiter['Backticks'] $delimiter .= new(:@leading-ws);
     my Str:D $text = trim(@leading-ws, $<code-block-content-backticks>.made);
     make(CodeBlock.new(:$delimiter, :$text));
@@ -681,7 +681,7 @@ multi method code-block:backticks (
     --> Nil
 )
 {
-    my LeadingWS:D @leading-ws = @<closing-ws>.hyper.map({ .made });
+    my LeadingWS:D @leading-ws = @<closing-ws>.map({ .made });
     my CodeBlockDelimiter['Backticks'] $delimiter .= new(:@leading-ws);
     make(CodeBlock.new(:$delimiter));
 }
@@ -702,7 +702,7 @@ multi method code-block:dashes (
     --> Nil
 )
 {
-    my LeadingWS:D @leading-ws = @<closing-ws>.hyper.map({ .made });
+    my LeadingWS:D @leading-ws = @<closing-ws>.map({ .made });
     my CodeBlockDelimiter['Dashes'] $delimiter .= new(:@leading-ws);
     my Str:D $language = $<code-block-language>.made;
     my Str:D $text = trim(@leading-ws, $<code-block-content-dashes>.made);
@@ -727,7 +727,7 @@ multi method code-block:dashes (
     --> Nil
 )
 {
-    my LeadingWS:D @leading-ws = @<closing-ws>.hyper.map({ .made });
+    my LeadingWS:D @leading-ws = @<closing-ws>.map({ .made });
     my CodeBlockDelimiter['Dashes'] $delimiter .= new(:@leading-ws);
     my Str:D $language = $<code-block-language>.made;
     make(CodeBlock.new(:$delimiter, :$language));
@@ -749,7 +749,7 @@ multi method code-block:dashes (
     --> Nil
 )
 {
-    my LeadingWS:D @leading-ws = @<closing-ws>.hyper.map({ .made });
+    my LeadingWS:D @leading-ws = @<closing-ws>.map({ .made });
     my CodeBlockDelimiter['Dashes'] $delimiter .= new(:@leading-ws);
     my Str:D $text = trim(@leading-ws, $<code-block-content-dashes>.made);
     make(CodeBlock.new(:$delimiter, :$text));
@@ -770,7 +770,7 @@ multi method code-block:dashes (
     --> Nil
 )
 {
-    my LeadingWS:D @leading-ws = @<closing-ws>.hyper.map({ .made });
+    my LeadingWS:D @leading-ws = @<closing-ws>.map({ .made });
     my CodeBlockDelimiter['Dashes'] $delimiter .= new(:@leading-ws);
     make(CodeBlock.new(:$delimiter));
 }
@@ -808,7 +808,7 @@ multi method reference-line-text(
     make(
         ($<reference-line-text-first-line>.made,
          @<reference-line-text-continuation>
-         .hyper.map({ .made })
+         .map({ .made })
          .join("\n"))
          .join("\n")
     );
@@ -830,7 +830,7 @@ method reference-line($/ --> Nil)
 
 method reference-lines($/ --> Nil)
 {
-    my @made = @<reference-line>.hyper.map({ .made });
+    my @made = @<reference-line>.map({ .made });
     make(@made);
 }
 
@@ -875,7 +875,7 @@ method reference-line-block:after-horizontal-rule ($/ --> Nil)
 
 method reference-line-blocks($/ --> Nil)
 {
-    my @made = @<reference-line-block>.hyper.map({ .made });
+    my @made = @<reference-line-block>.map({ .made });
     make(@made);
 }
 
@@ -1003,7 +1003,7 @@ multi method list-ordered-item-text(
     make(
         ($<list-ordered-item-text-first-line>.made,
          @<list-ordered-item-text-continuation>
-         .hyper.map({ .made })
+         .map({ .made })
          .join("\n"))
          .join("\n")
      );
@@ -1259,7 +1259,7 @@ multi method list-unordered-item-text(
     make(
         ($<list-unordered-item-text-first-line>.made,
          @<list-unordered-item-text-continuation>
-         .hyper.map({ .made })
+         .map({ .made })
          .join("\n"))
          .join("\n")
      );
@@ -1305,7 +1305,7 @@ method list-item:unordered ($/ --> Nil)
 
 method list-block($/ --> Nil)
 {
-    my ListItem:D @list-item = @<list-item>.hyper.map({ .made });
+    my ListItem:D @list-item = @<list-item>.map({ .made });
     make(ListBlock.new(:@list-item));
 }
 
@@ -1319,7 +1319,7 @@ method paragraph-line($/ --> Nil)
 
 method paragraph($/ --> Nil)
 {
-    my Str:D $text = @<paragraph-line>.hyper.map({ .made }).join("\n");
+    my Str:D $text = @<paragraph-line>.map({ .made }).join("\n");
     make(Paragraph.new(:$text));
 }
 
@@ -1382,7 +1382,7 @@ method blank-line($/ --> Nil)
 
 method blank-lines($/ --> Nil)
 {
-    my @made = @<blank-line>.hyper.map({ .made });
+    my @made = @<blank-line>.map({ .made });
     make(@made);
 }
 
@@ -1478,7 +1478,7 @@ method escape:sym<U>($/ --> Nil)
 
 method string-basic-text($/ --> Nil)
 {
-    make(@<string-basic-char>.hyper.map({ .made }).join);
+    make(@<string-basic-char>.map({ .made }).join);
 }
 
 method string-basic($/ --> Nil)
@@ -1505,7 +1505,7 @@ method string-literal-char:backslash ($/ --> Nil)
 
 method string-literal-text($/ --> Nil)
 {
-    make(@<string-literal-char>.hyper.map({ .made }).join);
+    make(@<string-literal-char>.map({ .made }).join);
 }
 
 method string-literal($/ --> Nil)
@@ -1655,8 +1655,8 @@ multi method file-path-absolute($/ where @<file-path-absolute>.so --> Nil)
 {
     make(
         ~ $<file-path-absolute-root>.made
-        ~ @<file-path-char>.hyper.map({ .made }).join
-        ~ @<file-path-absolute>.hyper.map({ .made }).join
+        ~ @<file-path-char>.map({ .made }).join
+        ~ @<file-path-absolute>.map({ .made }).join
     );
 }
 
@@ -1664,7 +1664,7 @@ multi method file-path-absolute($/ --> Nil)
 {
     make(
         ~ $<file-path-absolute-root>.made
-        ~ @<file-path-char>.hyper.map({ .made }).join
+        ~ @<file-path-char>.map({ .made }).join
     );
 }
 
@@ -1711,14 +1711,14 @@ method file-absolute-protocol($/ --> Nil)
 multi method file-path-relative($/ where @<file-path-absolute>.so --> Nil)
 {
     make(
-        ~ @<file-path-char>.hyper.map({ .made }).join
-        ~ @<file-path-absolute>.hyper.map({ .made }).join
+        ~ @<file-path-char>.map({ .made }).join
+        ~ @<file-path-absolute>.map({ .made }).join
     );
 }
 
 multi method file-path-relative($/ --> Nil)
 {
-    make(@<file-path-char>.hyper.map({ .made }).join);
+    make(@<file-path-char>.map({ .made }).join);
 }
 
 multi method file-relative($/ --> Nil)
@@ -3021,7 +3021,7 @@ multi sub trim(LeadingWS:D @leading-ws, Str:D $text --> Str:D)
 sub trim-leading(LeadingWS:D @leading-ws, Str:D $text --> Str:D)
 {
     my Str:D $actual = $text.comb(/^\h*/).first;
-    my Str:D $padding = @leading-ws.hyper.map({ .Str }).join;
+    my Str:D $padding = @leading-ws.map({ .Str }).join;
     $actual.chars >= $padding.chars
         or die();
     my Str:D $s = $text.subst($padding, '');
