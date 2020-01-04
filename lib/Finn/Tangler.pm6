@@ -70,4 +70,4 @@ method tangle(?::CLASS:D: --> Hash[List:D,Str:D])
 
 # end method tangle }}}
 
-# vim: set filetype=perl6 foldmethod=marker foldlevel=0:
+# vim: set filetype=raku foldmethod=marker foldlevel=0:

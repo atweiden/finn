@@ -59,4 +59,4 @@ subtest({
     ok(Finn::Parser::Grammar.parse($header3, :rule<header3>), 'Parses header3');
 });
 
-# vim: set filetype=perl6 foldmethod=marker foldlevel=0:
+# vim: set filetype=raku foldmethod=marker foldlevel=0:

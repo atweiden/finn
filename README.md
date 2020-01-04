@@ -13,7 +13,7 @@ Inspired by [vim-journal] and [Literate].
 finn tangle path/to/finn/source/file
 ```
 
-**perl6**
+**raku**
 
 ```perl6
 use Finn;
@@ -38,7 +38,7 @@ don't.
 
 ### Dependencies
 
-- Rakudo Perl 6
+- Raku
 - [Config::TOML](https://github.com/atweiden/config-toml)
 
 ### Test Dependencies

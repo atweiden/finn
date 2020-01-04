@@ -30,4 +30,4 @@ subtest({
     ok(Finn::Parser::Grammar.parse($paragraph, :$rule), 'Parses paragraph');
 });
 
-# vim: set filetype=perl6 foldmethod=marker foldlevel=0:
+# vim: set filetype=raku foldmethod=marker foldlevel=0:

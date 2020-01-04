@@ -76,4 +76,4 @@ subtest({
     ok(Finn::Parser::Grammar.parse($code-block, :$rule), 'Parses code-block');
 });
 
-# vim: set filetype=perl6 foldmethod=marker foldlevel=0:
+# vim: set filetype=raku foldmethod=marker foldlevel=0:

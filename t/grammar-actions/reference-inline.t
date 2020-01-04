@@ -33,4 +33,4 @@ subtest({
     }
 });
 
-# vim: set reference-inlinetype=perl6 foldmethod=marker foldlevel=0:
+# vim: set filetype=raku foldmethod=marker foldlevel=0:
