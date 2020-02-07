@@ -15,7 +15,7 @@ finn tangle path/to/finn/source/file
 
 **raku**
 
-```perl6
+```raku
 use Finn;
 my Str $file = 'Story';
 Finn.tangle(:$file);
@@ -50,7 +50,7 @@ To run the tests:
 ```
 $ git clone https://github.com/atweiden/finn && cd finn
 $ peru --file=.peru.yml --sync-dir="$PWD" sync
-$ PERL6LIB=lib prove -r -e perl6
+$ PERL6LIB=lib prove -r -e raku
 ```
 
 

@@ -98,7 +98,7 @@ invalid exported sectional block content
 This is a regular code block:
 
 ```finn
----perl6
+---raku
 my Str $greeting = 'Hello, World';
 ---
 ```
