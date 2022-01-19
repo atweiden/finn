@@ -89,10 +89,10 @@ Finn::Parser::ParseTree
 
 - sectional-inline file-path can't resolve to `~`, `/`, or any other
   directory path
-  - “If all you need to do is checking things after the actual
+  - "If all you need to do is checking things after the actual
      construction, or modify attributes after the object construction,
      writing a submethod TWEAK is a good approach (available in v6.d /
-     Rakudo 2016.11)”
+     Rakudo 2016.11)"
 
 
 Test
